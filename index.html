@@ -218,6 +218,17 @@ section{padding:100px 0}
   .mission-stats { flex-direction: column; gap: 30px; }
 }
 
+/* 교회소식/공지사항 세밀화 */
+.notice-list-lite { margin-top:15px; display:flex; flex-direction:column; gap:8px; align-items:center; }
+.notice-item-mini { font-size:0.9rem; color:var(--text-muted); background:var(--white); padding:6px 16px; border-radius:20px; border:1px solid var(--gray-light); max-width:600px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:0.2s; }
+.notice-item-mini:hover { color:var(--blue); border-color:var(--blue); transform:translateX(5px); }
+.drive-embed-small { padding:5px; background:#fff; border:1px solid #eee; border-radius:10px; }
+.hrad-content { min-height:100px; white-space:pre-wrap; }
+.hrad-textarea { width:100%; min-height:120px; border:2px solid var(--gold); padding:15px; border-radius:10px; font-family:inherit; font-size:0.95rem; line-height:1.6; }
+.save-actions { margin-top:10px; text-align:right; }
+.btn-save-mini { background:var(--gold); color:var(--navy); padding:8px 20px; border-radius:5px; font-weight:700; cursor:pointer; font-size:0.85rem; }
+.footer-drive-link { font-size:0.8rem; color:var(--gold); font-weight:600; text-decoration:none; margin-top:10px; display:inline-block; }
+
 /* WELCOME */
 .section-welcome{background:var(--white)}
 .welcome-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
@@ -538,7 +549,7 @@ section{padding:100px 0}
       <p class="hero-desc">And suddenly there came a sound from heaven, as of a rushing mighty wind<br>사도행전 2:2</p>
       <div class="hero-btns">
         <a href="#worship" class="btn-primary">예배 드리러 가기</a>
-        <a href="#media" class="btn-outline">영상 보기</a>
+        <a href="#media" class="btn-영상 보기</a>
       </div>
     </div>
     <div class="hero-scroll-hint">
@@ -691,35 +702,40 @@ section{padding:100px 0}
   <section id="news" class="section-news">
     <div class="container">
       <div class="section-header" data-aos="fade-up">
-        <p class="section-label">공지 & 소식</p>
         <h2 class="section-title">교회소식</h2>
+        <div id="latest-notices" class="notice-list-lite">
+          <!-- 크롤링된 제목들이 여기에 채워집니다 -->
+        </div>
       </div>
       <div class="news-grid" data-aos="fade-up" data-aos-delay="150">
-        <!-- 교회주보 -->
-        <div class="news-card">
+        <!-- 교회주보 (구글 드라이브 연동) -->
+        <div class="news-card bulletin-card">
           <div class="news-card-header">
             <i class="fas fa-newspaper"></i>
             <h3>교회주보</h3>
-            <button class="news-edit-btn" onclick="toggleEdit('bulletin')" title="수정"><i class="fas fa-pen"></i></button>
+            <a href="https://drive.google.com/drive/folders/1g5J2k_jByx0O2prQH_0JEZmDZJqe-5-e?usp=sharing" target="_blank" class="drive-link-icon"><i class="fas fa-external-link-alt"></i></a>
           </div>
-          <div class="news-card-body">
-            <p id="bulletin-display" class="news-text" onclick="startEdit('bulletin')">주보 내용을 여기에 입력하세요. (클릭하여 수정)</p>
-            <input id="bulletin-input" class="news-input hidden" type="text" placeholder="주보 한 줄 입력..."
-              onblur="saveEdit('bulletin')" onkeydown="if(event.key==='Enter')saveEdit('bulletin')" />
+          <div class="news-card-body drive-embed-small">
+            <iframe src="https://drive.google.com/embeddedfolderview?id=1g5J2k_jByx0O2prQH_0JEZmDZJqe-5-e#list" width="100%" height="250" frameborder="0"></iframe>
           </div>
         </div>
-        <!-- HRAD 실시간 -->
+        <!-- HRAD 실시간 (교회소식) -->
         <div class="news-card">
           <div class="news-card-header">
             <i class="fas fa-broadcast-tower"></i>
-            <h3>HRAD 실시간</h3>
+            <h3>성도간의 교제 (HRAD)</h3>
             <span class="news-live-badge"><i class="fas fa-circle"></i> LIVE</span>
             <button class="news-edit-btn" onclick="toggleEdit('hrad')" title="수정"><i class="fas fa-pen"></i></button>
           </div>
           <div class="news-card-body">
-            <p id="hrad-display" class="news-text" onclick="startEdit('hrad')">실시간 소식을 여기에 입력하세요. (클릭하여 수정)</p>
-            <input id="hrad-input" class="news-input hidden" type="text" placeholder="실시간 소식 한 줄 입력..."
-              onblur="saveEdit('hrad')" onkeydown="if(event.key==='Enter')saveEdit('hrad')" />
+            <div id="hrad-display" class="news-text hrad-content" onclick="startEdit('hrad')">성도님들의 귀한 나눔을 여기에 작성해 주세요. (클릭하여 수정)</div>
+            <textarea id="hrad-input" class="news-input hidden hrad-textarea" placeholder="실시간 소식 입력..." rows="3"></textarea>
+            <div class="save-actions hidden" id="hrad-actions">
+               <button class="btn-save-mini" onclick="saveEdit('hrad')">실시간 저장</button>
+            </div>
+          </div>
+          <div class="news-card-footer">
+            <a href="https://drive.google.com/drive/folders/1yx7nqVg61DERORtFmkstNiuCbvrWm3AP?usp=sharing" target="_blank" class="footer-drive-link">HRAD 드라이브 바로가기 <i class="fas fa-arrow-right"></i></a>
           </div>
         </div>
       </div>
@@ -979,105 +995,21 @@ section{padding:100px 0}
     </div>
   </section>
 
-  <!-- ===== 기도소식 게시판 ===== -->
-  <section id="prayer" class="section-prayer">
+  <!-- ===== 기도소식 (드라이브 연동) ===== -->
+  <section id="prayer" class="section-gallery">
     <div class="container">
       <div class="section-header" data-aos="fade-up">
         <p class="section-label">함께 기도해요</p>
-        <h2 class="section-title">기도소식 게시판</h2>
-        <p class="section-desc">기도 제목을 나누고 함께 중보하는 공간입니다</p>
-      </div>
-      <div class="prayer-board" data-aos="fade-up" data-aos-delay="150">
-        <div class="prayer-input-box">
-          <div class="prayer-input-row">
-            <input id="prayerName" type="text" placeholder="이름 (익명 가능)" class="prayer-field prayer-name" maxlength="20" />
-            <input id="prayerText" type="text" placeholder="기도 제목을 입력하세요..." class="prayer-field prayer-text" maxlength="100" />
-            <button id="prayerSubmit" class="prayer-submit-btn"><i class="fas fa-praying-hands"></i> 올리기</button>
-          </div>
-        </div>
-        <div id="prayerList" class="prayer-list">
-          <!-- 기도 제목 목록 -->
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ===== CONTACT / MAP ===== -->
-  <section id="contact" class="section-contact">
-    <div class="container">
-      <div class="contact-grid">
-        <div class="contact-info" data-aos="fade-right">
-          <p class="section-label">찾아오시는 길</p>
-          <h2 class="section-title">하늘바람교회</h2>
-          <ul class="contact-list">
-            <li>
-              <i class="fas fa-map-marker-alt"></i>
-              <div>
-                <strong>주소</strong>
-                <span>경기 김포시 모담공원로167번길 101<br>하늘바람교회 (예수교대한성결교회)</span>
-              </div>
-            </li>
-            <li>
-              <i class="fas fa-phone"></i>
-              <div>
-                <strong>전화 / 핸드폰</strong>
-                <a href="tel:010-5711-1416">010-5711-1416</a>
-                <a href="tel:010-8887-6641" style="font-size:0.85rem;color:var(--text-muted)">010-8887-6641</a>
-              </div>
-            </li>
-            <li>
-              <i class="fas fa-envelope"></i>
-              <div>
-                <strong>이메일</strong>
-                <a href="mailto:whanseh@me.com">whanseh@me.com</a>
-              </div>
-            </li>
-          </ul>
-          <div class="social-links">
-            <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="social-btn yt" aria-label="YouTube">
-              <i class="fab fa-youtube"></i>
-            </a>
-            <a href="https://blog.naver.com/habachurch" target="_blank" class="social-btn blog" aria-label="네이버 블로그">
-              <i class="fas fa-blog"></i>
-            </a>
-            <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="social-btn cafe" aria-label="네이버 카페">
-              <i class="fas fa-mug-hot"></i>
-            </a>
-          </div>
-        </div>
-        <div class="contact-map" data-aos="fade-left">
-          <iframe
-            src="https://map.naver.com/p/entry/place/1837083519?c=15,0,0,0,dh"
-            width="100%" height="400" style="border:0;" allowfullscreen=""
-            loading="lazy">
-          </iframe>
-          <a href="https://naver.me/5XJRTIuL"
-             target="_blank" class="map-open-btn">
-            <i class="fas fa-map-marker-alt"></i> 네이버 지도에서 크게 보기
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== PRAYER BOARD : 기도소식 ===== -->
-  <section id="prayer" class="section-prayer">
-    <div class="container">
-      <div class="section-header" data-aos="fade-up">
-        <p class="section-label">기도의 힘</p>
-        <h2 class="section-title">기도소식 게시판</h2>
+        <h2 class="section-title">기도소식</h2>
         <p class="section-desc">성도님들의 기도 제목을 함께 나눕니다</p>
       </div>
-      <div class="prayer-board" data-aos="fade-up" data-aos-delay="100">
-        <div class="prayer-form">
-          <input type="text" id="prayerName" placeholder="이름 (익명가능)" maxlength="10">
-          <textarea id="prayerContent" placeholder="기도 제목을 나누어 주세요..." maxlength="200"></textarea>
-          <button id="btnSubmitPrayer">기도 제목 올리기</button>
-        </div>
-        <div id="prayerList" class="prayer-list">
-          <!-- 기도 제목들이 여기에 표시됩니다 -->
-        </div>
+      <div class="album-drive-wrap" data-aos="fade-up">
+         <iframe src="https://drive.google.com/embeddedfolderview?id=1Yx2IYoFo5-Wngsf0-llOU1642flhqwiJ#grid" width="100%" height="500" frameborder="0"></iframe>
+      </div>
+      <div class="album-footer" style="margin-top:20px; text-align:center;">
+          <a href="https://drive.google.com/drive/folders/1Yx2IYoFo5-Wngsf0-llOU1642flhqwiJ?usp=sharing" target="_blank" class="btn-drive-open">
+            <i class="fab fa-google-drive"></i> 기도소식 구글 드라이브 전체보기
+          </a>
       </div>
     </div>
   </section>
@@ -1099,14 +1031,62 @@ section{padding:100px 0}
     </div>
   </section>
 
+  <!-- ===== CONTACT / MAP ===== -->
+  <section id="contact" class="section-contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info" data-aos="fade-right">
+          <h2 class="section-title">하늘바람교회 찾아오시는 길</h2>
+          <ul class="contact-list">
+            <li>
+              <i class="fas fa-map-marker-alt"></i>
+              <div>
+                <strong>주소</strong>
+                <span>경기 김포시 모담공원로167번길 101<br>하늘바람교회 (예수교대한성결교회)</span>
+              </div>
+            </li>
+            <li>
+              <i class="fas fa-phone"></i>
+              <div>
+                <strong>전화 / 핸드폰</strong>
+                <a href="tel:010-5711-1416">010-5711-1416</a>
+                <a href="tel:010-8887-6641" style="font-size:0.85rem;color:var(--text-muted)">010-8887-6641</a>
+              </div>
+            </li>
+          </ul>
+          <div class="social-links">
+            <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="social-btn yt" aria-label="YouTube">
+              <i class="fab fa-youtube"></i>
+            </a>
+            <a href="https://blog.naver.com/habachurch" target="_blank" class="social-btn blog" aria-label="네이버 블로그">
+              <i class="fas fa-blog"></i>
+            </a>
+            <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="social-btn cafe" aria-label="네이버 카페">
+              <i class="fas fa-mug-hot"></i>
+            </a>
+          </div>
+        </div>
+        <div class="contact-map" data-aos="fade-left">
+          <iframe
+            src="https://map.naver.com/p/entry/place/1837083519?c=15,0,0,0,dh"
+            width="100%" height="300" style="border:0;" allowfullscreen=""
+            loading="lazy">
+          </iframe>
+          <a href="https://naver.me/5XJRTIuL"
+             target="_blank" class="map-open-btn">
+            <i class="fas fa-map-marker-alt"></i> 네이버 지도에서 크게 보기
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== FOOTER ===== -->
   <footer id="footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <img src="https://habach.kr/wp-content/uploads/2022/01/logo_w.png"
-               onerror="this.onerror=null; this.src='https://habach.kr/wp-content/uploads/2022/01/logo.png'"
-               alt="하늘바람교회" class="footer-logo" />
+          <p style="font-weight:700;color:white;font-size:1.2rem;margin-bottom:10px">하늘바람교회</p>
           <p>하늘의 바람이 이 땅에 임하는 교회</p>
           <p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin-top:4px">예수교대한성결교회</p>
           <p class="footer-verse">"홀연히 하늘로부터 급하고 강한 바람 같은<br>소리가 있어" — 사도행전 2:2</p>
@@ -1344,10 +1324,17 @@ section{padding:100px 0}
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
-    async function init() {
+  async function init() {
       try {
         const [rssText, shortsFromPage] = await Promise.all([proxyFetch(RSS_URL), fetchShortsPage(10)]);
         const rssVideos = parseRSS(rssText);
+        
+        // 공지사항 리스트 채우기 (최신 제목 3개)
+        const noticeList = document.getElementById('latest-notices');
+        if(noticeList) {
+           noticeList.innerHTML = rssVideos.slice(0,3).map(v => `<div class="notice-item-mini"><i class="fas fa-bullhorn" style="margin-right:8px;color:var(--gold)"></i> ${v.title}</div>`).join('');
+        }
+
         const normals = rssVideos.filter(v => !v.isShorts);
         const categorized = normals.filter(v => v.category !== 'all');
         const sunday = normals.filter(v => v.category === 'sunday');
