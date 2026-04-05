@@ -127,15 +127,28 @@ document.addEventListener('DOMContentLoaded', () => {
    NAVER BLOG RSS : 다윗의예배 (주일설교)
    ============================================= */
 const BLOG_RSS = 'https://rss.blog.naver.com/habachurch.xml';
-const BLOG_PROXY = `https://api.allorigins.win/raw?url=`;
+const BLOG_PROXIES = [
+  'https://corsproxy.io/?',
+  'https://api.allorigins.win/raw?url=',
+  'https://api.codetabs.com/v1/proxy?quest=',
+];
+
+async function fetchBlogRSS(url) {
+  for (const proxy of BLOG_PROXIES) {
+    try {
+      const res = await fetch(proxy + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
+      if (res.ok) return await res.text();
+    } catch { /* 다음 프록시 */ }
+  }
+  throw new Error('블로그 RSS 로드 실패');
+}
 
 async function loadBlogPosts() {
   const container = document.getElementById('blogCards');
   if (!container) return;
 
   try {
-    const res  = await fetch(BLOG_PROXY + encodeURIComponent(BLOG_RSS));
-    const text = await res.text();
+    const text = await fetchBlogRSS(BLOG_RSS);
     const parser = new DOMParser();
     const xml  = parser.parseFromString(text, 'text/xml');
     const items = xml.querySelectorAll('item');
@@ -239,4 +252,12 @@ document.addEventListener('DOMContentLoaded', () => {
    ============================================= */
 document.addEventListener('DOMContentLoaded', () => {
   loadBlogPosts();
+
+  /* ── 플로팅 바: 스크롤 300px 이후 표시 ── */
+  const floatBar = document.getElementById('floatBar');
+  const showFloat = () => {
+    if (floatBar) floatBar.classList.toggle('visible', window.scrollY > 300);
+  };
+  window.addEventListener('scroll', showFloat, { passive: true });
+  showFloat();
 });

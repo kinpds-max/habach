@@ -1,149 +1,204 @@
 /**
- * 하늘바람교회 YouTube RSS 자동 크롤링 모듈
- * 채널: @Gimpo_HBC  |  Channel ID: UCzQ6kPUzNNbU3EtJI5X1mhQ
- *
- * - YouTube RSS 피드 자동 파싱 (API Key 불필요)
- * - 영상 제목 키워드로 예배 종류 자동 분류
- * - 썸네일 자동 추출 (maxresdefault → hqdefault 폴백)
- * - CORS 우회: allorigins.win 프록시 사용
+ * 하늘바람교회 YouTube 크롤링 모듈
+ * ─ RSS (최신 15개): 16:9 예배 영상 분류
+ * ─ /shorts 페이지 크롤링: 9:16 숏폼만 별도 수집
+ * ─ 프록시: corsproxy.io → allorigins.win → codetabs 순 폴백
  */
 
 const YT = (() => {
-  const CHANNEL_ID  = 'UCzQ6kPUzNNbU3EtJI5X1mhQ';
-  const RSS_URL     = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
-  const PROXY       = `https://api.allorigins.win/raw?url=`;
-  const FETCH_URL   = PROXY + encodeURIComponent(RSS_URL);
+  const CHANNEL_ID   = 'UCzQ6kPUzNNbU3EtJI5X1mhQ';
+  const RSS_URL      = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+  const SHORTS_PAGE  = `https://www.youtube.com/@Gimpo_HBC/shorts`;
+
+  const PROXIES = [
+    'https://corsproxy.io/?',
+    'https://api.allorigins.win/raw?url=',
+    'https://api.codetabs.com/v1/proxy?quest=',
+  ];
 
   /* ─── 예배 분류 키워드 ─── */
   const CATEGORIES = {
-    sunday:    { label: '주일예배',  keywords: ['주일', '주일예배', '주일 예배', '주일설교', '주일 설교', '다윗', '주일 찬양'] },
-    dawn:      { label: '새벽예배',  keywords: ['새벽', '새벽예배', '새벽 예배', '새벽기도', '새벽 기도'] },
-    wednesday: { label: '수요예배',  keywords: ['수요', '수요예배', '수요 예배', '수요설교', '수요 설교'] },
-    friday:    { label: '금요예배',  keywords: ['금요', '금요예배', '금요 예배', '금요기도', '금요 기도', '금요기도회', '금요 기도회'] },
+    sunday:    { label: '주일예배', keywords: ['주일','다윗의 예배','다윗의예배','시편의 예배','스몰 예배','주일설교'] },
+    dawn:      { label: '새벽예배', keywords: ['새벽','새벽예배','촛불새벽','새벽기도'] },
+    wednesday: { label: '수요예배', keywords: ['수요','수요예배','성경예배','수요 예배'] },
+    friday:    { label: '금요예배', keywords: ['금요','금요예배','강청기도','금요기도','금요 예배'] },
   };
 
-  let allVideos = [];
-  let categorized = { sunday: [], dawn: [], wednesday: [], friday: [], all: [], shorts: [] };
-
-  /* ─── 숏폼 판별: 제목에 #Shorts / 영상 길이(RSS엔 없으므로 제목 기반) ─── */
-  function isShorts(title) {
-    return /#short|shorts|숏츠|숏폼/i.test(title);
-  }
-
-  /* ─── 영상 분류 함수 ─── */
-  function classifyVideo(title) {
-    for (const [key, cat] of Object.entries(CATEGORIES)) {
-      if (cat.keywords.some(kw => title.includes(kw))) return key;
+  /* ─── 프록시 폴백 fetch ─── */
+  async function proxyFetch(url) {
+    for (const proxy of PROXIES) {
+      try {
+        const res = await fetch(proxy + encodeURIComponent(url), {
+          signal: AbortSignal.timeout(9000),
+        });
+        if (res.ok) return await res.text();
+      } catch { /* 다음 프록시 */ }
     }
-    return 'all'; // 미분류
+    throw new Error('모든 프록시 실패: ' + url);
   }
 
   /* ─── 날짜 포맷 ─── */
-  function formatDate(dateStr) {
-    const d = new Date(dateStr);
-    if (isNaN(d)) return dateStr;
-    return `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
+  function fmt(str) {
+    const d = new Date(str);
+    return isNaN(d) ? '' : `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
   }
 
-  /* ─── 썸네일 URL ─── */
-  function thumbUrl(videoId) {
-    return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+  /* ─── 예배 분류 ─── */
+  function classify(title) {
+    for (const [key, cat] of Object.entries(CATEGORIES)) {
+      if (cat.keywords.some(kw => title.includes(kw))) return key;
+    }
+    return 'all';
   }
 
-  /* ─── RSS 파싱 ─── */
-  function parseRSS(xmlText) {
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(xmlText, 'text/xml');
-    const entries = xml.querySelectorAll('entry');
-    const videos = [];
-    entries.forEach(entry => {
-      const idRaw   = entry.querySelector('id')?.textContent || '';
-      const videoId = idRaw.replace('yt:video:', '');
-      const title   = entry.querySelector('title')?.textContent || '제목 없음';
-      const pubDate = entry.querySelector('published')?.textContent || '';
-      const link    = `https://www.youtube.com/watch?v=${videoId}`;
-      const shorts  = isShorts(title);
-      const category = shorts ? 'shorts' : classifyVideo(title);
-      videos.push({ videoId, title, pubDate, link, category, shorts });
+  /* ══════════════════════════════════════════
+     1. RSS 파싱 → 16:9 예배 영상 (isShorts=false만)
+     /shorts/ URL이 있으면 숏폼으로 분리, 예배탭에서 제외
+     ══════════════════════════════════════════ */
+  function parseRSS(xml) {
+    const doc = new DOMParser().parseFromString(xml, 'text/xml');
+    return Array.from(doc.querySelectorAll('entry')).map(e => {
+      const videoId  = e.querySelector('videoId')?.textContent ||
+                       (e.querySelector('id')?.textContent || '').replace('yt:video:', '');
+      const title    = e.querySelector('title')?.textContent || '';
+      const pubDate  = e.querySelector('published')?.textContent || '';
+      const href     = e.querySelector('link')?.getAttribute('href') || '';
+      const isShorts = href.includes('/shorts/');
+      return { videoId, title, pubDate, isShorts, category: isShorts ? 'shorts' : classify(title) };
     });
+  }
+
+  /* ══════════════════════════════════════════
+     2. /shorts 페이지 크롤링 → 9:16 숏폼 전용
+     ytInitialData JSON에서 videoId 추출
+     ══════════════════════════════════════════ */
+  async function fetchShortsPage(limit = 10) {
+    try {
+      const html    = await proxyFetch(SHORTS_PAGE);
+      const matches = [...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)];
+      const ids     = [...new Set(matches.map(m => m[1]))].slice(0, limit);
+
+      // 각 videoId의 제목을 썸네일 oEmbed로 가져오기 (선택) — 일단 빈 제목
+      return ids.map(videoId => ({
+        videoId,
+        title:    '',   // 아래 fetchTitles()에서 채움
+        pubDate:  '',
+        isShorts: true,
+        category: 'shorts',
+      }));
+    } catch {
+      return [];
+    }
+  }
+
+  /* ══════════════════════════════════════════
+     3. oEmbed로 제목 일괄 보완 (병렬)
+     ══════════════════════════════════════════ */
+  async function fetchTitles(videos) {
+    await Promise.allSettled(videos.map(async v => {
+      if (v.title) return;
+      try {
+        const url  = `https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v=${v.videoId}`;
+        const res  = await fetch(PROXIES[0] + encodeURIComponent(url), { signal: AbortSignal.timeout(5000) });
+        if (res.ok) {
+          const j = await res.json();
+          v.title = j.title || '';
+        }
+      } catch { /* 제목 없이 표시 */ }
+    }));
     return videos;
   }
 
-  /* ─── 비디오 카드 HTML 생성 ─── */
-  function createCard(video) {
-    const catInfo = CATEGORIES[video.category] || { label: '기타영상' };
-    const date    = formatDate(video.pubDate);
-    const thumb   = thumbUrl(video.videoId);
-    const card    = document.createElement('div');
+  /* ══════════════════════════════════════════
+     4. 채널 검색으로 예배 카테고리 보완
+     ══════════════════════════════════════════ */
+  async function fillCategory(arr, keyword, need = 3) {
+    if (arr.length >= need) return arr;
+    try {
+      const searchUrl = `https://www.youtube.com/channel/${CHANNEL_ID}/search?query=${encodeURIComponent(keyword)}`;
+      const html      = await proxyFetch(searchUrl);
+      const matches   = [...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)];
+      const existing  = new Set(arr.map(v => v.videoId));
+      const extra = [...new Set(matches.map(m => m[1]))]
+        .filter(id => !existing.has(id))
+        .slice(0, need - arr.length)
+        .map(videoId => ({ videoId, title: keyword, pubDate: '', isShorts: false, category: classify(keyword) }));
+      return [...arr, ...extra];
+    } catch {
+      return arr;
+    }
+  }
+
+  /* ─── 일반 영상 카드 (16:9) ─── */
+  function createCard(v) {
+    const catInfo = CATEGORIES[v.category] || { label: '영상' };
+    const card = document.createElement('div');
     card.className = 'video-card';
-    card.dataset.videoId = video.videoId;
     card.innerHTML = `
       <div class="video-thumb">
-        <img src="${thumb}" alt="${video.title}" loading="lazy"
-             onerror="this.src='https://i.ytimg.com/vi/${video.videoId}/mqdefault.jpg'">
-        <div class="video-play-overlay">
-          <div class="video-play-btn"><i class="fas fa-play"></i></div>
-        </div>
+        <img src="https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg" alt="${v.title}" loading="lazy"
+             onerror="this.src='https://i.ytimg.com/vi/${v.videoId}/mqdefault.jpg'">
+        <div class="video-play-overlay"><div class="video-play-btn"><i class="fas fa-play"></i></div></div>
       </div>
       <div class="video-info">
         <span class="video-category">${catInfo.label}</span>
-        <p class="video-title">${video.title}</p>
-        <span class="video-date">${date}</span>
+        <p class="video-title">${v.title || catInfo.label}</p>
+        <span class="video-date">${fmt(v.pubDate)}</span>
       </div>`;
-    card.addEventListener('click', () => openVideoModal(video.videoId, video.title));
+    card.addEventListener('click', () => openModal(v.videoId));
     return card;
   }
 
-  /* ─── 일반 그리드 렌더링 ─── */
-  function renderGrid(gridId, videos, limit = 6) {
-    const grid = document.getElementById(gridId);
-    if (!grid) return;
-    grid.innerHTML = '';
-    if (!videos.length) {
-      grid.innerHTML = '<div class="video-empty"><i class="fas fa-film" style="font-size:2rem;opacity:.3;margin-bottom:12px;display:block"></i>해당 예배 영상이 준비 중입니다</div>';
-      return;
-    }
-    videos.slice(0, limit).forEach(v => grid.appendChild(createCard(v)));
-  }
-
-  /* ─── 숏폼 그리드 렌더링 ─── */
-  function renderShorts(gridId, videos, limit = 8) {
-    const grid = document.getElementById(gridId);
-    if (!grid) return;
-    grid.innerHTML = '';
-    if (!videos.length) {
-      grid.innerHTML = '<div class="video-empty" style="grid-column:1/-1"><i class="fas fa-mobile-alt" style="font-size:2rem;opacity:.3;margin-bottom:12px;display:block"></i>숏폼 영상이 준비 중입니다</div>';
-      return;
-    }
-    videos.slice(0, limit).forEach(v => grid.appendChild(createShortsCard(v)));
-  }
-
-  /* ─── 숏폼 카드 생성 (세로형 9:16) ─── */
-  function createShortsCard(video) {
-    const date = formatDate(video.pubDate);
+  /* ─── 숏폼 카드 (9:16 세로형) ─── */
+  function createShortsCard(v) {
     const card = document.createElement('div');
     card.className = 'shorts-card';
-    card.dataset.videoId = video.videoId;
     card.innerHTML = `
       <div class="shorts-thumb">
-        <img src="https://i.ytimg.com/vi/${video.videoId}/hqdefault.jpg"
-             alt="${video.title}" loading="lazy"
-             onerror="this.src='https://i.ytimg.com/vi/${video.videoId}/mqdefault.jpg'">
-        <div class="shorts-play-overlay">
-          <div class="shorts-play-btn"><i class="fab fa-youtube"></i></div>
-        </div>
+        <img src="https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg" alt="${v.title}" loading="lazy"
+             onerror="this.src='https://i.ytimg.com/vi/${v.videoId}/mqdefault.jpg'">
+        <div class="shorts-play-overlay"><div class="shorts-play-btn"><i class="fab fa-youtube"></i></div></div>
         <span class="shorts-badge"><i class="fas fa-mobile-alt"></i> Shorts</span>
       </div>
       <div class="shorts-info">
-        <p class="shorts-title">${video.title}</p>
-        <span class="shorts-date">${date}</span>
+        <p class="shorts-title">${v.title || 'Shorts'}</p>
+        <span class="shorts-date">${fmt(v.pubDate)}</span>
       </div>`;
-    card.addEventListener('click', () => openVideoModal(video.videoId));
+    card.addEventListener('click', () => openModal(v.videoId));
     return card;
   }
 
+  /* ─── 그리드 렌더링 ─── */
+  function renderGrid(id, videos, limit) {
+    const grid = document.getElementById(id);
+    if (!grid) return;
+    grid.innerHTML = '';
+    const list = limit ? videos.slice(0, limit) : videos;
+    if (!list.length) {
+      grid.innerHTML = `<div class="video-empty">
+        <i class="fas fa-film" style="font-size:2rem;opacity:.3;display:block;margin-bottom:12px"></i>
+        해당 예배 영상이 준비 중입니다</div>`;
+      return;
+    }
+    list.forEach(v => grid.appendChild(createCard(v)));
+  }
+
+  function renderShorts(videos, limit = 5) {
+    const grid = document.getElementById('grid-shorts');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const list = videos.slice(0, limit);
+    if (!list.length) {
+      grid.innerHTML = `<div class="video-empty" style="grid-column:1/-1">
+        <i class="fas fa-mobile-alt" style="font-size:2rem;opacity:.3;display:block;margin-bottom:12px"></i>
+        숏폼 영상이 준비 중입니다</div>`;
+      return;
+    }
+    list.forEach(v => grid.appendChild(createShortsCard(v)));
+  }
+
   /* ─── 모달 열기 ─── */
-  function openVideoModal(videoId) {
+  function openModal(videoId) {
     const modal  = document.getElementById('videoModal');
     const iframe = document.getElementById('modalIframe');
     if (!modal || !iframe) return;
@@ -152,69 +207,93 @@ const YT = (() => {
     document.body.style.overflow = 'hidden';
   }
 
-  /* ─── 메인 초기화 ─── */
+  /* ══════════════════════════════════════════
+     INIT
+     ══════════════════════════════════════════ */
   async function init() {
     try {
-      const res  = await fetch(FETCH_URL);
-      const text = await res.text();
-      allVideos  = parseRSS(text);
+      /* ① RSS + Shorts 페이지 병렬 fetch */
+      const [rssText, shortsFromPage] = await Promise.all([
+        proxyFetch(RSS_URL),
+        fetchShortsPage(10),
+      ]);
 
-      /* 분류 */
-      categorized.all = allVideos;
-      categorized.sunday    = allVideos.filter(v => v.category === 'sunday');
-      categorized.dawn      = allVideos.filter(v => v.category === 'dawn');
-      categorized.wednesday = allVideos.filter(v => v.category === 'wednesday');
-      categorized.friday    = allVideos.filter(v => v.category === 'friday');
+      const rssVideos = parseRSS(rssText);
 
-      /* 렌더링 */
-      renderGrid('grid-sunday',    categorized.sunday);
-      renderGrid('grid-dawn',      categorized.dawn);
-      renderGrid('grid-wednesday', categorized.wednesday);
-      renderGrid('grid-friday',    categorized.friday);
-      renderGrid('grid-all',       categorized.all, 9);
+      /* ② 16:9 예배 영상 (RSS에서 Shorts 완전 제외) */
+      const normals   = rssVideos.filter(v => !v.isShorts);
+      const sunday    = normals.filter(v => v.category === 'sunday');
+      const dawn      = normals.filter(v => v.category === 'dawn');
+      const wednesday = normals.filter(v => v.category === 'wednesday');
+      const friday    = normals.filter(v => v.category === 'friday');
+
+      /* ③ 9:16 숏폼: RSS 숏폼 + /shorts 페이지 합산, 중복 제거 */
+      const rssShorts  = rssVideos.filter(v => v.isShorts);
+      const rssIds     = new Set(rssShorts.map(v => v.videoId));
+      const pageShorts = shortsFromPage.filter(v => !rssIds.has(v.videoId));
+      const allShorts  = [...rssShorts, ...pageShorts];
+
+      /* ④ 즉시 렌더 (빠른 표시) */
+      renderGrid('grid-all',       normals,    9);
+      renderGrid('grid-sunday',    sunday,     3);
+      renderGrid('grid-dawn',      dawn,       3);
+      renderGrid('grid-wednesday', wednesday,  3);
+      renderGrid('grid-friday',    friday,     3);
+      renderShorts(allShorts,                  5);
+
+      /* ⑤ 숏폼 제목 보완 (비동기 백그라운드) */
+      if (pageShorts.length) {
+        fetchTitles(pageShorts).then(() => renderShorts(allShorts, 5));
+      }
+
+      /* ⑥ 예배 카테고리 부족 시 채널 검색으로 보완 */
+      [
+        { arr: sunday,    key: '주일예배',  id: 'grid-sunday' },
+        { arr: dawn,      key: '새벽예배',  id: 'grid-dawn' },
+        { arr: wednesday, key: '수요예배',  id: 'grid-wednesday' },
+        { arr: friday,    key: '금요예배',  id: 'grid-friday' },
+      ].forEach(async ({ arr, key, id }) => {
+        if (arr.length < 3) {
+          const filled = await fillCategory(arr, key, 3);
+          if (filled.length > arr.length) renderGrid(id, filled, 3);
+        }
+      });
 
     } catch (err) {
-      console.warn('[YT] RSS 로드 실패, 폴백으로 전환:', err.message);
-      fallbackToOEmbed();
+      console.warn('[YT] 초기화 실패:', err.message);
+      ['grid-all','grid-sunday','grid-dawn','grid-wednesday','grid-friday','grid-shorts'].forEach(id => {
+        const g = document.getElementById(id);
+        if (g) g.innerHTML = `
+          <div class="video-empty" style="grid-column:1/-1;padding:60px 20px;text-align:center">
+            <i class="fab fa-youtube" style="font-size:3rem;color:#ff0000;margin-bottom:16px;display:block"></i>
+            <p style="margin-bottom:20px">유튜브 채널에서 영상을 확인하세요</p>
+            <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank"
+               style="background:#ff0000;color:white;padding:12px 28px;border-radius:50px;font-weight:700;text-decoration:none">
+              <i class="fab fa-youtube"></i> 유튜브 채널 바로가기
+            </a>
+          </div>`;
+      });
     }
   }
 
-  /* ─── 폴백: 채널 링크로 안내 ─── */
-  function fallbackToOEmbed() {
-    ['grid-sunday','grid-dawn','grid-wednesday','grid-friday','grid-all'].forEach(id => {
-      const g = document.getElementById(id);
-      if (!g) return;
-      g.innerHTML = `
-        <div class="video-empty" style="grid-column:1/-1;padding:60px 20px;text-align:center">
-          <i class="fab fa-youtube" style="font-size:3rem;color:#ff0000;margin-bottom:16px;display:block"></i>
-          <p style="margin-bottom:20px;color:#6677aa">유튜브 채널에서 영상을 확인하세요</p>
-          <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank"
-             style="display:inline-block;background:#ff0000;color:white;padding:12px 28px;border-radius:50px;font-weight:700;text-decoration:none">
-            <i class="fab fa-youtube"></i> 유튜브 채널 바로가기
-          </a>
-        </div>`;
-    });
-  }
-
-  return { init, openVideoModal };
+  return { init, openModal };
 })();
 
-/* ─── 모달 닫기 이벤트 ─── */
+/* ─── 모달 닫기 ─── */
 document.addEventListener('DOMContentLoaded', () => {
-  const modal     = document.getElementById('videoModal');
-  const closeBtn  = document.getElementById('modalClose');
-  const iframe    = document.getElementById('modalIframe');
+  const modal    = document.getElementById('videoModal');
+  const closeBtn = document.getElementById('modalClose');
+  const iframe   = document.getElementById('modalIframe');
 
   function closeModal() {
-    modal.classList.remove('active');
+    modal?.classList.remove('active');
     document.body.style.overflow = '';
-    setTimeout(() => { iframe.src = ''; }, 300);
+    setTimeout(() => { if (iframe) iframe.src = ''; }, 300);
   }
 
   closeBtn?.addEventListener('click', closeModal);
   modal?.addEventListener('click', e => { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-  /* YouTube RSS 로드 */
   YT.init();
 });
