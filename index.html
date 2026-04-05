@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="하늘바람교회 - 경기도 김포시에 위치한 하늘바람교회 공식 홈페이지입니다." />
+  <title>하늘바람교회 | Haneulbaram Church</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Swiper -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <!-- AOS Animation -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===== LOADING SCREEN ===== -->
+  <div id="loader">
+    <div class="loader-inner">
+      <div class="loader-cross"></div>
+      <p class="loader-text">하늘바람교회</p>
+    </div>
+  </div>
+
+  <!-- ===== HEADER / NAV ===== -->
+  <header id="header">
+    <div class="header-inner">
+      <a href="#" class="logo">
+        <img src="https://habach.kr/wp-content/uploads/2022/01/logo_w.png"
+             onerror="this.onerror=null; this.parentNode.innerHTML='<span class=\'logo-text\'>하늘바람교회</span>'"
+             alt="하늘바람교회 로고" class="logo-img" />
+      </a>
+      <nav class="main-nav" id="mainNav">
+        <ul>
+          <li><a href="#welcome">교회소개</a></li>
+          <li class="has-sub">
+            <a href="#worship">예배안내</a>
+            <ul class="sub-menu">
+              <li><a href="#sunday">주일예배</a></li>
+              <li><a href="#dawn">새벽예배</a></li>
+              <li><a href="#wednesday">수요예배</a></li>
+              <li><a href="#friday">금요예배</a></li>
+            </ul>
+          </li>
+          <li><a href="#media">미디어</a></li>
+          <li><a href="#blog">말씀나눔</a></li>
+          <li><a href="#community">커뮤니티</a></li>
+          <li><a href="#contact">오시는길</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt"><i class="fab fa-youtube"></i></a>
+        <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-cafe">카페</a>
+        <button class="hamburger" id="hamburger" aria-label="메뉴열기">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== HERO : DRONE VIDEO BANNER ===== -->
+  <section id="hero">
+    <div class="hero-video-wrap" id="heroWrap">
+      <!-- 폴백 배경 썸네일 (영상 로딩 전/실패 시) -->
+      <div class="hero-fallback-bg" id="heroFallback"></div>
+      <iframe
+        id="heroBgVideo"
+        src="https://www.youtube.com/embed/k-Q5Wjq7uPM?autoplay=1&mute=1&loop=1&playlist=k-Q5Wjq7uPM&controls=0&rel=0&modestbranding=1&playsinline=1&fs=0&disablekb=1"
+        frameborder="0"
+        allow="autoplay; mute; encrypted-media"
+        title="하늘바람교회 홍보영상">
+      </iframe>
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content" data-aos="fade-up" data-aos-delay="400">
+      <p class="hero-sub">경기도 김포시 하늘바람교회</p>
+      <h1 class="hero-title">
+        하늘의 바람이<br />
+        <span class="highlight">이 땅에 임하다</span>
+      </h1>
+      <p class="hero-desc">And suddenly there came a sound from heaven, as of a rushing mighty wind<br>사도행전 2:2</p>
+      <div class="hero-btns">
+        <a href="#worship" class="btn-primary">예배 드리러 가기</a>
+        <a href="#media" class="btn-outline">영상 보기</a>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>SCROLL</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ===== TICKER ===== -->
+  <div class="ticker-wrap">
+    <div class="ticker-inner" id="tickerContent">
+      <span>🌿 주일예배 오전 11:00</span>
+      <span>🌅 새벽예배 매일 오전 5:30</span>
+      <span>📖 수요예배 오후 7:30</span>
+      <span>🔥 금요기도회 오후 9:00</span>
+      <span>✉️ 하늘바람교회에 오신 것을 환영합니다</span>
+    </div>
+  </div>
+
+  <!-- ===== WELCOME ===== -->
+  <section id="welcome" class="section-welcome">
+    <div class="container">
+      <div class="welcome-grid">
+        <div class="welcome-text" data-aos="fade-right">
+          <p class="section-label">담임목사 인사말</p>
+          <h2 class="section-title">하나님이 기뻐하시는<br>예배 공동체</h2>
+          <p class="welcome-body">
+            하늘바람교회는 성령의 바람이 역사하는 교회입니다.<br>
+            예배를 통해 하나님의 임재를 경험하고,<br>
+            말씀으로 세워지는 건강한 공동체를 꿈꿉니다.
+          </p>
+          <p class="welcome-body">
+            다윗처럼 하나님의 마음에 합한 예배자로<br>
+            이 땅을 아름답게 섬기는 하늘바람교회가 되겠습니다.
+          </p>
+          <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-primary">교회 더 알아보기</a>
+        </div>
+        <div class="welcome-visual" data-aos="fade-left">
+          <div class="welcome-card-wrap">
+            <div class="welcome-card">
+              <i class="fas fa-dove"></i>
+              <h3>비전</h3>
+              <p>성령으로 충만한<br>예배 공동체</p>
+            </div>
+            <div class="welcome-card">
+              <i class="fas fa-book-open"></i>
+              <h3>말씀</h3>
+              <p>생명의 말씀으로<br>세워지는 교회</p>
+            </div>
+            <div class="welcome-card">
+              <i class="fas fa-hands-praying"></i>
+              <h3>기도</h3>
+              <p>쉬지 않고 기도하는<br>기도의 공동체</p>
+            </div>
+            <div class="welcome-card">
+              <i class="fas fa-heart"></i>
+              <h3>섬김</h3>
+              <p>사랑으로 이웃을<br>섬기는 공동체</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WORSHIP SCHEDULE ===== -->
+  <section id="worship" class="section-worship">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <p class="section-label light">예배 시간 안내</p>
+        <h2 class="section-title light">예배에 초대합니다</h2>
+      </div>
+      <div class="worship-grid" data-aos="fade-up" data-aos-delay="200">
+        <div class="worship-card" id="sunday-card">
+          <div class="worship-icon"><i class="fas fa-sun"></i></div>
+          <h3>주일예배</h3>
+          <p class="worship-time">매주 일요일<br><strong>오전 11:00</strong></p>
+          <p class="worship-desc">온 가족이 함께 드리는<br>주일 대예배</p>
+        </div>
+        <div class="worship-card" id="dawn-card">
+          <div class="worship-icon"><i class="fas fa-moon"></i></div>
+          <h3>새벽예배</h3>
+          <p class="worship-time">매일(월–토)<br><strong>오전 5:30</strong></p>
+          <p class="worship-desc">하루의 시작을<br>하나님과 함께</p>
+        </div>
+        <div class="worship-card" id="wednesday-card">
+          <div class="worship-icon"><i class="fas fa-bible"></i></div>
+          <h3>수요예배</h3>
+          <p class="worship-time">매주 수요일<br><strong>오후 7:30</strong></p>
+          <p class="worship-desc">말씀으로 한 주를<br>점검하는 예배</p>
+        </div>
+        <div class="worship-card" id="friday-card">
+          <div class="worship-icon"><i class="fas fa-fire"></i></div>
+          <h3>금요기도회</h3>
+          <p class="worship-time">매주 금요일<br><strong>오후 9:00</strong></p>
+          <p class="worship-desc">성령의 불을 구하는<br>뜨거운 기도 모임</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== YOUTUBE MEDIA ===== -->
+  <section id="media" class="section-media">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <p class="section-label">미디어 센터</p>
+        <h2 class="section-title">예배 영상</h2>
+        <p class="section-desc">하늘바람교회의 예배를 영상으로 만나보세요</p>
+      </div>
+
+      <!-- Tab Nav -->
+      <div class="media-tabs" data-aos="fade-up" data-aos-delay="100">
+        <button class="tab-btn active" data-tab="all-videos">전체보기</button>
+        <button class="tab-btn" data-tab="sunday-videos">주일예배</button>
+        <button class="tab-btn" data-tab="dawn-videos">새벽예배</button>
+        <button class="tab-btn" data-tab="wednesday-videos">수요예배</button>
+        <button class="tab-btn" data-tab="friday-videos">금요예배</button>
+        <button class="tab-btn" data-tab="shorts-videos"><i class="fas fa-mobile-alt"></i> 숏폼모음</button>
+      </div>
+
+      <!-- Video Panels -->
+      <div id="all-videos" class="video-panel active">
+        <div class="video-grid" id="grid-all">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="sunday-videos" class="video-panel">
+        <div class="video-grid" id="grid-sunday">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="dawn-videos" class="video-panel">
+        <div class="video-grid" id="grid-dawn">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="wednesday-videos" class="video-panel">
+        <div class="video-grid" id="grid-wednesday">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="friday-videos" class="video-panel">
+        <div class="video-grid" id="grid-friday">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="shorts-videos" class="video-panel">
+        <div class="shorts-grid" id="grid-shorts">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <a href="https://www.youtube.com/@Gimpo_HBC/shorts" target="_blank" class="btn-more">숏폼 전체보기 <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VIDEO MODAL ===== -->
+  <div id="videoModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+      <div class="modal-iframe-wrap">
+        <iframe id="modalIframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BLOG : 다윗의예배 ===== -->
+  <section id="blog" class="section-blog">
+    <div class="container">
+      <div class="blog-layout">
+        <div class="blog-header-col" data-aos="fade-right">
+          <p class="section-label">말씀나눔</p>
+          <h2 class="section-title">다윗의 예배<br><span>주일 설교 말씀</span></h2>
+          <p class="blog-intro">
+            하나님의 마음에 합한 다윗처럼,<br>
+            진실한 예배와 말씀으로 세워집니다.
+          </p>
+          <a href="https://blog.naver.com/habachurch" target="_blank" class="btn-primary">
+            <i class="fas fa-blog"></i> 블로그 전체 보기
+          </a>
+        </div>
+        <div class="blog-cards-col" data-aos="fade-left">
+          <div id="blogCards" class="blog-cards">
+            <!-- 블로그 RSS로 채워짐 -->
+            <div class="blog-loading"><i class="fas fa-circle-notch fa-spin"></i> 말씀을 불러오는 중...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CAFE COMMUNITY ===== -->
+  <section id="community" class="section-community">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <p class="section-label light">온라인 커뮤니티</p>
+        <h2 class="section-title light">하늘바람 교회 카페</h2>
+        <p class="section-desc light">함께 나누는 이야기, 클릭하면 카페로 이동합니다</p>
+      </div>
+      <div class="cafe-grid" data-aos="fade-up" data-aos-delay="150">
+        <!-- 카페 카테고리 카드 -->
+        <a class="cafe-card" href="https://cafe.naver.com/haneulbaramchurch" target="_blank">
+          <div class="cafe-icon"><i class="fas fa-church"></i></div>
+          <h3>교회 공지</h3>
+          <p>주요 공지사항 및<br>교회 소식</p>
+          <span class="cafe-link">카페에서 보기 <i class="fas fa-external-link-alt"></i></span>
+        </a>
+        <a class="cafe-card" href="https://cafe.naver.com/haneulbaramchurch" target="_blank">
+          <div class="cafe-icon"><i class="fas fa-images"></i></div>
+          <h3>예배 사진</h3>
+          <p>주일예배 및<br>각종 행사 사진</p>
+          <span class="cafe-link">카페에서 보기 <i class="fas fa-external-link-alt"></i></span>
+        </a>
+        <a class="cafe-card" href="https://cafe.naver.com/haneulbaramchurch" target="_blank">
+          <div class="cafe-icon"><i class="fas fa-child"></i></div>
+          <h3>교육부</h3>
+          <p>주일학교 &amp; 청년부<br>활동 소식</p>
+          <span class="cafe-link">카페에서 보기 <i class="fas fa-external-link-alt"></i></span>
+        </a>
+        <a class="cafe-card" href="https://cafe.naver.com/haneulbaramchurch" target="_blank">
+          <div class="cafe-icon"><i class="fas fa-music"></i></div>
+          <h3>찬양팀</h3>
+          <p>찬양팀 소식 &amp;<br>악보 자료</p>
+          <span class="cafe-link">카페에서 보기 <i class="fas fa-external-link-alt"></i></span>
+        </a>
+        <a class="cafe-card" href="https://cafe.naver.com/haneulbaramchurch" target="_blank">
+          <div class="cafe-icon"><i class="fas fa-hand-holding-heart"></i></div>
+          <h3>나눔 &amp; 섬김</h3>
+          <p>봉사 모집 &amp;<br>섬김 이야기</p>
+          <span class="cafe-link">카페에서 보기 <i class="fas fa-external-link-alt"></i></span>
+        </a>
+        <a class="cafe-card" href="https://cafe.naver.com/haneulbaramchurch" target="_blank">
+          <div class="cafe-icon"><i class="fas fa-comments"></i></div>
+          <h3>자유 게시판</h3>
+          <p>성도 간 교제 &amp;<br>일상 나눔</p>
+          <span class="cafe-link">카페에서 보기 <i class="fas fa-external-link-alt"></i></span>
+        </a>
+      </div>
+      <div class="cafe-cta" data-aos="fade-up" data-aos-delay="300">
+        <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-primary-light">
+          <i class="fas fa-door-open"></i> 하늘바람 카페 입장하기
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT / MAP ===== -->
+  <section id="contact" class="section-contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info" data-aos="fade-right">
+          <p class="section-label">찾아오시는 길</p>
+          <h2 class="section-title">하늘바람교회</h2>
+          <ul class="contact-list">
+            <li>
+              <i class="fas fa-map-marker-alt"></i>
+              <div>
+                <strong>주소</strong>
+                <span>경기도 김포시</span>
+              </div>
+            </li>
+            <li>
+              <i class="fas fa-phone"></i>
+              <div>
+                <strong>전화</strong>
+                <a href="tel:031-000-0000">031-000-0000</a>
+              </div>
+            </li>
+            <li>
+              <i class="fas fa-envelope"></i>
+              <div>
+                <strong>이메일</strong>
+                <a href="mailto:info@habach.kr">info@habach.kr</a>
+              </div>
+            </li>
+          </ul>
+          <div class="social-links">
+            <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="social-btn yt" aria-label="YouTube">
+              <i class="fab fa-youtube"></i>
+            </a>
+            <a href="https://blog.naver.com/habachurch" target="_blank" class="social-btn blog" aria-label="네이버 블로그">
+              <i class="fas fa-blog"></i>
+            </a>
+            <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="social-btn cafe" aria-label="네이버 카페">
+              <i class="fas fa-mug-hot"></i>
+            </a>
+          </div>
+        </div>
+        <div class="contact-map" data-aos="fade-left">
+          <iframe
+            src="https://map.naver.com/p/entry/place/1837083519?c=15,0,0,0,dh"
+            width="100%" height="400" style="border:0;" allowfullscreen=""
+            loading="lazy">
+          </iframe>
+          <a href="https://map.naver.com/p/entry/place/1837083519"
+             target="_blank" class="map-open-btn">
+            <i class="fas fa-map-marker-alt"></i> 네이버 지도에서 크게 보기
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="https://habach.kr/wp-content/uploads/2022/01/logo_w.png"
+               onerror="this.onerror=null; this.outerHTML='<span class=\'footer-logo-text\'>하늘바람교회</span>'"
+               alt="하늘바람교회" class="footer-logo" />
+          <p>하늘의 바람이 이 땅에 임하는 교회</p>
+          <p class="footer-verse">"홀연히 하늘로부터 급하고 강한 바람 같은<br>소리가 있어" — 사도행전 2:2</p>
+        </div>
+        <div class="footer-links">
+          <h4>바로가기</h4>
+          <ul>
+            <li><a href="#worship">예배안내</a></li>
+            <li><a href="#media">미디어</a></li>
+            <li><a href="#blog">말씀나눔</a></li>
+            <li><a href="#community">커뮤니티</a></li>
+            <li><a href="#contact">오시는길</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>외부 채널</h4>
+          <ul>
+            <li><a href="https://www.youtube.com/@Gimpo_HBC" target="_blank"><i class="fab fa-youtube"></i> 유튜브 채널</a></li>
+            <li><a href="https://blog.naver.com/habachurch" target="_blank"><i class="fas fa-blog"></i> 네이버 블로그</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-mug-hot"></i> 네이버 카페</a></li>
+          </ul>
+        </div>
+        <div class="footer-worship">
+          <h4>예배 시간</h4>
+          <ul>
+            <li><span>주일예배</span><span>매주 일요일 11:00</span></li>
+            <li><span>새벽예배</span><span>매일(월–토) 05:30</span></li>
+            <li><span>수요예배</span><span>매주 수요일 19:30</span></li>
+            <li><span>금요기도회</span><span>매주 금요일 21:00</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 하늘바람교회 Haneulbaram Church. All Rights Reserved.</p>
+        <p>Designed with <i class="fas fa-heart" style="color:#e74c3c"></i> for God's Glory</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // YouTube IFrame API
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  </script>
+  <script src="js/youtube.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
