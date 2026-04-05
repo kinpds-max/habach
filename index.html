@@ -172,6 +172,52 @@ section{padding:100px 0}
 .section-desc.light{color:rgba(255,255,255,0.65)}
 .section-header{text-align:center;margin-bottom:56px}
 
+/* GLOBAL TRANSLATE */
+#google_translate_element { margin-left: 15px; }
+.goog-te-gadget-simple { background-color: transparent !important; border: 1px solid rgba(255,255,255,0.2) !important; padding: 4px 8px !important; border-radius: 4px !important; }
+.goog-te-gadget-simple .goog-te-menu-value { color: #fff !important; font-size: 13px !important; }
+
+/* CAFE V2 */
+.cafe-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; }
+.cafe-card-v2 { background: #fff; border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #eee; display: flex; flex-direction: column; }
+.cafe-card-v2:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+.cafe-card-v2-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+.cafe-sub-list { list-style: none; padding: 0; margin-bottom: 25px; flex-grow: 1; }
+.cafe-sub-list li { margin: 10px 0; border-bottom: 1px solid #f9f9f9; padding-bottom: 8px; }
+.cafe-sub-list li a { color: #555; font-size: 14px; text-decoration: none; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+.cafe-sub-list li a:hover { color: var(--gold); padding-left: 5px; }
+.cafe-card-v2-btn { background: var(--off-white); color: var(--navy); border: 1px solid var(--gray-light); padding: 12px; text-align: center; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 14px; margin-top: auto; transition: 0.2s; }
+.cafe-card-v2-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+/* PRAYER BOARD */
+.section-prayer { background: #fdfdfd; padding: 100px 0; }
+.prayer-board { max-width: 900px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); }
+.prayer-form { display: grid; gap: 15px; margin-bottom: 40px; border-bottom: 2px solid #f5f5f5; padding-bottom: 30px; }
+.prayer-form input, .prayer-form textarea { width: 100%; border: 1px solid #ddd; padding: 12px; border-radius: 8px; outline: none; }
+.prayer-form textarea { height: 100px; resize: none; }
+.prayer-form button { background: var(--gold); color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+.prayer-form button:hover { background: var(--navy); }
+.prayer-list { display: grid; gap: 15px; }
+.prayer-item { background: #f9f9f9; padding: 20px; border-radius: 12px; position: relative; border-left: 4px solid var(--gold); }
+.prayer-item .name { font-weight: 700; color: var(--navy); margin-bottom: 8px; font-size: 15px; }
+.prayer-item .content { color: #666; line-height: 1.6; font-size: 14px; }
+.prayer-item .date { font-size: 12px; color: #999; margin-top: 10px; text-align: right; }
+
+/* MISSION BRIDGE */
+.section-mission { padding-bottom: 100px; }
+.mission-wrap { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); border-radius: 24px; padding: 80px; text-align: center; color: #fff; position: relative; overflow: hidden; }
+.mission-wrap::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%); pointer-events: none; }
+.mission-title { font-size: 3rem; font-family: var(--font-serif); margin-bottom: 20px; color: var(--gold); }
+.mission-desc { font-size: 1.1rem; opacity: 0.8; margin-bottom: 40px; }
+.mission-stats { display: flex; justify-content: center; gap: 60px; }
+.stat-item span { font-size: 2.5rem; font-weight: 800; display: block; color: var(--gold); }
+.stat-item p { opacity: 0.7; font-size: 14px; }
+
+@media(max-width: 900px) {
+  .cafe-grid-3 { grid-template-columns: 1fr; }
+  .mission-stats { flex-direction: column; gap: 30px; }
+}
+
 /* WELCOME */
 .section-welcome{background:var(--white)}
 .welcome-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
@@ -426,7 +472,7 @@ section{padding:100px 0}
 
 /* AOS overrides */
 @media(max-width:1100px){.worship-grid{grid-template-columns:repeat(2,1fr)}.welcome-grid{gap:48px}.blog-layout{grid-template-columns:300px 1fr;gap:48px}.shorts-grid{grid-template-columns:repeat(4,1fr)}}
-@media(max-width:900px){.container{padding:0 24px}section{padding:72px 0}.main-nav{display:none}.hamburger{display:flex}.main-nav.open{display:flex;flex-direction:column;position:fixed;inset:0;background:var(--navy);z-index:999;padding:100px 40px 40px;overflow-y:auto}.main-nav.open ul{flex-direction:column;gap:0}.main-nav.open>ul>li>a{font-size:1.3rem;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.08);border-radius:0}.sub-menu{position:static;transform:none;background:transparent;box-shadow:none;opacity:1;visibility:visible;padding:0 0 0 16px;pointer-events:all}.sub-menu li a{font-size:1rem;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)}.welcome-grid{grid-template-columns:1fr}.welcome-visual{order:-1}.blog-layout{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}.video-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.container{padding:0 24px}section{padding:72px 0}.main-nav{display:none}.hamburger{display:flex}.main-nav.open{display:flex;flex-direction:column;position:fixed;inset:0;background:var(--navy);z-index:999;padding:100px 40px 40px;overflow-y:auto}.main-nav.open ul{flex-direction:column;gap:0}.main-nav.open>ul>li>a{font-size:1.3rem;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.08);border-radius:0}.sub-menu{position:static;transform:none;background:transparent;box-shadow:none;opacity:1;visibility:visible;padding:0 0 0 16px;pointer-events:all}.sub-menu li a{font-size:1rem;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)}.welcome-grid{grid-template-columns:1fr}.welcome-visual{order:-1}.blog-layout{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}.video-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid-3 { grid-template-columns: 1fr; }.mission-stats { flex-direction: column; gap: 30px; }}
 @media(max-width:768px){.hero-title{font-size:clamp(1.9rem,8vw,3rem)}.hero-desc{font-size:0.875rem}.section-title{font-size:clamp(1.5rem,5vw,2rem)}.worship-card{padding:28px 16px}.worship-card h3{font-size:1rem}.media-tabs{flex-wrap:wrap;gap:6px}.tab-btn{padding:8px 14px;font-size:0.8rem}.video-grid{grid-template-columns:repeat(2,1fr);gap:14px}.shorts-grid{grid-template-columns:repeat(3,1fr);gap:12px}.blog-card{padding:16px;gap:12px}.cafe-grid{grid-template-columns:repeat(2,1fr);gap:14px}.cafe-card{padding:24px 16px}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}.footer-bottom{flex-direction:column;text-align:center}.float-btn{width:42px;height:42px;font-size:1rem}.float-bar{bottom:20px;right:14px;gap:8px}.drive-embed{height:380px}.album-drive-wrap{min-height:380px}}
 @media(max-width:640px){.container{padding:0 20px}section{padding:60px 0}.worship-grid{grid-template-columns:1fr 1fr}.video-grid{grid-template-columns:1fr}.cafe-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}.hero-btns{flex-direction:column}.welcome-card-wrap{grid-template-columns:1fr 1fr}.header-inner{padding:0 20px}}
 @media(max-width:480px){.btn-primary,.btn-outline{padding:12px 22px;font-size:0.875rem}.video-grid{grid-template-columns:1fr}.shorts-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid{grid-template-columns:1fr}.float-label{display:none}.drive-embed{height:300px}.album-drive-wrap{min-height:300px}}
@@ -446,22 +492,15 @@ section{padding:100px 0}
   <!-- ===== HEADER / NAV ===== -->
   <header id="header">
     <div class="header-inner">
-      <!-- 로고 제거됨 -->
       <nav class="main-nav" id="mainNav">
         <ul>
+          <li><div id="google_translate_element"></div></li>
           <li><a href="#welcome">교회소개</a></li>
-          <li class="has-sub">
-            <a href="#worship">예배안내</a>
-            <ul class="sub-menu">
-              <li><a href="#sunday">주일예배</a></li>
-              <li><a href="#dawn">새벽예배</a></li>
-              <li><a href="#wednesday">수요예배</a></li>
-              <li><a href="#friday">금요예배</a></li>
-            </ul>
-          </li>
+          <li><a href="#history">교회역사</a></li>
+          <li><a href="#worship">예배안내</a></li>
+          <li><a href="#news">교회소식</a></li>
           <li><a href="#media">미디어</a></li>
           <li><a href="#gallery">갤러리</a></li>
-          <li><a href="#blog">말씀나눔</a></li>
           <li><a href="#community">커뮤니티</a></li>
           <li><a href="#contact">오시는길</a></li>
         </ul>
@@ -778,7 +817,6 @@ section{padding:100px 0}
       <!-- 새신자 소개 앨범 -->
       <div id="album-new-member" class="album-panel active" data-aos="fade-up" data-aos-delay="200">
         <div class="album-drive-wrap">
-          <!-- ★ 구글 드라이브 폴더 ID 교체: FOLDER_ID_NEW_MEMBER 부분을 실제 ID로 변경 -->
           <iframe
             id="driveNewMember"
             class="drive-embed"
@@ -786,7 +824,6 @@ section{padding:100px 0}
             allowfullscreen
             loading="lazy"
             title="새신자 소개 앨범">
-          </iframe>
           </iframe>
           <div class="drive-placeholder" id="placeholderNewMember">
             <div class="drive-placeholder-inner">
@@ -809,7 +846,6 @@ section{padding:100px 0}
       <!-- 교회 앨범 -->
       <div id="album-church" class="album-panel" data-aos="fade-up" data-aos-delay="200">
         <div class="album-drive-wrap">
-          <!-- ★ 구글 드라이브 폴더 ID 교체: FOLDER_ID_CHURCH 부분을 실제 ID로 변경 -->
           <iframe
             id="driveChurch"
             class="drive-embed"
@@ -817,7 +853,6 @@ section{padding:100px 0}
             allowfullscreen
             loading="lazy"
             title="교회 앨범">
-          </iframe>
           </iframe>
           <div class="drive-placeholder" id="placeholderChurch">
             <div class="drive-placeholder-inner">
@@ -856,7 +891,6 @@ section{padding:100px 0}
         </div>
         <div class="blog-cards-col" data-aos="fade-left">
           <div id="blogCards" class="blog-cards">
-            <!-- 블로그 RSS로 채워짐 -->
             <div class="blog-loading"><i class="fas fa-circle-notch fa-spin"></i> 말씀을 불러오는 중...</div>
           </div>
         </div>
@@ -872,49 +906,70 @@ section{padding:100px 0}
         <h2 class="section-title light">하늘바람 교회 카페</h2>
         <p class="section-desc light">함께 나누는 이야기, 클릭하면 카페로 이동합니다</p>
       </div>
-      <div class="cafe-grid" data-aos="fade-up" data-aos-delay="150">
-        <a class="cafe-card" href="https://cafe.naver.com/f-e/cafes/31371644/menus/1" target="_blank">
-          <div class="cafe-icon"><i class="fas fa-book-open"></i></div>
-          <h3>양육 &amp; 훈련</h3>
-          <p class="cafe-sub">주일말씀 코너</p>
-          <p>설교 말씀 &amp; 양육<br>훈련 자료 모음</p>
-          <span class="cafe-link">바로가기 <i class="fas fa-external-link-alt"></i></span>
-        </a>
-        <a class="cafe-card" href="https://cafe.naver.com/f-e/cafes/31371644/menus/2" target="_blank">
-          <div class="cafe-icon"><i class="fas fa-heart"></i></div>
-          <h3>성도간의 교제</h3>
-          <p class="cafe-sub">소통 게시판</p>
-          <p>성도 간 나눔 &amp;<br>일상 이야기</p>
-          <span class="cafe-link">바로가기 <i class="fas fa-external-link-alt"></i></span>
-        </a>
-        <a class="cafe-card" href="https://cafe.naver.com/f-e/cafes/31371644/menus/3" target="_blank">
-          <div class="cafe-icon"><i class="fas fa-child"></i></div>
-          <h3>교육 부서</h3>
-          <p class="cafe-sub">유·초등·청소년·청년</p>
-          <p>각 부서 소식 &amp;<br>행사 안내</p>
-          <span class="cafe-link">바로가기 <i class="fas fa-external-link-alt"></i></span>
-        </a>
-        <a class="cafe-card" href="https://cafe.naver.com/f-e/cafes/31371644/menus/4" target="_blank">
-          <div class="cafe-icon"><i class="fas fa-bullhorn"></i></div>
-          <h3>교회 공지</h3>
-          <p class="cafe-sub">공식 공지사항</p>
-          <p>주요 공지 &amp;<br>교회 행사 안내</p>
-          <span class="cafe-link">바로가기 <i class="fas fa-external-link-alt"></i></span>
-        </a>
-        <a class="cafe-card" href="https://cafe.naver.com/f-e/cafes/31371644/menus/5" target="_blank">
-          <div class="cafe-icon"><i class="fas fa-images"></i></div>
-          <h3>사진 앨범</h3>
-          <p class="cafe-sub">예배 &amp; 행사 갤러리</p>
-          <p>소중한 교회<br>사진 모음</p>
-          <span class="cafe-link">바로가기 <i class="fas fa-external-link-alt"></i></span>
-        </a>
-        <a class="cafe-card" href="https://cafe.naver.com/haneulbaramchurch" target="_blank">
-          <div class="cafe-icon"><i class="fas fa-door-open"></i></div>
-          <h3>카페 전체보기</h3>
-          <p class="cafe-sub">하늘바람 커뮤니티</p>
-          <p>카페 전체 메뉴<br>둘러보기</p>
-          <span class="cafe-link">입장하기 <i class="fas fa-external-link-alt"></i></span>
-        </a>
+      <div class="cafe-grid-3" data-aos="fade-up" data-aos-delay="150">
+
+        <!-- 양육 & 훈련 -->
+        <div class="cafe-card-v2">
+          <div class="cafe-card-v2-header">
+            <div class="cafe-icon"><i class="fas fa-book-open"></i></div>
+            <div>
+              <h3>양육 &amp; 훈련</h3>
+              <span class="cafe-sub">주일말씀 코너</span>
+            </div>
+          </div>
+          <ul class="cafe-sub-list">
+            <li><a href="https://cafe.naver.com/f-e/cafes/31371644/menus/1" target="_blank"><i class="fas fa-chevron-right"></i> 주일말씀</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 멘토 &amp; 멘티</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 시끄러운 순모임</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 자매들의 모임</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 남자들의 모임</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 수요중보기도 모임</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 백반집</a></li>
+          </ul>
+          <a href="https://cafe.naver.com/f-e/cafes/31371644/menus/1" target="_blank" class="cafe-card-v2-btn">카페 바로가기 <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <!-- 성도간의 교제 -->
+        <div class="cafe-card-v2">
+          <div class="cafe-card-v2-header">
+            <div class="cafe-icon"><i class="fas fa-heart"></i></div>
+            <div>
+              <h3>성도간의 교제</h3>
+              <span class="cafe-sub">소통 게시판</span>
+            </div>
+          </div>
+          <ul class="cafe-sub-list">
+            <li><a href="https://cafe.naver.com/f-e/cafes/31371644/menus/2" target="_blank"><i class="fas fa-chevron-right"></i> 교회소식</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 교우소식</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 새가족 환영</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 은혜 나눔</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 칭찬합니다</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 기도해주세요</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 하나바다</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 교인 사업장</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 하늘바람 포토 갤러리</a></li>
+          </ul>
+          <a href="https://cafe.naver.com/f-e/cafes/31371644/menus/2" target="_blank" class="cafe-card-v2-btn">바로가기 <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <!-- 교육 부서 -->
+        <div class="cafe-card-v2">
+          <div class="cafe-card-v2-header">
+            <div class="cafe-icon"><i class="fas fa-child"></i></div>
+            <div>
+              <h3>교육 부서</h3>
+              <span class="cafe-sub">유·초등·청소년·청년</span>
+            </div>
+          </div>
+          <ul class="cafe-sub-list">
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 영아 유치부</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 초등부</a></li>
+            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-chevron-right"></i> 청소년부</a></li>
+            <li><a href="https://cafe.naver.com/f-e/cafes/31371644/menus/20" target="_blank"><i class="fas fa-chevron-right"></i> 청년부</a></li>
+          </ul>
+          <a href="https://cafe.naver.com/f-e/cafes/31371644/menus/3" target="_blank" class="cafe-card-v2-btn">바로가기 <i class="fas fa-arrow-right"></i></a>
+        </div>
+
       </div>
       <div class="cafe-cta" data-aos="fade-up" data-aos-delay="300">
         <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-primary-light">
@@ -923,6 +978,30 @@ section{padding:100px 0}
       </div>
     </div>
   </section>
+
+  <!-- ===== 기도소식 게시판 ===== -->
+  <section id="prayer" class="section-prayer">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <p class="section-label">함께 기도해요</p>
+        <h2 class="section-title">기도소식 게시판</h2>
+        <p class="section-desc">기도 제목을 나누고 함께 중보하는 공간입니다</p>
+      </div>
+      <div class="prayer-board" data-aos="fade-up" data-aos-delay="150">
+        <div class="prayer-input-box">
+          <div class="prayer-input-row">
+            <input id="prayerName" type="text" placeholder="이름 (익명 가능)" class="prayer-field prayer-name" maxlength="20" />
+            <input id="prayerText" type="text" placeholder="기도 제목을 입력하세요..." class="prayer-field prayer-text" maxlength="100" />
+            <button id="prayerSubmit" class="prayer-submit-btn"><i class="fas fa-praying-hands"></i> 올리기</button>
+          </div>
+        </div>
+        <div id="prayerList" class="prayer-list">
+          <!-- 기도 제목 목록 -->
+        </div>
+      </div>
+    </div>
+  </section>
+
 
   <!-- ===== CONTACT / MAP ===== -->
   <section id="contact" class="section-contact">
@@ -977,6 +1056,44 @@ section{padding:100px 0}
              target="_blank" class="map-open-btn">
             <i class="fas fa-map-marker-alt"></i> 네이버 지도에서 크게 보기
           </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRAYER BOARD : 기도소식 ===== -->
+  <section id="prayer" class="section-prayer">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <p class="section-label">기도의 힘</p>
+        <h2 class="section-title">기도소식 게시판</h2>
+        <p class="section-desc">성도님들의 기도 제목을 함께 나눕니다</p>
+      </div>
+      <div class="prayer-board" data-aos="fade-up" data-aos-delay="100">
+        <div class="prayer-form">
+          <input type="text" id="prayerName" placeholder="이름 (익명가능)" maxlength="10">
+          <textarea id="prayerContent" placeholder="기도 제목을 나누어 주세요..." maxlength="200"></textarea>
+          <button id="btnSubmitPrayer">기도 제목 올리기</button>
+        </div>
+        <div id="prayerList" class="prayer-list">
+          <!-- 기도 제목들이 여기에 표시됩니다 -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MISSION BRIDGE : 미션 브릿지 ===== -->
+  <section id="mission" class="section-mission">
+    <div class="container">
+      <div class="mission-wrap" data-aos="zoom-in">
+        <div class="mission-content">
+          <h2 class="mission-title">Mission Bridge</h2>
+          <p class="mission-desc">세상을 향한 하늘바람의 발걸음, 함께 동참해 주세요.</p>
+          <div class="mission-stats">
+            <div class="stat-item"><span>12</span><p>후원 지부</p></div>
+            <div class="stat-item"><span>45</span><p>파송 선교사</p></div>
+            <div class="stat-item"><span>1,200</span><p>기도의 동역자</p></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1419,6 +1536,49 @@ section{padding:100px 0}
       });
     });
   });
+  </script>
+  <script>
+    // Global Translation
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'ko', includedLanguages: 'ko,en,zh-CN,ja,fr,es,de,vi', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <script>
+    // Prayer Board Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const btnSubmit = document.getElementById('btnSubmitPrayer');
+      const listEl = document.getElementById('prayerList');
+      
+      const loadPrayers = () => {
+        const prayers = JSON.parse(localStorage.getItem('church_prayers') || '[]');
+        listEl.innerHTML = prayers.reverse().map(p => `
+          <div class="prayer-item">
+            <div class="name">${p.name || '익명'}</div>
+            <div class="content">${p.content}</div>
+            <div class="date">${p.date}</div>
+          </div>
+        `).join('') || '<p style="text-align:center;color:#999;padding:40px 0;">첫 번째 기도 제목을 남겨주세요.</p>';
+      };
+
+      btnSubmit?.addEventListener('click', () => {
+        const name = document.getElementById('prayerName').value.trim();
+        const content = document.getElementById('prayerContent').value.trim();
+        if(!content) return alert('기도 내용을 입력해주세요.');
+        
+        const prayers = JSON.parse(localStorage.getItem('church_prayers') || '[]');
+        prayers.push({ name, content, date: new Date().toLocaleDateString() });
+        localStorage.setItem('church_prayers', JSON.stringify(prayers));
+        
+        document.getElementById('prayerName').value = '';
+        document.getElementById('prayerContent').value = '';
+        loadPrayers();
+        alert('기도 제목이 등록되었습니다.');
+      });
+
+      loadPrayers();
+    });
   </script>
 </body>
 </html>
