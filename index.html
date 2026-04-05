@@ -321,6 +321,32 @@ section{padding:100px 0}
 .float-phone::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(39,174,96,0.5);animation:phonePulse 2.4s ease-in-out infinite}
 @keyframes phonePulse{0%,100%{transform:scale(1);opacity:0.6}50%{transform:scale(1.3);opacity:0}}
 
+/* WORSHIP TABLE (in welcome section) */
+.worship-table-wrap{margin:24px 0;padding:20px;background:var(--off-white);border-radius:var(--radius);border:1px solid var(--gray-light)}
+.worship-table-title{font-size:0.82rem;font-weight:700;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.worship-table{width:100%;border-collapse:collapse;font-size:0.875rem}
+.worship-table tbody tr{border-bottom:1px solid var(--gray-light)}
+.worship-table tbody tr:last-child{border-bottom:none}
+.worship-table td{padding:9px 4px;color:var(--text)}
+.worship-table td:first-child{font-weight:600;width:55%}
+.worship-table td:last-child{color:var(--navy);font-weight:700;text-align:right}
+.wt-sub{font-size:0.7rem;background:rgba(201,168,76,0.15);color:var(--gold);padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:500}
+
+/* CHURCH HISTORY */
+.section-history{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-mid) 100%);position:relative;overflow:hidden}
+.section-history::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.08) 0%,transparent 70%);bottom:-100px;right:-100px}
+.history-timeline{display:flex;flex-direction:column;gap:0;position:relative;max-width:800px;margin:0 auto}
+.history-timeline::before{content:'';position:absolute;left:110px;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.1)}
+.history-item{display:flex;align-items:flex-start;gap:0;position:relative;padding:0 0 32px 0}
+.history-item:last-child{padding-bottom:0}
+.history-year{width:100px;font-family:var(--font-serif);font-size:1.25rem;font-weight:700;color:var(--gold);text-align:right;padding-top:2px;flex-shrink:0}
+.history-dot{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.15);border:3px solid rgba(255,255,255,0.3);flex-shrink:0;margin:3px 20px 0;position:relative;z-index:1;transition:var(--transition)}
+.history-dot.active{background:var(--gold);border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76,0.5)}
+.history-content{flex:1}
+.history-content h4{color:var(--white);font-size:1rem;font-weight:700;margin-bottom:4px}
+.history-content p{color:rgba(255,255,255,0.6);font-size:0.875rem;line-height:1.7}
+@media(max-width:640px){.history-timeline::before{left:70px}.history-year{width:60px;font-size:1rem}.history-dot{margin:3px 14px 0}}
+
 /* CHURCH NEWS SECTION */
 .section-news{background:var(--off-white)}
 .news-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
@@ -443,7 +469,7 @@ section{padding:100px 0}
     <div class="container">
       <div class="welcome-grid">
         <div class="welcome-text" data-aos="fade-right">
-          <p class="section-label">담임목사 인사말</p>
+          <p class="section-label">교회 인사말</p>
           <h2 class="section-title">하나님이 기뻐하시는<br>예배 공동체</h2>
           <p class="welcome-body">
             하늘바람교회는 성령의 바람이 역사하는 교회입니다.<br>
@@ -479,6 +505,48 @@ section{padding:100px 0}
               <p>사랑으로 이웃을<br>섬기는 공동체</p>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 교회 역사 ===== -->
+  <section id="history" class="section-history">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <p class="section-label light">하늘바람교회 역사</p>
+        <h2 class="section-title light">한 겯에서 자라나다</h2>
+      </div>
+      <div class="history-timeline" data-aos="fade-up" data-aos-delay="100">
+        <div class="history-item">
+          <div class="history-year">2010</div>
+          <div class="history-dot"></div>
+          <div class="history-content"><h4>하늘바람교회 창립</h4><p>경기도 김포시에 예수교대한성결교회 하늘바람교회를 창립, 성령의 바람을 더한 예배 공동체를 시작하다.</p></div>
+        </div>
+        <div class="history-item">
+          <div class="history-year">2015</div>
+          <div class="history-dot"></div>
+          <div class="history-content"><h4>새벽예배 시작</h4><p>매일 새벽 5:30 기도를 시작하며 기도의 공동체로 성장하다.</p></div>
+        </div>
+        <div class="history-item">
+          <div class="history-year">2018</div>
+          <div class="history-dot"></div>
+          <div class="history-content"><h4>유튜브 채널 개설</h4><p>하늘바람교회 공식 유튜브 채널을 개설하여 온라인 예배를 시작하다.</p></div>
+        </div>
+        <div class="history-item">
+          <div class="history-year">2020</div>
+          <div class="history-dot"></div>
+          <div class="history-content"><h4>시편의예배 추가</h4><p>주일 오전 9시 클래식 시편의예배를 추가 개설하다.</p></div>
+        </div>
+        <div class="history-item">
+          <div class="history-year">2022</div>
+          <div class="history-dot"></div>
+          <div class="history-content"><h4>네이버 카페 개설</h4><p>온라인 성도 교제를 위한 하늘바람교회 네이버 카페를 개설하다.</p></div>
+        </div>
+        <div class="history-item">
+          <div class="history-year">Now</div>
+          <div class="history-dot active"></div>
+          <div class="history-content"><h4>지속되는 역사</h4><p>성령과 말씩으로 세워지는 하늘바람교회를 향해 오늘도 나아갑니다.</p></div>
         </div>
       </div>
     </div>
@@ -658,10 +726,11 @@ section{padding:100px 0}
           <iframe
             id="driveNewMember"
             class="drive-embed"
-            src="https://drive.google.com/embeddedfolderview?id=FOLDER_ID_NEW_MEMBER#grid"
+            src="https://drive.google.com/embeddedfolderview?id=1P0IK1qxds9XWNVBaU8ylV1HM-LdNJe3b#grid"
             allowfullscreen
             loading="lazy"
             title="새신자 소개 앨범">
+          </iframe>
           </iframe>
           <div class="drive-placeholder" id="placeholderNewMember">
             <div class="drive-placeholder-inner">
@@ -675,7 +744,7 @@ section{padding:100px 0}
           </div>
         </div>
         <div class="album-footer">
-          <a href="https://drive.google.com" target="_blank" class="btn-drive-open" id="linkNewMember">
+          <a href="https://drive.google.com/drive/folders/1P0IK1qxds9XWNVBaU8ylV1HM-LdNJe3b?usp=sharing" target="_blank" class="btn-drive-open" id="linkNewMember">
             <i class="fab fa-google-drive"></i> 구글 드라이브에서 전체보기
           </a>
         </div>
@@ -688,10 +757,11 @@ section{padding:100px 0}
           <iframe
             id="driveChurch"
             class="drive-embed"
-            src="https://drive.google.com/embeddedfolderview?id=FOLDER_ID_CHURCH#grid"
+            src="https://drive.google.com/embeddedfolderview?id=1XK4HoQKw60pfZpTOks7pOdPptJkIiCRZ#grid"
             allowfullscreen
             loading="lazy"
             title="교회 앨범">
+          </iframe>
           </iframe>
           <div class="drive-placeholder" id="placeholderChurch">
             <div class="drive-placeholder-inner">
@@ -705,7 +775,7 @@ section{padding:100px 0}
           </div>
         </div>
         <div class="album-footer">
-          <a href="https://drive.google.com" target="_blank" class="btn-drive-open" id="linkChurch">
+          <a href="https://drive.google.com/drive/folders/1XK4HoQKw60pfZpTOks7pOdPptJkIiCRZ?usp=sharing" target="_blank" class="btn-drive-open" id="linkChurch">
             <i class="fab fa-google-drive"></i> 구글 드라이브에서 전체보기
           </a>
         </div>
