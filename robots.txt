@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://habach.kr/sitemap.xml
