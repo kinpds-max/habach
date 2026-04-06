@@ -610,10 +610,10 @@ section{padding:100px 0}
   .float-bar{bottom:80px}
 }
 [data-aos]{will-change:transform,opacity}
-/* ===== 주보 쳤러셀 ===== */
+/* ===== 교회주보 캐러셀 ===== */
 .bulletin-carousel-wrap{position:relative;padding:0 48px}
-.bulletin-carousel{display:flex;align-items:stretch;min-height:260px}
-.bulletin-carousel .bulletin-preview-card{width:100%;flex-shrink:0;display:none;flex-direction:column}
+.bulletin-carousel{display:flex;align-items:stretch;min-height:300px}
+.bulletin-carousel .bulletin-preview-card{width:100%;flex-shrink:0;display:none;flex-direction:column;background:var(--white);border:1px solid var(--gray-light);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-md)}
 .bulletin-carousel .bulletin-preview-card.bcar-active{display:flex}
 .bcar-btn{position:absolute;top:50%;transform:translateY(-60%);width:36px;height:36px;border-radius:50%;background:var(--navy);color:white;border:2px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.9rem;transition:var(--transition);z-index:2}
 .bcar-btn:hover{background:var(--gold);border-color:var(--gold)}
@@ -621,6 +621,12 @@ section{padding:100px 0}
 .bcar-indicator{display:flex;justify-content:center;gap:6px;margin-top:10px;position:relative}
 .bcar-dot{width:7px;height:7px;border-radius:50%;background:var(--gray-light);cursor:pointer;transition:background 0.2s}
 .bcar-dot.active{background:var(--gold)}
+.bulletin-carousel .bpc-thumb{flex:1;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:240px}
+.bulletin-carousel .bpc-thumb img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
+.bulletin-carousel .bpc-info{padding:12px 16px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--gray-light);background:var(--white)}
+.bulletin-carousel .bpc-name{flex:1;font-size:0.82rem;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bulletin-carousel .bpc-open{flex-shrink:0;font-size:0.75rem;color:var(--blue);display:flex;align-items:center;gap:4px}
+.bulletin-carousel .bpc-open:hover{color:var(--gold)}
 @media(max-width:600px){.bulletin-carousel-wrap{padding:0 36px}.bcar-btn{width:30px;height:30px;font-size:0.8rem}}
 /* ===== 교회 역사 타임라인 ===== */
 .history-timeline{display:flex;flex-direction:column;max-width:680px;margin:0 auto}
@@ -2201,23 +2207,18 @@ section{padding:100px 0}
     el.innerHTML = _bcarItems.map((e, i) => `
       <div class="bulletin-preview-card ${i===0?'bcar-active':''}">
         <div class="bpc-thumb">
-          <img src="https://drive.google.com/thumbnail?id=${e.id}&sz=w400"
+          <img src="https://drive.google.com/thumbnail?id=${e.id}&sz=w1200"
                alt="${_escHtml(e.name)}" loading="lazy"
                onerror="this.parentElement.innerHTML='<i class=\'fas fa-file-pdf bpc-icon\'></i>'">
-          <div class="bpc-play-overlay"><i class="fas fa-expand-alt"></i></div>
         </div>
         <div class="bpc-info">
           <p class="bpc-name">${_escHtml(e.name)}</p>
-          <a href="https://drive.google.com/file/d/${e.id}/view" target="_blank" class="bpc-open" onclick="event.stopPropagation()">
+          <a href="https://drive.google.com/file/d/${e.id}/view" target="_blank" class="bpc-open">
             <i class="fas fa-external-link-alt"></i> 열기
           </a>
         </div>
       </div>`).join('');
-    // 카드에 클릭 이벤트
-    el.querySelectorAll('.bulletin-preview-card').forEach((card, i) => {
-      card.addEventListener('click', () => openBulletinPreview(_bcarItems[i].id, _bcarItems[i].name));
-    });
-    // 인디케이터 도유
+    // 인디케이터
     if (ind) ind.innerHTML = _bcarItems.map((_,i) => `<span class="bcar-dot ${i===0?'active':''}" onclick="bcarTo(${i})"></span>`).join('');
   }
   function bcarTo(idx) {
