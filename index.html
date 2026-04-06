@@ -928,75 +928,83 @@ section{padding:100px 0}
   </div>
 
   <!-- ===== WELCOME ===== -->
-  <section id="welcome" class="section-welcome">
-    <div class="container">
-      <div class="welcome-grid">
-        <div class="welcome-text" data-aos="fade-right">
-          <p class="section-label">교회 인사말</p>
-          <h2 class="section-title">하나님이 기뻐하시는<br>예배 공동체</h2>
-          <p class="welcome-body">
-            하늘바람교회는 성령의 바람이 역사하는 교회입니다.<br>
-            예배를 통해 하나님의 임재를 경험하고,<br>
-            말씀으로 세워지는 건강한 공동체를 꿈꿉니다.
-          </p>
-          <p class="welcome-body">
-            다윗처럼 하나님의 마음에 합한 예배자로<br>
-            이 땅을 아름답게 섬기는 하늘바람교회가 되겠습니다.
-          </p>
-
-          <div class="worship-table-wrap" id="worship" data-aos="fade-up" data-aos-delay="100">
-            <div class="worship-table-title"><i class="fas fa-clock"></i> 예배 시간 안내</div>
-            <table class="worship-table">
-              <tbody>
-                <tr>
-                  <td>주일 시편의예배 <span class="wt-sub">클래식</span></td>
-                  <td>주일 오전 09:00</td>
-                </tr>
-                <tr>
-                  <td>주일 다윗의예배 <span class="wt-sub">모던</span></td>
-                  <td>주일 오전 11:00</td>
-                </tr>
-                <tr>
-                  <td>새벽예배 <span class="wt-sub">월~금</span></td>
-                  <td>오전 05:30</td>
-                </tr>
-                <tr>
-                  <td>수요·성경예배</td>
-                  <td>오후 07:30</td>
-                </tr>
-                <tr>
-                  <td>금요·강청기도회</td>
-                  <td>오후 08:30</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-primary" data-aos="fade-up" data-aos-delay="150">교회 더 알아보기</a>
+  <section id="welcome" class="section-welcome" style="padding: 120px 0;">
+    <div class="container" style="max-width: 1200px;">
+      
+      <!-- Top Header -->
+      <div class="welcome-header" data-aos="fade-up" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 70px; gap: 40px;">
+        <div style="flex: 1; min-width: 320px;">
+          <p class="section-label" style="color:var(--gold); margin-bottom: 12px; font-size: 0.9rem;">교회 소개</p>
+          <h2 class="section-title" style="font-size: clamp(2.2rem, 4vw, 3rem); line-height: 1.35; margin-bottom: 0; letter-spacing: -0.02em;">하나님이 기뻐하시는<br>예배 공동체</h2>
         </div>
-        <div class="welcome-visual" data-aos="fade-left">
-          <div class="welcome-card-wrap">
-            <div class="welcome-card">
-              <i class="fas fa-dove"></i>
-              <h3>비전</h3>
-              <p>성령으로 충만한<br>예배 공동체</p>
-            </div>
-            <div class="welcome-card">
-              <i class="fas fa-book-open"></i>
-              <h3>말씀</h3>
-              <p>생명의 말씀으로<br>세워지는 교회</p>
-            </div>
-            <div class="welcome-card">
-              <i class="fas fa-hands-praying"></i>
-              <h3>기도</h3>
-              <p>쉬지 않고 기도하는<br>기도의 공동체</p>
-            </div>
-            <div class="welcome-card">
-              <i class="fas fa-heart"></i>
-              <h3>섬김</h3>
-              <p>사랑으로 이웃을<br>섬기는 공동체</p>
-            </div>
+        <div style="flex: 1; min-width: 320px; color: var(--text-muted); font-size: 1.05rem; line-height: 1.8; padding-left: 30px; border-left: 2px solid rgba(201,168,76,0.5);">
+          하늘바람교회는 <strong>성령의 바람</strong>이 역사하는 교회입니다.<br>
+          예배를 통해 하나님의 임재를 경험하고, 말씀으로 세워지며<br>
+          다윗처럼 하나님의 마음에 합한 예배자로<br>
+          이 땅을 아름답게 섬기겠습니다.
+        </div>
+      </div>
+
+      <!-- Vision Cards -->
+      <div class="welcome-cards-row" data-aos="fade-up" data-aos-delay="100" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 60px;">
+        <div class="welcome-card" style="padding: 40px 24px;">
+          <i class="fas fa-dove"></i>
+          <h3>비전</h3>
+          <p>성령으로 충만한<br>예배 공동체</p>
+        </div>
+        <div class="welcome-card" style="padding: 40px 24px;">
+          <i class="fas fa-book-open"></i>
+          <h3>말씀</h3>
+          <p>생명의 말씀으로<br>세워지는 교회</p>
+        </div>
+        <div class="welcome-card" style="padding: 40px 24px;">
+          <i class="fas fa-hands-praying"></i>
+          <h3>기도</h3>
+          <p>쉬지 않고 기도하는<br>기도의 공동체</p>
+        </div>
+        <div class="welcome-card" style="padding: 40px 24px;">
+          <i class="fas fa-heart"></i>
+          <h3>섬김</h3>
+          <p>사랑으로 이웃을<br>섬기는 공동체</p>
+        </div>
+      </div>
+
+      <!-- Worship Table -->
+      <div class="worship-table-wrap" id="worship" data-aos="fade-up" data-aos-delay="200" style="margin: 0; padding: 48px; background: var(--off-white); border-radius: var(--radius-lg); border: 1px solid var(--gray-light); display: flex; flex-wrap: wrap; gap: 40px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
+        <div style="flex: 1; min-width: 280px; padding-right: 20px;">
+          <div style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; background:rgba(201,168,76,0.15); color:var(--gold); font-size:1.4rem; margin-bottom:20px;">
+            <i class="fas fa-clock"></i>
           </div>
+          <h3 style="font-family: var(--font-serif); font-size: 2.2rem; font-weight: 700; color: var(--navy); margin-bottom: 16px;">예배 시간 안내</h3>
+          <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem;">
+            가족과 함께, 이웃과 함께 드리는 귀한 예배 자리에 여러분을 진심으로 초대합니다.
+          </p>
+        </div>
+        <div style="flex: 1.5; min-width: 320px;">
+          <table class="worship-table" style="width: 100%; font-size: 1.05rem;">
+            <tbody>
+              <tr>
+                <td style="padding: 16px 8px; font-weight: 700; border-bottom:1px solid rgba(0,0,0,0.05);">주일 시편의예배 <span class="wt-sub">클래식</span></td>
+                <td style="padding: 16px 8px; text-align: right; color: var(--blue); font-weight:700; border-bottom:1px solid rgba(0,0,0,0.05);">주일 오전 09:00</td>
+              </tr>
+              <tr>
+                <td style="padding: 16px 8px; font-weight: 700; border-bottom:1px solid rgba(0,0,0,0.05);">주일 다윗의예배 <span class="wt-sub">모던</span></td>
+                <td style="padding: 16px 8px; text-align: right; color: var(--blue); font-weight:700; border-bottom:1px solid rgba(0,0,0,0.05);">주일 오전 11:00</td>
+              </tr>
+              <tr>
+                <td style="padding: 16px 8px; font-weight: 700; border-bottom:1px solid rgba(0,0,0,0.05);">새벽예배 <span class="wt-sub">월~금</span></td>
+                <td style="padding: 16px 8px; text-align: right; color: var(--blue); font-weight:700; border-bottom:1px solid rgba(0,0,0,0.05);">오전 05:30</td>
+              </tr>
+              <tr>
+                <td style="padding: 16px 8px; font-weight: 700; border-bottom:1px solid rgba(0,0,0,0.05);">수요·성경예배</td>
+                <td style="padding: 16px 8px; text-align: right; color: var(--blue); font-weight:700; border-bottom:1px solid rgba(0,0,0,0.05);">오후 07:30</td>
+              </tr>
+              <tr>
+                <td style="padding: 16px 8px; font-weight: 700;">금요·강청기도회</td>
+                <td style="padding: 16px 8px; text-align: right; color: var(--blue); font-weight:700;">오후 08:30</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -1014,22 +1022,22 @@ section{padding:100px 0}
         <h2 class="section-title">하늘바람 소식</h2>
       </div>
 
-      <!-- 교회주보 앨범 그리드 -->
+      <!-- 교회주보 및 공지사항 그리드 -->
       <div class="news-bulletin-box" data-aos="fade-up" data-aos-delay="80">
         <div class="news-block-header">
           <div class="nbh-left">
-            <i class="fas fa-book-open nbh-icon"></i>
-            <h3>교회주보</h3>
-            <span class="news-badge-drive"><i class="fab fa-google-drive"></i> Drive 자동연동</span>
+            <i class="fas fa-bullhorn nbh-icon" style="color:var(--gold);"></i>
+            <h3>공지사항 (소식 및 주보)</h3>
+            <span class="news-badge-drive"><i class="fab fa-google-drive"></i> Drive 자동연동 게시판</span>
           </div>
           <a href="https://drive.google.com/drive/folders/15rRGFV_nXCGg9PIRB7bkHzWssPVppCzZ?usp=sharing"
              target="_blank" class="news-drive-btn">
-            <i class="fab fa-google-drive"></i> 전체 주보 보기
+            <i class="fab fa-google-drive"></i> 드라이브에 캡쳐/사진 올리기
           </a>
         </div>
         <!-- 주보 앨범 그리드 -->
         <div class="bulletin-album-grid" id="bulletinNotices">
-          <div class="notice-loading"><i class="fas fa-circle-notch fa-spin"></i> 주보 불러오는 중...</div>
+          <div class="notice-loading"><i class="fas fa-circle-notch fa-spin"></i> 공지사항 불러오는 중...</div>
         </div>
         <div class="bulletin-album-footer" id="bulletinAlbumFooter" style="display:none">
           <button class="bcar-btn-more" onclick="bulletinShowMore()">
@@ -1691,7 +1699,7 @@ section{padding:100px 0}
     el.innerHTML = `
       <a href="${BULLETIN_URL}" target="_blank" style="display:flex;align-items:center;gap:10px;padding:20px;color:var(--text-muted);text-decoration:none">
         <i class="fab fa-google-drive" style="font-size:1.4rem;color:#4285f4"></i>
-        <span>주보를 Drive 폴더에 업로드하면 앨범이 자동으로 표시됩니다</span>
+        <span>교회 소식, 행사 캡쳐 이미지를 Drive에 업로드하면 바로 공지사항으로 등록됩니다</span>
         <i class="fas fa-external-link-alt" style="margin-left:auto;opacity:0.4"></i>
       </a>`;
   }
