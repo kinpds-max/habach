@@ -559,6 +559,21 @@ section{padding:100px 0}
 .hrad-post-text{font-size:0.875rem;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-word}
 .hrad-empty{text-align:center;padding:32px 20px;color:var(--gray);font-size:0.9rem}
 @media(max-width:768px){.hrad-body{grid-template-columns:1fr}.news-block-header{flex-direction:column;align-items:flex-start}.hrad-desc-small{display:none}}
+/* ===== 주보 미리보기 카드 ===== */
+.bulletin-preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:8px 0}
+.bulletin-preview-card{background:var(--white);border:1px solid var(--gray-light);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:var(--transition);box-shadow:var(--shadow-sm)}
+.bulletin-preview-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--gold)}
+.bpc-thumb{position:relative;aspect-ratio:3/4;background:var(--off-white);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bpc-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 0.3s}
+.bulletin-preview-card:hover .bpc-thumb img{transform:scale(1.04)}
+.bpc-icon{font-size:2.5rem;color:var(--gray);opacity:0.4}
+.bpc-play-overlay{position:absolute;inset:0;background:rgba(15,32,68,0.45);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s;color:white;font-size:1.5rem}
+.bulletin-preview-card:hover .bpc-play-overlay{opacity:1}
+.bpc-info{padding:10px 12px;display:flex;align-items:center;gap:8px}
+.bpc-name{flex:1;font-size:0.78rem;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
+.bpc-open{flex-shrink:0;font-size:0.7rem;color:var(--blue);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.bpc-open:hover{color:var(--gold)}
+@media(max-width:640px){.bulletin-preview-grid{grid-template-columns:repeat(2,1fr);gap:12px}}
 /* legacy */
 .news-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
 .news-card{background:var(--white);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-sm);border:1px solid var(--gray-light);transition:var(--transition)}
@@ -859,8 +874,8 @@ section{padding:100px 0}
             <i class="fab fa-google-drive"></i> 주보 전체 보기
           </a>
         </div>
-        <!-- 주보 자동크롤링 목록 -->
-        <div class="bulletin-notices-row" id="bulletinNotices">
+        <!-- 주보 마리보기 카드 그리드 -->
+        <div class="bulletin-preview-grid" id="bulletinNotices">
           <div class="notice-loading"><i class="fas fa-circle-notch fa-spin"></i> 최신 주보 불러오는 중...</div>
         </div>
       </div>
@@ -1429,6 +1444,7 @@ section{padding:100px 0}
         <p class="hrad-post-text">${_escHtml(p.text)}</p>
       </div>`).join('');
   }
+  const HRAD_GAS_URL = 'PASTE_YOUR_GAS_WEB_APP_URL_HERE'; // Apps Script 웹앱 URL (업데이트 필요)
   function hradPost() {
     const name = (document.getElementById('hradName')?.value||'').trim()||'익명';
     const text = (document.getElementById('hradText')?.value||'').trim();
@@ -1440,6 +1456,15 @@ section{padding:100px 0}
     hradSave(posts);
     hradRender();
     if (document.getElementById('hradText')) document.getElementById('hradText').value = '';
+    /* 구글시트에도 저장 (취소할 수 있음) */
+    if (HRAD_GAS_URL && HRAD_GAS_URL !== 'PASTE_YOUR_GAS_WEB_APP_URL_HERE') {
+      fetch(HRAD_GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, text, time, date: new Date().toISOString() })
+      }).catch(() => {}); // 오류시 조용히 무시
+    }
   }
   function hradDelete(idx) {
     if (!confirm('이 게시글을 삭제할까요?')) return;
@@ -1450,7 +1475,7 @@ section{padding:100px 0}
   }
 
   /* =============================================
-     교회주보 공지 (구글 드라이브 폴더 크롤링)
+     교회주보 미리보기 (구글 드라이브 폴더 크롤링 - 카드 뷰)
   ============================================= */
   const BULLETIN_FOLDER = '15rRGFV_nXCGg9PIRB7bkHzWssPVppCzZ';
   const BULLETIN_URL    = `https://drive.google.com/drive/folders/${BULLETIN_FOLDER}?usp=sharing`;
@@ -1468,19 +1493,30 @@ section{padding:100px 0}
         } catch {}
       }
       if (html) {
-        const names = [...html.matchAll(/class="flip-entry-title"[^>]*>([^<]+)</g)]
-                       .map(m => m[1].trim()).filter(Boolean);
-        /* 최신순 정렬 (파일명 내림차순) */
-        names.sort((a, b) => b.localeCompare(a));
-        const latestNames = names.slice(0, 6);
-
-        if (latestNames.length) {
-          el.innerHTML = latestNames.map(n => `
-            <a href="${BULLETIN_URL}" target="_blank" class="bulletin-notice-item">
-              <i class="fas fa-file-alt"></i>
-              <span>${_escHtml(n)}</span>
-              <i class="fas fa-chevron-right notice-arrow"></i>
-            </a>`).join('');
+        /* entry-ID와 파일명 동시 추출 */
+        const entries = [...html.matchAll(/id="entry-([^"]+)"[\s\S]*?class="flip-entry-title"[^>]*>([^<]+)</g)]
+          .map(m => ({ id: m[1].trim(), name: m[2].trim() }))
+          .filter(e => e.name && e.id);
+        entries.sort((a, b) => b.name.localeCompare(a.name));
+        const latest = entries.slice(0, 6);
+        if (latest.length) {
+          el.innerHTML = latest.map(e => `
+            <div class="bulletin-preview-card" onclick="openBulletinPreview('${e.id}','${_escHtml(e.name)}')"
+                 title="${_escHtml(e.name)}">
+              <div class="bpc-thumb">
+                <img src="https://drive.google.com/thumbnail?id=${e.id}&sz=w300"
+                     alt="${_escHtml(e.name)}" loading="lazy"
+                     onerror="this.parentElement.innerHTML='<i class=\'fas fa-file-pdf bpc-icon\'></i>'">
+                <div class="bpc-play-overlay"><i class="fas fa-expand-alt"></i></div>
+              </div>
+              <div class="bpc-info">
+                <p class="bpc-name">${_escHtml(e.name)}</p>
+                <a href="https://drive.google.com/file/d/${e.id}/view" target="_blank"
+                   class="bpc-open" onclick="event.stopPropagation()">
+                  <i class="fas fa-external-link-alt"></i> 열기
+                </a>
+              </div>
+            </div>`).join('');
           return;
         }
       }
@@ -1491,6 +1527,20 @@ section{padding:100px 0}
         <span>주보 폴더 바로가기 — 주보를 드라이브에 업로드하면 여기에 자동으로 표시됩니다</span>
         <i class="fas fa-external-link-alt notice-arrow"></i>
       </a>`;
+  }
+  /* 주보 파일 미리보기 모달 */
+  function openBulletinPreview(fileId, fileName) {
+    const modal  = document.getElementById('audioModal');        // 기존 모달 재활용
+    const iframe = document.getElementById('audioModalIframe');
+    const title  = document.getElementById('audioModalTitle');
+    const link   = document.getElementById('audioModalDriveLink');
+    if (!modal || !iframe) return;
+    title.textContent = fileName;
+    iframe.style.height = '75vh';
+    iframe.src = `https://drive.google.com/file/d/${fileId}/preview`;
+    link.href  = `https://drive.google.com/file/d/${fileId}/view`;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
   }
 
   /* =============================================
