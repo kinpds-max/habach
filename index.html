@@ -1088,31 +1088,7 @@ section{padding:100px 0}
     </div>
   </section>
 
-  <!-- ===== 주일설교 녹음파일 ===== -->
-  <section id="sermon-audio" class="section-sermon-audio">
-    <div class="container">
-      <div class="sermon-audio-box" data-aos="fade-up">
-        <div class="sermon-audio-header">
-          <div class="sa-title-wrap">
-            <i class="fas fa-headphones-alt sa-icon"></i>
-            <div>
-              <h2 class="sa-title">주일설교 녹음파일</h2>
-              <p class="sa-desc">클릭하시면 <strong>바로 미리듣기</strong> 가 시작되어요</p>
-            </div>
-          </div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-            <a href="https://drive.google.com/drive/folders/1TY6KCHWGWhgM_FhjqVVN-aTMUPuW3ivX"
-               target="_blank" class="sa-drive-btn">
-              <i class="fab fa-google-drive"></i> 녹음파일 전체보기
-            </a>
-          </div>
-        </div>
-        <div class="sermon-audio-list" id="sermonAudioList">
-          <div class="sa-loading"><i class="fas fa-circle-notch fa-spin"></i> 녹음 파일 불러오는 중...</div>
-        </div>
-      </div>
-    </div>
-  </section>
+
 
   <!-- 오디오 플레이어 모달 -->
   <div id="audioModal" class="modal-overlay">
@@ -1207,6 +1183,50 @@ section{padding:100px 0}
     </div>
   </div>
 
+  <!-- ===== BLOG : 다윗의예배 ===== -->
+  <section id="blog" class="section-blog">
+    <div class="container">
+      <div class="blog-layout">
+        <div class="blog-header-col" data-aos="fade-right">
+          <p class="section-label">말씀나눔</p>
+          <h2 class="section-title">다윗의 예배<br><span>주일 설교 말씀</span></h2>
+          <p class="blog-intro">
+            하나님의 마음에 합한 다윗처럼,<br>
+            진실한 예배와 말씀으로 세워집니다.
+          </p>
+          <a href="https://blog.naver.com/habachurch" target="_blank" class="btn-primary" style="margin-bottom: 24px;">
+            <i class="fas fa-blog"></i> 블로그 전체 보기
+          </a>
+
+          <!-- 주일설교 녹음파일 통합 -->
+          <div class="sermon-audio-box" id="sermon-audio" style="background:var(--navy); border:none; box-shadow:0 10px 30px rgba(0,0,0,0.1); padding:28px 24px; border-radius:20px;">
+            <div class="sermon-audio-header" style="margin-bottom:16px; flex-direction:column; align-items:flex-start; gap:12px;">
+              <div class="sa-title-wrap" style="gap:12px;">
+                <i class="fas fa-headphones-alt sa-icon" style="width:44px;height:44px;font-size:1.2rem;padding:0;background:rgba(255,255,255,0.1);"></i>
+                <div>
+                  <h2 class="sa-title" style="font-size:1.15rem;margin-bottom:2px;">주일설교 녹음</h2>
+                  <p class="sa-desc" style="font-size:0.75rem;color:rgba(255,255,255,0.6);">클릭하면 재생됩니다</p>
+                </div>
+              </div>
+              <a href="https://drive.google.com/drive/folders/1TY6KCHWGWhgM_FhjqVVN-aTMUPuW3ivX"
+                 target="_blank" class="sa-drive-btn" style="width:100%; justify-content:center; padding:8px 0; font-size:0.8rem;">
+                <i class="fab fa-google-drive"></i> 드라이브에서 전체보기
+              </a>
+            </div>
+            <div class="sermon-audio-list" id="sermonAudioList">
+              <div class="sa-loading"><i class="fas fa-circle-notch fa-spin"></i> 녹음 파일 불러오는 중...</div>
+            </div>
+          </div>
+        </div>
+        <div class="blog-cards-col" data-aos="fade-left">
+          <div id="blogCards" class="blog-cards">
+            <div class="blog-loading"><i class="fas fa-circle-notch fa-spin"></i> 말씀을 불러오는 중...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== GALLERY : 앨범 ===== -->
   <section id="gallery" class="section-gallery">
     <div class="container">
@@ -1286,29 +1306,6 @@ section{padding:100px 0}
     </div>
   </section>
 
-  <!-- ===== BLOG : 다윗의예배 ===== -->
-  <section id="blog" class="section-blog">
-    <div class="container">
-      <div class="blog-layout">
-        <div class="blog-header-col" data-aos="fade-right">
-          <p class="section-label">말씀나눔</p>
-          <h2 class="section-title">다윗의 예배<br><span>주일 설교 말씀</span></h2>
-          <p class="blog-intro">
-            하나님의 마음에 합한 다윗처럼,<br>
-            진실한 예배와 말씀으로 세워집니다.
-          </p>
-          <a href="https://blog.naver.com/habachurch" target="_blank" class="btn-primary">
-            <i class="fas fa-blog"></i> 블로그 전체 보기
-          </a>
-        </div>
-        <div class="blog-cards-col" data-aos="fade-left">
-          <div id="blogCards" class="blog-cards">
-            <div class="blog-loading"><i class="fas fa-circle-notch fa-spin"></i> 말씀을 불러오는 중...</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ===== CAFE COMMUNITY ===== -->
   <section id="community" class="section-community">
