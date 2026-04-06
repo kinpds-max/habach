@@ -475,7 +475,18 @@ section{padding:100px 0}
 .comm-panel .cafe-sub-list li{border-bottom-color:var(--gray-light)}
 .comm-panel .cafe-card-v2-btn{background:var(--off-white);color:var(--navy);border-color:var(--gray-light);margin-top:20px}
 .comm-panel .cafe-card-v2-btn:hover{background:var(--navy);color:white;border-color:var(--navy)}
-@media(max-width:640px){.comm-tab-btn{font-size:0.8rem;padding:13px 8px;gap:6px}}
+/* PC: 탭 숨기고 3열 그리드 */
+@media(min-width:901px){
+  .comm-tabs{display:none}
+  .comm-panels-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:40px}
+  .comm-panel{display:block!important}
+  .comm-panel .cafe-card-v2{max-width:none;margin:0}
+}
+/* 모바일: 탭 UI */
+@media(max-width:900px){
+  .comm-panels-wrap{display:block}
+  .comm-tab-btn{font-size:0.8rem;padding:13px 8px;gap:6px}
+}
 
 /* CONTACT */
 .section-contact{background:var(--off-white)}
@@ -1349,6 +1360,9 @@ section{padding:100px 0}
         </button>
       </div>
 
+      <!-- 패널 래퍼 (PC: 3열 그리드, 모바일: 탭) -->
+      <div class="comm-panels-wrap">
+
       <!-- 탭1: 양육&훈련 -->
       <div class="comm-panel active" id="comm-training" data-aos="fade-up" data-aos-delay="150">
         <div class="cafe-card-v2">
@@ -1416,6 +1430,7 @@ section{padding:100px 0}
           <a href="https://cafe.naver.com/f-e/cafes/31371644/menus/20" target="_blank" class="cafe-card-v2-btn">바로가기 <i class="fas fa-arrow-right"></i></a>
         </div>
       </div><!-- /comm-education -->
+      </div><!-- /comm-panels-wrap -->
 
       <div class="cafe-cta" data-aos="fade-up" data-aos-delay="300">
         <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-primary">
