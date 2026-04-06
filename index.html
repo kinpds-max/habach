@@ -1191,7 +1191,7 @@ section{padding:100px 0}
     <div class="container">
       <div class="contact-grid">
         <div class="contact-info" data-aos="fade-right">
-          <h2 class="section-title">하늘바람교회 찾아오시는 길</h2>
+          <h2 class="section-title">하늘바람교회<br>찾아오시는 길</h2>
           <ul class="contact-list">
             <li>
               <i class="fas fa-map-marker-alt"></i>
@@ -1223,9 +1223,9 @@ section{padding:100px 0}
         </div>
         <div class="contact-map" data-aos="fade-left">
           <iframe
-            src="https://map.naver.com/p/entry/place/1837083519?c=15,0,0,0,dh"
+            src="https://map.naver.com/v5/search/%ED%95%98%EB%8A%98%EB%B0%94%EB%9E%8C%EA%B5%90%ED%9A%8C/place/1837083519?c=15,0,0,0,dh&isCorrectAnswer=true"
             width="100%" height="300" style="border:0;" allowfullscreen=""
-            loading="lazy">
+            loading="lazy" title="하늘바람교회 위치">
           </iframe>
           <div class="map-btn-row">
             <a href="https://naver.me/5XJRTIuL"
@@ -1383,9 +1383,13 @@ section{padding:100px 0}
       }
       if (html) {
         const names = [...html.matchAll(/class="flip-entry-title"[^>]*>([^<]+)</g)]
-                       .map(m => m[1].trim()).filter(Boolean).slice(0, 6);
-        if (names.length) {
-          el.innerHTML = names.map(n => `
+                       .map(m => m[1].trim()).filter(Boolean);
+        /* 최신순 정렬 (파일명 내림차순) */
+        names.sort((a, b) => b.localeCompare(a));
+        const latestNames = names.slice(0, 6);
+
+        if (latestNames.length) {
+          el.innerHTML = latestNames.map(n => `
             <a href="${BULLETIN_URL}" target="_blank" class="bulletin-notice-item">
               <i class="fas fa-file-alt"></i>
               <span>${_escHtml(n)}</span>
@@ -1427,11 +1431,14 @@ section{padding:100px 0}
         /* entry-ID와 파일명 동시 추출 */
         const entries = [...html.matchAll(/id="entry-([^"]+)"[\s\S]*?class="flip-entry-title"[^>]*>([^<]+)</g)]
           .map(m => ({ id: m[1].trim(), name: m[2].trim() }))
-          .filter(e => e.name && e.id)
-          .slice(0, 15);
+          .filter(e => e.name && e.id);
 
-        if (entries.length) {
-          el.innerHTML = entries.map(e => `
+        /* 최신순 정렬 (파일명 내림차순) */
+        entries.sort((a, b) => b.name.localeCompare(a.name));
+        const latestEntries = entries.slice(0, 15);
+
+        if (latestEntries.length) {
+          el.innerHTML = latestEntries.map(e => `
             <button class="sa-item" onclick="openAudioModal('${e.id}','${_escHtml(e.name)}')">
               <span class="sa-play-btn"><i class="fas fa-play"></i></span>
               <span class="sa-item-name">${_escHtml(e.name)}</span>
