@@ -114,7 +114,11 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 #header.scrolled{background:rgba(10,18,48,0.98);box-shadow:0 2px 24px rgba(0,0,0,0.3)}
 .logo{display:none}
 .mobile-brand{display:none;font-family:var(--font-serif);font-size:1.15rem;font-weight:800;color:var(--white);letter-spacing:0.02em;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;z-index:10}
-@media(max-width:900px){.mobile-brand{display:block}#header{background:var(--navy)!important}}
+@media(max-width:900px){
+  .mobile-brand{display:block}
+  #header{background:var(--navy)!important;height:56px!important}
+  .header-inner{height:56px!important}
+}
 .main-nav{flex:1;display:flex;align-items:center;justify-content:center}
 .main-nav ul{display:flex;gap:8px;align-items:center}
 .main-nav>ul>li{position:relative}
@@ -861,7 +865,7 @@ section{padding:100px 0}
         <p class="section-label light">하늘바람교회 역사</p>
         <h2 class="section-title light">한 씨앗에서<br>자라나다</h2>
         <p style="color:rgba(255,255,255,0.55);font-size:0.95rem;margin-top:12px">
-          "홀연히 하늘로부터 급하고 강한 바람 같은 소리가 있어" — <em>사도행전 2:2</em>
+          "홀연히 하늘로부터 급하고 강한 바람 같은 소리가 있어" <em>사도행전 2:2</em>
         </p>
       </div>
 
@@ -1507,6 +1511,7 @@ section{padding:100px 0}
             <li><a href="https://www.youtube.com/@Gimpo_HBC" target="_blank"><i class="fab fa-youtube"></i> 유튜브 채널</a></li>
             <li><a href="https://blog.naver.com/habachurch" target="_blank"><i class="fas fa-blog"></i> 네이버 블로그</a></li>
             <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-mug-hot"></i> 네이버 카페</a></li>
+            <li><a href="https://map.naver.com/v5/search/%ED%95%98%EB%8A%98%EB%B0%94%EB%9E%8C%EA%B5%90%ED%9A%8C" target="_blank"><i class="fas fa-map-marked-alt"></i> 네이버 지도</a></li>
           </ul>
         </div>
         <div class="footer-worship">
@@ -1527,7 +1532,7 @@ section{padding:100px 0}
            E-mail: whanseh@me.com<br>
            © 2026 하늘바람교회 All Rights Reserved.</p>
         <p>Designed with <i class="fas fa-heart" style="color:#e74c3c"></i> for God's Glory<br>
-           <span style="font-size:0.78rem;opacity:0.55">홈페이지 제작문의 &nbsp;<a href="tel:1660-1196" style="color:var(--gold-light);font-weight:600">1660-1196</a></span></p>
+           <span style="font-size:0.78rem;opacity:0.55">하맘컨텐츠 &nbsp;<a href="tel:1660-1195" style="color:var(--gold-light);font-weight:600">1660-1195</a></span></p>
       </div>
     </div>
   </footer>
