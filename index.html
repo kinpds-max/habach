@@ -628,7 +628,16 @@ section{padding:100px 0}
 .bulletin-carousel .bpc-open{flex-shrink:0;font-size:0.75rem;color:var(--blue);display:flex;align-items:center;gap:4px}
 .bulletin-carousel .bpc-open:hover{color:var(--gold)}
 @media(max-width:600px){.bulletin-carousel-wrap{padding:0 36px}.bcar-btn{width:30px;height:30px;font-size:0.8rem}}
-/* ===== 교회 역사 타임라인 ===== */
+/* ===== \uad50\ud68c\uc18c\uac1c\uc601\uc0c1 ===== */
+.church-intro-video{margin-bottom:20px}
+.civ-label{font-size:0.8rem;font-weight:700;color:var(--gold);letter-spacing:0.08em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.civ-wrap{position:relative;width:100%;padding-top:56.25%;border-radius:var(--radius);overflow:hidden;background:#000;box-shadow:var(--shadow-md)}
+.civ-wrap iframe{position:absolute;inset:0;width:100%;height:100%}
+/* ===== \uc911\ubcf4\uae30\ub3c4 LIVE \ube68\uac04 \ub545\ub2f9 ===== */
+.pray-live-badge{background:rgba(231,76,60,0.15)!important;color:#e74c3c!important;border:1px solid rgba(231,76,60,0.35)!important}
+.pray-live-dot{font-size:0.45rem!important;animation:livePulse 1s infinite!important;color:#e74c3c}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:0.2}}
+/* ===== \uad50\ud68c \uc5ed\uc0ac \ud0c0\uc784\ub77c\uc778 ===== */
 .history-timeline{display:flex;flex-direction:column;max-width:680px;margin:0 auto}
 .htl-item{display:flex;align-items:flex-start;gap:24px}
 .htl-dot{flex-shrink:0;width:52px;height:52px;border-radius:50%;background:rgba(201,168,76,0.15);border:2px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.1rem;transition:var(--transition)}
@@ -770,6 +779,20 @@ section{padding:100px 0}
     <div class="container">
       <div class="welcome-grid">
         <div class="welcome-visual" data-aos="fade-right">
+          <!-- 교회소개영상 -->
+          <div class="church-intro-video" data-aos="fade-up" data-aos-delay="50">
+            <div class="civ-label"><i class="fas fa-play-circle"></i> 하늘바람교회 소개영상</div>
+            <div class="civ-wrap">
+              <iframe
+                src="https://www.youtube.com/embed/k-Q5Wjq7uPM?rel=0&modestbranding=1&playsinline=1"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                title="하늘바람교회 소개영상"
+                loading="lazy">
+              </iframe>
+            </div>
+          </div>
           <div class="welcome-card-wrap">
             <div class="welcome-card">
               <i class="fas fa-dove"></i>
@@ -1020,9 +1043,7 @@ section{padding:100px 0}
           <div class="nbh-left">
             <i class="fas fa-hands" style="color:#c9a84c;font-size:1.3rem;margin-right:10px"></i>
             <h3>중보기도 요청</h3>
-            <span class="news-live-badge" style="background:rgba(201,168,76,0.2);color:#c9a84c;border:1px solid rgba(201,168,76,0.4)">
-              <i class="fas fa-dove" style="font-size:0.5rem"></i> 기도
-            </span>
+            <span class="news-live-badge pray-live-badge"><i class="fas fa-circle pray-live-dot"></i> LIVE</span>
           </div>
           <span style="font-size:0.8rem;color:var(--text-muted)">성도님을 위해 함께 기도합니다</span>
         </div>
@@ -1361,30 +1382,6 @@ section{padding:100px 0}
     </div>
   </section>
 
-  <!-- ===== 중보기도 요청 (찾아오시는 길 위) ===== -->
-  <section id="prayer" class="section-prayer">
-    <div class="container">
-      <div class="prayer-box-large" data-aos="fade-up">
-        <div class="prayer-header-large">
-          <i class="fas fa-hands prayer-icon-large"></i>
-          <div>
-            <h2 class="prayer-title-large">중보기도 요청</h2>
-            <p class="prayer-desc-large">성도님의 기도제목을 남겨주세요. 함께 기도하겠습니다.</p>
-          </div>
-        </div>
-        <div class="prayer-form-large">
-          <div class="prayer-input-row">
-            <input type="text" id="pray2Name" placeholder="이름 (익명 가능)" maxlength="20" class="hrad-input-name" />
-            <textarea id="pray2Text" placeholder="기도제목을 적어주세요..." rows="3" maxlength="500" class="hrad-input-text"></textarea>
-            <button class="hrad-submit-btn prayer-submit" onclick="pray2Post()">
-              <i class="fas fa-dove"></i> 기도요청 올리기
-            </button>
-          </div>
-          <div class="hrad-list" id="pray2List"></div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ===== CONTACT / MAP ===== -->
   <section id="contact" class="section-contact">
@@ -1786,7 +1783,7 @@ section{padding:100px 0}
 
     /* rss2json → JSON 방식 (CORS 없음, 주 방법) */
     async function fetchViaRss2Json() {
-      const url = `https://api.rss2json.com/v1/api.json?count=50&rss_url=${encodeURIComponent(RSS_URL)}`;
+      const url = `https://api.rss2json.com/v1/api.json?count=100&rss_url=${encodeURIComponent(RSS_URL)}`;
       const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
       if (!res.ok) throw new Error('rss2json 응답 오류');
       const json = await res.json();
@@ -1949,13 +1946,13 @@ section{padding:100px 0}
         const pageShorts = shortsFromPage.filter(v => !rssIds.has(v.videoId));
         const allShorts  = [...rssShorts, ...pageShorts];
 
-        renderGrid('grid-sermon3',   sermon3,   3);
-        renderGrid('grid-sunday',    sunday,    3);
-        renderGrid('grid-dawn',      dawn,      3);
-        renderGrid('grid-wednesday', wednesday, 3);
-        renderGrid('grid-friday',    friday,    3);
-        renderGrid('grid-david',     david,     3);
-        renderShorts(allShorts, 5);
+        renderGrid('grid-sermon3',   sermon3,   6);
+        renderGrid('grid-sunday',    sunday,    6);
+        renderGrid('grid-dawn',      dawn,      6);
+        renderGrid('grid-wednesday', wednesday, 6);
+        renderGrid('grid-friday',    friday,    6);
+        renderGrid('grid-david',     david,     6);
+        renderShorts(allShorts, 8);
 
         if (pageShorts.length) fetchTitles(pageShorts).then(() => renderShorts(allShorts, 5));
 
