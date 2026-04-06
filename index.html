@@ -283,7 +283,8 @@ section{padding:100px 0}
 
 /* WELCOME */
 .section-welcome{background:var(--white)}
-.welcome-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:80px;align-items:center}
+.section-welcome .container{max-width:1100px;margin:0 auto}
+.welcome-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:60px;align-items:center}
 .welcome-text{grid-column:1}
 .welcome-visual{grid-column:2}
 @media(max-width:900px){.welcome-text{grid-column:auto}.welcome-visual{grid-column:auto}}
@@ -1132,7 +1133,7 @@ section{padding:100px 0}
     <div class="container">
       <div class="section-header" data-aos="fade-up">
         <p class="section-label">미디어 센터</p>
-        <h2 class="section-title">예배 영상</h2>
+        <h2 class="section-title">온라인 방송국</h2>
         <p class="section-desc">하늘바람교회의 예배를 영상으로 만나보세요</p>
       </div>
 
@@ -1532,7 +1533,7 @@ section{padding:100px 0}
            E-mail: whanseh@me.com<br>
            © 2026 하늘바람교회 All Rights Reserved.</p>
         <p>Designed with <i class="fas fa-heart" style="color:#e74c3c"></i> for God's Glory<br>
-           <span style="font-size:0.78rem;opacity:0.55">하맘컨텐츠 &nbsp;<a href="tel:1660-1195" style="color:var(--gold-light);font-weight:600">1660-1195</a></span></p>
+           <span style="font-size:0.78rem;opacity:0.55">홈페이지 제작문의 &nbsp;<a href="tel:1660-1195" style="color:var(--gold-light);font-weight:600">1660-1195</a></span></p>
       </div>
     </div>
   </footer>
@@ -1801,14 +1802,13 @@ section{padding:100px 0}
       'https://corsproxy.io/?',
     ];
     const CATEGORIES = {
-      /* 순서 중요: 더 구체적인 키워드 먼저 매칭 */
-      sermon3:   { label: '3분설교',   keywords: ['3분설교','[3분설교]'] },
+      /* 지정한 검색 키워드대로 엄격하게 매칭 */
+      sermon3:   { label: '3분설교',   keywords: ['3분설교'] },
+      sunday:    { label: '주일예배',   keywords: ['다윗의예배','다윗의 예배'] },
+      dawn:      { label: '새벽예배',   keywords: ['새벽예배'] },
+      wednesday: { label: '수요예배',   keywords: ['수요예배'] },
+      friday:    { label: '금요예배',   keywords: ['금요예배'] },
       david:     { label: '다윗의찬양', keywords: ['다윗의찬양','다윗의 찬양'] },
-      sunday:    { label: '주일예배',   keywords: ['다윗의 예배','다윗의예배','시편의 예배','스몰 예배','주일설교','주일예배','주일'] },
-      dawn:      { label: '새벽예배',   keywords: ['새벽','새벽예배','촛불새벽','새벽기도'] },
-      wednesday: { label: '수요예배',   keywords: ['수요성경예배','수요성경','수요예배','수요 예배','성경예배','수요기도','Wednesday','수요'] },
-      friday:    { label: '금요예배',   keywords: ['금요','금요예배','강청기도','금요기도','금요 예배','금요기도회'] },
-      david:     { label: '다윗의찬양', keywords: ['다윗의찬양','다윗의 찬양','다윗찬양','David','praise'] },
     };
 
     /* rss2json → JSON 방식 (CORS 없음, 주 방법) */
