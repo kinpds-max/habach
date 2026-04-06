@@ -112,15 +112,15 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 /* HEADER */
 #header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:transparent;border-bottom:1px solid transparent;transition:background 0.4s,box-shadow 0.4s,border-color 0.4s}
 #header.scrolled{background:rgba(8,15,42,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 32px rgba(0,0,0,0.45);border-bottom-color:rgba(255,255,255,0.1)}
-.header-inner{max-width:1400px;margin:0 auto;padding:0 48px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;height:76px;gap:32px}
+.header-inner{max-width:1400px;margin:0 auto;padding:0 48px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;height:120px;gap:32px}
 .nav-logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
-.logo-img{height:50px;width:auto;object-fit:contain;display:block;opacity:0.93;transition:opacity 0.2s;mix-blend-mode:multiply}
+.logo-img{height:100px;width:auto;object-fit:contain;display:block;opacity:0.93;transition:opacity 0.2s;mix-blend-mode:multiply}
 .logo-img:hover{opacity:1}
 .mobile-brand{display:none}
 .main-nav{display:flex;align-items:center;justify-content:center}
 .main-nav ul{display:flex;gap:0;align-items:center;list-style:none;margin:0;padding:0}
 .main-nav>ul>li{position:relative}
-.main-nav>ul>li>a{color:rgba(255,255,255,0.68);font-size:0.875rem;font-weight:500;padding:0 16px;transition:color 0.2s;letter-spacing:0.01em;display:flex;align-items:center;height:76px;position:relative;white-space:nowrap}
+.main-nav>ul>li>a{color:rgba(255,255,255,0.68);font-size:0.875rem;font-weight:500;padding:0 16px;transition:color 0.2s;letter-spacing:0.01em;display:flex;align-items:center;height:120px;position:relative;white-space:nowrap}
 .main-nav>ul>li>a::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:2px;background:var(--gold);border-radius:2px 2px 0 0;transition:width 0.25s ease}
 .main-nav>ul>li>a:hover{color:rgba(255,255,255,0.95)}
 .main-nav>ul>li>a:hover::after,.main-nav>ul>li>a.active::after{width:calc(100% - 20px)}
@@ -155,20 +155,20 @@ body{top:0!important}
   #header{display:none!important}
 }
 /* ===== 모바일 전용 상단 헤더 ===== */
-.mobile-top-header{display:none;position:fixed;top:0;left:0;right:0;z-index:1100;height:64px;padding:0 16px;align-items:center;justify-content:space-between;background:transparent;transition:background 0.35s}
+.mobile-top-header{display:none;position:fixed;top:0;left:0;right:0;z-index:1100;height:100px;padding:0 16px;align-items:center;justify-content:space-between;background:transparent;transition:background 0.35s}
 .mobile-top-header.scrolled{background:rgba(8,15,42,0.92);backdrop-filter:blur(16px)}
-.mobile-top-logo{height:40px;width:auto;object-fit:contain;display:block;mix-blend-mode:multiply}
+.mobile-top-logo{height:80px;width:auto;object-fit:contain;display:block;mix-blend-mode:multiply}
 .mobile-top-left,.mobile-top-right{width:40px;display:flex;align-items:center}
 .mobile-top-right{justify-content:flex-end}
 .mobile-top-header .translate-menu{left:0;right:auto}
 @media(max-width:900px){
   .mobile-top-header{display:flex}
-  body{padding-top:64px}
+  body{padding-top:100px}
 }
 
 
 /* ===== 모바일 상단 탭 네비게이션 ===== */
-.mobile-bottom-nav{display:none;position:fixed;top:64px;left:0;right:0;z-index:1099;background:transparent;padding:0;height:52px;overflow:hidden;transition:background 0.35s}
+.mobile-bottom-nav{display:none;position:fixed;top:100px;left:0;right:0;z-index:1099;background:transparent;padding:0;height:52px;overflow:hidden;transition:background 0.35s}
 .mobile-bottom-nav.scrolled{background:rgba(8,15,42,0.88);backdrop-filter:blur(14px)}
 .mobile-bottom-nav ul{display:flex;height:100%;margin:0;padding:0 4px;list-style:none;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:2px}
 .mobile-bottom-nav ul::-webkit-scrollbar{display:none}
