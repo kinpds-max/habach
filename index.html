@@ -113,8 +113,8 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 #header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(10,18,48,0.92);backdrop-filter:blur(12px);transition:var(--transition)}
 #header.scrolled{background:rgba(10,18,48,0.98);box-shadow:0 2px 24px rgba(0,0,0,0.3)}
 .header-inner{max-width:1280px;margin:0 auto;padding:0 40px;display:flex;align-items:center;justify-content:center;position:relative;height:80px}
-.logo{display:flex;align-items:center;position:absolute;left:40px;top:50%;transform:translateY(-50%);height:48px}
-.logo img{height:36px;width:auto;object-fit:contain}
+.logo{display:flex;align-items:center;position:absolute;left:40px;top:50%;transform:translateY(-50%);height:52px}
+.logo img{height:42px;width:auto;object-fit:contain;image-rendering:-webkit-optimize-contrast}
 .main-nav{flex:1;display:flex;align-items:center;justify-content:center}
 .main-nav ul{display:flex;gap:8px;align-items:center}
 .main-nav>ul>li{position:relative}
@@ -279,7 +279,10 @@ section{padding:100px 0}
 
 /* WELCOME */
 .section-welcome{background:var(--white)}
-.welcome-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.welcome-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:80px;align-items:center}
+.welcome-text{grid-column:1}
+.welcome-visual{grid-column:2}
+@media(max-width:900px){.welcome-text{grid-column:auto}.welcome-visual{grid-column:auto}}
 .welcome-text .section-label{color:var(--gold)}
 .welcome-body{color:var(--text-muted);line-height:2;margin-bottom:16px}
 .welcome-text .btn-primary{margin-top:24px}
@@ -1390,7 +1393,7 @@ section{padding:100px 0}
             <div class="stat-item"><span>1,200</span><p>기도의 동역자</p></div>
           </div>
           <a href="https://cafe.naver.com/f-e/cafes/31371644/menus/42" target="_blank"
-             style="display:inline-flex;align-items:center;gap:8px;margin-top:24px;background:rgba(255,255,255,0.15);color:white;padding:12px 28px;border-radius:50px;font-weight:700;font-size:0.9rem;border:1px solid rgba(255,255,255,0.3);transition:background 0.2s;text-decoration:none"
+             style="display:inline-flex;align-items:center;gap:8px;margin-top:24px;background:rgba(255,255,255,0.15);color:white;padding:12px 28px;border-radius:50px;font-weight:700;font-size:0.9rem;border:1px solid rgba(255,255,255,0.3);transition:background 0.2s;text-decoration:none;white-space:nowrap"
              onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
             <i class="fas fa-mug-hot"></i> 하늘바람 카페 입장하기
           </a>
@@ -1616,7 +1619,7 @@ section{padding:100px 0}
     const el = document.getElementById('bulletinNotices');
     if (!el) return;
     try {
-      const proxies = ['https://corsproxy.io/?','https://api.allorigins.win/raw?url='];
+      const proxies = ['https://api.allorigins.win/raw?url=','https://api.codetabs.com/v1/proxy?quest=','https://corsproxy.io/?'];
       let html = null;
       for (const px of proxies) {
         try {
@@ -1671,7 +1674,7 @@ section{padding:100px 0}
     const el = document.getElementById('sermonAudioList');
     if (!el) return;
     try {
-      const proxies = ['https://corsproxy.io/?','https://api.allorigins.win/raw?url='];
+      const proxies = ['https://api.allorigins.win/raw?url=','https://api.codetabs.com/v1/proxy?quest=','https://corsproxy.io/?'];
       let html = null;
       for (const px of proxies) {
         try {
@@ -1718,7 +1721,7 @@ section{padding:100px 0}
     const el = document.getElementById('placeholderChurch'); // 앨범 영역의 텍스트 영역 활용 또는 별도 리스트
     if (!el) return;
     try {
-      const proxies = ['https://corsproxy.io/?','https://api.allorigins.win/raw?url='];
+      const proxies = ['https://api.allorigins.win/raw?url=','https://api.codetabs.com/v1/proxy?quest=','https://corsproxy.io/?'];
       let html = null;
       for (const px of proxies) {
         try {
@@ -1783,9 +1786,9 @@ section{padding:100px 0}
     const RSS_URL     = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
     const SHORTS_PAGE = `https://www.youtube.com/@Gimpo_HBC/shorts`;
     const RAW_PROXIES = [
-      'https://corsproxy.io/?',
       'https://api.allorigins.win/raw?url=',
       'https://api.codetabs.com/v1/proxy?quest=',
+      'https://corsproxy.io/?',
     ];
     const CATEGORIES = {
       /* 순서 중요: 더 구체적인 키워드 먼저 매칭 */
@@ -2131,8 +2134,9 @@ section{padding:100px 0}
     loadBlogPosts();
     loadBulletinNotices();
     loadSermonAudio();
-    loadAlbumNotices(); // 교회 앨범 크롤링 추가
+    loadAlbumNotices();
     hradRender();
+    YT.init();
     /* Enter키 HRAD 글쓰기 */
     document.getElementById('hradText')?.addEventListener('keydown', e => {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); hradPost(); }
