@@ -110,39 +110,43 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 .loader-text{color:var(--white);font-size:1.1rem;letter-spacing:0.15em;font-weight:300;margin-top:8px}
 
 /* HEADER */
-#header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(10,18,48,0.92);backdrop-filter:blur(12px);transition:var(--transition)}
-#header.scrolled{background:rgba(10,18,48,0.98);box-shadow:0 2px 24px rgba(0,0,0,0.3)}
-.nav-logo{display:flex;align-items:center;height:100%;z-index:20;margin-right:auto}
-.logo-img{height:36px;width:auto;object-fit:contain;image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges;transform:translateZ(0)}
-.mobile-brand{display:none;font-family:var(--font-sans);font-size:1.1rem;font-weight:700;color:var(--white);letter-spacing:0.02em;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;z-index:10}
-@media(max-width:900px){
-  .nav-logo{display:none}
-  .mobile-brand{display:block}
-  #header{background:var(--navy)!important;height:56px!important}
-  .header-inner{height:56px!important}
-}
-.main-nav{flex:1;display:flex;align-items:center;justify-content:center}
-.main-nav ul{display:flex;gap:8px;align-items:center}
+#header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(8,15,42,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.07);transition:var(--transition)}
+#header.scrolled{background:rgba(8,15,42,0.99);box-shadow:0 4px 32px rgba(0,0,0,0.45);border-bottom-color:rgba(255,255,255,0.1)}
+.header-inner{max-width:1400px;margin:0 auto;padding:0 48px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;height:76px;gap:32px}
+.nav-logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
+.logo-img{height:50px;width:auto;object-fit:contain;display:block;filter:brightness(0) invert(1);opacity:0.93;transition:opacity 0.2s}
+.logo-img:hover{opacity:1}
+.mobile-brand{display:none}
+.main-nav{display:flex;align-items:center;justify-content:center}
+.main-nav ul{display:flex;gap:0;align-items:center;list-style:none;margin:0;padding:0}
 .main-nav>ul>li{position:relative}
-.main-nav>ul>li>a{color:rgba(255,255,255,0.88);font-size:0.95rem;font-weight:500;padding:10px 16px;border-radius:6px;transition:var(--transition);letter-spacing:-0.01em;display:flex;align-items:center;height:80px}
-.main-nav>ul>li>a:hover,.main-nav>ul>li>a.active{color:var(--white);background:rgba(255,255,255,0.12)}
-.sub-menu{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(-8px);background:var(--navy);border-radius:var(--radius);padding:8px;min-width:160px;box-shadow:var(--shadow-lg);opacity:0;visibility:hidden;transition:var(--transition);pointer-events:none}
-.has-sub:hover .sub-menu{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);pointer-events:all}
-.sub-menu li a{display:block;color:rgba(255,255,255,0.8);padding:8px 16px;font-size:0.875rem;border-radius:6px;transition:var(--transition);white-space:nowrap}
-.sub-menu li a:hover{color:var(--white);background:rgba(255,255,255,0.1)}
-.header-actions{display:flex;align-items:center;gap:10px;position:absolute;right:40px;top:50%;transform:translateY(-50%)}
-.btn-yt{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:#ff0000;color:white;border-radius:50%;font-size:0.9rem;transition:var(--transition)}
-.btn-yt:hover{transform:scale(1.1)}
-.btn-cafe{padding:6px 16px;background:#03c75a;color:white;border-radius:20px;font-size:0.85rem;font-weight:500;transition:var(--transition)}
-.btn-cafe:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(3,199,90,0.4)}
-/* NAV Overlay (hidden — replaced by bottom tab) */
+.main-nav>ul>li>a{color:rgba(255,255,255,0.68);font-size:0.875rem;font-weight:500;padding:0 16px;transition:color 0.2s;letter-spacing:0.01em;display:flex;align-items:center;height:76px;position:relative;white-space:nowrap}
+.main-nav>ul>li>a::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:2px;background:var(--gold);border-radius:2px 2px 0 0;transition:width 0.25s ease}
+.main-nav>ul>li>a:hover{color:rgba(255,255,255,0.95)}
+.main-nav>ul>li>a:hover::after,.main-nav>ul>li>a.active::after{width:calc(100% - 20px)}
+.main-nav>ul>li>a.active{color:var(--white);font-weight:600}
+.header-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn-yt{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:rgba(255,0,0,0.8);color:white;border-radius:8px;font-size:0.85rem;transition:var(--transition)}
+.btn-yt:hover{background:#ff0000;transform:scale(1.08)}
+.btn-cafe{padding:7px 16px;background:rgba(3,199,90,0.85);color:white;border-radius:8px;font-size:0.8rem;font-weight:600;transition:var(--transition);letter-spacing:0.01em;white-space:nowrap}
+.btn-cafe:hover{background:#03c75a;transform:translateY(-1px);box-shadow:0 4px 16px rgba(3,199,90,0.35)}
 .nav-overlay-header{display:none}
 .nav-overlay-footer{display:none}
 .nav-brand{font-family:var(--font-serif);font-size:1.5rem;font-weight:700;color:var(--white)}
 .nav-close{color:rgba(255,255,255,0.7);font-size:1.2rem;padding:8px;transition:var(--transition);border-radius:6px}
 .nav-translate{display:block}
 .nav-social-btn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);font-size:1rem;transition:var(--transition)}
-.hamburger{display:none}
+.hamburger{display:none;flex-direction:column;gap:5px;padding:6px;background:rgba(255,255,255,0.08);border-radius:8px;border:1px solid rgba(255,255,255,0.12)}
+.hamburger span{display:block;width:20px;height:1.5px;background:rgba(255,255,255,0.85);border-radius:2px;transition:var(--transition)}
+@media(max-width:900px){
+  .header-inner{padding:0 20px;grid-template-columns:auto 1fr auto;height:60px;gap:0}
+  .nav-logo{display:flex}
+  .logo-img{height:38px}
+  .main-nav{display:none}
+  .hamburger{display:flex}
+  #header{background:rgba(8,15,42,0.99)!important}
+}
+
 
 /* ===== MOBILE BOTTOM TAB NAV ===== */
 .mobile-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1100;background:rgba(8,16,44,0.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,0.1);padding:0;height:64px;padding-bottom:env(safe-area-inset-bottom)}
@@ -647,6 +651,30 @@ section{padding:100px 0}
   .float-bar{bottom:80px}
 }
 [data-aos]{will-change:transform,opacity}
+/* ===== 교회주보 앨범 그리드 ===== */
+.bulletin-album-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:4px 0 8px}
+.bul-card{background:var(--white);border:1px solid var(--gray-light);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:var(--transition);box-shadow:0 2px 8px rgba(15,32,68,0.06)}
+.bul-card:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(15,32,68,0.15);border-color:var(--gold)}
+.bul-thumb{position:relative;aspect-ratio:3/4;background:var(--off-white);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bul-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 0.35s}
+.bul-card:hover .bul-thumb img{transform:scale(1.04)}
+.bul-thumb-icon{font-size:2.5rem;color:var(--gray);opacity:0.3}
+.bul-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,15,42,0.75) 0%,transparent 50%);opacity:0;transition:opacity 0.25s;display:flex;align-items:flex-end;padding:12px}
+.bul-card:hover .bul-overlay{opacity:1}
+.bul-overlay-btn{display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:var(--navy);font-size:0.75rem;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:0.04em}
+.bul-info{padding:10px 12px}
+.bul-name{font-size:0.78rem;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4;margin-bottom:4px}
+.bul-actions{display:flex;align-items:center;gap:6px}
+.bul-open-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:4px;background:var(--off-white);color:var(--navy);border:1px solid var(--gray-light);font-size:0.72rem;font-weight:600;padding:5px 8px;border-radius:6px;transition:var(--transition);text-decoration:none}
+.bul-open-btn:hover{background:var(--navy);color:white;border-color:var(--navy)}
+.bul-drive-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:#4285f4;color:white;border-radius:6px;font-size:0.7rem;transition:var(--transition);flex-shrink:0;text-decoration:none}
+.bul-drive-btn:hover{background:#3367d6}
+.bcar-btn-more{display:flex;align-items:center;gap:8px;background:var(--off-white);color:var(--navy);border:1.5px solid var(--gray-light);padding:10px 28px;border-radius:50px;font-size:0.875rem;font-weight:600;cursor:pointer;transition:var(--transition);margin:8px auto 0;font-family:inherit}
+.bcar-btn-more:hover{background:var(--navy);color:white;border-color:var(--navy)}
+.bulletin-album-footer{text-align:center;margin-top:4px}
+@media(max-width:900px){.bulletin-album-grid{grid-template-columns:repeat(3,1fr);gap:12px}}
+@media(max-width:600px){.bulletin-album-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
+
 /* ===== 교회주보 캐러셀 ===== */
 .bulletin-carousel-wrap{position:relative;padding:0 48px}
 .bulletin-carousel{display:flex;align-items:stretch;min-height:300px}
@@ -720,22 +748,14 @@ section{padding:100px 0}
   <!-- ===== HEADER / NAV ===== -->
   <header id="header">
     <div class="header-inner">
-      <!-- 데스크톱용 로고 (깨짐 방지 적용) -->
-      <a href="#" class="nav-logo" aria-label="메인으로">
-        <img src="images/logo.png" alt="하늘바람교회 로고" class="logo-img">
-      </a>
-      
-      <!-- 모바일 전용 교회명 (데스크톱에서 숨김) -->
-      <span class="mobile-brand">하늘바람교회</span>
 
+      <!-- 로고 -->
+      <a href="#" class="nav-logo" aria-label="하늘바람교회 홈">
+        <img src="images/logo.png" alt="하늘바람교회" class="logo-img">
+      </a>
+
+      <!-- 데스크톱 네비게이션 -->
       <nav class="main-nav" id="mainNav">
-        <!-- 모바일 오버레이 상단 (데스크톱에서 숨김) -->
-        <div class="nav-overlay-header">
-          <span class="nav-brand">하늘바람교회</span>
-          <button class="nav-close" id="navClose" aria-label="메뉴닫기">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
         <ul>
           <li><a href="#welcome">교회소개</a></li>
           <li><a href="#history">교회역사</a></li>
@@ -746,33 +766,21 @@ section{padding:100px 0}
           <li><a href="#community">커뮤니티</a></li>
           <li><a href="#contact">오시는길</a></li>
         </ul>
-        <!-- 모바일 오버레이 하단 소셜 (데스크톱 숨김) -->
-        <div class="nav-overlay-footer">
-          <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="nav-social-btn"><i class="fab fa-youtube"></i></a>
-          <a href="https://blog.naver.com/habachurch" target="_blank" class="nav-social-btn"><i class="fas fa-blog"></i></a>
-        </div>
-        <ul style="display:none"><!-- dummy to close original ul tag -->
-        </ul>
-
-        <!-- 모바일 메뉴 하단 소셜 링크 -->
-        <div class="nav-overlay-footer">
-          <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="nav-social-btn"><i class="fab fa-youtube"></i></a>
-          <a href="https://blog.naver.com/habachurch" target="_blank" class="nav-social-btn"><i class="fas fa-blog"></i></a>
-          <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="nav-social-btn"><i class="fas fa-mug-hot"></i></a>
-          <a href="https://open.kakao.com/o/geMlE0pf" target="_blank" class="nav-social-btn nav-kakao-btn">
-            <svg width="16" height="16" viewBox="0 0 18 18" fill="currentColor"><path d="M9 0C4.029 0 0 3.134 0 7c0 2.478 1.565 4.648 3.938 5.899L3 18l5.186-3.488C8.447 14.576 8.72 14.6 9 14.6c4.971 0 9-3.134 9-7S13.971 0 9 0z"/></svg>
-          </a>
-        </div>
       </nav>
 
+      <!-- 오른쪽 액션 -->
       <div class="header-actions">
+        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt" aria-label="유튜브">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-cafe">카페</a>
         <button class="hamburger" id="hamburger" aria-label="메뉴열기">
           <span></span><span></span><span></span>
         </button>
       </div>
+
     </div>
   </header>
-
   <!-- ===== HERO : DRONE VIDEO BANNER ===== -->
   <section id="hero">
     <div class="hero-video-wrap" id="heroWrap">
@@ -931,31 +939,27 @@ section{padding:100px 0}
         <h2 class="section-title">하늘바람 소식</h2>
       </div>
 
-      <!-- 교회주보 (상단, 전체 너비) -->
+      <!-- 교회주보 앨범 그리드 -->
       <div class="news-bulletin-box" data-aos="fade-up" data-aos-delay="80">
         <div class="news-block-header">
           <div class="nbh-left">
-            <i class="fas fa-newspaper nbh-icon"></i>
+            <i class="fas fa-book-open nbh-icon"></i>
             <h3>교회주보</h3>
-            <span class="news-badge-drive"><i class="fab fa-google-drive"></i> 실시간 연동</span>
+            <span class="news-badge-drive"><i class="fab fa-google-drive"></i> Drive 자동연동</span>
           </div>
           <a href="https://drive.google.com/drive/folders/15rRGFV_nXCGg9PIRB7bkHzWssPVppCzZ?usp=sharing"
              target="_blank" class="news-drive-btn">
-            <i class="fas fa-eye"></i> 주보 미리보기
+            <i class="fab fa-google-drive"></i> 전체 주보 보기
           </a>
         </div>
-        <!-- 주보 쳤러셀 -->
-        <div class="bulletin-carousel-wrap">
-          <button class="bcar-btn bcar-prev" onclick="bcarMove(-1)" aria-label="이전 주보">
-            <i class="fas fa-chevron-left"></i>
+        <!-- 주보 앨범 그리드 -->
+        <div class="bulletin-album-grid" id="bulletinNotices">
+          <div class="notice-loading"><i class="fas fa-circle-notch fa-spin"></i> 주보 불러오는 중...</div>
+        </div>
+        <div class="bulletin-album-footer" id="bulletinAlbumFooter" style="display:none">
+          <button class="bcar-btn-more" onclick="bulletinShowMore()">
+            <i class="fas fa-plus"></i> 더보기
           </button>
-          <div class="bulletin-carousel" id="bulletinNotices">
-            <div class="notice-loading"><i class="fas fa-circle-notch fa-spin"></i> 주보 불러오는 중...</div>
-          </div>
-          <button class="bcar-btn bcar-next" onclick="bcarMove(1)" aria-label="다음 주보">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-          <div class="bcar-indicator" id="bcarIndicator"></div>
         </div>
       </div>
 
@@ -1548,11 +1552,15 @@ section{padding:100px 0}
   ============================================= */
   const BULLETIN_FOLDER = '15rRGFV_nXCGg9PIRB7bkHzWssPVppCzZ';
   const BULLETIN_URL    = `https://drive.google.com/drive/folders/${BULLETIN_FOLDER}?usp=sharing`;
+  /* ===== 교회주보 앨범 그리드 크롤링 ===== */
+  let _bulletinAllItems = [];
+  let _bulletinShowing = 8;
+
   async function loadBulletinNotices() {
     const el = document.getElementById('bulletinNotices');
     if (!el) return;
     try {
-      const proxies = ['https://api.allorigins.win/raw?url=','https://api.codetabs.com/v1/proxy?quest=','https://corsproxy.io/?'];
+      const proxies = ['https://corsproxy.io/?','https://api.allorigins.win/raw?url='];
       let html = null;
       for (const px of proxies) {
         try {
@@ -1565,24 +1573,66 @@ section{padding:100px 0}
         const entries = [...html.matchAll(/id="entry-([^"]+)"[\s\S]*?class="flip-entry-title"[^>]*>([^<]+)</g)]
           .map(m => ({ id: m[1].trim(), name: m[2].trim() }))
           .filter(e => e.name && e.id);
-        /* 이름순 정렬 (오름차순 - 가나다) */
-        entries.sort((a, b) => a.name.localeCompare(b.name));
+        /* 최신순 정렬 */
+        entries.sort((a, b) => b.name.localeCompare(a.name));
         if (entries.length) {
-          _bcarItems = entries;
-          _bcarIdx   = 0;
-          bcarRender();
+          _bulletinAllItems = entries;
+          renderBulletinAlbum(0, _bulletinShowing);
           return;
         }
       }
     } catch {}
     el.innerHTML = `
-      <a href="${BULLETIN_URL}" target="_blank" class="bulletin-notice-item">
-        <i class="fab fa-google-drive"></i>
-        <span>주보 폴더 바로가기 — 주보를 드라이브에 업로드하면 여기에 자동으로 표시됩니다</span>
-        <i class="fas fa-external-link-alt notice-arrow"></i>
+      <a href="${BULLETIN_URL}" target="_blank" style="display:flex;align-items:center;gap:10px;padding:20px;color:var(--text-muted);text-decoration:none">
+        <i class="fab fa-google-drive" style="font-size:1.4rem;color:#4285f4"></i>
+        <span>주보를 Drive 폴더에 업로드하면 앨범이 자동으로 표시됩니다</span>
+        <i class="fas fa-external-link-alt" style="margin-left:auto;opacity:0.4"></i>
       </a>`;
   }
-  /* 주보 파일 미리보기 모달 */
+
+  function renderBulletinAlbum(from, count) {
+    const el = document.getElementById('bulletinNotices');
+    const footer = document.getElementById('bulletinAlbumFooter');
+    if (!el) return;
+    const items = _bulletinAllItems.slice(from, from + count);
+    if (from === 0) el.innerHTML = '';
+    items.forEach(e => {
+      const card = document.createElement('div');
+      card.className = 'bul-card';
+      card.innerHTML = `
+        <div class="bul-thumb">
+          <img src="https://drive.google.com/thumbnail?id=${e.id}&sz=w600"
+               alt="${_escHtml(e.name)}" loading="lazy"
+               onerror="this.parentElement.innerHTML='<i class='fas fa-file-pdf bul-thumb-icon'></i>'">
+          <div class="bul-overlay">
+            <span class="bul-overlay-btn"><i class="fas fa-eye"></i> 미리보기</span>
+          </div>
+        </div>
+        <div class="bul-info">
+          <p class="bul-name">${_escHtml(e.name)}</p>
+          <div class="bul-actions">
+            <button class="bul-open-btn" onclick="openBulletinPreview('${e.id}','${_escHtml(e.name)}')">
+              <i class="fas fa-search"></i> 미리보기
+            </button>
+            <a href="https://drive.google.com/file/d/${e.id}/view" target="_blank" class="bul-drive-btn" title="Drive에서 열기">
+              <i class="fab fa-google-drive"></i>
+            </a>
+          </div>
+        </div>`;
+      el.appendChild(card);
+    });
+    /* 더보기 버튼 */
+    if (footer) {
+      footer.style.display = (from + count < _bulletinAllItems.length) ? 'block' : 'none';
+    }
+  }
+
+  function bulletinShowMore() {
+    _bulletinShowing += 8;
+    renderBulletinAlbum(0, _bulletinShowing);
+  }
+
+    /* 주보 파일 미리보기 모달 */
   function openBulletinPreview(fileId, fileName) {
     const modal  = document.getElementById('audioModal');        // 기존 모달 재활용
     const iframe = document.getElementById('audioModalIframe');
