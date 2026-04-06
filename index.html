@@ -114,7 +114,7 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 #header.scrolled{background:rgba(8,15,42,0.99);box-shadow:0 4px 32px rgba(0,0,0,0.45);border-bottom-color:rgba(255,255,255,0.1)}
 .header-inner{max-width:1400px;margin:0 auto;padding:0 48px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;height:76px;gap:32px}
 .nav-logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
-.logo-img{height:50px;width:auto;object-fit:contain;display:block;filter:brightness(0) invert(1);opacity:0.93;transition:opacity 0.2s}
+.logo-img{height:50px;width:auto;object-fit:contain;display:block;opacity:0.93;transition:opacity 0.2s}
 .logo-img:hover{opacity:1}
 .mobile-brand{display:none}
 .main-nav{display:flex;align-items:center;justify-content:center}
@@ -130,6 +130,18 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 .btn-yt:hover{background:#ff0000;transform:scale(1.08)}
 .btn-cafe{padding:7px 16px;background:rgba(3,199,90,0.85);color:white;border-radius:8px;font-size:0.8rem;font-weight:600;transition:var(--transition);letter-spacing:0.01em;white-space:nowrap}
 .btn-cafe:hover{background:#03c75a;transform:translateY(-1px);box-shadow:0 4px 16px rgba(3,199,90,0.35)}
+/* 번역 버튼 */
+.translate-wrap{position:relative}
+.btn-translate{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.85);border-radius:8px;font-size:0.95rem;border:1px solid rgba(255,255,255,0.18);cursor:pointer;transition:var(--transition)}
+.btn-translate:hover{background:rgba(255,255,255,0.22);color:white}
+.translate-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;background:rgba(10,20,50,0.97);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:8px 0;min-width:160px;z-index:2000;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.translate-menu.open{display:block}
+.translate-menu button{width:100%;text-align:left;padding:9px 16px;color:rgba(255,255,255,0.8);font-size:0.85rem;background:none;border:none;cursor:pointer;transition:background 0.15s,color 0.15s;white-space:nowrap}
+.translate-menu button:hover{background:rgba(255,255,255,0.1);color:white}
+/* Google Translate 위젯 숨김 */
+.goog-te-banner-frame,.skiptranslate{display:none!important}
+body{top:0!important}
+#goog-gt-{display:none!important}
 .nav-overlay-header{display:none}
 .nav-overlay-footer{display:none}
 .nav-brand{font-family:var(--font-serif);font-size:1.5rem;font-weight:700;color:var(--white)}
@@ -139,24 +151,32 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 .hamburger{display:none;flex-direction:column;gap:5px;padding:6px;background:rgba(255,255,255,0.08);border-radius:8px;border:1px solid rgba(255,255,255,0.12)}
 .hamburger span{display:block;width:20px;height:1.5px;background:rgba(255,255,255,0.85);border-radius:2px;transition:var(--transition)}
 @media(max-width:900px){
-  .header-inner{padding:0 20px;grid-template-columns:auto 1fr auto;height:60px;gap:0}
-  .nav-logo{display:flex}
-  .logo-img{height:38px}
-  .main-nav{display:none}
-  .hamburger{display:flex}
-  #header{background:rgba(8,15,42,0.99)!important}
+  /* 데스크톱 헤더 숨김 */
+  #header{display:none!important}
+}
+/* ===== 모바일 전용 상단 헤더 ===== */
+.mobile-top-header{display:none;position:fixed;top:0;left:0;right:0;z-index:1100;height:64px;padding:0 16px;align-items:center;justify-content:space-between;background:transparent;transition:background 0.35s}
+.mobile-top-header.scrolled{background:rgba(8,15,42,0.92);backdrop-filter:blur(16px)}
+.mobile-top-logo{height:40px;width:auto;object-fit:contain;display:block}
+.mobile-top-left,.mobile-top-right{width:40px;display:flex;align-items:center}
+.mobile-top-right{justify-content:flex-end}
+.mobile-top-header .translate-menu{left:0;right:auto}
+@media(max-width:900px){
+  .mobile-top-header{display:flex}
+  body{padding-top:64px}
 }
 
 
-/* ===== MOBILE BOTTOM TAB NAV ===== */
-.mobile-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1100;background:rgba(8,16,44,0.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,0.1);padding:0;height:64px;padding-bottom:env(safe-area-inset-bottom)}
-.mobile-bottom-nav ul{display:flex;height:100%;margin:0;padding:0 8px;list-style:none;align-items:stretch;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:2px}
+/* ===== 모바일 상단 탭 네비게이션 ===== */
+.mobile-bottom-nav{display:none;position:fixed;top:64px;left:0;right:0;z-index:1099;background:transparent;padding:0;height:52px;overflow:hidden;transition:background 0.35s}
+.mobile-bottom-nav.scrolled{background:rgba(8,15,42,0.88);backdrop-filter:blur(14px)}
+.mobile-bottom-nav ul{display:flex;height:100%;margin:0;padding:0 4px;list-style:none;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:2px}
 .mobile-bottom-nav ul::-webkit-scrollbar{display:none}
-.mbn-item{flex:0 0 auto;min-width:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:rgba(255,255,255,0.45);font-size:0.58rem;font-weight:500;padding:8px 6px;transition:color 0.2s;border-radius:10px;-webkit-tap-highlight-color:transparent;position:relative}
-.mbn-item i{font-size:1.1rem;transition:transform 0.2s,color 0.2s}
+.mbn-item{flex:0 0 auto;min-width:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.55rem;font-weight:500;padding:6px 6px;transition:color 0.2s;border-radius:10px;-webkit-tap-highlight-color:transparent;position:relative}
+.mbn-item i{font-size:1rem;transition:transform 0.2s,color 0.2s}
 .mbn-item.active,.mbn-item:hover{color:var(--gold-light)}
-.mbn-item.active i{transform:translateY(-2px)}
-.mbn-item.active::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:24px;height:3px;background:var(--gold);border-radius:3px 3px 0 0}
+.mbn-item.active i{transform:translateY(-2px);color:var(--gold)}
+.mbn-item.active::after{content:"";position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:20px;height:2px;background:var(--gold);border-radius:2px}
 .mbn-overlay{display:none;position:fixed;inset:0;z-index:1080;background:rgba(0,0,0,0.5)}
 .mbn-overlay.open{display:block}
 
@@ -566,6 +586,17 @@ section{padding:100px 0}
 .hrad-post-text{font-size:0.875rem;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-word}
 .hrad-empty{text-align:center;padding:32px 20px;color:var(--gray);font-size:0.9rem}
 @media(max-width:768px){.hrad-body{grid-template-columns:1fr}.news-block-header{flex-direction:column;align-items:flex-start}.hrad-desc-small{display:none}}
+/* ===== HRAD + 중보기도 통합 탭 박스 ===== */
+.hrad-tab-box{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);border:1px solid var(--gray-light);overflow:hidden}
+.hrad-tab-header{display:flex;border-bottom:2px solid var(--gray-light)}
+.hrad-tab-btn{flex:1;padding:14px 20px;font-size:0.9rem;font-weight:700;color:var(--gray);background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:color 0.2s,background 0.2s;position:relative}
+.hrad-tab-btn.active{color:var(--navy);background:var(--off-white)}
+.hrad-tab-btn.active::after{content:"";position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--gold)}
+.hrad-tab-btn .live-dot{width:7px;height:7px;border-radius:50%;background:#e53935;animation:livePulse 2s ease-in-out infinite;display:inline-block;flex-shrink:0}
+.hrad-tab-btn .pray-dot{background:#c9a84c}
+.hrad-tab-panel{display:none;padding:28px 32px}
+.hrad-tab-panel.active{display:block}
+@media(max-width:600px){.hrad-tab-btn{padding:12px 8px;font-size:0.82rem}.hrad-tab-panel{padding:20px 16px}}
 /* ===== 주보 미리보기 카드 ===== */
 .bulletin-preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:8px 0}
 .bulletin-preview-card{background:var(--white);border:1px solid var(--gray-light);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:var(--transition);box-shadow:var(--shadow-sm)}
@@ -643,12 +674,12 @@ section{padding:100px 0}
   #grid-david .video-card:nth-child(n+3){display:none}
 }
 @media(max-width:480px){.btn-primary,.btn-outline{padding:12px 22px;font-size:0.875rem}.video-grid{grid-template-columns:1fr}.shorts-grid{grid-template-columns:repeat(2,1fr)}.shorts-grid .shorts-card:nth-child(n+5){display:none}.cafe-grid{grid-template-columns:1fr}.float-label{display:none}.drive-embed{height:300px}.album-drive-wrap{min-height:300px}.shorts-more-wrap{display:flex;justify-content:center;margin-top:24px}}
-/* 모바일 하단 탭 표시 */
+/* 모바일 상단 탭 표시 */
 @media(max-width:900px){
   .mobile-bottom-nav{display:flex!important;align-items:stretch}
   .mbn-drawer{display:block}
-  body{padding-bottom:64px}
-  .float-bar{bottom:80px}
+  body{padding-bottom:0}
+  .float-bar{bottom:24px}
 }
 [data-aos]{will-change:transform,opacity}
 /* ===== 교회주보 앨범 그리드 ===== */
@@ -745,6 +776,31 @@ section{padding:100px 0}
     </div>
   </div>
 
+  <!-- ===== 모바일 전용 상단 헤더 (로고 중앙) ===== -->
+  <header class="mobile-top-header" id="mobileTopHeader">
+    <div class="mobile-top-left">
+      <div class="translate-wrap" id="mobileTranslateWrap">
+        <button class="btn-translate" onclick="toggleMobileTranslate(event)" aria-label="언어 선택" style="background:rgba(255,255,255,0.1)">
+          <i class="fas fa-globe"></i>
+        </button>
+        <div class="translate-menu" id="mobileTranslateMenu">
+          <button onclick="doTranslate('ko')">🇰🇷 한국어</button>
+          <button onclick="doTranslate('en')">🇺🇸 English</button>
+          <button onclick="doTranslate('zh-CN')">🇨🇳 中文(简)</button>
+          <button onclick="doTranslate('zh-TW')">🇹🇼 中文(繁)</button>
+          <button onclick="doTranslate('ja')">🇯🇵 日本語</button>
+          <button onclick="doTranslate('es')">🇪🇸 Español</button>
+          <button onclick="doTranslate('vi')">🇻🇳 Tiếng Việt</button>
+          <button onclick="doTranslate('ru')">🇷🇺 Русский</button>
+        </div>
+      </div>
+    </div>
+    <a href="#" aria-label="하늘바람교회 홈">
+      <img src="images/logo.png" alt="하늘바람교회" class="mobile-top-logo">
+    </a>
+    <div class="mobile-top-right"></div>
+  </header>
+
   <!-- ===== HEADER / NAV ===== -->
   <header id="header">
     <div class="header-inner">
@@ -774,6 +830,22 @@ section{padding:100px 0}
           <i class="fab fa-youtube"></i>
         </a>
         <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-cafe">카페</a>
+        <!-- 번역 버튼 -->
+        <div class="translate-wrap" id="translateWrap">
+          <button class="btn-translate" onclick="toggleTranslateMenu(event)" aria-label="언어 선택">
+            <i class="fas fa-globe"></i>
+          </button>
+          <div class="translate-menu" id="translateMenu">
+            <button onclick="doTranslate('ko')">🇰🇷 한국어</button>
+            <button onclick="doTranslate('en')">🇺🇸 English</button>
+            <button onclick="doTranslate('zh-CN')">🇨🇳 中文(简)</button>
+            <button onclick="doTranslate('zh-TW')">🇹🇼 中文(繁)</button>
+            <button onclick="doTranslate('ja')">🇯🇵 日本語</button>
+            <button onclick="doTranslate('es')">🇪🇸 Español</button>
+            <button onclick="doTranslate('vi')">🇻🇳 Tiếng Việt</button>
+            <button onclick="doTranslate('ru')">🇷🇺 Русский</button>
+          </div>
+        </div>
         <button class="hamburger" id="hamburger" aria-label="메뉴열기">
           <span></span><span></span><span></span>
         </button>
@@ -963,50 +1035,50 @@ section{padding:100px 0}
         </div>
       </div>
 
-      <!-- HRAD 실시간 (하단, 전체 너비) -->
-      <div class="news-hrad-box" data-aos="fade-up" data-aos-delay="160">
-        <div class="news-block-header">
-          <div class="nbh-left">
-            <i class="fas fa-broadcast-tower nbh-icon" style="color:var(--sky)"></i>
-            <h3>HRAD 실시간</h3>
-            <span class="news-live-badge"><i class="fas fa-circle"></i> LIVE</span>
-          </div>
-          <span class="hrad-desc-small">성도님들이 자유롭게 소식을 나누는 공간</span>
+      <!-- HRAD 실시간 + 중보기도 통합 탭 -->
+      <div class="hrad-tab-box" data-aos="fade-up" data-aos-delay="160">
+        <!-- 탭 헤더 -->
+        <div class="hrad-tab-header">
+          <button class="hrad-tab-btn active" onclick="switchHradTab('hrad',this)">
+            <i class="fas fa-broadcast-tower" style="color:var(--sky)"></i>
+            HRAD 실시간
+            <span class="live-dot"></span>
+          </button>
+          <button class="hrad-tab-btn" onclick="switchHradTab('pray',this)">
+            <i class="fas fa-praying-hands" style="color:#c9a84c"></i>
+            중보기도 요청
+            <span class="live-dot pray-dot"></span>
+          </button>
         </div>
 
-        <div class="hrad-body">
-          <!-- 글쓰기 폼 -->
-          <div class="hrad-form-row">
-            <input type="text" id="hradName" class="hrad-input-name" placeholder="이름 (익명 가능)" maxlength="20" />
-            <textarea id="hradText" class="hrad-input-text" placeholder="소식을 나눠주세요... (Enter 올리기)" rows="2" maxlength="300"></textarea>
-            <button class="hrad-submit-btn" onclick="hradPost()">
-              <i class="fas fa-paper-plane"></i> 올리기
-            </button>
+        <!-- HRAD 패널 -->
+        <div class="hrad-tab-panel active" id="hrad-panel">
+          <p style="font-size:0.82rem;color:var(--gray);margin-bottom:16px">성도님들이 자유롭게 소식을 나누는 공간입니다</p>
+          <div class="hrad-body">
+            <div class="hrad-form-row">
+              <input type="text" id="hradName" class="hrad-input-name" placeholder="이름 (익명 가능)" maxlength="20" />
+              <textarea id="hradText" class="hrad-input-text" placeholder="소식을 나눠주세요... (Enter 올리기)" rows="2" maxlength="300"></textarea>
+              <button class="hrad-submit-btn" onclick="hradPost()">
+                <i class="fas fa-paper-plane"></i> 올리기
+              </button>
+            </div>
+            <div class="hrad-list" id="hradList"></div>
           </div>
-          <!-- 게시글 목록 -->
-          <div class="hrad-list" id="hradList"></div>
         </div>
-      </div>
 
-      <!-- 중보기도 요청칸 -->
-      <div class="prayer-request-box" data-aos="fade-up" data-aos-delay="200">
-        <div class="news-block-header">
-          <div class="nbh-left">
-            <i class="fas fa-hands" style="color:#c9a84c;font-size:1.3rem;margin-right:10px"></i>
-            <h3>중보기도 요청</h3>
-            <span class="news-live-badge pray-live-badge"><i class="fas fa-circle pray-live-dot"></i> LIVE</span>
+        <!-- 중보기도 패널 -->
+        <div class="hrad-tab-panel" id="pray-panel">
+          <p style="font-size:0.82rem;color:var(--gray);margin-bottom:16px">성도님을 위해 함께 기도합니다 🙏</p>
+          <div class="hrad-body">
+            <div class="hrad-form-row">
+              <input type="text" id="prayName" class="hrad-input-name" placeholder="이름 (익명 가능)" maxlength="20" />
+              <textarea id="prayText" class="hrad-input-text" placeholder="기도제목을 적어주세요..." rows="2" maxlength="300"></textarea>
+              <button class="hrad-submit-btn" style="background:linear-gradient(135deg,#c9a84c,#e8c97a)" onclick="prayPost()">
+                <i class="fas fa-praying-hands"></i> 기도요청
+              </button>
+            </div>
+            <div class="hrad-list" id="prayList"></div>
           </div>
-          <span style="font-size:0.8rem;color:var(--text-muted)">성도님을 위해 함께 기도합니다</span>
-        </div>
-        <div class="hrad-body">
-          <div class="hrad-form-row">
-            <input type="text" id="prayName" class="hrad-input-name" placeholder="이름 (익명 가능)" maxlength="20" />
-            <textarea id="prayText" class="hrad-input-text" placeholder="기도제목을 적어주세요... (언제든지 수정 가능)" rows="2" maxlength="300"></textarea>
-            <button class="hrad-submit-btn" style="background:linear-gradient(135deg,#c9a84c,#e8c97a)" onclick="prayPost()">
-              <i class="fas fa-praying-hands"></i> 기도요청
-            </button>
-          </div>
-          <div class="hrad-list" id="prayList"></div>
         </div>
       </div>
 
@@ -1517,6 +1589,13 @@ section{padding:100px 0}
         <p class="hrad-post-text">${_escHtml(p.text)}</p>
       </div>`).join('');
   }
+  /* HRAD 탭 전환 */
+  function switchHradTab(tab, btn) {
+    document.querySelectorAll('.hrad-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.hrad-tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tab + '-panel')?.classList.add('active');
+  }
   const HRAD_GAS_URL = 'https://script.google.com/macros/s/AKfycbz9eIMavFE3Ihdk2RcdX9xQzQHsJjGgPnANjDULc8qAaiIKZP7Z4pb0IRRiXxJeMbwx2Q/exec';
   function hradPost() {
     const name = (document.getElementById('hradName')?.value||'').trim()||'익명';
@@ -1857,7 +1936,12 @@ section{padding:100px 0}
         raw.forEach(m => titledMap.set(m[1], m[2]));
         /* videoId만 추출 (폴백) */
         const ids = [...new Set([...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)].map(m=>m[1]))].slice(0, limit);
-        return ids.map(videoId => ({ videoId, title: titledMap.get(videoId)||'', pubDate:'', isShorts:false, category:'all' }));
+        return ids.map(videoId => {
+          const title = titledMap.get(videoId)||'';
+          /* 제목으로 분류, 없으면 streams탭 = 기본적으로 주일예배 */
+          const cat = title ? classify(title) : 'sunday';
+          return { videoId, title, pubDate:'', isShorts:false, category: cat === 'all' ? 'sunday' : cat };
+        });
       } catch { return []; }
     }
     async function fetchVideosPage(limit = 10) {
@@ -1987,16 +2071,23 @@ section{padding:100px 0}
         }
 
         const rssIds = new Set(rssVideos.map(v => v.videoId));
-        const newStreams = streamsFromPage.filter(v => !rssIds.has(v.videoId) && v.title);
+        const newStreams = streamsFromPage.filter(v => !rssIds.has(v.videoId));
         const allVideos = [...rssVideos, ...newStreams];
 
+        /* 최신순 정렬 (pubDate 없는 항목은 뒤로) */
+        const byDate = arr => arr.slice().sort((a,b) => {
+          const da = a.pubDate ? new Date(a.pubDate) : new Date(0);
+          const db = b.pubDate ? new Date(b.pubDate) : new Date(0);
+          return db - da;
+        });
+
         const normals   = allVideos.filter(v => !v.isShorts);
-        const sermon3   = normals.filter(v => v.category === 'sermon3');
-        const david     = normals.filter(v => v.category === 'david');
-        const sunday    = normals.filter(v => v.category === 'sunday');
-        const dawn      = normals.filter(v => v.category === 'dawn');
-        const wednesday = normals.filter(v => v.category === 'wednesday');
-        const friday    = normals.filter(v => v.category === 'friday');
+        const sermon3   = byDate(normals.filter(v => v.category === 'sermon3'));
+        const david     = byDate(normals.filter(v => v.category === 'david'));
+        const sunday    = byDate(normals.filter(v => v.category === 'sunday'));
+        const dawn      = byDate(normals.filter(v => v.category === 'dawn'));
+        const wednesday = byDate(normals.filter(v => v.category === 'wednesday'));
+        const friday    = byDate(normals.filter(v => v.category === 'friday'));
         const rssShorts = allVideos.filter(v => v.isShorts);
         const rssShortIds    = new Set(rssShorts.map(v => v.videoId));
         const pageShorts = shortsFromPage.filter(v => !rssShortIds.has(v.videoId));
@@ -2049,9 +2140,13 @@ section{padding:100px 0}
     AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 60 });
   });
   const _header = document.getElementById('header');
+  const _mobileTopHeader = document.getElementById('mobileTopHeader');
+  const _mobileNav = document.getElementById('mobileBottomNav');
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 60) _header?.classList.add('scrolled');
-    else _header?.classList.remove('scrolled');
+    const scrolled = window.scrollY > 20;
+    _header?.classList.toggle('scrolled', window.scrollY > 60);
+    _mobileTopHeader?.classList.toggle('scrolled', scrolled);
+    _mobileNav?.classList.toggle('scrolled', scrolled);
   }, { passive: true });
   const hamburger = document.getElementById('hamburger');
   const mainNav   = document.getElementById('mainNav');
@@ -2323,6 +2418,54 @@ section{padding:100px 0}
     prayRender('prayList',  '중보기도');
     prayRender('pray2List', '중보기도');
   });
+
+  /* ===== 번역 기능 ===== */
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'ko',
+      includedLanguages: 'en,zh-CN,zh-TW,ja,es,vi,ru,fr,de,pt,id',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+      autoDisplay: false
+    }, 'google_translate_element');
+  }
+  function doTranslate(lang) {
+    document.getElementById('translateMenu')?.classList.remove('open');
+    if (lang === 'ko') {
+      /* 원래 언어로 복원 */
+      const iframe = document.querySelector('.goog-te-banner-frame');
+      const restore = iframe?.contentDocument?.querySelector('.goog-te-button button');
+      if (restore) { restore.click(); return; }
+      /* 쿠키 제거 후 리로드 */
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=' + location.hostname;
+      location.reload();
+      return;
+    }
+    const sel = document.querySelector('.goog-te-combo');
+    if (sel) { sel.value = lang; sel.dispatchEvent(new Event('change')); }
+    else {
+      document.cookie = `googtrans=/ko/${lang}; path=/`;
+      location.reload();
+    }
+  }
+  function toggleTranslateMenu(e) {
+    e.stopPropagation();
+    document.getElementById('translateMenu')?.classList.toggle('open');
+    document.getElementById('mobileTranslateMenu')?.classList.remove('open');
+  }
+  function toggleMobileTranslate(e) {
+    e.stopPropagation();
+    document.getElementById('mobileTranslateMenu')?.classList.toggle('open');
+    document.getElementById('translateMenu')?.classList.remove('open');
+  }
+  document.addEventListener('click', () => {
+    document.getElementById('translateMenu')?.classList.remove('open');
+    document.getElementById('mobileTranslateMenu')?.classList.remove('open');
+  });
   </script>
+
+  <!-- Google Translate -->
+  <div id="google_translate_element" style="display:none"></div>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
 </body>
 </html>
