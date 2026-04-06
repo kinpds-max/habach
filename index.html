@@ -1820,10 +1820,11 @@ section{padding:100px 0}
       return json.items.map(item => {
         const videoId = (item.link || '').split('v=')[1]?.split('&')[0] ||
                         (item.guid  || '').split('v=')[1]?.split('&')[0] || '';
-        const isShorts = (item.link||'').includes('/shorts/') ||
-                         (item.categories||[]).some(c => /short/i.test(c));
-        return { videoId, title: item.title||'', pubDate: item.pubDate||'', isShorts,
-                 category: isShorts ? 'shorts' : classify(item.title||'') };
+        let category = classify(item.title||'');
+        let isShorts = (item.link||'').includes('/shorts/') || (item.categories||[]).some(c => /short/i.test(c));
+        if (category !== 'all') isShorts = false;
+        else if (isShorts) category = 'shorts';
+        return { videoId, title: item.title||'', pubDate: item.pubDate||'', isShorts, category };
       }).filter(v => v.videoId);
     }
 
@@ -1845,8 +1846,11 @@ section{padding:100px 0}
         const title   = e.querySelector('title')?.textContent || '';
         const pubDate = e.querySelector('published')?.textContent || '';
         const href    = e.querySelector('link')?.getAttribute('href') || '';
-        const isShorts = href.includes('/shorts/');
-        return { videoId, title, pubDate, isShorts, category: isShorts ? 'shorts' : classify(title) };
+        let category = classify(title);
+        let isShorts = href.includes('/shorts/');
+        if (category !== 'all') isShorts = false;
+        else if (isShorts) category = 'shorts';
+        return { videoId, title, pubDate, isShorts, category };
       }).filter(v => v.videoId);
     }
 
