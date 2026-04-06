@@ -1232,9 +1232,9 @@ section{padding:100px 0}
                target="_blank" class="map-open-btn">
               <i class="fas fa-map-marker-alt"></i> 네이버 지도에서 보기
             </a>
-            <a href="https://map.naver.com/p/search/%ED%95%98%EB%8A%98%EB%B0%94%EB%9E%8C%EA%B5%90%ED%9A%8C"
+            <a href="https://naver.me/5XJRTIuL"
                target="_blank" class="map-open-btn map-smart-btn">
-              <i class="fas fa-store"></i> 스마트플레이스 검색
+              <i class="fas fa-store"></i> 스마트플레이스 보기
             </a>
           </div>
         </div>
@@ -1454,6 +1454,45 @@ section{padding:100px 0}
         <i class="fab fa-google-drive" style="font-size:1.4rem;color:#4285f4;flex-shrink:0"></i>
         <span>녹음 파일을 Drive 폴더에 업로드하면 여기에 자동으로 표시됩니다</span>
       </div>`;
+  }
+
+  /* =============================================
+     교회 앨범 (구글 드라이브 크롤링) - 신규 추가
+  ============================================= */
+  const ALBUM_FOLDER_ID = '1XK4HoQKw60pfZpTOks7pOdPptJkIiCRZ';
+  async function loadAlbumNotices() {
+    const el = document.getElementById('placeholderChurch'); // 앨범 영역의 텍스트 영역 활용 또는 별도 리스트
+    if (!el) return;
+    try {
+      const proxies = ['https://corsproxy.io/?','https://api.allorigins.win/raw?url='];
+      let html = null;
+      for (const px of proxies) {
+        try {
+          const r = await fetch(px + encodeURIComponent(`https://drive.google.com/embeddedfolderview?id=${ALBUM_FOLDER_ID}#list`), { signal: AbortSignal.timeout(8000) });
+          if (r.ok) { html = await r.text(); break; }
+        } catch {}
+      }
+      if (html) {
+        const names = [...html.matchAll(/class="flip-entry-title"[^>]*>([^<]+)</g)]
+                       .map(m => m[1].trim()).filter(Boolean);
+        names.sort((a, b) => b.localeCompare(a));
+        const latest = names.slice(0, 3);
+        if (latest.length) {
+          const inner = el.querySelector('.drive-placeholder-inner');
+          if (inner) {
+            inner.innerHTML = `
+              <i class="fas fa-images" style="font-size:2rem;color:var(--gold);margin-bottom:15px"></i>
+              <h3 style="margin-bottom:10px">최신 업데이트 사진</h3>
+              <ul style="text-align:left;list-style:none;padding:0;margin-bottom:20px;font-size:0.85rem;color:var(--navy)">
+                ${latest.map(n => `<li style="margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><i class="fas fa-check-circle" style="color:var(--gold);margin-right:6px"></i> ${n}</li>`).join('')}
+              </ul>
+              <a href="https://drive.google.com/drive/folders/${ALBUM_FOLDER_ID}" target="_blank" class="btn-primary">앨범 크게보기</a>
+            `;
+            el.style.background = 'rgba(255,255,255,0.95)';
+          }
+        }
+      }
+    } catch {}
   }
 
   function openAudioModal(fileId, fileName) {
@@ -1837,6 +1876,7 @@ section{padding:100px 0}
     loadBlogPosts();
     loadBulletinNotices();
     loadSermonAudio();
+    loadAlbumNotices(); // 교회 앨범 크롤링 추가
     hradRender();
     /* Enter키 HRAD 글쓰기 */
     document.getElementById('hradText')?.addEventListener('keydown', e => {
