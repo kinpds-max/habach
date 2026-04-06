@@ -128,24 +128,35 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 .btn-yt:hover{transform:scale(1.1)}
 .btn-cafe{padding:6px 16px;background:#03c75a;color:white;border-radius:20px;font-size:0.85rem;font-weight:500;transition:var(--transition)}
 .btn-cafe:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(3,199,90,0.4)}
-/* MOBILE BRAND (header center text) */
+/* MOBILE BRAND */
 .mobile-brand{display:none;font-family:var(--font-serif);font-size:1.05rem;font-weight:700;color:var(--white);letter-spacing:-0.01em;position:absolute;left:50%;transform:translateX(-50%);pointer-events:none}
-/* NAV OVERLAY ELEMENTS (hidden on desktop) */
+/* NAV Overlay (hidden — replaced by bottom tab) */
 .nav-overlay-header{display:none}
 .nav-overlay-footer{display:none}
 .nav-brand{font-family:var(--font-serif);font-size:1.5rem;font-weight:700;color:var(--white)}
 .nav-close{color:rgba(255,255,255,0.7);font-size:1.2rem;padding:8px;transition:var(--transition);border-radius:6px}
-.nav-close:hover{color:var(--white);background:rgba(255,255,255,0.12);transform:rotate(90deg)}
 .nav-translate{display:block}
 .nav-social-btn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);font-size:1rem;transition:var(--transition)}
-.nav-social-btn:hover{background:rgba(255,255,255,0.2);color:var(--white)}
-.nav-kakao-btn{background:#FEE500;color:#3C1E1E}
-.nav-kakao-btn:hover{background:#f5db00;color:#3C1E1E}
-.hamburger{display:none;flex-direction:column;gap:5px;padding:4px;z-index:1001;position:relative}
-.hamburger span{display:block;width:24px;height:2px;background:white;border-radius:2px;transition:var(--transition)}
-.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
-.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.hamburger{display:none}
+
+/* ===== MOBILE BOTTOM TAB NAV ===== */
+.mobile-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1100;background:rgba(8,16,44,0.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,0.1);padding:0;height:64px;padding-bottom:env(safe-area-inset-bottom)}
+.mobile-bottom-nav ul{display:flex;height:100%;margin:0;padding:0 4px;list-style:none;align-items:stretch}
+.mbn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:rgba(255,255,255,0.45);font-size:0.6rem;font-weight:500;letter-spacing:0.01em;padding:8px 4px;transition:color 0.2s,background 0.2s;border-radius:10px;-webkit-tap-highlight-color:transparent;position:relative}
+.mbn-item i{font-size:1.1rem;transition:transform 0.2s,color 0.2s}
+.mbn-item.active,.mbn-item:hover{color:var(--gold-light)}
+.mbn-item.active i{transform:translateY(-2px)}
+.mbn-item.active::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:24px;height:3px;background:var(--gold);border-radius:3px 3px 0 0}
+/* 더보기 서랍 */
+.mbn-drawer{display:none;position:fixed;bottom:64px;left:0;right:0;z-index:1090;background:rgba(8,16,44,0.98);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.12);padding:20px 24px 24px;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.25,0.8,0.25,1)}
+.mbn-drawer.open{transform:translateY(0)}
+.mbn-drawer-title{font-size:0.75rem;color:rgba(255,255,255,0.35);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;font-weight:600}
+.mbn-drawer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.mbn-drawer-item{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:rgba(255,255,255,0.8);font-size:0.72rem;text-align:center;cursor:pointer;transition:background 0.2s,border-color 0.2s;-webkit-tap-highlight-color:transparent}
+.mbn-drawer-item i{font-size:1.25rem;color:var(--gold)}
+.mbn-drawer-item:hover,.mbn-drawer-item:active{background:rgba(255,255,255,0.12);border-color:rgba(201,168,76,0.4)}
+.mbn-overlay{display:none;position:fixed;inset:0;z-index:1080;background:rgba(0,0,0,0.5)}
+.mbn-overlay.open{display:block}
 
 /* HERO */
 #hero{position:relative;width:100%;height:100vh;min-height:700px;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
@@ -583,6 +594,13 @@ section{padding:100px 0}
   #grid-david .video-card:nth-child(n+3){display:none}
 }
 @media(max-width:480px){.btn-primary,.btn-outline{padding:12px 22px;font-size:0.875rem}.video-grid{grid-template-columns:1fr}.shorts-grid{grid-template-columns:repeat(2,1fr)}.shorts-grid .shorts-card:nth-child(n+5){display:none}.cafe-grid{grid-template-columns:1fr}.float-label{display:none}.drive-embed{height:300px}.album-drive-wrap{min-height:300px}.shorts-more-wrap{display:flex;justify-content:center;margin-top:24px}}
+/* 모바일 하단 탭 표시 */
+@media(max-width:900px){
+  .mobile-bottom-nav{display:flex!important;align-items:stretch}
+  .mbn-drawer{display:block}
+  body{padding-bottom:64px}
+  .float-bar{bottom:80px}
+}
 [data-aos]{will-change:transform,opacity}
   </style>
 </head>
@@ -619,6 +637,13 @@ section{padding:100px 0}
           <li><a href="#gallery">갤러리</a></li>
           <li><a href="#community">커뮤니티</a></li>
           <li><a href="#contact">오시는길</a></li>
+        </ul>
+        <!-- 모바일 오버레이 하단 소셜 (데스크톱 숨김) -->
+        <div class="nav-overlay-footer">
+          <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="nav-social-btn"><i class="fab fa-youtube"></i></a>
+          <a href="https://blog.naver.com/habachurch" target="_blank" class="nav-social-btn"><i class="fas fa-blog"></i></a>
+        </div>
+        <ul style="display:none"><!-- dummy to close original ul tag -->
         </ul>
 
         <!-- 모바일 메뉴 하단 소셜 링크 -->
@@ -880,10 +905,18 @@ section{padding:100px 0}
               <p class="sa-desc">설교 말씀을 언제 어디서나 들으세요</p>
             </div>
           </div>
-          <a href="https://drive.google.com/drive/folders/1TY6KCHWGWhgM_FhjqVVN-aTMUPuW3ivX"
-             target="_blank" class="sa-drive-btn">
-            <i class="fab fa-google-drive"></i> Drive 전체보기
-          </a>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <a href="https://drive.google.com/drive/folders/1TY6KCHWGWhgM_FhjqVVN-aTMUPuW3ivX"
+               target="_blank" class="sa-drive-btn">
+              <i class="fab fa-google-drive"></i> Drive 전체보기
+            </a>
+            <a href="https://drive.google.com/drive/folders/1TY6KCHWGWhgM_FhjqVVN-aTMUPuW3ivX?usp=sharing"
+               target="_blank" class="sa-drive-btn"
+               style="background:#34a853"
+               title="외부 공유 링크">
+              <i class="fas fa-share-alt"></i> 외부 공유
+            </a>
+          </div>
         </div>
         <div class="sermon-audio-list" id="sermonAudioList">
           <div class="sa-loading"><i class="fas fa-circle-notch fa-spin"></i> 녹음 파일 불러오는 중...</div>
@@ -1222,10 +1255,11 @@ section{padding:100px 0}
           </div>
         </div>
         <div class="contact-map" data-aos="fade-left">
+          <!-- 구글 맵 임베드 (네이버맵 외부 접속 차단으로 교체) -->
           <iframe
-            src="https://map.naver.com/v5/search/%ED%95%98%EB%8A%98%EB%B0%94%EB%9E%8C%EA%B5%90%ED%9A%8C/place/1837083519?c=15,0,0,0,dh&isCorrectAnswer=true"
-            width="100%" height="300" style="border:0;" allowfullscreen=""
-            loading="lazy" title="하늘바람교회 위치">
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3156.3!2d126.7059!3d37.6337!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357c9b4a7c0a9d1b%3A0x123!2z7ZWc64KY67CU66aE6rWQ7ZiE!5e0!3m2!1sko!2skr!4v1700000000000!5m2!1sko!2skr"
+            width="100%" height="300" style="border:0;border-radius:12px;" allowfullscreen=""
+            loading="lazy" title="하늘바람교회 위치" referrerpolicy="no-referrer-when-downgrade">
           </iframe>
           <div class="map-btn-row">
             <a href="https://naver.me/5XJRTIuL"
@@ -1241,6 +1275,58 @@ section{padding:100px 0}
       </div>
     </div>
   </section>
+
+  <!-- ===== 모바일 하단 탭 네비게이션 ===== -->
+  <div class="mbn-overlay" id="mbnOverlay"></div>
+  <div class="mbn-drawer" id="mbnDrawer">
+    <p class="mbn-drawer-title">메뉴 전체</p>
+    <div class="mbn-drawer-grid">
+      <div class="mbn-drawer-item" onclick="mbnGo('#welcome')">
+        <i class="fas fa-church"></i>소개
+      </div>
+      <div class="mbn-drawer-item" onclick="mbnGo('#history')">
+        <i class="fas fa-history"></i>역사
+      </div>
+      <div class="mbn-drawer-item" onclick="mbnGo('#news')">
+        <i class="fas fa-newspaper"></i>소식
+      </div>
+      <div class="mbn-drawer-item" onclick="mbnGo('#gallery')">
+        <i class="fas fa-images"></i>앨범
+      </div>
+      <div class="mbn-drawer-item" onclick="mbnGo('#blog')">
+        <i class="fas fa-book-open"></i>말씀
+      </div>
+      <div class="mbn-drawer-item" onclick="mbnGo('#community')">
+        <i class="fas fa-users"></i>커뮤
+      </div>
+      <div class="mbn-drawer-item" onclick="mbnGo('#sermon-audio')">
+        <i class="fas fa-headphones"></i>녹음
+      </div>
+      <div class="mbn-drawer-item" onclick="mbnGo('#contact')">
+        <i class="fas fa-map-marker-alt"></i>오시는길
+      </div>
+    </div>
+  </div>
+  <nav class="mobile-bottom-nav" id="mobileBottomNav">
+    <ul>
+      <li class="mbn-item active" id="mbn-worship" onclick="mbnGo('#worship')">
+        <i class="fas fa-praying-hands"></i>예배
+      </li>
+      <li class="mbn-item" id="mbn-media" onclick="mbnGo('#media')">
+        <i class="fab fa-youtube"></i>미디어
+      </li>
+      <li class="mbn-item" id="mbn-prayer" onclick="mbnGo('#prayer')">
+        <!-- center main button -->
+        <i class="fas fa-dove" style="font-size:1.4rem"></i>기도
+      </li>
+      <li class="mbn-item" id="mbn-contact" onclick="mbnGo('#contact')">
+        <i class="fas fa-map-marker-alt"></i>오시는길
+      </li>
+      <li class="mbn-item" id="mbn-more" onclick="mbnToggleDrawer()">
+        <i class="fas fa-th"></i>더보기
+      </li>
+    </ul>
+  </nav>
 
   <!-- ===== FOOTER ===== -->
   <footer id="footer">
@@ -1539,8 +1625,9 @@ section{padding:100px 0}
       david:     { label: '다윗의찬양', keywords: ['다윗의찬양','다윗의 찬양'] },
       sunday:    { label: '주일예배',   keywords: ['다윗의 예배','다윗의예배','시편의 예배','스몰 예배','주일설교','주일예배','주일'] },
       dawn:      { label: '새벽예배',   keywords: ['새벽','새벽예배','촛불새벽','새벽기도'] },
-      wednesday: { label: '수요예배',   keywords: ['수요성경예배','수요성경','수요예배','수요 예배','성경예배','수요'] },
-      friday:    { label: '금요예배',   keywords: ['금요','금요예배','강청기도','금요기도','금요 예배'] },
+      wednesday: { label: '수요예배',   keywords: ['수요성경예배','수요성경','수요예배','수요 예배','성경예배','수요기도','Wednesday','수요'] },
+      friday:    { label: '금요예배',   keywords: ['금요','금요예배','강청기도','금요기도','금요 예배','금요기도회'] },
+      david:     { label: '다윗의찬양', keywords: ['다윗의찬양','다윗의 찬양','다윗찬양','David','praise'] },
     };
 
     /* rss2json → JSON 방식 (CORS 없음, 주 방법) */
@@ -1896,7 +1983,54 @@ section{padding:100px 0}
       });
     });
   });
-  </script>
 
+  /* =============================================
+     모바일 하단 탭 네비게이션 JS
+  ============================================= */
+  function mbnGo(hash) {
+    mbnCloseDrawer();
+    const target = document.querySelector(hash);
+    if (!target) return;
+    const headerH = document.getElementById('header')?.offsetHeight || 80;
+    window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - headerH, behavior: 'smooth' });
+    // 탭 활성화
+    document.querySelectorAll('.mbn-item').forEach(el => el.classList.remove('active'));
+  }
+  function mbnToggleDrawer() {
+    const drawer  = document.getElementById('mbnDrawer');
+    const overlay = document.getElementById('mbnOverlay');
+    const isOpen  = drawer?.classList.contains('open');
+    if (isOpen) { mbnCloseDrawer(); }
+    else {
+      drawer?.classList.add('open');
+      overlay?.classList.add('open');
+      document.getElementById('mbn-more')?.classList.add('active');
+    }
+  }
+  function mbnCloseDrawer() {
+    document.getElementById('mbnDrawer')?.classList.remove('open');
+    document.getElementById('mbnOverlay')?.classList.remove('open');
+    document.getElementById('mbn-more')?.classList.remove('active');
+  }
+  document.getElementById('mbnOverlay')?.addEventListener('click', mbnCloseDrawer);
+  // 스크롤 위치에 따라 탭 자동 하이라이트
+  window.addEventListener('scroll', () => {
+    const sections = ['worship','media','prayer','contact'];
+    const ids      = ['mbn-worship','mbn-media','mbn-prayer','mbn-contact'];
+    let found = false;
+    for (let i = sections.length - 1; i >= 0; i--) {
+      const el = document.getElementById(sections[i]);
+      if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.5) {
+        document.querySelectorAll('.mbn-item').forEach(t => t.classList.remove('active'));
+        document.getElementById(ids[i])?.classList.add('active');
+        found = true; break;
+      }
+    }
+    if (!found) {
+      document.querySelectorAll('.mbn-item').forEach(t => t.classList.remove('active'));
+      document.getElementById('mbn-worship')?.classList.add('active');
+    }
+  }, { passive: true });
+  </script>
 </body>
 </html>
