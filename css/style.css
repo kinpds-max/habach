@@ -930,7 +930,7 @@ section { padding: 100px 0; }
 /* 교회역사 — 가치카드 */
 .history-intro-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
-  align-items: start; margin-bottom: 64px;
+  align-items: start; margin-bottom: 0;
 }
 .history-intro-text .section-label { color: var(--sky-light); }
 .history-intro-desc {

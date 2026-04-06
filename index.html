@@ -188,10 +188,37 @@ section{padding:100px 0}
 .section-desc.light{color:rgba(255,255,255,0.65)}
 .section-header{text-align:center;margin-bottom:56px}
 
-/* GLOBAL TRANSLATE */
-#google_translate_element { margin-left: 15px; }
-.goog-te-gadget-simple { background-color: transparent !important; border: 1px solid rgba(255,255,255,0.2) !important; padding: 4px 8px !important; border-radius: 4px !important; }
-.goog-te-gadget-simple .goog-te-menu-value { color: #fff !important; font-size: 13px !important; }
+/* MAP BUTTONS */
+.map-btn-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.map-smart-btn{background:var(--navy)!important;border-color:var(--navy)!important}
+.map-smart-btn:hover{background:var(--navy-mid)!important}
+
+/* 주일설교 녹음파일 섹션 */
+.section-sermon-audio{background:linear-gradient(135deg,var(--navy) 0%,#1a3a6e 100%);padding:60px 0}
+.sermon-audio-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius-lg);padding:32px 40px}
+.sermon-audio-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:16px}
+.sa-title-wrap{display:flex;align-items:center;gap:18px}
+.sa-icon{font-size:2rem;color:var(--gold);background:rgba(201,168,76,0.15);padding:14px;border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sa-title{font-family:var(--font-serif);font-size:1.4rem;font-weight:700;color:var(--white);margin-bottom:4px}
+.sa-desc{font-size:0.85rem;color:rgba(255,255,255,0.5)}
+.sa-drive-btn{display:inline-flex;align-items:center;gap:8px;background:#4285f4;color:white;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:600;transition:var(--transition);flex-shrink:0}
+.sa-drive-btn:hover{background:#3367d6;transform:translateY(-1px)}
+.sermon-audio-list{display:flex;flex-direction:column;gap:8px}
+.sa-loading{text-align:center;padding:24px;color:rgba(255,255,255,0.4);font-size:0.9rem}
+.sa-item{display:flex;align-items:center;gap:14px;padding:14px 18px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;cursor:pointer;transition:var(--transition);color:rgba(255,255,255,0.85);text-align:left;width:100%}
+.sa-item:hover{background:rgba(255,255,255,0.1);border-color:rgba(201,168,76,0.4);color:var(--white)}
+.sa-play-btn{width:36px;height:36px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);font-size:0.8rem;transition:var(--transition)}
+.sa-item:hover .sa-play-btn{background:var(--gold-light);transform:scale(1.1)}
+.sa-item-name{flex:1;font-size:0.9rem;font-weight:500;line-height:1.4}
+.sa-item-open{color:rgba(255,255,255,0.3);font-size:0.8rem;flex-shrink:0}
+.sa-fallback{display:flex;align-items:center;gap:12px;padding:18px;background:rgba(255,255,255,0.05);border-radius:10px;color:rgba(255,255,255,0.6);font-size:0.875rem}
+/* 오디오 모달 */
+.modal-audio-content{max-width:560px;padding:32px}
+.audio-modal-inner{display:flex;flex-direction:column;gap:16px}
+.audio-modal-title{font-size:1rem;font-weight:600;color:var(--navy);line-height:1.5}
+.audio-drive-open{display:inline-flex;align-items:center;gap:8px;background:#4285f4;color:white;padding:10px 20px;border-radius:8px;font-size:0.875rem;font-weight:600;transition:var(--transition);align-self:flex-start}
+.audio-drive-open:hover{background:#3367d6}
+@media(max-width:768px){.sermon-audio-box{padding:24px 20px}.sermon-audio-header{flex-direction:column;align-items:flex-start}.sa-drive-btn{width:100%;justify-content:center}}
 
 /* CAFE V2 */
 .cafe-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; }
@@ -478,6 +505,50 @@ section{padding:100px 0}
 
 /* CHURCH NEWS SECTION */
 .section-news{background:var(--off-white)}
+/* 교회주보 상단 박스 */
+.news-bulletin-box{background:var(--white);border-radius:var(--radius-lg);padding:28px 32px;box-shadow:var(--shadow-sm);border:1px solid var(--gray-light);margin-bottom:24px}
+/* HRAD 실시간 하단 박스 */
+.news-hrad-box{background:var(--white);border-radius:var(--radius-lg);padding:28px 32px;box-shadow:var(--shadow-sm);border:1px solid var(--gray-light)}
+/* 블록 헤더 공통 */
+.news-block-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.nbh-left{display:flex;align-items:center;gap:10px}
+.nbh-icon{font-size:1.2rem;color:var(--gold)}
+.news-block-header h3{font-size:1.05rem;font-weight:700;color:var(--navy)}
+.news-badge-drive{font-size:0.75rem;background:#e8f5e9;color:#2e7d32;padding:3px 10px;border-radius:20px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.news-live-badge{font-size:0.75rem;background:#fff0f0;color:#c62828;padding:3px 10px;border-radius:20px;font-weight:700;display:inline-flex;align-items:center;gap:5px;animation:livePulse 2s ease-in-out infinite}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.news-live-badge .fa-circle{font-size:0.55rem}
+.news-drive-btn{display:inline-flex;align-items:center;gap:7px;background:var(--navy);color:white;padding:8px 18px;border-radius:8px;font-size:0.85rem;font-weight:600;transition:var(--transition)}
+.news-drive-btn:hover{background:var(--blue);transform:translateY(-1px)}
+.hrad-desc-small{font-size:0.82rem;color:var(--gray);flex-shrink:0}
+/* 주보 공지 목록 */
+.bulletin-notices-row{display:flex;flex-direction:column;gap:8px}
+.bulletin-notice-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--off-white);border-radius:8px;color:var(--text);font-size:0.9rem;transition:var(--transition);border:1px solid transparent;text-decoration:none}
+.bulletin-notice-item:hover{border-color:var(--blue);background:var(--white);color:var(--blue);transform:translateX(4px)}
+.bulletin-notice-item i{color:var(--gold);font-size:0.9rem;flex-shrink:0}
+.bulletin-notice-item .notice-arrow{margin-left:auto;opacity:0.4;font-size:0.75rem}
+.notice-loading{text-align:center;padding:24px;color:var(--gray);font-size:0.9rem}
+/* HRAD */
+.hrad-body{display:grid;grid-template-columns:320px 1fr;gap:24px;align-items:start}
+.hrad-form-row{display:flex;flex-direction:column;gap:10px}
+.hrad-input-name{width:100%;padding:10px 14px;border:1.5px solid var(--gray-light);border-radius:8px;font-size:0.9rem;font-family:inherit;transition:var(--transition);outline:none}
+.hrad-input-name:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(42,111,173,0.1)}
+.hrad-input-text{width:100%;padding:10px 14px;border:1.5px solid var(--gray-light);border-radius:8px;font-size:0.9rem;font-family:inherit;resize:none;transition:var(--transition);outline:none;line-height:1.6}
+.hrad-input-text:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(42,111,173,0.1)}
+.hrad-submit-btn{width:100%;padding:11px;background:var(--navy);color:white;border-radius:8px;font-size:0.9rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:var(--transition)}
+.hrad-submit-btn:hover{background:var(--blue);transform:translateY(-1px)}
+.hrad-list{display:flex;flex-direction:column;gap:10px;max-height:360px;overflow-y:auto;padding-right:4px}
+.hrad-list::-webkit-scrollbar{width:4px}.hrad-list::-webkit-scrollbar-track{background:#f0f0f0;border-radius:4px}.hrad-list::-webkit-scrollbar-thumb{background:var(--gray-light);border-radius:4px}
+.hrad-post{background:var(--off-white);border-radius:8px;padding:14px 16px;border-left:3px solid var(--gold);position:relative}
+.hrad-post-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.hrad-post-name{font-weight:700;font-size:0.85rem;color:var(--navy)}
+.hrad-post-time{font-size:0.78rem;color:var(--gray)}
+.hrad-del-btn{margin-left:auto;color:var(--gray);font-size:0.8rem;padding:2px 6px;border-radius:4px;transition:var(--transition)}
+.hrad-del-btn:hover{background:#ffeeee;color:#c62828}
+.hrad-post-text{font-size:0.875rem;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.hrad-empty{text-align:center;padding:32px 20px;color:var(--gray);font-size:0.9rem}
+@media(max-width:768px){.hrad-body{grid-template-columns:1fr}.news-block-header{flex-direction:column;align-items:flex-start}.hrad-desc-small{display:none}}
+/* legacy */
 .news-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
 .news-card{background:var(--white);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-sm);border:1px solid var(--gray-light);transition:var(--transition)}
 .news-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
@@ -502,6 +573,15 @@ section{padding:100px 0}
 @media(max-width:900px){.container{padding:0 24px}section{padding:72px 0}.main-nav{display:none}.hamburger{display:flex}.mobile-brand{display:block}.main-nav.open{display:flex;flex-direction:column;position:fixed;inset:0;background:rgba(8,16,44,0.98);backdrop-filter:blur(20px);z-index:999;padding:28px 32px 40px;overflow-y:auto;gap:0}.main-nav.open .nav-overlay-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:24px;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.1)}.main-nav.open .nav-translate{display:none}.main-nav.open ul{flex-direction:column;gap:0;flex:1}.main-nav.open>ul>li>a{font-size:1.2rem;font-weight:500;padding:15px 0;border-bottom:1px solid rgba(255,255,255,0.07);border-radius:0;height:auto;display:flex;align-items:center;justify-content:space-between;color:rgba(255,255,255,0.85)}.main-nav.open>ul>li>a::after{content:'›';font-size:1.3rem;opacity:0.4}.main-nav.open>ul>li>a:hover{color:var(--gold-light);padding-left:8px;border-bottom-color:rgba(201,168,76,0.3)}.main-nav.open>ul>li>a.active{color:var(--gold-light)}.main-nav.open .nav-overlay-footer{display:flex;align-items:center;gap:12px;padding-top:24px;margin-top:8px;border-top:1px solid rgba(255,255,255,0.08)}.sub-menu{position:static;transform:none;background:transparent;box-shadow:none;opacity:1;visibility:visible;padding:0 0 0 16px;pointer-events:all}.sub-menu li a{font-size:1rem;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)}.welcome-grid{grid-template-columns:1fr}.welcome-visual{order:-1}.blog-layout{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}.video-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid-3 { grid-template-columns: 1fr; }.mission-stats { flex-direction: column; gap: 30px; }}
 @media(max-width:768px){#heroBgVideo{display:none}.hero-fallback-bg{inset:0;filter:brightness(0.65)}.hero-title{font-size:clamp(1.9rem,8vw,3rem)}.hero-desc{font-size:0.875rem}.section-title{font-size:clamp(1.5rem,5vw,2rem)}.worship-card{padding:28px 16px}.worship-card h3{font-size:1rem}.media-tabs{flex-wrap:wrap;gap:6px}.tab-btn{padding:8px 14px;font-size:0.8rem}.video-grid{grid-template-columns:repeat(2,1fr);gap:14px}.shorts-grid{grid-template-columns:repeat(3,1fr);gap:12px}.blog-card{padding:16px;gap:12px}.cafe-grid{grid-template-columns:repeat(2,1fr);gap:14px}.cafe-card{padding:24px 16px}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}.footer-bottom{flex-direction:column;text-align:center}.float-btn{width:42px;height:42px;font-size:1rem}.float-bar{bottom:20px;right:14px;gap:8px}.drive-embed{height:380px}.album-drive-wrap{min-height:380px}}
 @media(max-width:640px){.container{padding:0 20px}section{padding:60px 0}.worship-grid{grid-template-columns:1fr 1fr}.video-grid{grid-template-columns:1fr}.cafe-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}.hero-btns{flex-direction:column}.welcome-card-wrap{grid-template-columns:1fr 1fr}.header-inner{padding:0 20px}}
+/* 모바일: 예배탭 2개만 표시 */
+@media(max-width:768px){
+  #grid-sermon3 .video-card:nth-child(n+3),
+  #grid-sunday .video-card:nth-child(n+3),
+  #grid-dawn .video-card:nth-child(n+3),
+  #grid-wednesday .video-card:nth-child(n+3),
+  #grid-friday .video-card:nth-child(n+3),
+  #grid-david .video-card:nth-child(n+3){display:none}
+}
 @media(max-width:480px){.btn-primary,.btn-outline{padding:12px 22px;font-size:0.875rem}.video-grid{grid-template-columns:1fr}.shorts-grid{grid-template-columns:repeat(2,1fr)}.shorts-grid .shorts-card:nth-child(n+5){display:none}.cafe-grid{grid-template-columns:1fr}.float-label{display:none}.drive-embed{height:300px}.album-drive-wrap{min-height:300px}.shorts-more-wrap{display:flex;justify-content:center;margin-top:24px}}
 [data-aos]{will-change:transform,opacity}
   </style>
@@ -531,7 +611,6 @@ section{padding:100px 0}
           </button>
         </div>
         <ul>
-          <li class="nav-translate"><div id="google_translate_element"></div></li>
           <li><a href="#welcome">교회소개</a></li>
           <li><a href="#history">교회역사</a></li>
           <li><a href="#worship">예배안내</a></li>
@@ -690,56 +769,7 @@ section{padding:100px 0}
         </div>
       </div>
 
-      <div class="history-timeline" data-aos="fade-up" data-aos-delay="100">
-        <div class="history-item">
-          <div class="history-year">창립</div>
-          <div class="history-dot"></div>
-          <div class="history-content">
-            <h4>하늘바람교회 창립</h4>
-            <p>경기도 김포시 운양동에 예수교대한성결교회 하늘바람교회 창립. 담임목사 전승학, "성령의 바람이 역사하는 교회"를 비전으로 시작하다.</p>
-          </div>
-        </div>
-        <div class="history-item">
-          <div class="history-year">성장</div>
-          <div class="history-dot"></div>
-          <div class="history-content">
-            <h4>다윗의예배 · 새벽예배 정착</h4>
-            <p>주일 '다윗의예배(모던 워십)'와 매일 새벽 5:30 새벽예배를 정착시키며 예배와 기도의 공동체로 성장하다.</p>
-          </div>
-        </div>
-        <div class="history-item">
-          <div class="history-year">2020</div>
-          <div class="history-dot"></div>
-          <div class="history-content">
-            <h4>온라인 예배 · 유튜브 채널 개설</h4>
-            <p>공식 유튜브 채널(@Gimpo_HBC)을 개설하여 새벽예배·주일예배 온라인 생중계를 시작. 시편의예배(클래식) 추가 개설로 2부 예배 체제 구축.</p>
-          </div>
-        </div>
-        <div class="history-item">
-          <div class="history-year">2022</div>
-          <div class="history-dot"></div>
-          <div class="history-content">
-            <h4>온라인 공동체 확장</h4>
-            <p>네이버 카페·블로그 개설로 온·오프라인 성도 교제 공간 확장. 금요 강청기도회, 수요 성경예배 체계 완성.</p>
-          </div>
-        </div>
-        <div class="history-item">
-          <div class="history-year">2024</div>
-          <div class="history-dot"></div>
-          <div class="history-content">
-            <h4>교회 건축 및 공간 확장</h4>
-            <p>김포시 모담공원로167번길 101 현 예배당으로 이전. 유·초등·청소년·청년 교육부서 체계화 및 지역사회 섬김 사역 확대.</p>
-          </div>
-        </div>
-        <div class="history-item">
-          <div class="history-year">Now</div>
-          <div class="history-dot active"></div>
-          <div class="history-content">
-            <h4>세계 비전을 향하여</h4>
-            <p>성령과 말씀으로 세워지는 하늘바람교회, 이 땅을 넘어 세계를 향한 Mission Bridge를 향해 오늘도 나아갑니다.</p>
-          </div>
-        </div>
-      </div>
+      <!-- 역사 타임라인: 내용 업데이트 예정 -->
     </div>
   </section>
 
@@ -790,63 +820,92 @@ section{padding:100px 0}
         <p class="section-label">교회소식</p>
         <h2 class="section-title">하늘바람 소식</h2>
       </div>
-      <div class="news-layout" data-aos="fade-up" data-aos-delay="100">
 
-        <!-- 왼쪽: 교회주보 (구글 드라이브 자동) -->
-        <div class="news-bulletin">
-          <div class="news-block-header">
-            <i class="fas fa-newspaper"></i>
+      <!-- 교회주보 (상단, 전체 너비) -->
+      <div class="news-bulletin-box" data-aos="fade-up" data-aos-delay="80">
+        <div class="news-block-header">
+          <div class="nbh-left">
+            <i class="fas fa-newspaper nbh-icon"></i>
             <h3>교회주보</h3>
-            <span class="news-badge-drive"><i class="fab fa-google-drive"></i> 자동연동</span>
-            <a href="https://drive.google.com/drive/folders/1g5J2k_jByx0O2prQH_0JEZmDZJqe-5-e?usp=sharing"
-               target="_blank" class="news-open-btn" title="드라이브에서 전체보기">
-              <i class="fas fa-external-link-alt"></i>
-            </a>
-          </div>
-          <!-- 공지사항: 드라이브 파일명 기반 자동 표시 -->
-          <div class="bulletin-notices" id="bulletinNotices">
-            <div class="notice-loading"><i class="fas fa-circle-notch fa-spin"></i> 최신 주보 불러오는 중...</div>
-          </div>
-          <!-- 드라이브 폴더 임베드 (리스트뷰) -->
-          <div class="bulletin-embed-wrap">
-            <iframe
-              src="https://drive.google.com/embeddedfolderview?id=1g5J2k_jByx0O2prQH_0JEZmDZJqe-5-e#list"
-              frameborder="0" loading="lazy" title="교회주보 드라이브">
-            </iframe>
+            <span class="news-badge-drive"><i class="fab fa-google-drive"></i> Drive 자동연동</span>
           </div>
           <a href="https://drive.google.com/drive/folders/1g5J2k_jByx0O2prQH_0JEZmDZJqe-5-e?usp=sharing"
-             target="_blank" class="btn-drive-open">
+             target="_blank" class="news-drive-btn">
             <i class="fab fa-google-drive"></i> 주보 전체 보기
           </a>
         </div>
+        <!-- 주보 자동크롤링 목록 -->
+        <div class="bulletin-notices-row" id="bulletinNotices">
+          <div class="notice-loading"><i class="fas fa-circle-notch fa-spin"></i> 최신 주보 불러오는 중...</div>
+        </div>
+      </div>
 
-        <!-- 오른쪽: HRAD 실시간 자유게시판 -->
-        <div class="news-hrad">
-          <div class="news-block-header">
-            <i class="fas fa-broadcast-tower"></i>
+      <!-- HRAD 실시간 (하단, 전체 너비) -->
+      <div class="news-hrad-box" data-aos="fade-up" data-aos-delay="160">
+        <div class="news-block-header">
+          <div class="nbh-left">
+            <i class="fas fa-broadcast-tower nbh-icon" style="color:var(--sky)"></i>
             <h3>HRAD 실시간</h3>
             <span class="news-live-badge"><i class="fas fa-circle"></i> LIVE</span>
           </div>
-          <p class="hrad-intro">성도님들이 자유롭게 소식을 나누는 공간입니다</p>
+          <span class="hrad-desc-small">성도님들이 자유롭게 소식을 나누는 공간</span>
+        </div>
 
+        <div class="hrad-body">
           <!-- 글쓰기 폼 -->
-          <div class="hrad-form">
+          <div class="hrad-form-row">
             <input type="text" id="hradName" class="hrad-input-name" placeholder="이름 (익명 가능)" maxlength="20" />
-            <textarea id="hradText" class="hrad-input-text" placeholder="소식을 나눠주세요..." rows="2" maxlength="200"></textarea>
+            <textarea id="hradText" class="hrad-input-text" placeholder="소식을 나눠주세요... (Enter 올리기)" rows="2" maxlength="300"></textarea>
             <button class="hrad-submit-btn" onclick="hradPost()">
               <i class="fas fa-paper-plane"></i> 올리기
             </button>
           </div>
-
           <!-- 게시글 목록 -->
-          <div class="hrad-list" id="hradList">
-            <!-- JS로 채워짐 -->
-          </div>
+          <div class="hrad-list" id="hradList"></div>
         </div>
+      </div>
 
+    </div>
+  </section>
+
+  <!-- ===== 주일설교 녹음파일 ===== -->
+  <section id="sermon-audio" class="section-sermon-audio">
+    <div class="container">
+      <div class="sermon-audio-box" data-aos="fade-up">
+        <div class="sermon-audio-header">
+          <div class="sa-title-wrap">
+            <i class="fas fa-headphones-alt sa-icon"></i>
+            <div>
+              <h2 class="sa-title">주일설교 녹음파일</h2>
+              <p class="sa-desc">설교 말씀을 언제 어디서나 들으세요</p>
+            </div>
+          </div>
+          <a href="https://drive.google.com/drive/folders/1TY6KCHWGWhgM_FhjqVVN-aTMUPuW3ivX"
+             target="_blank" class="sa-drive-btn">
+            <i class="fab fa-google-drive"></i> Drive 전체보기
+          </a>
+        </div>
+        <div class="sermon-audio-list" id="sermonAudioList">
+          <div class="sa-loading"><i class="fas fa-circle-notch fa-spin"></i> 녹음 파일 불러오는 중...</div>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- 오디오 플레이어 모달 -->
+  <div id="audioModal" class="modal-overlay">
+    <div class="modal-content modal-audio-content">
+      <button class="modal-close" id="audioModalClose"><i class="fas fa-times"></i></button>
+      <div class="audio-modal-inner">
+        <p class="audio-modal-title" id="audioModalTitle"></p>
+        <iframe id="audioModalIframe" src="" frameborder="0" allowfullscreen
+                allow="autoplay" style="width:100%;height:80px;border:0;"></iframe>
+        <a id="audioModalDriveLink" href="#" target="_blank" class="audio-drive-open">
+          <i class="fab fa-google-drive"></i> Google Drive에서 열기
+        </a>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== YOUTUBE MEDIA ===== -->
   <section id="media" class="section-media">
@@ -859,15 +918,23 @@ section{padding:100px 0}
 
       <!-- Tab Nav -->
       <div class="media-tabs" data-aos="fade-up" data-aos-delay="100">
-        <button class="tab-btn active" data-tab="sunday-videos">주일예배</button>
+        <button class="tab-btn active" data-tab="sermon3-videos"><i class="fas fa-bible"></i> 3분설교</button>
+        <button class="tab-btn" data-tab="sunday-videos">주일예배</button>
         <button class="tab-btn" data-tab="dawn-videos">새벽예배</button>
         <button class="tab-btn" data-tab="wednesday-videos">수요예배</button>
         <button class="tab-btn" data-tab="friday-videos">금요예배</button>
+        <button class="tab-btn" data-tab="david-videos"><i class="fas fa-music"></i> 다윗의찬양</button>
         <button class="tab-btn" data-tab="shorts-videos"><i class="fas fa-mobile-alt"></i> 숏폼모음</button>
       </div>
 
       <!-- Video Panels -->
-      <div id="sunday-videos" class="video-panel active">
+      <div id="sermon3-videos" class="video-panel active">
+        <div class="video-grid" id="grid-sermon3">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="sunday-videos" class="video-panel">
         <div class="video-grid" id="grid-sunday">
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
@@ -887,6 +954,12 @@ section{padding:100px 0}
       </div>
       <div id="friday-videos" class="video-panel">
         <div class="video-grid" id="grid-friday">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="david-videos" class="video-panel">
+        <div class="video-grid" id="grid-david">
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
@@ -1154,10 +1227,16 @@ section{padding:100px 0}
             width="100%" height="300" style="border:0;" allowfullscreen=""
             loading="lazy">
           </iframe>
-          <a href="https://naver.me/5XJRTIuL"
-             target="_blank" class="map-open-btn">
-            <i class="fas fa-map-marker-alt"></i> 네이버 지도에서 크게 보기
-          </a>
+          <div class="map-btn-row">
+            <a href="https://naver.me/5XJRTIuL"
+               target="_blank" class="map-open-btn">
+              <i class="fas fa-map-marker-alt"></i> 네이버 지도에서 보기
+            </a>
+            <a href="https://map.naver.com/p/search/%ED%95%98%EB%8A%98%EB%B0%94%EB%9E%8C%EA%B5%90%ED%9A%8C"
+               target="_blank" class="map-open-btn map-smart-btn">
+              <i class="fas fa-store"></i> 스마트플레이스 검색
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -1242,65 +1321,222 @@ section{padding:100px 0}
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
   /* =============================================
-     교회소식 인라인 편집
+     HRAD 실시간 게시판 (localStorage 기반)
   ============================================= */
-  function startEdit(key) {
-    document.getElementById(key+'-display').classList.add('hidden');
-    const inp = document.getElementById(key+'-input');
-    inp.classList.remove('hidden');
-    inp.value = localStorage.getItem('news_'+key) || '';
-    inp.focus();
+  const HRAD_KEY = 'hrad_posts_v1';
+  const HRAD_MAX = 50;
+  function _escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function hradLoad() { try { return JSON.parse(localStorage.getItem(HRAD_KEY)) || []; } catch { return []; } }
+  function hradSave(p) { localStorage.setItem(HRAD_KEY, JSON.stringify(p.slice(0, HRAD_MAX))); }
+  function hradRender() {
+    const list = document.getElementById('hradList');
+    if (!list) return;
+    const posts = hradLoad();
+    if (!posts.length) { list.innerHTML = '<p class="hrad-empty">첫 번째 소식을 남겨주세요 🙏</p>'; return; }
+    list.innerHTML = posts.map((p, i) => `
+      <div class="hrad-post">
+        <div class="hrad-post-meta">
+          <span class="hrad-post-name">${_escHtml(p.name||'익명')}</span>
+          <span class="hrad-post-time">${p.time}</span>
+          <button class="hrad-del-btn" onclick="hradDelete(${i})" title="삭제"><i class="fas fa-times"></i></button>
+        </div>
+        <p class="hrad-post-text">${_escHtml(p.text)}</p>
+      </div>`).join('');
   }
-  function saveEdit(key) {
-    const inp = document.getElementById(key+'-input');
-    const val = inp.value.trim();
-    if (val) {
-      localStorage.setItem('news_'+key, val);
-      document.getElementById(key+'-display').textContent = val;
-    }
-    inp.classList.add('hidden');
-    document.getElementById(key+'-display').classList.remove('hidden');
+  function hradPost() {
+    const name = (document.getElementById('hradName')?.value||'').trim()||'익명';
+    const text = (document.getElementById('hradText')?.value||'').trim();
+    if (!text) { document.getElementById('hradText')?.focus(); return; }
+    const now = new Date();
+    const time = `${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    const posts = hradLoad();
+    posts.unshift({ name, text, time });
+    hradSave(posts);
+    hradRender();
+    if (document.getElementById('hradText')) document.getElementById('hradText').value = '';
   }
-  function toggleEdit(key) {
-    const disp = document.getElementById(key+'-display');
-    if (disp.classList.contains('hidden')) saveEdit(key);
-    else startEdit(key);
+  function hradDelete(idx) {
+    if (!confirm('이 게시글을 삭제할까요?')) return;
+    const posts = hradLoad();
+    posts.splice(idx, 1);
+    hradSave(posts);
+    hradRender();
   }
-  // 저장된 내용 불러오기
+
+  /* =============================================
+     교회주보 공지 (구글 드라이브 폴더 크롤링)
+  ============================================= */
+  const BULLETIN_FOLDER = '1g5J2k_jByx0O2prQH_0JEZmDZJqe-5-e';
+  const BULLETIN_URL    = `https://drive.google.com/drive/folders/${BULLETIN_FOLDER}?usp=sharing`;
+  async function loadBulletinNotices() {
+    const el = document.getElementById('bulletinNotices');
+    if (!el) return;
+    try {
+      const proxies = ['https://corsproxy.io/?','https://api.allorigins.win/raw?url='];
+      let html = null;
+      for (const px of proxies) {
+        try {
+          const r = await fetch(px + encodeURIComponent(`https://drive.google.com/embeddedfolderview?id=${BULLETIN_FOLDER}#list`),
+                                { signal: AbortSignal.timeout(8000) });
+          if (r.ok) { html = await r.text(); break; }
+        } catch {}
+      }
+      if (html) {
+        const names = [...html.matchAll(/class="flip-entry-title"[^>]*>([^<]+)</g)]
+                       .map(m => m[1].trim()).filter(Boolean).slice(0, 6);
+        if (names.length) {
+          el.innerHTML = names.map(n => `
+            <a href="${BULLETIN_URL}" target="_blank" class="bulletin-notice-item">
+              <i class="fas fa-file-alt"></i>
+              <span>${_escHtml(n)}</span>
+              <i class="fas fa-chevron-right notice-arrow"></i>
+            </a>`).join('');
+          return;
+        }
+      }
+    } catch {}
+    el.innerHTML = `
+      <a href="${BULLETIN_URL}" target="_blank" class="bulletin-notice-item">
+        <i class="fab fa-google-drive"></i>
+        <span>주보 폴더 바로가기 — 주보를 드라이브에 업로드하면 여기에 자동으로 표시됩니다</span>
+        <i class="fas fa-external-link-alt notice-arrow"></i>
+      </a>`;
+  }
+
+  /* =============================================
+     주일설교 녹음파일 (구글 드라이브 크롤링)
+  ============================================= */
+  const SERMON_FOLDER_ID  = '1TY6KCHWGWhgM_FhjqVVN-aTMUPuW3ivX';
+  const SERMON_FOLDER_URL = `https://drive.google.com/drive/folders/${SERMON_FOLDER_ID}`;
+
+  async function loadSermonAudio() {
+    const el = document.getElementById('sermonAudioList');
+    if (!el) return;
+    try {
+      const proxies = ['https://corsproxy.io/?','https://api.allorigins.win/raw?url='];
+      let html = null;
+      for (const px of proxies) {
+        try {
+          const r = await fetch(px + encodeURIComponent(
+            `https://drive.google.com/embeddedfolderview?id=${SERMON_FOLDER_ID}#list`
+          ), { signal: AbortSignal.timeout(8000) });
+          if (r.ok) { html = await r.text(); break; }
+        } catch {}
+      }
+      if (html) {
+        /* entry-ID와 파일명 동시 추출 */
+        const entries = [...html.matchAll(/id="entry-([^"]+)"[\s\S]*?class="flip-entry-title"[^>]*>([^<]+)</g)]
+          .map(m => ({ id: m[1].trim(), name: m[2].trim() }))
+          .filter(e => e.name && e.id)
+          .slice(0, 15);
+
+        if (entries.length) {
+          el.innerHTML = entries.map(e => `
+            <button class="sa-item" onclick="openAudioModal('${e.id}','${_escHtml(e.name)}')">
+              <span class="sa-play-btn"><i class="fas fa-play"></i></span>
+              <span class="sa-item-name">${_escHtml(e.name)}</span>
+              <i class="fas fa-chevron-right sa-item-open"></i>
+            </button>`).join('');
+          return;
+        }
+      }
+    } catch {}
+    /* 폴백: 드라이브 링크 안내 */
+    el.innerHTML = `
+      <div class="sa-fallback">
+        <i class="fab fa-google-drive" style="font-size:1.4rem;color:#4285f4;flex-shrink:0"></i>
+        <span>녹음 파일을 Drive 폴더에 업로드하면 여기에 자동으로 표시됩니다</span>
+      </div>`;
+  }
+
+  function openAudioModal(fileId, fileName) {
+    const modal  = document.getElementById('audioModal');
+    const iframe = document.getElementById('audioModalIframe');
+    const title  = document.getElementById('audioModalTitle');
+    const link   = document.getElementById('audioModalDriveLink');
+    if (!modal || !iframe) return;
+    title.textContent = fileName;
+    iframe.src = `https://drive.google.com/file/d/${fileId}/preview`;
+    link.href  = `https://drive.google.com/file/d/${fileId}/view`;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
-    ['bulletin','hrad'].forEach(k => {
-      const saved = localStorage.getItem('news_'+k);
-      if (saved) document.getElementById(k+'-display').textContent = saved;
-    });
+    const audioModal    = document.getElementById('audioModal');
+    const audioCloseBtn = document.getElementById('audioModalClose');
+    const audioIframe   = document.getElementById('audioModalIframe');
+    function closeAudioModal() {
+      audioModal?.classList.remove('active');
+      document.body.style.overflow = '';
+      setTimeout(() => { if (audioIframe) audioIframe.src = ''; }, 300);
+    }
+    audioCloseBtn?.addEventListener('click', closeAudioModal);
+    audioModal?.addEventListener('click', e => { if (e.target === audioModal) closeAudioModal(); });
   });
 
   /* =============================================
      YouTube 크롤링 모듈
   ============================================= */
   const YT = (() => {
-    const CHANNEL_ID = 'UCzQ6kPUzNNbU3EtJI5X1mhQ';
-    const RSS_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+    const CHANNEL_ID  = 'UCzQ6kPUzNNbU3EtJI5X1mhQ';
+    const RSS_URL     = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
     const SHORTS_PAGE = `https://www.youtube.com/@Gimpo_HBC/shorts`;
-    const PROXIES = [
+    const RAW_PROXIES = [
       'https://corsproxy.io/?',
       'https://api.allorigins.win/raw?url=',
       'https://api.codetabs.com/v1/proxy?quest=',
     ];
     const CATEGORIES = {
-      sunday:    { label: '주일예배', keywords: ['주일','다윗의 예배','다윗의예배','시편의 예배','스몰 예배','주일설교'] },
-      dawn:      { label: '새벽예배', keywords: ['새벽','새벽예배','촛불새벽','새벽기도'] },
-      wednesday: { label: '수요예배', keywords: ['수요','수요예배','성경예배','수요 예배'] },
-      friday:    { label: '금요예배', keywords: ['금요','금요예배','강청기도','금요기도','금요 예배'] },
+      /* 순서 중요: 더 구체적인 키워드 먼저 매칭 */
+      sermon3:   { label: '3분설교',   keywords: ['3분설교','[3분설교]'] },
+      david:     { label: '다윗의찬양', keywords: ['다윗의찬양','다윗의 찬양'] },
+      sunday:    { label: '주일예배',   keywords: ['다윗의 예배','다윗의예배','시편의 예배','스몰 예배','주일설교','주일예배','주일'] },
+      dawn:      { label: '새벽예배',   keywords: ['새벽','새벽예배','촛불새벽','새벽기도'] },
+      wednesday: { label: '수요예배',   keywords: ['수요성경예배','수요성경','수요예배','수요 예배','성경예배','수요'] },
+      friday:    { label: '금요예배',   keywords: ['금요','금요예배','강청기도','금요기도','금요 예배'] },
     };
+
+    /* rss2json → JSON 방식 (CORS 없음, 주 방법) */
+    async function fetchViaRss2Json() {
+      const url = `https://api.rss2json.com/v1/api.json?count=50&rss_url=${encodeURIComponent(RSS_URL)}`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+      if (!res.ok) throw new Error('rss2json 응답 오류');
+      const json = await res.json();
+      if (json.status !== 'ok') throw new Error('rss2json 상태 오류');
+      return json.items.map(item => {
+        const videoId = (item.link || '').split('v=')[1]?.split('&')[0] ||
+                        (item.guid  || '').split('v=')[1]?.split('&')[0] || '';
+        const isShorts = (item.link||'').includes('/shorts/') ||
+                         (item.categories||[]).some(c => /short/i.test(c));
+        return { videoId, title: item.title||'', pubDate: item.pubDate||'', isShorts,
+                 category: isShorts ? 'shorts' : classify(item.title||'') };
+      }).filter(v => v.videoId);
+    }
+
+    /* XML 프록시 폴백 */
     async function proxyFetch(url) {
-      for (const proxy of PROXIES) {
+      for (const px of RAW_PROXIES) {
         try {
-          const res = await fetch(proxy + encodeURIComponent(url), { signal: AbortSignal.timeout(9000) });
+          const res = await fetch(px + encodeURIComponent(url), { signal: AbortSignal.timeout(9000) });
           if (res.ok) return await res.text();
         } catch {}
       }
-      throw new Error('모든 프록시 실패: ' + url);
+      throw new Error('모든 프록시 실패');
     }
+    function parseXML(xml) {
+      const doc = new DOMParser().parseFromString(xml, 'text/xml');
+      return Array.from(doc.querySelectorAll('entry')).map(e => {
+        const videoId = e.querySelector('videoId')?.textContent ||
+                        (e.querySelector('id')?.textContent||'').replace('yt:video:','');
+        const title   = e.querySelector('title')?.textContent || '';
+        const pubDate = e.querySelector('published')?.textContent || '';
+        const href    = e.querySelector('link')?.getAttribute('href') || '';
+        const isShorts = href.includes('/shorts/');
+        return { videoId, title, pubDate, isShorts, category: isShorts ? 'shorts' : classify(title) };
+      }).filter(v => v.videoId);
+    }
+
     function fmt(str) {
       const d = new Date(str);
       return isNaN(d) ? '' : `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
@@ -1311,23 +1547,12 @@ section{padding:100px 0}
       }
       return 'all';
     }
-    function parseRSS(xml) {
-      const doc = new DOMParser().parseFromString(xml, 'text/xml');
-      return Array.from(doc.querySelectorAll('entry')).map(e => {
-        const videoId = e.querySelector('videoId')?.textContent || (e.querySelector('id')?.textContent || '').replace('yt:video:', '');
-        const title = e.querySelector('title')?.textContent || '';
-        const pubDate = e.querySelector('published')?.textContent || '';
-        const href = e.querySelector('link')?.getAttribute('href') || '';
-        const isShorts = href.includes('/shorts/');
-        return { videoId, title, pubDate, isShorts, category: isShorts ? 'shorts' : classify(title) };
-      });
-    }
+
     async function fetchShortsPage(limit = 10) {
       try {
         const html = await proxyFetch(SHORTS_PAGE);
-        const matches = [...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)];
-        const ids = [...new Set(matches.map(m => m[1]))].slice(0, limit);
-        return ids.map(videoId => ({ videoId, title: '', pubDate: '', isShorts: true, category: 'shorts' }));
+        const ids = [...new Set([...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)].map(m=>m[1]))].slice(0, limit);
+        return ids.map(videoId => ({ videoId, title:'', pubDate:'', isShorts:true, category:'shorts' }));
       } catch { return []; }
     }
     async function fetchTitles(videos) {
@@ -1335,8 +1560,8 @@ section{padding:100px 0}
         if (v.title) return;
         try {
           const url = `https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v=${v.videoId}`;
-          const res = await fetch(PROXIES[0] + encodeURIComponent(url), { signal: AbortSignal.timeout(5000) });
-          if (res.ok) { const j = await res.json(); v.title = j.title || ''; }
+          const res = await fetch(RAW_PROXIES[0] + encodeURIComponent(url), { signal: AbortSignal.timeout(5000) });
+          if (res.ok) { const j = await res.json(); v.title = j.title||''; }
         } catch {}
       }));
       return videos;
@@ -1407,38 +1632,49 @@ section{padding:100px 0}
       document.body.style.overflow = 'hidden';
     }
   async function init() {
-      try {
-        const [rssText, shortsFromPage] = await Promise.all([proxyFetch(RSS_URL), fetchShortsPage(10)]);
-        const rssVideos = parseRSS(rssText);
-        
-        // 공지사항 리스트 채우기 (최신 제목 3개)
-        const noticeList = document.getElementById('latest-notices');
-        if(noticeList) {
-           noticeList.innerHTML = rssVideos.slice(0,3).map(v => `<div class="notice-item-mini"><i class="fas fa-bullhorn" style="margin-right:8px;color:var(--gold)"></i> ${v.title}</div>`).join('');
-        }
-
-        const normals = rssVideos.filter(v => !v.isShorts);
-        const categorized = normals.filter(v => v.category !== 'all');
-        const sunday = normals.filter(v => v.category === 'sunday');
-        const dawn = normals.filter(v => v.category === 'dawn');
-        const wednesday = normals.filter(v => v.category === 'wednesday');
-        const friday = normals.filter(v => v.category === 'friday');
-        const rssShorts = rssVideos.filter(v => v.isShorts);
-        const rssIds = new Set(rssShorts.map(v => v.videoId));
-        const pageShorts = shortsFromPage.filter(v => !rssIds.has(v.videoId));
-        const allShorts = [...rssShorts, ...pageShorts];
-        renderGrid('grid-sunday', sunday, 3);
-        renderGrid('grid-dawn', dawn, 3);
-        renderGrid('grid-wednesday', wednesday, 3);
-        renderGrid('grid-friday', friday, 3);
-        renderShorts(allShorts, 5);
-        if (pageShorts.length) fetchTitles(pageShorts).then(() => renderShorts(allShorts, 5));
-      } catch (err) {
-        console.warn('[YT] 초기화 실패:', err.message);
-        ['grid-sunday','grid-dawn','grid-wednesday','grid-friday','grid-shorts'].forEach(id => {
+      const showError = () => {
+        ['grid-sermon3','grid-sunday','grid-dawn','grid-wednesday','grid-friday','grid-david','grid-shorts'].forEach(id => {
           const g = document.getElementById(id);
           if (g) g.innerHTML = `<div class="video-empty" style="grid-column:1/-1;padding:60px 20px;text-align:center"><i class="fab fa-youtube" style="font-size:3rem;color:#ff0000;margin-bottom:16px;display:block"></i><p style="margin-bottom:20px">유튜브 채널에서 영상을 확인하세요</p><a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" style="background:#ff0000;color:white;padding:12px 28px;border-radius:50px;font-weight:700;text-decoration:none"><i class="fab fa-youtube"></i> 유튜브 채널 바로가기</a></div>`;
         });
+      };
+      try {
+        /* 방법 1: rss2json (주) + shorts 페이지 병렬 */
+        let rssVideos, shortsFromPage;
+        try {
+          [rssVideos, shortsFromPage] = await Promise.all([fetchViaRss2Json(), fetchShortsPage(10)]);
+        } catch {
+          /* 방법 2: XML 프록시 폴백 */
+          const xml = await proxyFetch(RSS_URL);
+          rssVideos = parseXML(xml);
+          shortsFromPage = [];
+        }
+
+        const normals   = rssVideos.filter(v => !v.isShorts);
+        const sermon3   = normals.filter(v => v.category === 'sermon3');
+        const david     = normals.filter(v => v.category === 'david');
+        const sunday    = normals.filter(v => v.category === 'sunday');
+        const dawn      = normals.filter(v => v.category === 'dawn');
+        const wednesday = normals.filter(v => v.category === 'wednesday');
+        const friday    = normals.filter(v => v.category === 'friday');
+        const rssShorts = rssVideos.filter(v => v.isShorts);
+        const rssIds    = new Set(rssShorts.map(v => v.videoId));
+        const pageShorts = shortsFromPage.filter(v => !rssIds.has(v.videoId));
+        const allShorts  = [...rssShorts, ...pageShorts];
+
+        renderGrid('grid-sermon3',   sermon3,   3);
+        renderGrid('grid-sunday',    sunday,    3);
+        renderGrid('grid-dawn',      dawn,      3);
+        renderGrid('grid-wednesday', wednesday, 3);
+        renderGrid('grid-friday',    friday,    3);
+        renderGrid('grid-david',     david,     3);
+        renderShorts(allShorts, 5);
+
+        if (pageShorts.length) fetchTitles(pageShorts).then(() => renderShorts(allShorts, 5));
+
+      } catch (err) {
+        console.warn('[YT] 초기화 실패:', err.message);
+        showError();
       }
     }
     return { init, openModal };
@@ -1478,18 +1714,20 @@ section{padding:100px 0}
     else _header?.classList.remove('scrolled');
   }, { passive: true });
   const hamburger = document.getElementById('hamburger');
-  const mainNav = document.getElementById('mainNav');
+  const mainNav   = document.getElementById('mainNav');
+  function closeNav() {
+    mainNav?.classList.remove('open');
+    hamburger?.classList.remove('open');
+    document.body.style.overflow = '';
+  }
   hamburger?.addEventListener('click', () => {
     const open = mainNav?.classList.toggle('open');
     hamburger.classList.toggle('open', open);
     document.body.style.overflow = open ? 'hidden' : '';
   });
-  mainNav?.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      mainNav.classList.remove('open');
-      hamburger?.classList.remove('open');
-      document.body.style.overflow = '';
-    });
+  document.getElementById('navClose')?.addEventListener('click', closeNav);
+  mainNav?.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', closeNav);
   });
   (function () {
     const iframe = document.getElementById('heroBgVideo');
@@ -1590,6 +1828,13 @@ section{padding:100px 0}
   });
   document.addEventListener('DOMContentLoaded', () => {
     loadBlogPosts();
+    loadBulletinNotices();
+    loadSermonAudio();
+    hradRender();
+    /* Enter키 HRAD 글쓰기 */
+    document.getElementById('hradText')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); hradPost(); }
+    });
     const floatBar = document.getElementById('floatBar');
     const showFloat = () => { if (floatBar) floatBar.classList.toggle('visible', window.scrollY > 300); };
     window.addEventListener('scroll', showFloat, { passive: true });
@@ -1605,48 +1850,6 @@ section{padding:100px 0}
     });
   });
   </script>
-  <script>
-    // Global Translation
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({pageLanguage: 'ko', includedLanguages: 'ko,en,zh-CN,ja,fr,es,de,vi', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-    }
-  </script>
-  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-  <script>
-    // Prayer Board Logic
-    document.addEventListener('DOMContentLoaded', () => {
-      const btnSubmit = document.getElementById('btnSubmitPrayer');
-      const listEl = document.getElementById('prayerList');
-      
-      const loadPrayers = () => {
-        const prayers = JSON.parse(localStorage.getItem('church_prayers') || '[]');
-        listEl.innerHTML = prayers.reverse().map(p => `
-          <div class="prayer-item">
-            <div class="name">${p.name || '익명'}</div>
-            <div class="content">${p.content}</div>
-            <div class="date">${p.date}</div>
-          </div>
-        `).join('') || '<p style="text-align:center;color:#999;padding:40px 0;">첫 번째 기도 제목을 남겨주세요.</p>';
-      };
-
-      btnSubmit?.addEventListener('click', () => {
-        const name = document.getElementById('prayerName').value.trim();
-        const content = document.getElementById('prayerContent').value.trim();
-        if(!content) return alert('기도 내용을 입력해주세요.');
-        
-        const prayers = JSON.parse(localStorage.getItem('church_prayers') || '[]');
-        prayers.push({ name, content, date: new Date().toLocaleDateString() });
-        localStorage.setItem('church_prayers', JSON.stringify(prayers));
-        
-        document.getElementById('prayerName').value = '';
-        document.getElementById('prayerContent').value = '';
-        loadPrayers();
-        alert('기도 제목이 등록되었습니다.');
-      });
-
-      loadPrayers();
-    });
-  </script>
 </body>
 </html>
