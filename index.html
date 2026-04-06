@@ -1444,7 +1444,7 @@ section{padding:100px 0}
         <p class="hrad-post-text">${_escHtml(p.text)}</p>
       </div>`).join('');
   }
-  const HRAD_GAS_URL = 'PASTE_YOUR_GAS_WEB_APP_URL_HERE'; // Apps Script 웹앱 URL (업데이트 필요)
+  const HRAD_GAS_URL = 'https://script.google.com/macros/s/AKfycbz9eIMavFE3Ihdk2RcdX9xQzQHsJjGgPnANjDULc8qAaiIKZP7Z4pb0IRRiXxJeMbwx2Q/exec';
   function hradPost() {
     const name = (document.getElementById('hradName')?.value||'').trim()||'익명';
     const text = (document.getElementById('hradText')?.value||'').trim();
