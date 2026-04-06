@@ -112,9 +112,8 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 /* HEADER */
 #header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(10,18,48,0.92);backdrop-filter:blur(12px);transition:var(--transition)}
 #header.scrolled{background:rgba(10,18,48,0.98);box-shadow:0 2px 24px rgba(0,0,0,0.3)}
-.header-inner{max-width:1280px;margin:0 auto;padding:0 40px;display:flex;align-items:center;justify-content:center;position:relative;height:80px}
-.logo{display:flex;align-items:center;position:absolute;left:40px;top:50%;transform:translateY(-50%);height:52px}
-.logo img{height:42px;width:auto;object-fit:contain;image-rendering:-webkit-optimize-contrast}
+.logo{display:none}
+.mobile-brand{display:none;font-family:var(--font-serif);font-size:1.05rem;font-weight:700;color:var(--white);letter-spacing:-0.01em;position:absolute;left:50%;transform:translateX(-50%);pointer-events:none}
 .main-nav{flex:1;display:flex;align-items:center;justify-content:center}
 .main-nav ul{display:flex;gap:8px;align-items:center}
 .main-nav>ul>li{position:relative}
@@ -687,21 +686,13 @@ section{padding:100px 0}
   <!-- ===== HEADER / NAV ===== -->
   <header id="header">
     <div class="header-inner">
-      <!-- 로고 추가 -->
-      <a href="/" class="logo">
-        <img src="logo_hbc.png" alt="하늘바람교회">
-      </a>
       <!-- 모바일 전용 교회명 (데스크톱에서 숨김) -->
-      <span class="mobile-brand">
-        <img src="logo_hbc.png" alt="하늘바람교회" style="height:32px;width:auto;vertical-align:middle">
-      </span>
+      <span class="mobile-brand">하늘바람교회</span>
 
       <nav class="main-nav" id="mainNav">
         <!-- 모바일 오버레이 상단 (데스크톱에서 숨김) -->
         <div class="nav-overlay-header">
-          <span class="nav-brand">
-             <img src="logo_hbc.png" alt="하늘바람교회" style="height:38px;width:auto;vertical-align:middle">
-          </span>
+          <span class="nav-brand">하늘바람교회</span>
           <button class="nav-close" id="navClose" aria-label="메뉴닫기">
             <i class="fas fa-times"></i>
           </button>
