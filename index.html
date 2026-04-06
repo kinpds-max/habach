@@ -110,8 +110,8 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 .loader-text{color:var(--white);font-size:1.1rem;letter-spacing:0.15em;font-weight:300;margin-top:8px}
 
 /* HEADER */
-#header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(8,15,42,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.07);transition:var(--transition)}
-#header.scrolled{background:rgba(8,15,42,0.99);box-shadow:0 4px 32px rgba(0,0,0,0.45);border-bottom-color:rgba(255,255,255,0.1)}
+#header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:transparent;border-bottom:1px solid transparent;transition:background 0.4s,box-shadow 0.4s,border-color 0.4s}
+#header.scrolled{background:rgba(8,15,42,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 32px rgba(0,0,0,0.45);border-bottom-color:rgba(255,255,255,0.1)}
 .header-inner{max-width:1400px;margin:0 auto;padding:0 48px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;height:76px;gap:32px}
 .nav-logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
 .logo-img{height:50px;width:auto;object-fit:contain;display:block;opacity:0.93;transition:opacity 0.2s}
@@ -181,12 +181,12 @@ body{top:0!important}
 .mbn-overlay.open{display:block}
 
 /* HERO */
-#hero{position:relative;width:100%;height:100vh;min-height:700px;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
+#hero{position:relative;width:100%;height:150vh;min-height:900px;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
 .hero-video-wrap{position:absolute;inset:0;z-index:0;overflow:hidden;background:var(--navy)}
-.hero-fallback-bg{position:absolute;inset:-5%;background:url('https://i.ytimg.com/vi/k-Q5Wjq7uPM/maxresdefault.jpg') center/cover no-repeat;filter:blur(3px) brightness(0.65);z-index:0}
-#heroBgVideo{position:absolute;top:50%;left:50%;width:max(100%,calc(100vh*16/9));height:max(100%,calc(100vw*9/16));transform:translate(-50%,-50%);pointer-events:none;border:0;z-index:1;opacity:0;transition:opacity 1.4s ease}
+.hero-fallback-bg{position:absolute;inset:0;background:url('https://i.ytimg.com/vi/k-Q5Wjq7uPM/maxresdefault.jpg') center/cover no-repeat;filter:brightness(0.75);z-index:0}
+#heroBgVideo{position:absolute;top:50%;left:50%;width:max(150%,calc(150vh*16/9));height:max(150%,calc(150vw*9/16));transform:translate(-50%,-50%);pointer-events:none;border:0;z-index:1;opacity:0;transition:opacity 1.4s ease}
 #heroBgVideo.loaded{opacity:1}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,20,50,0.78) 0%,rgba(15,32,68,0.55) 50%,rgba(10,20,50,0.35) 100%)}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,20,50,0.62) 0%,rgba(15,32,68,0.38) 50%,rgba(10,20,50,0.22) 100%)}
 .hero-content{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:0 40px;width:100%}
 .hero-sub{color:var(--gold-light);font-size:0.9rem;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px}
 .hero-title{font-family:var(--font-serif);font-size:clamp(2.4rem,5.5vw,5rem);font-weight:700;color:var(--white);line-height:1.2;margin-bottom:20px;text-shadow:0 2px 24px rgba(0,0,0,0.3)}
@@ -281,13 +281,13 @@ section{padding:100px 0}
 
 /* MISSION BRIDGE */
 .section-mission { padding-bottom: 100px; }
-.mission-wrap { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); border-radius: 24px; padding: 80px; text-align: center; color: #fff; position: relative; overflow: hidden; }
+.mission-wrap { background: linear-gradient(135deg, #f5f0e8 0%, #fdf8f0 60%, #f5f0e8 100%); border-radius: 24px; padding: 80px; text-align: center; color: var(--navy); position: relative; overflow: hidden; border: 1px solid rgba(201,168,76,0.25); }
 .mission-wrap::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%); pointer-events: none; }
-.mission-title { font-size: 3rem; font-family: var(--font-serif); margin-bottom: 20px; color: var(--gold); }
-.mission-desc { font-size: 1.1rem; opacity: 0.8; margin-bottom: 40px; }
+.mission-title { font-size: 3rem; font-family: var(--font-serif); margin-bottom: 20px; color: var(--navy); }
+.mission-desc { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 40px; }
 .mission-stats { display: flex; justify-content: center; gap: 60px; }
 .stat-item span { font-size: 2.5rem; font-weight: 800; display: block; color: var(--gold); }
-.stat-item p { opacity: 0.7; font-size: 14px; }
+.stat-item p { color: var(--text-muted); font-size: 14px; }
 
 @media(max-width: 900px) {
   .cafe-grid-3 { grid-template-columns: 1fr; }
@@ -440,8 +440,8 @@ section{padding:100px 0}
 .blog-loading{text-align:center;padding:40px;color:var(--gray)}
 
 /* COMMUNITY */
-.section-community{background:linear-gradient(160deg,#0d1e42 0%,#1a3260 50%,#0d1e42 100%);position:relative;overflow:hidden}
-.section-community::before{content:'';position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.07) 0%,transparent 70%);top:-200px;left:-200px}
+.section-community{background:linear-gradient(160deg,#f7f9fe 0%,#eef3fb 50%,#f7f9fe 100%);position:relative;overflow:hidden}
+.section-community::before{content:'';position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.09) 0%,transparent 70%);top:-200px;left:-200px}
 .cafe-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:40px}
 .cafe-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:36px 28px;text-align:center;transition:var(--transition);display:flex;flex-direction:column;align-items:center}
 .cafe-card:hover{background:rgba(255,255,255,0.1);border-color:rgba(201,168,76,0.5);transform:translateY(-6px);box-shadow:0 20px 48px rgba(0,0,0,0.35)}
@@ -455,6 +455,27 @@ section{padding:100px 0}
 .cafe-link{color:var(--gold-light);font-size:0.825rem;font-weight:600;letter-spacing:0.04em;display:flex;align-items:center;gap:6px;transition:var(--transition)}
 .cafe-card:hover .cafe-link{color:var(--gold)}
 .cafe-cta{text-align:center}
+/* ===== 커뮤니티 3탭 ===== */
+.comm-tabs{display:flex;gap:0;border-radius:14px;overflow:hidden;background:var(--white);border:1px solid var(--gray-light);box-shadow:var(--shadow-sm);margin:40px 0 28px}
+.comm-tab-btn{flex:1;padding:16px 20px;background:transparent;border:none;color:var(--gray);font-size:0.9rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all 0.25s;letter-spacing:0.01em;white-space:nowrap;position:relative}
+.comm-tab-btn i{font-size:1rem}
+.comm-tab-btn.active{background:var(--off-white);color:var(--navy)}
+.comm-tab-btn.active::after{content:"";position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold);border-radius:3px 3px 0 0}
+.comm-tab-btn.active i{color:var(--gold)}
+.comm-tab-btn:not(:last-child){border-right:1px solid var(--gray-light)}
+.comm-tab-btn:hover:not(.active){background:var(--off-white);color:var(--text)}
+.comm-panel{display:none;animation:fadeInPanel 0.3s ease}
+.comm-panel.active{display:block}
+@keyframes fadeInPanel{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* 탭 내 카드 */
+.comm-panel .cafe-card-v2{background:var(--white);border:1px solid var(--gray-light);color:var(--text);max-width:680px;margin:0 auto;box-shadow:var(--shadow-sm)}
+.comm-panel .cafe-card-v2 h3{color:var(--navy)}
+.comm-panel .cafe-sub-list li a{color:var(--text-muted)}
+.comm-panel .cafe-sub-list li a:hover{color:var(--gold)}
+.comm-panel .cafe-sub-list li{border-bottom-color:var(--gray-light)}
+.comm-panel .cafe-card-v2-btn{background:var(--off-white);color:var(--navy);border-color:var(--gray-light);margin-top:20px}
+.comm-panel .cafe-card-v2-btn:hover{background:var(--navy);color:white;border-color:var(--navy)}
+@media(max-width:640px){.comm-tab-btn{font-size:0.8rem;padding:13px 8px;gap:6px}}
 
 /* CONTACT */
 .section-contact{background:var(--off-white)}
@@ -1311,13 +1332,25 @@ section{padding:100px 0}
   <section id="community" class="section-community">
     <div class="container">
       <div class="section-header" data-aos="fade-up">
-        <p class="section-label light">온라인 커뮤니티</p>
-        <h2 class="section-title light">하늘바람 교회 카페</h2>
-        <p class="section-desc light">함께 나누는 이야기, 클릭하면 카페로 이동합니다</p>
+        <p class="section-label">온라인 커뮤니티</p>
+        <h2 class="section-title">하늘바람 교회 카페</h2>
+        <p class="section-desc">함께 나누는 이야기, 클릭하면 카페로 이동합니다</p>
       </div>
-      <div class="cafe-grid-3" data-aos="fade-up" data-aos-delay="150">
+      <!-- 3탭 헤더 -->
+      <div class="comm-tabs" data-aos="fade-up" data-aos-delay="100">
+        <button class="comm-tab-btn active" onclick="switchCommTab('training',this)">
+          <i class="fas fa-book-open"></i> 양육 &amp; 훈련
+        </button>
+        <button class="comm-tab-btn" onclick="switchCommTab('fellowship',this)">
+          <i class="fas fa-heart"></i> 성도간의 교제
+        </button>
+        <button class="comm-tab-btn" onclick="switchCommTab('education',this)">
+          <i class="fas fa-child"></i> 교육 부서
+        </button>
+      </div>
 
-        <!-- 양육 & 훈련 -->
+      <!-- 탭1: 양육&훈련 -->
+      <div class="comm-panel active" id="comm-training" data-aos="fade-up" data-aos-delay="150">
         <div class="cafe-card-v2">
           <div class="cafe-card-v2-header">
             <div class="cafe-icon"><i class="fas fa-book-open"></i></div>
@@ -1337,8 +1370,10 @@ section{padding:100px 0}
           </ul>
           <a href="https://cafe.naver.com/f-e/cafes/31371644/menus/1" target="_blank" class="cafe-card-v2-btn">카페 바로가기 <i class="fas fa-arrow-right"></i></a>
         </div>
+      </div>
 
-        <!-- 성도간의 교제 -->
+      <!-- 탭2: 성도간의 교제 -->
+      <div class="comm-panel" id="comm-fellowship">
         <div class="cafe-card-v2">
           <div class="cafe-card-v2-header">
             <div class="cafe-icon"><i class="fas fa-heart"></i></div>
@@ -1360,8 +1395,10 @@ section{padding:100px 0}
           </ul>
           <a href="https://cafe.naver.com/f-e/cafes/31371644/menus/2" target="_blank" class="cafe-card-v2-btn">바로가기 <i class="fas fa-arrow-right"></i></a>
         </div>
+      </div>
 
-        <!-- 교육 부서 -->
+      <!-- 탭3: 교육 부서 -->
+      <div class="comm-panel" id="comm-education">
         <div class="cafe-card-v2">
           <div class="cafe-card-v2-header">
             <div class="cafe-icon"><i class="fas fa-child"></i></div>
@@ -1378,10 +1415,10 @@ section{padding:100px 0}
           </ul>
           <a href="https://cafe.naver.com/f-e/cafes/31371644/menus/20" target="_blank" class="cafe-card-v2-btn">바로가기 <i class="fas fa-arrow-right"></i></a>
         </div>
+      </div><!-- /comm-education -->
 
-      </div>
       <div class="cafe-cta" data-aos="fade-up" data-aos-delay="300">
-        <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-primary-light">
+        <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-primary">
           <i class="fas fa-door-open"></i> 하늘바람 카페 입장하기
         </a>
       </div>
@@ -1401,8 +1438,8 @@ section{padding:100px 0}
             <div class="stat-item"><span>1,200</span><p>기도의 동역자</p></div>
           </div>
           <a href="https://cafe.naver.com/f-e/cafes/31371644/menus/42" target="_blank"
-             style="display:inline-flex;align-items:center;gap:8px;margin-top:24px;background:rgba(255,255,255,0.15);color:white;padding:12px 28px;border-radius:50px;font-weight:700;font-size:0.9rem;border:1px solid rgba(255,255,255,0.3);transition:background 0.2s;text-decoration:none;white-space:nowrap"
-             onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+             style="display:inline-flex;align-items:center;gap:8px;margin-top:24px;background:var(--gold);color:var(--navy);padding:12px 28px;border-radius:50px;font-weight:700;font-size:0.9rem;border:1px solid transparent;transition:all 0.2s;text-decoration:none;white-space:nowrap;box-shadow:0 4px 16px rgba(201,168,76,0.35)"
+             onmouseover="this.style.background='var(--gold-light)'" onmouseout="this.style.background='var(--gold)'">
             <i class="fas fa-mug-hot"></i> 하늘바람 카페 입장하기
           </a>
         </div>
@@ -1588,6 +1625,13 @@ section{padding:100px 0}
         </div>
         <p class="hrad-post-text">${_escHtml(p.text)}</p>
       </div>`).join('');
+  }
+  /* 커뮤니티 3탭 전환 */
+  function switchCommTab(id, btn) {
+    document.querySelectorAll('.comm-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.comm-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('comm-' + id)?.classList.add('active');
   }
   /* HRAD 탭 전환 */
   function switchHradTab(tab, btn) {
