@@ -113,7 +113,8 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 #header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(10,18,48,0.92);backdrop-filter:blur(12px);transition:var(--transition)}
 #header.scrolled{background:rgba(10,18,48,0.98);box-shadow:0 2px 24px rgba(0,0,0,0.3)}
 .header-inner{max-width:1280px;margin:0 auto;padding:0 40px;display:flex;align-items:center;justify-content:center;position:relative;height:80px}
-.logo{display:none}
+.logo{display:flex;align-items:center;position:absolute;left:40px;top:50%;transform:translateY(-50%);height:48px}
+.logo img{height:36px;width:auto;object-fit:contain}
 .main-nav{flex:1;display:flex;align-items:center;justify-content:center}
 .main-nav ul{display:flex;gap:8px;align-items:center}
 .main-nav>ul>li{position:relative}
@@ -601,7 +602,7 @@ section{padding:100px 0}
   #grid-friday .video-card:nth-child(n+3),
   #grid-david .video-card:nth-child(n+3){display:none}
 }
-@media(max-width:480px){.btn-primary,.btn-outline{padding:12px 22px;font-size:0.875rem}.video-grid{grid-template-columns:1fr}.shorts-grid{grid-template-columns:repeat(2,1fr)}.shorts-grid .shorts-card:nth-child(n+5){display:none}.cafe-grid{grid-template-columns:1fr}.float-label{display:none}.drive-embed{height:300px}.album-drive-wrap{min-height:300px}.shorts-more-wrap{display:flex;justify-content:center;margin-top:24px}}
+@media(max-width:480px){.btn-primary,.btn-outline{padding:12px 22px;font-size:0.875rem}.video-grid{grid-template-columns:1fr}.shorts-grid{grid-template-columns:repeat(2,1fr)}.shorts-grid .shorts-card:nth-child(n+6){display:none}.cafe-grid{grid-template-columns:1fr}.float-label{display:none}.drive-embed{height:300px}.album-drive-wrap{min-height:300px}.shorts-more-wrap{display:flex;justify-content:center;margin-top:24px}}
 /* 모바일 하단 탭 표시 */
 @media(max-width:900px){
   .mobile-bottom-nav{display:flex!important;align-items:stretch}
@@ -627,6 +628,9 @@ section{padding:100px 0}
 .bulletin-carousel .bpc-name{flex:1;font-size:0.82rem;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bulletin-carousel .bpc-open{flex-shrink:0;font-size:0.75rem;color:var(--blue);display:flex;align-items:center;gap:4px}
 .bulletin-carousel .bpc-open:hover{color:var(--gold)}
+.bulletin-carousel .bpc-thumb{position:relative}
+.bpc-zoom-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.45);color:white;display:flex;align-items:center;justify-content:center;gap:8px;font-size:0.85rem;font-weight:600;opacity:0;transition:opacity 0.25s;border-radius:inherit}
+.bulletin-preview-card:hover .bpc-zoom-overlay{opacity:1}
 @media(max-width:600px){.bulletin-carousel-wrap{padding:0 36px}.bcar-btn{width:30px;height:30px;font-size:0.8rem}}
 /* ===== \uad50\ud68c\uc18c\uac1c\uc601\uc0c1 ===== */
 .church-intro-video{margin-bottom:20px}
@@ -680,13 +684,21 @@ section{padding:100px 0}
   <!-- ===== HEADER / NAV ===== -->
   <header id="header">
     <div class="header-inner">
+      <!-- 로고 추가 -->
+      <a href="/" class="logo">
+        <img src="logo_hbc.png" alt="하늘바람교회">
+      </a>
       <!-- 모바일 전용 교회명 (데스크톱에서 숨김) -->
-      <span class="mobile-brand">하늘바람교회</span>
+      <span class="mobile-brand">
+        <img src="logo_hbc.png" alt="하늘바람교회" style="height:32px;width:auto;vertical-align:middle">
+      </span>
 
       <nav class="main-nav" id="mainNav">
         <!-- 모바일 오버레이 상단 (데스크톱에서 숨김) -->
         <div class="nav-overlay-header">
-          <span class="nav-brand">하늘바람교회</span>
+          <span class="nav-brand">
+             <img src="logo_hbc.png" alt="하늘바람교회" style="height:38px;width:auto;vertical-align:middle">
+          </span>
           <button class="nav-close" id="navClose" aria-label="메뉴닫기">
             <i class="fas fa-times"></i>
           </button>
@@ -778,7 +790,21 @@ section{padding:100px 0}
   <section id="welcome" class="section-welcome">
     <div class="container">
       <div class="welcome-grid">
-        <div class="welcome-visual" data-aos="fade-right">
+        <div class="welcome-text" data-aos="fade-right">
+          <p class="section-label">교회 인사말</p>
+          <h2 class="section-title">하나님이 기뻐하시는<br>예배 공동체</h2>
+          <p class="welcome-body">
+            하늘바람교회는 성령의 바람이 역사하는 교회입니다.<br>
+            예배를 통해 하나님의 임재를 경험하고,<br>
+            말씀으로 세워지는 건강한 공동체를 꿈꿉니다.
+          </p>
+          <p class="welcome-body">
+            다윗처럼 하나님의 마음에 합한 예배자로<br>
+            이 땅을 아름답게 섬기는 하늘바람교회가 되겠습니다.
+          </p>
+          <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-primary">교회 더 알아보기</a>
+        </div>
+        <div class="welcome-visual" data-aos="fade-left">
           <!-- 교회소개영상 -->
           <div class="church-intro-video" data-aos="fade-up" data-aos-delay="50">
             <div class="civ-label"><i class="fas fa-play-circle"></i> 하늘바람교회 소개영상</div>
@@ -815,20 +841,6 @@ section{padding:100px 0}
               <p>사랑으로 이웃을<br>섬기는 공동체</p>
             </div>
           </div>
-        </div>
-        <div class="welcome-text" data-aos="fade-left">
-          <p class="section-label">교회 인사말</p>
-          <h2 class="section-title">하나님이 기뻐하시는<br>예배 공동체</h2>
-          <p class="welcome-body">
-            하늘바람교회는 성령의 바람이 역사하는 교회입니다.<br>
-            예배를 통해 하나님의 임재를 경험하고,<br>
-            말씀으로 세워지는 건강한 공동체를 꿈꿉니다.
-          </p>
-          <p class="welcome-body">
-            다윗처럼 하나님의 마음에 합한 예배자로<br>
-            이 땅을 아름답게 섬기는 하늘바람교회가 되겠습니다.
-          </p>
-          <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-primary">교회 더 알아보기</a>
         </div>
       </div>
     </div>
@@ -1380,7 +1392,7 @@ section{padding:100px 0}
           <a href="https://cafe.naver.com/f-e/cafes/31371644/menus/42" target="_blank"
              style="display:inline-flex;align-items:center;gap:8px;margin-top:24px;background:rgba(255,255,255,0.15);color:white;padding:12px 28px;border-radius:50px;font-weight:700;font-size:0.9rem;border:1px solid rgba(255,255,255,0.3);transition:background 0.2s;text-decoration:none"
              onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
-            <i class="fas fa-globe"></i> 미션브릿지 오픈쾐퍼회 더보기
+            <i class="fas fa-mug-hot"></i> 하늘바람 카페 입장하기
           </a>
         </div>
       </div>
@@ -1951,13 +1963,13 @@ section{padding:100px 0}
         const pageShorts = shortsFromPage.filter(v => !rssIds.has(v.videoId));
         const allShorts  = [...rssShorts, ...pageShorts];
 
-        renderGrid('grid-sermon3',   sermon3,   6);
-        renderGrid('grid-sunday',    sunday,    6);
-        renderGrid('grid-dawn',      dawn,      6);
-        renderGrid('grid-wednesday', wednesday, 6);
-        renderGrid('grid-friday',    friday,    6);
-        renderGrid('grid-david',     david,     6);
-        renderShorts(allShorts, 8);
+        renderGrid('grid-sermon3',   sermon3,   3);
+        renderGrid('grid-sunday',    sunday,    3);
+        renderGrid('grid-dawn',      dawn,      3);
+        renderGrid('grid-wednesday', wednesday, 3);
+        renderGrid('grid-friday',    friday,    3);
+        renderGrid('grid-david',     david,     3);
+        renderShorts(allShorts, 5);
 
         if (pageShorts.length) fetchTitles(pageShorts).then(() => renderShorts(allShorts, 5));
 
@@ -2236,15 +2248,18 @@ section{padding:100px 0}
     const ind = document.getElementById('bcarIndicator');
     if (!el || !_bcarItems.length) return;
     el.innerHTML = _bcarItems.map((e, i) => `
-      <div class="bulletin-preview-card ${i===0?'bcar-active':''}">
+      <div class="bulletin-preview-card ${i===0?'bcar-active':''}" style="cursor:pointer"
+           onclick="openBulletinPreview('${e.id}','${_escHtml(e.name)}')">
         <div class="bpc-thumb">
           <img src="https://drive.google.com/thumbnail?id=${e.id}&sz=w1200"
                alt="${_escHtml(e.name)}" loading="lazy"
                onerror="this.parentElement.innerHTML='<i class=\'fas fa-file-pdf bpc-icon\'></i>'">
+          <div class="bpc-zoom-overlay"><i class="fas fa-search-plus"></i> 클릭하여 확대보기</div>
         </div>
         <div class="bpc-info">
           <p class="bpc-name">${_escHtml(e.name)}</p>
-          <a href="https://drive.google.com/file/d/${e.id}/view" target="_blank" class="bpc-open">
+          <a href="https://drive.google.com/file/d/${e.id}/view" target="_blank" class="bpc-open"
+             onclick="event.stopPropagation()">
             <i class="fas fa-external-link-alt"></i> 열기
           </a>
         </div>
