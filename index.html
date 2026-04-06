@@ -141,20 +141,13 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 
 /* ===== MOBILE BOTTOM TAB NAV ===== */
 .mobile-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1100;background:rgba(8,16,44,0.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,0.1);padding:0;height:64px;padding-bottom:env(safe-area-inset-bottom)}
-.mobile-bottom-nav ul{display:flex;height:100%;margin:0;padding:0 4px;list-style:none;align-items:stretch}
-.mbn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:rgba(255,255,255,0.45);font-size:0.6rem;font-weight:500;letter-spacing:0.01em;padding:8px 4px;transition:color 0.2s,background 0.2s;border-radius:10px;-webkit-tap-highlight-color:transparent;position:relative}
+.mobile-bottom-nav ul{display:flex;height:100%;margin:0;padding:0 8px;list-style:none;align-items:stretch;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:2px}
+.mobile-bottom-nav ul::-webkit-scrollbar{display:none}
+.mbn-item{flex:0 0 auto;min-width:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:rgba(255,255,255,0.45);font-size:0.58rem;font-weight:500;padding:8px 6px;transition:color 0.2s;border-radius:10px;-webkit-tap-highlight-color:transparent;position:relative}
 .mbn-item i{font-size:1.1rem;transition:transform 0.2s,color 0.2s}
 .mbn-item.active,.mbn-item:hover{color:var(--gold-light)}
 .mbn-item.active i{transform:translateY(-2px)}
 .mbn-item.active::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:24px;height:3px;background:var(--gold);border-radius:3px 3px 0 0}
-/* 더보기 서랍 */
-.mbn-drawer{display:none;position:fixed;bottom:64px;left:0;right:0;z-index:1090;background:rgba(8,16,44,0.98);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.12);padding:20px 24px 24px;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.25,0.8,0.25,1)}
-.mbn-drawer.open{transform:translateY(0)}
-.mbn-drawer-title{font-size:0.75rem;color:rgba(255,255,255,0.35);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;font-weight:600}
-.mbn-drawer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.mbn-drawer-item{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:rgba(255,255,255,0.8);font-size:0.72rem;text-align:center;cursor:pointer;transition:background 0.2s,border-color 0.2s;-webkit-tap-highlight-color:transparent}
-.mbn-drawer-item i{font-size:1.25rem;color:var(--gold)}
-.mbn-drawer-item:hover,.mbn-drawer-item:active{background:rgba(255,255,255,0.12);border-color:rgba(201,168,76,0.4)}
 .mbn-overlay{display:none;position:fixed;inset:0;z-index:1080;background:rgba(0,0,0,0.5)}
 .mbn-overlay.open{display:block}
 
@@ -683,14 +676,16 @@ section{padding:100px 0}
   <!-- ===== HERO : DRONE VIDEO BANNER ===== -->
   <section id="hero">
     <div class="hero-video-wrap" id="heroWrap">
-      <!-- 폴백 배경 썸네일 (영상 로딩 전/실패 시) -->
+      <!-- 폴백 배경 (영상 로딩 전/실패 시) -->
       <div class="hero-fallback-bg" id="heroFallback"></div>
+      <!-- 데스크톱: 유튜브 iframe / 모바일: 유튜브 iframe (playsinline) -->
       <iframe
         id="heroBgVideo"
-        src="https://www.youtube.com/embed/k-Q5Wjq7uPM?autoplay=1&mute=1&loop=1&playlist=k-Q5Wjq7uPM&controls=0&rel=0&modestbranding=1&playsinline=1&fs=0&disablekb=1"
+        src="https://www.youtube.com/embed/k-Q5Wjq7uPM?autoplay=1&mute=1&loop=1&playlist=k-Q5Wjq7uPM&controls=0&rel=0&modestbranding=1&playsinline=1&fs=0&disablekb=1&enablejsapi=0"
         frameborder="0"
-        allow="autoplay; mute; encrypted-media"
-        title="하늘바람교회 홍보영상">
+        allow="autoplay; encrypted-media"
+        title="하늘바람교회 홍보영상"
+        loading="lazy">
       </iframe>
       <div class="hero-overlay"></div>
     </div>
@@ -867,11 +862,11 @@ section{padding:100px 0}
           <div class="nbh-left">
             <i class="fas fa-newspaper nbh-icon"></i>
             <h3>교회주보</h3>
-            <span class="news-badge-drive"><i class="fab fa-google-drive"></i> Drive 자동연동</span>
+            <span class="news-badge-drive"><i class="fab fa-google-drive"></i> 실시간 연동</span>
           </div>
           <a href="https://drive.google.com/drive/folders/15rRGFV_nXCGg9PIRB7bkHzWssPVppCzZ?usp=sharing"
              target="_blank" class="news-drive-btn">
-            <i class="fab fa-google-drive"></i> 주보 전체 보기
+            <i class="fas fa-eye"></i> 주보 미리보기
           </a>
         </div>
         <!-- 주보 마리보기 카드 그리드 -->
@@ -917,19 +912,13 @@ section{padding:100px 0}
             <i class="fas fa-headphones-alt sa-icon"></i>
             <div>
               <h2 class="sa-title">주일설교 녹음파일</h2>
-              <p class="sa-desc">설교 말씀을 언제 어디서나 들으세요</p>
+              <p class="sa-desc">클릭하시면 <strong>바로 미리듣기</strong> 가 시작되어요</p>
             </div>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
             <a href="https://drive.google.com/drive/folders/1TY6KCHWGWhgM_FhjqVVN-aTMUPuW3ivX"
                target="_blank" class="sa-drive-btn">
-              <i class="fab fa-google-drive"></i> Drive 전체보기
-            </a>
-            <a href="https://drive.google.com/drive/folders/1TY6KCHWGWhgM_FhjqVVN-aTMUPuW3ivX?usp=sharing"
-               target="_blank" class="sa-drive-btn"
-               style="background:#34a853"
-               title="외부 공유 링크">
-              <i class="fas fa-share-alt"></i> 외부 공유
+              <i class="fab fa-google-drive"></i> 녹음파일 전체보기
             </a>
           </div>
         </div>
@@ -1292,54 +1281,17 @@ section{padding:100px 0}
   </section>
 
   <!-- ===== 모바일 하단 탭 네비게이션 ===== -->
-  <div class="mbn-overlay" id="mbnOverlay"></div>
-  <div class="mbn-drawer" id="mbnDrawer">
-    <p class="mbn-drawer-title">메뉴 전체</p>
-    <div class="mbn-drawer-grid">
-      <div class="mbn-drawer-item" onclick="mbnGo('#welcome')">
-        <i class="fas fa-church"></i>소개
-      </div>
-      <div class="mbn-drawer-item" onclick="mbnGo('#history')">
-        <i class="fas fa-history"></i>역사
-      </div>
-      <div class="mbn-drawer-item" onclick="mbnGo('#news')">
-        <i class="fas fa-newspaper"></i>소식
-      </div>
-      <div class="mbn-drawer-item" onclick="mbnGo('#gallery')">
-        <i class="fas fa-images"></i>앨범
-      </div>
-      <div class="mbn-drawer-item" onclick="mbnGo('#blog')">
-        <i class="fas fa-book-open"></i>말씀
-      </div>
-      <div class="mbn-drawer-item" onclick="mbnGo('#community')">
-        <i class="fas fa-users"></i>커뮤
-      </div>
-      <div class="mbn-drawer-item" onclick="mbnGo('#sermon-audio')">
-        <i class="fas fa-headphones"></i>녹음
-      </div>
-      <div class="mbn-drawer-item" onclick="mbnGo('#contact')">
-        <i class="fas fa-map-marker-alt"></i>오시는길
-      </div>
-    </div>
-  </div>
   <nav class="mobile-bottom-nav" id="mobileBottomNav">
-    <ul>
-      <li class="mbn-item active" id="mbn-worship" onclick="mbnGo('#worship')">
-        <i class="fas fa-praying-hands"></i>예배
-      </li>
-      <li class="mbn-item" id="mbn-media" onclick="mbnGo('#media')">
-        <i class="fab fa-youtube"></i>미디어
-      </li>
-      <li class="mbn-item" id="mbn-prayer" onclick="mbnGo('#prayer')">
-        <!-- center main button -->
-        <i class="fas fa-dove" style="font-size:1.4rem"></i>기도
-      </li>
-      <li class="mbn-item" id="mbn-contact" onclick="mbnGo('#contact')">
-        <i class="fas fa-map-marker-alt"></i>오시는길
-      </li>
-      <li class="mbn-item" id="mbn-more" onclick="mbnToggleDrawer()">
-        <i class="fas fa-th"></i>더보기
-      </li>
+    <ul class="mbn-scroll">
+      <li class="mbn-item" onclick="mbnGo('#welcome')"><i class="fas fa-church"></i><span>소개</span></li>
+      <li class="mbn-item" onclick="mbnGo('#worship')"><i class="fas fa-praying-hands"></i><span>예배</span></li>
+      <li class="mbn-item" onclick="mbnGo('#media')"><i class="fab fa-youtube"></i><span>미디어</span></li>
+      <li class="mbn-item" onclick="mbnGo('#news')"><i class="fas fa-newspaper"></i><span>소식</span></li>
+      <li class="mbn-item" onclick="mbnGo('#gallery')"><i class="fas fa-images"></i><span>앨범</span></li>
+      <li class="mbn-item" onclick="mbnGo('#blog')"><i class="fas fa-book-open"></i><span>말씀</span></li>
+      <li class="mbn-item" onclick="mbnGo('#community')"><i class="fas fa-users"></i><span>커뮤</span></li>
+      <li class="mbn-item" onclick="mbnGo('#sermon-audio')"><i class="fas fa-headphones"></i><span>녹음</span></li>
+      <li class="mbn-item" onclick="mbnGo('#contact')"><i class="fas fa-map-marker-alt"></i><span>오시는길</span></li>
     </ul>
   </nav>
 
