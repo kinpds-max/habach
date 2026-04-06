@@ -876,94 +876,10 @@ section{padding:100px 0}
         </p>
       </div>
 
-      <!-- 타임라인 -->
-      <div class="history-timeline" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="htl-item">
-          <div class="htl-dot"><i class="fas fa-link"></i></div>
-          <div class="htl-content">
-            <span class="htl-step">STEP 01</span>
-            <h3 class="htl-title">교회 통합</h3>
-            <p class="htl-desc">
-              <strong>하늘바람 성결교회</strong>와 <strong>성은 장로교회</strong>가<br>
-              하나의 공동체로 통합하여 새롭게 시작하다
-            </p>
-          </div>
-        </div>
-
-        <div class="htl-connector"></div>
-
-        <div class="htl-item">
-          <div class="htl-dot"><i class="fas fa-church"></i></div>
-          <div class="htl-content">
-            <span class="htl-step">STEP 02</span>
-            <h3 class="htl-title">걸포북변예배당 이전</h3>
-            <p class="htl-desc">
-              김포시 걸포동 북변지구에 예배당을 마련하고<br>
-              지역 복음화의 첫 발걸음을 내딛다
-            </p>
-          </div>
-        </div>
-
-        <div class="htl-connector"></div>
-
-        <div class="htl-item">
-          <div class="htl-dot"><i class="fas fa-handshake"></i></div>
-          <div class="htl-content">
-            <span class="htl-step">STEP 03</span>
-            <h3 class="htl-title">미션브릿지 설립</h3>
-            <p class="htl-desc">
-              교회의 선교 비전을 구체화하기 위해<br>
-              <strong>미션브릿지</strong>를 설립하다
-            </p>
-          </div>
-        </div>
-
-        <div class="htl-connector"></div>
-
-        <div class="htl-item">
-          <div class="htl-dot"><i class="fas fa-map-marker-alt"></i></div>
-          <div class="htl-content">
-            <span class="htl-step">STEP 04</span>
-            <h3 class="htl-title">도사리예배당 이전</h3>
-            <p class="htl-desc">
-              성장하는 공동체를 위해<br>
-              도사리에 더 넓은 예배당으로 이전하다
-            </p>
-          </div>
-        </div>
-
-        <div class="htl-connector"></div>
-
-        <div class="htl-item">
-          <div class="htl-dot"><i class="fas fa-wind"></i></div>
-          <div class="htl-content">
-            <span class="htl-step">STEP 05</span>
-            <h3 class="htl-title">운양동예배당 이전</h3>
-            <p class="htl-desc">
-              경기도 김포시 운양동에 새 예배당을 세우고<br>
-              <strong>하늘의 바람이 이 땅에 임하는 교회</strong>로 함께 나아가다
-            </p>
-            <span class="htl-current-badge"><i class="fas fa-map-pin"></i> 현 위치</span>
-          </div>
-        </div>
-
-        <div class="htl-connector"></div>
-
-        <div class="htl-item htl-current">
-          <div class="htl-dot"><i class="fas fa-building"></i></div>
-          <div class="htl-content">
-            <span class="htl-step">현재</span>
-            <h3 class="htl-title">미션브릿지 법인설립</h3>
-            <p class="htl-desc">
-              선교 사역의 공식 법인화를 통해<br>
-              <strong>하나님 나라의 다리</strong>를 세계로 넓혀가다
-            </p>
-            <span class="htl-current-badge" style="background:var(--sky);color:white"><i class="fas fa-globe"></i> 진행 중</span>
-          </div>
-        </div>
-
-      </div>
+      <!-- 작성 중 안내 -->
+      <p style="color:rgba(255,255,255,0.75);text-align:center;font-size:1.05rem;padding:48px 0;letter-spacing:0.04em" data-aos="fade-up" data-aos-delay="100">
+        ✍️ 교회 역사 내용을 작성 중입니다
+      </p>
     </div>
   </section>
 
@@ -1811,13 +1727,13 @@ section{padding:100px 0}
       'https://corsproxy.io/?',
     ];
     const CATEGORIES = {
-      /* 지정한 검색 키워드대로 엄격하게 매칭 */
-      sermon3:   { label: '3분설교',   keywords: ['3분설교'] },
-      sunday:    { label: '주일예배',   keywords: ['다윗의예배','다윗의 예배'] },
-      dawn:      { label: '새벽예배',   keywords: ['새벽예배'] },
-      wednesday: { label: '수요예배',   keywords: ['수요예배'] },
-      friday:    { label: '금요예배',   keywords: ['금요예배'] },
-      david:     { label: '다윗의찬양', keywords: ['찬양','다윗의찬양','다윗의 찬양'] },
+      /* 순서 중요: 구체적인 키워드 먼저 */
+      sermon3:   { label: '3분설교',   keywords: ['3분설교','[3분설교]'] },
+      david:     { label: '다윗의찬양', keywords: ['다윗의찬양','다윗의 찬양'] },
+      sunday:    { label: '주일예배',   keywords: ['다윗의예배','다윗의 예배','시편의예배','시편의 예배','주일설교','주일예배'] },
+      dawn:      { label: '새벽예배',   keywords: ['새벽예배','새벽기도','촛불새벽','새벽'] },
+      wednesday: { label: '수요예배',   keywords: ['수요성경예배','수요성경','수요예배','수요 예배','성경예배','수요기도','수요'] },
+      friday:    { label: '금요예배',   keywords: ['금요기도회','강청기도','금요예배','금요 예배','금요기도','금요'] },
     };
 
     /* rss2json → JSON 방식 (CORS 없음, 주 방법) */
@@ -1882,11 +1798,16 @@ section{padding:100px 0}
         return ids.map(videoId => ({ videoId, title:'', pubDate:'', isShorts:true, category:'shorts' }));
       } catch { return []; }
     }
-    async function fetchStreamsPage(limit = 10) {
+    async function fetchStreamsPage(limit = 20) {
       try {
         const html = await proxyFetch(STREAMS_PAGE);
+        /* videoId와 title 동시 추출 시도 */
+        const titledMap = new Map();
+        const raw = [...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"[^}]*?"title":\{"runs":\[\{"text":"([^"]+)"/g)];
+        raw.forEach(m => titledMap.set(m[1], m[2]));
+        /* videoId만 추출 (폴백) */
         const ids = [...new Set([...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)].map(m=>m[1]))].slice(0, limit);
-        return ids.map(videoId => ({ videoId, title:'', pubDate:'', isShorts:false, category:'all' }));
+        return ids.map(videoId => ({ videoId, title: titledMap.get(videoId)||'', pubDate:'', isShorts:false, category:'all' }));
       } catch { return []; }
     }
     async function fetchVideosPage(limit = 10) {
@@ -1899,11 +1820,13 @@ section{padding:100px 0}
     async function fetchTitles(videos) {
       await Promise.allSettled(videos.map(async v => {
         if (v.title) return;
-        try {
-          const url = `https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v=${v.videoId}`;
-          const res = await fetch(RAW_PROXIES[0] + encodeURIComponent(url), { signal: AbortSignal.timeout(5000) });
-          if (res.ok) { const j = await res.json(); v.title = j.title||''; }
-        } catch {}
+        const oembedUrl = `https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v=${v.videoId}`;
+        for (const px of RAW_PROXIES) {
+          try {
+            const res = await fetch(px + encodeURIComponent(oembedUrl), { signal: AbortSignal.timeout(6000) });
+            if (res.ok) { const j = await res.json(); v.title = j.title||''; break; }
+          } catch {}
+        }
       }));
       return videos;
     }
