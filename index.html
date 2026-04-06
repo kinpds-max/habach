@@ -1803,6 +1803,7 @@ section{padding:100px 0}
     const RSS_URL     = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
     const SHORTS_PAGE = `https://www.youtube.com/@Gimpo_HBC/shorts`;
     const STREAMS_PAGE = `https://www.youtube.com/@Gimpo_HBC/streams`;
+    const VIDEOS_PAGE = `https://www.youtube.com/@Gimpo_HBC/videos`;
     const PLAYLIST_RSS = `https://www.youtube.com/feeds/videos.xml?playlist_id=PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re`;
     const RAW_PROXIES = [
       'https://api.allorigins.win/raw?url=',
@@ -1884,6 +1885,13 @@ section{padding:100px 0}
     async function fetchStreamsPage(limit = 10) {
       try {
         const html = await proxyFetch(STREAMS_PAGE);
+        const ids = [...new Set([...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)].map(m=>m[1]))].slice(0, limit);
+        return ids.map(videoId => ({ videoId, title:'', pubDate:'', isShorts:false, category:'all' }));
+      } catch { return []; }
+    }
+    async function fetchVideosPage(limit = 10) {
+      try {
+        const html = await proxyFetch(VIDEOS_PAGE);
         const ids = [...new Set([...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)].map(m=>m[1]))].slice(0, limit);
         return ids.map(videoId => ({ videoId, title:'', pubDate:'', isShorts:false, category:'all' }));
       } catch { return []; }
@@ -1974,9 +1982,13 @@ section{padding:100px 0}
       try {
         /* 독립적인 병렬 크롤링 및 폴백 지원 */
         let rssVideos = [], pRssVideos = [], shortsFromPage = [], streamsFromPage = [];
+        let usedVideosFallback = false;
         
         const [rssRes, pRssRes, shortsRes, streamsRes] = await Promise.allSettled([
-          fetchViaRss2Json(RSS_URL).catch(async () => parseXML(await proxyFetch(RSS_URL))),
+          fetchViaRss2Json(RSS_URL).catch(async () => {
+             usedVideosFallback = true;
+             return await fetchVideosPage(20);
+          }),
           fetchViaRss2Json(PLAYLIST_RSS, 'david').catch(async () => parseXML(await proxyFetch(PLAYLIST_RSS), 'david')),
           fetchShortsPage(10),
           fetchStreamsPage(15)
@@ -1989,9 +2001,13 @@ section{padding:100px 0}
         
         rssVideos = [...rssVideos, ...pRssVideos];
 
-        if (streamsFromPage.length) {
-          await fetchTitles(streamsFromPage);
-          streamsFromPage.forEach(v => {
+        const needsTitles = [];
+        if (usedVideosFallback) needsTitles.push(...rssVideos.filter(v => !v.title));
+        if (streamsFromPage.length) needsTitles.push(...streamsFromPage.filter(v => !v.title));
+
+        if (needsTitles.length) {
+          await fetchTitles(needsTitles);
+          needsTitles.forEach(v => {
              v.category = classify(v.title);
              if (v.category !== 'all') v.isShorts = false;
           });
