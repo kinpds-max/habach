@@ -1965,21 +1965,20 @@ section{padding:100px 0}
         });
       };
       try {
-        /* 방법 1: rss2json + shorts/streams 페이지 병렬 */
+        /* 독립적인 병렬 크롤링 및 폴백 지원 */
         let rssVideos = [], pRssVideos = [], shortsFromPage = [], streamsFromPage = [];
-        try {
-          [rssVideos, pRssVideos, shortsFromPage, streamsFromPage] = await Promise.all([
-            fetchViaRss2Json(RSS_URL),
-            fetchViaRss2Json(PLAYLIST_RSS, 'david'),
-            fetchShortsPage(10),
-            fetchStreamsPage(10)
-          ]);
-        } catch {
-          const xml = await proxyFetch(RSS_URL);
-          const pXml = await proxyFetch(PLAYLIST_RSS).catch(()=>'');
-          rssVideos = parseXML(xml);
-          pRssVideos = pXml ? parseXML(pXml, 'david') : [];
-        }
+        
+        const [rssRes, pRssRes, shortsRes, streamsRes] = await Promise.allSettled([
+          fetchViaRss2Json(RSS_URL).catch(async () => parseXML(await proxyFetch(RSS_URL))),
+          fetchViaRss2Json(PLAYLIST_RSS, 'david').catch(async () => parseXML(await proxyFetch(PLAYLIST_RSS), 'david')),
+          fetchShortsPage(10),
+          fetchStreamsPage(15)
+        ]);
+
+        if (rssRes.status === 'fulfilled') rssVideos = rssRes.value || [];
+        if (pRssRes.status === 'fulfilled') pRssVideos = pRssRes.value || [];
+        if (shortsRes.status === 'fulfilled') shortsFromPage = shortsRes.value || [];
+        if (streamsRes.status === 'fulfilled') streamsFromPage = streamsRes.value || [];
         
         rssVideos = [...rssVideos, ...pRssVideos];
 
