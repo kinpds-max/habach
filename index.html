@@ -325,6 +325,10 @@ section{padding:100px 0}
 .welcome-card h3{font-size:1.1rem;font-weight:700;margin-bottom:8px;transition:var(--transition)}
 .welcome-card p{font-size:0.875rem;color:var(--text-muted);line-height:1.6;transition:var(--transition)}
 
+.welcome-vision-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 60px; }
+@media (max-width: 900px) { .welcome-vision-grid { grid-template-columns: 1fr 1fr; } }
+
+
 /* WORSHIP */
 .section-worship{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-mid) 100%);position:relative;overflow:hidden}
 .section-worship::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(90,168,216,0.12) 0%,transparent 70%);top:-200px;right:-100px;pointer-events:none}
@@ -749,8 +753,8 @@ section{padding:100px 0}
 .bcar-indicator{display:flex;justify-content:center;gap:6px;margin-top:10px;position:relative}
 .bcar-dot{width:7px;height:7px;border-radius:50%;background:var(--gray-light);cursor:pointer;transition:background 0.2s}
 .bcar-dot.active{background:var(--gold)}
-.bulletin-carousel .bpc-thumb{flex:1;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:240px}
-.bulletin-carousel .bpc-thumb img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
+.bulletin-carousel .bpc-thumb{flex:1;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:400px;position:relative;}
+.bulletin-carousel .bpc-thumb img{position:absolute;width:100%;height:100%;object-fit:cover;object-position:100% 0%;display:block}
 .bulletin-carousel .bpc-info{padding:12px 16px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--gray-light);background:var(--white)}
 .bulletin-carousel .bpc-name{flex:1;font-size:0.82rem;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bulletin-carousel .bpc-open{flex-shrink:0;font-size:0.75rem;color:var(--blue);display:flex;align-items:center;gap:4px}
@@ -946,7 +950,7 @@ section{padding:100px 0}
       </div>
 
       <!-- Vision Cards -->
-      <div class="welcome-cards-row" data-aos="fade-up" data-aos-delay="100" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 60px;">
+      <div class="welcome-vision-grid" data-aos="fade-up" data-aos-delay="100">
         <div class="welcome-card" style="padding: 40px 24px;">
           <i class="fas fa-dove"></i>
           <h3>비전</h3>
@@ -970,18 +974,18 @@ section{padding:100px 0}
       </div>
 
       <!-- Worship Table -->
-      <div class="worship-table-wrap" id="worship" data-aos="fade-up" data-aos-delay="200" style="margin: 0; padding: 48px; background: var(--off-white); border-radius: var(--radius-lg); border: 1px solid var(--gray-light); display: flex; flex-wrap: wrap; gap: 40px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
-        <div style="flex: 1; min-width: 280px; padding-right: 20px;">
-          <div style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; background:rgba(201,168,76,0.15); color:var(--gold); font-size:1.4rem; margin-bottom:20px;">
+      <div class="worship-table-wrap" id="worship" data-aos="fade-up" data-aos-delay="200" style="margin: 0 auto; padding: 48px; background: var(--off-white); border-radius: var(--radius-lg); border: 1px solid var(--gray-light); display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 800px; box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
+        <div style="width: 100%; margin-bottom: 30px;">
+          <div style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; background:rgba(201,168,76,0.15); color:var(--gold); font-size:1.4rem; margin-bottom:16px;">
             <i class="fas fa-clock"></i>
           </div>
-          <h3 style="font-family: var(--font-serif); font-size: 2.2rem; font-weight: 700; color: var(--navy); margin-bottom: 16px;">예배 시간 안내</h3>
+          <h3 style="font-family: var(--font-serif); font-size: 2.2rem; font-weight: 700; color: var(--navy); margin-bottom: 12px;">예배 시간 안내</h3>
           <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem;">
             가족과 함께, 이웃과 함께 드리는 귀한 예배 자리에 여러분을 진심으로 초대합니다.
           </p>
         </div>
-        <div style="flex: 1.5; min-width: 320px;">
-          <table class="worship-table" style="width: 100%; font-size: 1.05rem;">
+        <div style="width: 100%;">
+          <table class="worship-table" style="width: 100%; font-size: 1.05rem; text-align: center;">
             <tbody>
               <tr>
                 <td style="padding: 16px 8px; font-weight: 700; border-bottom:1px solid rgba(0,0,0,0.05);">주일 시편의예배 <span class="wt-sub">클래식</span></td>
@@ -1044,6 +1048,23 @@ section{padding:100px 0}
             <i class="fas fa-plus"></i> 더보기
           </button>
         </div>
+        
+        <!-- 공지사항(크롤링) 캐러셀 ( (2) 파일 ) -->
+        <div class="news-block-header" style="margin-top:40px;">
+          <div class="nbh-left">
+            <i class="fas fa-bullhorn nbh-icon" style="color:var(--gold);"></i>
+            <h3>자동 크롤링 공지사항</h3>
+          </div>
+        </div>
+        <div class="bulletin-carousel-wrap">
+          <button class="bcar-btn bcar-prev" onclick="bcarMove(-1)"><i class="fas fa-chevron-left"></i></button>
+          <div class="bulletin-carousel" id="bulletinCarousel">
+            <div class="notice-loading" style="width:100%;text-align:center;"><i class="fas fa-circle-notch fa-spin"></i> 공지사항 불러오는 중...</div>
+          </div>
+          <button class="bcar-btn bcar-next" onclick="bcarMove(1)"><i class="fas fa-chevron-right"></i></button>
+          <div class="bcar-indicator" id="bulletinCarouselIndicator"></div>
+        </div>
+        
       </div>
 
       <!-- HRAD 실시간 + 중보기도 통합 탭 -->
@@ -1126,11 +1147,6 @@ section{padding:100px 0}
       <div class="media-tabs" data-aos="fade-up" data-aos-delay="100">
         <button class="tab-btn active" data-tab="sermon3-videos"><i class="fas fa-bible"></i> 3분설교</button>
         <button class="tab-btn" data-tab="sunday-videos">주일예배</button>
-        <button class="tab-btn" data-tab="dawn-videos">새벽예배</button>
-        <button class="tab-btn" data-tab="wednesday-videos">수요예배</button>
-        <button class="tab-btn" data-tab="friday-videos">금요예배</button>
-        <button class="tab-btn" data-tab="david-videos"><i class="fas fa-music"></i> 다윗의찬양</button>
-        <button class="tab-btn" data-tab="shorts-videos"><i class="fas fa-mobile-alt"></i> 숏폼모음</button>
       </div>
 
       <!-- Video Panels -->
@@ -1145,38 +1161,6 @@ section{padding:100px 0}
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div id="dawn-videos" class="video-panel">
-        <div class="video-grid" id="grid-dawn">
-          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
-        </div>
-        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div id="wednesday-videos" class="video-panel">
-        <div class="video-grid" id="grid-wednesday">
-          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
-        </div>
-        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div id="friday-videos" class="video-panel">
-        <div class="video-grid" id="grid-friday">
-          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
-        </div>
-        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div id="david-videos" class="video-panel">
-        <div class="video-grid" id="grid-david">
-          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
-        </div>
-        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div id="shorts-videos" class="video-panel">
-        <div class="shorts-grid" id="grid-shorts">
-          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
-        </div>
-        <div class="shorts-more-wrap">
-          <a href="https://www.youtube.com/@Gimpo_HBC/shorts" target="_blank" class="btn-more">숏폼 전체보기 <i class="fas fa-arrow-right"></i></a>
-        </div>
       </div>
     </div>
   </section>
@@ -1692,6 +1676,7 @@ section{padding:100px 0}
         if (entries.length) {
           _bulletinAllItems = entries;
           renderBulletinAlbum(0, _bulletinShowing);
+          renderBulletinCarousel(); // 캐러셀 렌더링
           return;
         }
       }
@@ -1745,6 +1730,46 @@ section{padding:100px 0}
     _bulletinShowing += 8;
     renderBulletinAlbum(0, _bulletinShowing);
   }
+
+  /* (2) 파일 공지사항 캐러셀 */
+  let _bcarIndex = 0;
+  function renderBulletinCarousel() {
+    const el = document.getElementById('bulletinCarousel');
+    const ind = document.getElementById('bulletinCarouselIndicator');
+    if (!el || !ind) return;
+    const notices = _bulletinAllItems.filter(e => e.name.includes('(2)'));
+    if (!notices.length) {
+      el.innerHTML = '<div class="notice-loading" style="width:100%;text-align:center;">크롤링할 공지사항 항목이 없습니다.</div>';
+      return;
+    }
+    el.innerHTML = notices.map((e, i) => `
+      <div class="bulletin-preview-card ${i===0?'bcar-active':''}" data-index="${i}">
+        <div class="bpc-thumb" onclick="openBulletinPreview('${e.id}','${_escHtml(e.name)}')">
+          <img src="https://drive.google.com/thumbnail?id=${e.id}&sz=w1000" alt="${_escHtml(e.name)}" loading="lazy">
+          <div class="bpc-zoom-overlay"><i class="fas fa-search-plus"></i> 클릭하여 원본보기</div>
+        </div>
+        <div class="bpc-info">
+          <p class="bpc-name">${_escHtml(e.name)}</p>
+          <button class="bpc-open" onclick="openBulletinPreview('${e.id}','${_escHtml(e.name)}')">
+            크게 보기 <i class="fas fa-external-link-alt"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+    ind.innerHTML = notices.map((e, i) => `<div class="bcar-dot ${i===0?'active':''}" onclick="bcarGo(${i})"></div>`).join('');
+    _bcarIndex = 0;
+  }
+  function bcarGo(idx) {
+    const cards = document.querySelectorAll('#bulletinCarousel .bulletin-preview-card');
+    const dots  = document.querySelectorAll('#bulletinCarouselIndicator .bcar-dot');
+    if (!cards.length) return;
+    cards.forEach(c => c.classList.remove('bcar-active'));
+    dots.forEach(d => d.classList.remove('active'));
+    _bcarIndex = (idx + cards.length) % cards.length;
+    cards[_bcarIndex].classList.add('bcar-active');
+    dots[_bcarIndex].classList.add('active');
+  }
+  function bcarMove(dir) { bcarGo(_bcarIndex + dir); }
 
     /* 주보 파일 미리보기 모달 */
   function openBulletinPreview(fileId, fileName) {
@@ -2118,25 +2143,10 @@ section{padding:100px 0}
 
         const normals   = allVideos.filter(v => !v.isShorts);
         const sermon3   = byDate(normals.filter(v => v.category === 'sermon3'));
-        const david     = byDate(normals.filter(v => v.category === 'david'));
         const sunday    = byDate(normals.filter(v => v.category === 'sunday'));
-        const dawn      = byDate(normals.filter(v => v.category === 'dawn'));
-        const wednesday = byDate(normals.filter(v => v.category === 'wednesday'));
-        const friday    = byDate(normals.filter(v => v.category === 'friday'));
-        const rssShorts = allVideos.filter(v => v.isShorts);
-        const rssShortIds    = new Set(rssShorts.map(v => v.videoId));
-        const pageShorts = shortsFromPage.filter(v => !rssShortIds.has(v.videoId));
-        const allShorts  = [...rssShorts, ...pageShorts];
 
         renderGrid('grid-sermon3',   sermon3,   3);
         renderGrid('grid-sunday',    sunday,    3);
-        renderGrid('grid-dawn',      dawn,      3);
-        renderGrid('grid-wednesday', wednesday, 3);
-        renderGrid('grid-friday',    friday,    3);
-        renderGrid('grid-david',     david,     3);
-        renderShorts(allShorts, 5);
-
-        if (pageShorts.length) fetchTitles(pageShorts).then(() => renderShorts(allShorts, 5));
 
       } catch (err) {
         console.warn('[YT] 초기화 실패:', err.message);
