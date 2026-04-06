@@ -112,9 +112,11 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 /* HEADER */
 #header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(10,18,48,0.92);backdrop-filter:blur(12px);transition:var(--transition)}
 #header.scrolled{background:rgba(10,18,48,0.98);box-shadow:0 2px 24px rgba(0,0,0,0.3)}
-.logo{display:none}
+.nav-logo{display:flex;align-items:center;height:100%;z-index:20;margin-right:auto}
+.logo-img{height:36px;width:auto;object-fit:contain;image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges;transform:translateZ(0)}
 .mobile-brand{display:none;font-family:var(--font-sans);font-size:1.1rem;font-weight:700;color:var(--white);letter-spacing:0.02em;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;z-index:10}
 @media(max-width:900px){
+  .nav-logo{display:none}
   .mobile-brand{display:block}
   #header{background:var(--navy)!important;height:56px!important}
   .header-inner{height:56px!important}
@@ -718,6 +720,11 @@ section{padding:100px 0}
   <!-- ===== HEADER / NAV ===== -->
   <header id="header">
     <div class="header-inner">
+      <!-- 데스크톱용 로고 (깨짐 방지 적용) -->
+      <a href="#" class="nav-logo" aria-label="메인으로">
+        <img src="images/logo.png" alt="하늘바람교회 로고" class="logo-img">
+      </a>
+      
       <!-- 모바일 전용 교회명 (데스크톱에서 숨김) -->
       <span class="mobile-brand">하늘바람교회</span>
 
