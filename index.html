@@ -1147,6 +1147,11 @@ section{padding:100px 0}
       <div class="media-tabs" data-aos="fade-up" data-aos-delay="100">
         <button class="tab-btn active" data-tab="sermon3-videos"><i class="fas fa-bible"></i> 3분설교</button>
         <button class="tab-btn" data-tab="sunday-videos">주일예배</button>
+        <button class="tab-btn" data-tab="dawn-videos">새벽예배</button>
+        <button class="tab-btn" data-tab="wednesday-videos">수요예배</button>
+        <button class="tab-btn" data-tab="friday-videos">금요예배</button>
+        <button class="tab-btn" data-tab="david-videos"><i class="fas fa-music"></i> 다윗의찬양</button>
+        <button class="tab-btn" data-tab="shorts-videos"><i class="fas fa-mobile-alt"></i> 숏폼모음</button>
       </div>
 
       <!-- Video Panels -->
@@ -1161,6 +1166,38 @@ section{padding:100px 0}
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="dawn-videos" class="video-panel">
+        <div class="video-grid" id="grid-dawn">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="wednesday-videos" class="video-panel">
+        <div class="video-grid" id="grid-wednesday">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="friday-videos" class="video-panel">
+        <div class="video-grid" id="grid-friday">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="david-videos" class="video-panel">
+        <div class="video-grid" id="grid-david">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="shorts-videos" class="video-panel">
+        <div class="shorts-grid" id="grid-shorts">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <div class="shorts-more-wrap">
+          <a href="https://www.youtube.com/@Gimpo_HBC/shorts" target="_blank" class="btn-more">숏폼 전체보기 <i class="fas fa-arrow-right"></i></a>
+        </div>
       </div>
     </div>
   </section>
@@ -2144,9 +2181,24 @@ section{padding:100px 0}
         const normals   = allVideos.filter(v => !v.isShorts);
         const sermon3   = byDate(normals.filter(v => v.category === 'sermon3'));
         const sunday    = byDate(normals.filter(v => v.category === 'sunday'));
+        const dawn      = byDate(normals.filter(v => v.category === 'dawn'));
+        const wednesday = byDate(normals.filter(v => v.category === 'wednesday'));
+        const friday    = byDate(normals.filter(v => v.category === 'friday'));
+        const david     = byDate(normals.filter(v => v.category === 'david'));
+        const rssShorts = allVideos.filter(v => v.isShorts);
+        const rssShortIds    = new Set(rssShorts.map(v => v.videoId));
+        const pageShorts = shortsFromPage.filter(v => !rssShortIds.has(v.videoId));
+        const allShorts  = [...rssShorts, ...pageShorts];
 
         renderGrid('grid-sermon3',   sermon3,   3);
         renderGrid('grid-sunday',    sunday,    3);
+        renderGrid('grid-dawn',      dawn,      3);
+        renderGrid('grid-wednesday', wednesday, 3);
+        renderGrid('grid-friday',    friday,    3);
+        renderGrid('grid-david',     david,     3);
+        renderShorts(allShorts, 5);
+
+        if (pageShorts.length) fetchTitles(pageShorts).then(() => renderShorts(allShorts, 5));
 
       } catch (err) {
         console.warn('[YT] 초기화 실패:', err.message);
