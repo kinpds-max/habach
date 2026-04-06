@@ -128,8 +128,24 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 .btn-yt:hover{transform:scale(1.1)}
 .btn-cafe{padding:6px 16px;background:#03c75a;color:white;border-radius:20px;font-size:0.85rem;font-weight:500;transition:var(--transition)}
 .btn-cafe:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(3,199,90,0.4)}
-.hamburger{display:none;flex-direction:column;gap:5px;padding:4px}
+/* MOBILE BRAND (header center text) */
+.mobile-brand{display:none;font-family:var(--font-serif);font-size:1.05rem;font-weight:700;color:var(--white);letter-spacing:-0.01em;position:absolute;left:50%;transform:translateX(-50%);pointer-events:none}
+/* NAV OVERLAY ELEMENTS (hidden on desktop) */
+.nav-overlay-header{display:none}
+.nav-overlay-footer{display:none}
+.nav-brand{font-family:var(--font-serif);font-size:1.5rem;font-weight:700;color:var(--white)}
+.nav-close{color:rgba(255,255,255,0.7);font-size:1.2rem;padding:8px;transition:var(--transition);border-radius:6px}
+.nav-close:hover{color:var(--white);background:rgba(255,255,255,0.12);transform:rotate(90deg)}
+.nav-translate{display:block}
+.nav-social-btn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);font-size:1rem;transition:var(--transition)}
+.nav-social-btn:hover{background:rgba(255,255,255,0.2);color:var(--white)}
+.nav-kakao-btn{background:#FEE500;color:#3C1E1E}
+.nav-kakao-btn:hover{background:#f5db00;color:#3C1E1E}
+.hamburger{display:none;flex-direction:column;gap:5px;padding:4px;z-index:1001;position:relative}
 .hamburger span{display:block;width:24px;height:2px;background:white;border-radius:2px;transition:var(--transition)}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
 /* HERO */
 #hero{position:relative;width:100%;height:100vh;min-height:700px;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
@@ -483,10 +499,10 @@ section{padding:100px 0}
 
 /* AOS overrides */
 @media(max-width:1100px){.worship-grid{grid-template-columns:repeat(2,1fr)}.welcome-grid{gap:48px}.blog-layout{grid-template-columns:300px 1fr;gap:48px}.shorts-grid{grid-template-columns:repeat(4,1fr)}}
-@media(max-width:900px){.container{padding:0 24px}section{padding:72px 0}.main-nav{display:none}.hamburger{display:flex}.main-nav.open{display:flex;flex-direction:column;position:fixed;inset:0;background:var(--navy);z-index:999;padding:100px 40px 40px;overflow-y:auto}.main-nav.open ul{flex-direction:column;gap:0}.main-nav.open>ul>li>a{font-size:1.3rem;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.08);border-radius:0}.sub-menu{position:static;transform:none;background:transparent;box-shadow:none;opacity:1;visibility:visible;padding:0 0 0 16px;pointer-events:all}.sub-menu li a{font-size:1rem;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)}.welcome-grid{grid-template-columns:1fr}.welcome-visual{order:-1}.blog-layout{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}.video-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid-3 { grid-template-columns: 1fr; }.mission-stats { flex-direction: column; gap: 30px; }}
-@media(max-width:768px){.hero-title{font-size:clamp(1.9rem,8vw,3rem)}.hero-desc{font-size:0.875rem}.section-title{font-size:clamp(1.5rem,5vw,2rem)}.worship-card{padding:28px 16px}.worship-card h3{font-size:1rem}.media-tabs{flex-wrap:wrap;gap:6px}.tab-btn{padding:8px 14px;font-size:0.8rem}.video-grid{grid-template-columns:repeat(2,1fr);gap:14px}.shorts-grid{grid-template-columns:repeat(3,1fr);gap:12px}.blog-card{padding:16px;gap:12px}.cafe-grid{grid-template-columns:repeat(2,1fr);gap:14px}.cafe-card{padding:24px 16px}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}.footer-bottom{flex-direction:column;text-align:center}.float-btn{width:42px;height:42px;font-size:1rem}.float-bar{bottom:20px;right:14px;gap:8px}.drive-embed{height:380px}.album-drive-wrap{min-height:380px}}
+@media(max-width:900px){.container{padding:0 24px}section{padding:72px 0}.main-nav{display:none}.hamburger{display:flex}.mobile-brand{display:block}.main-nav.open{display:flex;flex-direction:column;position:fixed;inset:0;background:rgba(8,16,44,0.98);backdrop-filter:blur(20px);z-index:999;padding:28px 32px 40px;overflow-y:auto;gap:0}.main-nav.open .nav-overlay-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:24px;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.1)}.main-nav.open .nav-translate{display:none}.main-nav.open ul{flex-direction:column;gap:0;flex:1}.main-nav.open>ul>li>a{font-size:1.2rem;font-weight:500;padding:15px 0;border-bottom:1px solid rgba(255,255,255,0.07);border-radius:0;height:auto;display:flex;align-items:center;justify-content:space-between;color:rgba(255,255,255,0.85)}.main-nav.open>ul>li>a::after{content:'›';font-size:1.3rem;opacity:0.4}.main-nav.open>ul>li>a:hover{color:var(--gold-light);padding-left:8px;border-bottom-color:rgba(201,168,76,0.3)}.main-nav.open>ul>li>a.active{color:var(--gold-light)}.main-nav.open .nav-overlay-footer{display:flex;align-items:center;gap:12px;padding-top:24px;margin-top:8px;border-top:1px solid rgba(255,255,255,0.08)}.sub-menu{position:static;transform:none;background:transparent;box-shadow:none;opacity:1;visibility:visible;padding:0 0 0 16px;pointer-events:all}.sub-menu li a{font-size:1rem;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)}.welcome-grid{grid-template-columns:1fr}.welcome-visual{order:-1}.blog-layout{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}.video-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid-3 { grid-template-columns: 1fr; }.mission-stats { flex-direction: column; gap: 30px; }}
+@media(max-width:768px){#heroBgVideo{display:none}.hero-fallback-bg{inset:0;filter:brightness(0.65)}.hero-title{font-size:clamp(1.9rem,8vw,3rem)}.hero-desc{font-size:0.875rem}.section-title{font-size:clamp(1.5rem,5vw,2rem)}.worship-card{padding:28px 16px}.worship-card h3{font-size:1rem}.media-tabs{flex-wrap:wrap;gap:6px}.tab-btn{padding:8px 14px;font-size:0.8rem}.video-grid{grid-template-columns:repeat(2,1fr);gap:14px}.shorts-grid{grid-template-columns:repeat(3,1fr);gap:12px}.blog-card{padding:16px;gap:12px}.cafe-grid{grid-template-columns:repeat(2,1fr);gap:14px}.cafe-card{padding:24px 16px}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}.footer-bottom{flex-direction:column;text-align:center}.float-btn{width:42px;height:42px;font-size:1rem}.float-bar{bottom:20px;right:14px;gap:8px}.drive-embed{height:380px}.album-drive-wrap{min-height:380px}}
 @media(max-width:640px){.container{padding:0 20px}section{padding:60px 0}.worship-grid{grid-template-columns:1fr 1fr}.video-grid{grid-template-columns:1fr}.cafe-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}.hero-btns{flex-direction:column}.welcome-card-wrap{grid-template-columns:1fr 1fr}.header-inner{padding:0 20px}}
-@media(max-width:480px){.btn-primary,.btn-outline{padding:12px 22px;font-size:0.875rem}.video-grid{grid-template-columns:1fr}.shorts-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid{grid-template-columns:1fr}.float-label{display:none}.drive-embed{height:300px}.album-drive-wrap{min-height:300px}}
+@media(max-width:480px){.btn-primary,.btn-outline{padding:12px 22px;font-size:0.875rem}.video-grid{grid-template-columns:1fr}.shorts-grid{grid-template-columns:repeat(2,1fr)}.shorts-grid .shorts-card:nth-child(n+5){display:none}.cafe-grid{grid-template-columns:1fr}.float-label{display:none}.drive-embed{height:300px}.album-drive-wrap{min-height:300px}.shorts-more-wrap{display:flex;justify-content:center;margin-top:24px}}
 [data-aos]{will-change:transform,opacity}
   </style>
 </head>
@@ -503,9 +519,19 @@ section{padding:100px 0}
   <!-- ===== HEADER / NAV ===== -->
   <header id="header">
     <div class="header-inner">
+      <!-- 모바일 전용 교회명 (데스크톱에서 숨김) -->
+      <span class="mobile-brand">하늘바람교회</span>
+
       <nav class="main-nav" id="mainNav">
+        <!-- 모바일 오버레이 상단 (데스크톱에서 숨김) -->
+        <div class="nav-overlay-header">
+          <span class="nav-brand">하늘바람교회</span>
+          <button class="nav-close" id="navClose" aria-label="메뉴닫기">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
         <ul>
-          <li><div id="google_translate_element"></div></li>
+          <li class="nav-translate"><div id="google_translate_element"></div></li>
           <li><a href="#welcome">교회소개</a></li>
           <li><a href="#history">교회역사</a></li>
           <li><a href="#worship">예배안내</a></li>
@@ -515,10 +541,19 @@ section{padding:100px 0}
           <li><a href="#community">커뮤니티</a></li>
           <li><a href="#contact">오시는길</a></li>
         </ul>
+
+        <!-- 모바일 메뉴 하단 소셜 링크 -->
+        <div class="nav-overlay-footer">
+          <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="nav-social-btn"><i class="fab fa-youtube"></i></a>
+          <a href="https://blog.naver.com/habachurch" target="_blank" class="nav-social-btn"><i class="fas fa-blog"></i></a>
+          <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="nav-social-btn"><i class="fas fa-mug-hot"></i></a>
+          <a href="https://open.kakao.com/o/geMlE0pf" target="_blank" class="nav-social-btn nav-kakao-btn">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="currentColor"><path d="M9 0C4.029 0 0 3.134 0 7c0 2.478 1.565 4.648 3.938 5.899L3 18l5.186-3.488C8.447 14.576 8.72 14.6 9 14.6c4.971 0 9-3.134 9-7S13.971 0 9 0z"/></svg>
+          </a>
+        </div>
       </nav>
+
       <div class="header-actions">
-        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt"><i class="fab fa-youtube"></i></a>
-        <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-cafe">카페</a>
         <button class="hamburger" id="hamburger" aria-label="메뉴열기">
           <span></span><span></span><span></span>
         </button>
@@ -574,21 +609,7 @@ section{padding:100px 0}
   <section id="welcome" class="section-welcome">
     <div class="container">
       <div class="welcome-grid">
-        <div class="welcome-text" data-aos="fade-right">
-          <p class="section-label">교회 인사말</p>
-          <h2 class="section-title">하나님이 기뻐하시는<br>예배 공동체</h2>
-          <p class="welcome-body">
-            하늘바람교회는 성령의 바람이 역사하는 교회입니다.<br>
-            예배를 통해 하나님의 임재를 경험하고,<br>
-            말씀으로 세워지는 건강한 공동체를 꿈꿉니다.
-          </p>
-          <p class="welcome-body">
-            다윗처럼 하나님의 마음에 합한 예배자로<br>
-            이 땅을 아름답게 섬기는 하늘바람교회가 되겠습니다.
-          </p>
-          <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-primary">교회 더 알아보기</a>
-        </div>
-        <div class="welcome-visual" data-aos="fade-left">
+        <div class="welcome-visual" data-aos="fade-right">
           <div class="welcome-card-wrap">
             <div class="welcome-card">
               <i class="fas fa-dove"></i>
@@ -612,6 +633,20 @@ section{padding:100px 0}
             </div>
           </div>
         </div>
+        <div class="welcome-text" data-aos="fade-left">
+          <p class="section-label">교회 인사말</p>
+          <h2 class="section-title">하나님이 기뻐하시는<br>예배 공동체</h2>
+          <p class="welcome-body">
+            하늘바람교회는 성령의 바람이 역사하는 교회입니다.<br>
+            예배를 통해 하나님의 임재를 경험하고,<br>
+            말씀으로 세워지는 건강한 공동체를 꿈꿉니다.
+          </p>
+          <p class="welcome-body">
+            다윗처럼 하나님의 마음에 합한 예배자로<br>
+            이 땅을 아름답게 섬기는 하늘바람교회가 되겠습니다.
+          </p>
+          <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-primary">교회 더 알아보기</a>
+        </div>
       </div>
     </div>
   </section>
@@ -619,40 +654,90 @@ section{padding:100px 0}
   <!-- ===== 교회 역사 ===== -->
   <section id="history" class="section-history">
     <div class="container">
-      <div class="section-header" data-aos="fade-up">
-        <p class="section-label light">하늘바람교회 역사</p>
-        <h2 class="section-title light">한 겯에서 자라나다</h2>
+      <div class="history-intro-grid" data-aos="fade-up">
+        <div class="history-intro-text">
+          <p class="section-label light">하늘바람교회 역사</p>
+          <h2 class="section-title light">한 씨앗에서<br>자라나다</h2>
+          <p class="history-intro-desc">
+            "홀연히 하늘로부터 급하고 강한 바람 같은 소리가 있어"<br>
+            <em>— 사도행전 2:2</em>
+          </p>
+          <p class="history-intro-body">
+            하늘바람교회는 <strong>성경을 성경되게, 성령을 성령되게, 교회를 교회되게</strong>
+            하는 3대 가치를 품고 경기도 김포시 운양동에 세워진
+            예수교대한성결교회 소속 복음주의 교회입니다.<br><br>
+            담임목사 전승학은 "하나님이 디자인하신 교회"를 꿈꾸며
+            성령의 바람이 강하게 역사하는 건강한 공동체를 세우고
+            세계 비전을 이루기 위해 달려가고 있습니다.
+          </p>
+        </div>
+        <div class="history-values" data-aos="fade-left" data-aos-delay="150">
+          <div class="value-card">
+            <span class="value-num">01</span>
+            <h4>성경을 성경되게</h4>
+            <p>말씀이 살아 역사하는<br>말씀 중심의 공동체</p>
+          </div>
+          <div class="value-card">
+            <span class="value-num">02</span>
+            <h4>성령을 성령되게</h4>
+            <p>성령의 불과 바람이<br>임하는 예배 공동체</p>
+          </div>
+          <div class="value-card">
+            <span class="value-num">03</span>
+            <h4>교회를 교회되게</h4>
+            <p>하나님이 디자인하신<br>건강한 교회 공동체</p>
+          </div>
+        </div>
       </div>
+
       <div class="history-timeline" data-aos="fade-up" data-aos-delay="100">
         <div class="history-item">
-          <div class="history-year">2010</div>
+          <div class="history-year">창립</div>
           <div class="history-dot"></div>
-          <div class="history-content"><h4>하늘바람교회 창립</h4><p>경기도 김포시에 예수교대한성결교회 하늘바람교회를 창립, 성령의 바람을 더한 예배 공동체를 시작하다.</p></div>
+          <div class="history-content">
+            <h4>하늘바람교회 창립</h4>
+            <p>경기도 김포시 운양동에 예수교대한성결교회 하늘바람교회 창립. 담임목사 전승학, "성령의 바람이 역사하는 교회"를 비전으로 시작하다.</p>
+          </div>
         </div>
         <div class="history-item">
-          <div class="history-year">2015</div>
+          <div class="history-year">성장</div>
           <div class="history-dot"></div>
-          <div class="history-content"><h4>새벽예배 시작</h4><p>매일 새벽 5:30 기도를 시작하며 기도의 공동체로 성장하다.</p></div>
-        </div>
-        <div class="history-item">
-          <div class="history-year">2018</div>
-          <div class="history-dot"></div>
-          <div class="history-content"><h4>유튜브 채널 개설</h4><p>하늘바람교회 공식 유튜브 채널을 개설하여 온라인 예배를 시작하다.</p></div>
+          <div class="history-content">
+            <h4>다윗의예배 · 새벽예배 정착</h4>
+            <p>주일 '다윗의예배(모던 워십)'와 매일 새벽 5:30 새벽예배를 정착시키며 예배와 기도의 공동체로 성장하다.</p>
+          </div>
         </div>
         <div class="history-item">
           <div class="history-year">2020</div>
           <div class="history-dot"></div>
-          <div class="history-content"><h4>시편의예배 추가</h4><p>주일 오전 9시 클래식 시편의예배를 추가 개설하다.</p></div>
+          <div class="history-content">
+            <h4>온라인 예배 · 유튜브 채널 개설</h4>
+            <p>공식 유튜브 채널(@Gimpo_HBC)을 개설하여 새벽예배·주일예배 온라인 생중계를 시작. 시편의예배(클래식) 추가 개설로 2부 예배 체제 구축.</p>
+          </div>
         </div>
         <div class="history-item">
           <div class="history-year">2022</div>
           <div class="history-dot"></div>
-          <div class="history-content"><h4>네이버 카페 개설</h4><p>온라인 성도 교제를 위한 하늘바람교회 네이버 카페를 개설하다.</p></div>
+          <div class="history-content">
+            <h4>온라인 공동체 확장</h4>
+            <p>네이버 카페·블로그 개설로 온·오프라인 성도 교제 공간 확장. 금요 강청기도회, 수요 성경예배 체계 완성.</p>
+          </div>
+        </div>
+        <div class="history-item">
+          <div class="history-year">2024</div>
+          <div class="history-dot"></div>
+          <div class="history-content">
+            <h4>교회 건축 및 공간 확장</h4>
+            <p>김포시 모담공원로167번길 101 현 예배당으로 이전. 유·초등·청소년·청년 교육부서 체계화 및 지역사회 섬김 사역 확대.</p>
+          </div>
         </div>
         <div class="history-item">
           <div class="history-year">Now</div>
           <div class="history-dot active"></div>
-          <div class="history-content"><h4>지속되는 역사</h4><p>성령과 말씩으로 세워지는 하늘바람교회를 향해 오늘도 나아갑니다.</p></div>
+          <div class="history-content">
+            <h4>세계 비전을 향하여</h4>
+            <p>성령과 말씀으로 세워지는 하늘바람교회, 이 땅을 넘어 세계를 향한 Mission Bridge를 향해 오늘도 나아갑니다.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -702,42 +787,63 @@ section{padding:100px 0}
   <section id="news" class="section-news">
     <div class="container">
       <div class="section-header" data-aos="fade-up">
-        <h2 class="section-title">교회소식</h2>
-        <div id="latest-notices" class="notice-list-lite">
-          <!-- 크롤링된 제목들이 여기에 채워집니다 -->
-        </div>
+        <p class="section-label">교회소식</p>
+        <h2 class="section-title">하늘바람 소식</h2>
       </div>
-      <div class="news-grid" data-aos="fade-up" data-aos-delay="150">
-        <!-- 교회주보 (구글 드라이브 연동) -->
-        <div class="news-card bulletin-card">
-          <div class="news-card-header">
+      <div class="news-layout" data-aos="fade-up" data-aos-delay="100">
+
+        <!-- 왼쪽: 교회주보 (구글 드라이브 자동) -->
+        <div class="news-bulletin">
+          <div class="news-block-header">
             <i class="fas fa-newspaper"></i>
             <h3>교회주보</h3>
-            <a href="https://drive.google.com/drive/folders/1g5J2k_jByx0O2prQH_0JEZmDZJqe-5-e?usp=sharing" target="_blank" class="drive-link-icon"><i class="fas fa-external-link-alt"></i></a>
+            <span class="news-badge-drive"><i class="fab fa-google-drive"></i> 자동연동</span>
+            <a href="https://drive.google.com/drive/folders/1g5J2k_jByx0O2prQH_0JEZmDZJqe-5-e?usp=sharing"
+               target="_blank" class="news-open-btn" title="드라이브에서 전체보기">
+              <i class="fas fa-external-link-alt"></i>
+            </a>
           </div>
-          <div class="news-card-body drive-embed-small">
-            <iframe src="https://drive.google.com/embeddedfolderview?id=1g5J2k_jByx0O2prQH_0JEZmDZJqe-5-e#list" width="100%" height="250" frameborder="0"></iframe>
+          <!-- 공지사항: 드라이브 파일명 기반 자동 표시 -->
+          <div class="bulletin-notices" id="bulletinNotices">
+            <div class="notice-loading"><i class="fas fa-circle-notch fa-spin"></i> 최신 주보 불러오는 중...</div>
           </div>
+          <!-- 드라이브 폴더 임베드 (리스트뷰) -->
+          <div class="bulletin-embed-wrap">
+            <iframe
+              src="https://drive.google.com/embeddedfolderview?id=1g5J2k_jByx0O2prQH_0JEZmDZJqe-5-e#list"
+              frameborder="0" loading="lazy" title="교회주보 드라이브">
+            </iframe>
+          </div>
+          <a href="https://drive.google.com/drive/folders/1g5J2k_jByx0O2prQH_0JEZmDZJqe-5-e?usp=sharing"
+             target="_blank" class="btn-drive-open">
+            <i class="fab fa-google-drive"></i> 주보 전체 보기
+          </a>
         </div>
-        <!-- HRAD 실시간 (교회소식) -->
-        <div class="news-card">
-          <div class="news-card-header">
+
+        <!-- 오른쪽: HRAD 실시간 자유게시판 -->
+        <div class="news-hrad">
+          <div class="news-block-header">
             <i class="fas fa-broadcast-tower"></i>
-            <h3>성도간의 교제 (HRAD)</h3>
+            <h3>HRAD 실시간</h3>
             <span class="news-live-badge"><i class="fas fa-circle"></i> LIVE</span>
-            <button class="news-edit-btn" onclick="toggleEdit('hrad')" title="수정"><i class="fas fa-pen"></i></button>
           </div>
-          <div class="news-card-body">
-            <div id="hrad-display" class="news-text hrad-content" onclick="startEdit('hrad')">성도님들의 귀한 나눔을 여기에 작성해 주세요. (클릭하여 수정)</div>
-            <textarea id="hrad-input" class="news-input hidden hrad-textarea" placeholder="실시간 소식 입력..." rows="3"></textarea>
-            <div class="save-actions hidden" id="hrad-actions">
-               <button class="btn-save-mini" onclick="saveEdit('hrad')">실시간 저장</button>
-            </div>
+          <p class="hrad-intro">성도님들이 자유롭게 소식을 나누는 공간입니다</p>
+
+          <!-- 글쓰기 폼 -->
+          <div class="hrad-form">
+            <input type="text" id="hradName" class="hrad-input-name" placeholder="이름 (익명 가능)" maxlength="20" />
+            <textarea id="hradText" class="hrad-input-text" placeholder="소식을 나눠주세요..." rows="2" maxlength="200"></textarea>
+            <button class="hrad-submit-btn" onclick="hradPost()">
+              <i class="fas fa-paper-plane"></i> 올리기
+            </button>
           </div>
-          <div class="news-card-footer">
-            <a href="https://drive.google.com/drive/folders/1yx7nqVg61DERORtFmkstNiuCbvrWm3AP?usp=sharing" target="_blank" class="footer-drive-link">HRAD 드라이브 바로가기 <i class="fas fa-arrow-right"></i></a>
+
+          <!-- 게시글 목록 -->
+          <div class="hrad-list" id="hradList">
+            <!-- JS로 채워짐 -->
           </div>
         </div>
+
       </div>
     </div>
   </section>
@@ -753,8 +859,7 @@ section{padding:100px 0}
 
       <!-- Tab Nav -->
       <div class="media-tabs" data-aos="fade-up" data-aos-delay="100">
-        <button class="tab-btn active" data-tab="all-videos">전체보기</button>
-        <button class="tab-btn" data-tab="sunday-videos">주일예배</button>
+        <button class="tab-btn active" data-tab="sunday-videos">주일예배</button>
         <button class="tab-btn" data-tab="dawn-videos">새벽예배</button>
         <button class="tab-btn" data-tab="wednesday-videos">수요예배</button>
         <button class="tab-btn" data-tab="friday-videos">금요예배</button>
@@ -762,13 +867,7 @@ section{padding:100px 0}
       </div>
 
       <!-- Video Panels -->
-      <div id="all-videos" class="video-panel active">
-        <div class="video-grid" id="grid-all">
-          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
-        </div>
-        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div id="sunday-videos" class="video-panel">
+      <div id="sunday-videos" class="video-panel active">
         <div class="video-grid" id="grid-sunday">
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
@@ -796,7 +895,9 @@ section{padding:100px 0}
         <div class="shorts-grid" id="grid-shorts">
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
-        <a href="https://www.youtube.com/@Gimpo_HBC/shorts" target="_blank" class="btn-more">숏폼 전체보기 <i class="fas fa-arrow-right"></i></a>
+        <div class="shorts-more-wrap">
+          <a href="https://www.youtube.com/@Gimpo_HBC/shorts" target="_blank" class="btn-more">숏폼 전체보기 <i class="fas fa-arrow-right"></i></a>
+        </div>
       </div>
     </div>
   </section>
@@ -991,25 +1092,6 @@ section{padding:100px 0}
         <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-primary-light">
           <i class="fas fa-door-open"></i> 하늘바람 카페 입장하기
         </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== 기도소식 (드라이브 연동) ===== -->
-  <section id="prayer" class="section-gallery">
-    <div class="container">
-      <div class="section-header" data-aos="fade-up">
-        <p class="section-label">함께 기도해요</p>
-        <h2 class="section-title">기도소식</h2>
-        <p class="section-desc">성도님들의 기도 제목을 함께 나눕니다</p>
-      </div>
-      <div class="album-drive-wrap" data-aos="fade-up">
-         <iframe src="https://drive.google.com/embeddedfolderview?id=1Yx2IYoFo5-Wngsf0-llOU1642flhqwiJ#grid" width="100%" height="500" frameborder="0"></iframe>
-      </div>
-      <div class="album-footer" style="margin-top:20px; text-align:center;">
-          <a href="https://drive.google.com/drive/folders/1Yx2IYoFo5-Wngsf0-llOU1642flhqwiJ?usp=sharing" target="_blank" class="btn-drive-open">
-            <i class="fab fa-google-drive"></i> 기도소식 구글 드라이브 전체보기
-          </a>
       </div>
     </div>
   </section>
@@ -1345,7 +1427,6 @@ section{padding:100px 0}
         const rssIds = new Set(rssShorts.map(v => v.videoId));
         const pageShorts = shortsFromPage.filter(v => !rssIds.has(v.videoId));
         const allShorts = [...rssShorts, ...pageShorts];
-        renderGrid('grid-all', categorized, 12);
         renderGrid('grid-sunday', sunday, 3);
         renderGrid('grid-dawn', dawn, 3);
         renderGrid('grid-wednesday', wednesday, 3);
@@ -1354,7 +1435,7 @@ section{padding:100px 0}
         if (pageShorts.length) fetchTitles(pageShorts).then(() => renderShorts(allShorts, 5));
       } catch (err) {
         console.warn('[YT] 초기화 실패:', err.message);
-        ['grid-all','grid-sunday','grid-dawn','grid-wednesday','grid-friday','grid-shorts'].forEach(id => {
+        ['grid-sunday','grid-dawn','grid-wednesday','grid-friday','grid-shorts'].forEach(id => {
           const g = document.getElementById(id);
           if (g) g.innerHTML = `<div class="video-empty" style="grid-column:1/-1;padding:60px 20px;text-align:center"><i class="fab fa-youtube" style="font-size:3rem;color:#ff0000;margin-bottom:16px;display:block"></i><p style="margin-bottom:20px">유튜브 채널에서 영상을 확인하세요</p><a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" style="background:#ff0000;color:white;padding:12px 28px;border-radius:50px;font-weight:700;text-decoration:none"><i class="fab fa-youtube"></i> 유튜브 채널 바로가기</a></div>`;
         });

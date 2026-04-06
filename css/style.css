@@ -799,6 +799,181 @@ section { padding: 100px 0; }
 /* =============================================
    BLOG
    ============================================= */
+/* =============================================
+   교회소식 — 주보 + HRAD
+   ============================================= */
+.section-news { background: var(--off-white); }
+.news-layout {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  align-items: start;
+}
+/* 공통 블록 헤더 */
+.news-block-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 18px 20px;
+  background: var(--navy);
+  border-radius: var(--radius) var(--radius) 0 0;
+  border-bottom: 3px solid var(--gold);
+}
+.news-block-header i:first-child { color: var(--gold); font-size: 1.1rem; }
+.news-block-header h3 { color: white; font-size: 1.05rem; font-weight: 700; flex: 1; }
+.news-badge-drive {
+  font-size: 0.7rem; background: #4285F4; color: white;
+  padding: 3px 8px; border-radius: 20px; font-weight: 600;
+  display: flex; align-items: center; gap: 4px;
+}
+.news-open-btn {
+  color: rgba(255,255,255,0.6); font-size: 0.85rem;
+  padding: 4px 8px; border-radius: 6px; transition: var(--transition);
+}
+.news-open-btn:hover { color: white; background: rgba(255,255,255,0.1); }
+.news-live-badge {
+  font-size: 0.7rem; background: #e74c3c; color: white;
+  padding: 3px 8px; border-radius: 20px; font-weight: 600;
+  display: flex; align-items: center; gap: 4px; animation: livePulse 2s infinite;
+}
+.news-live-badge i { font-size: 0.5rem; }
+@keyframes livePulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+/* 주보 블록 */
+.news-bulletin {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.bulletin-notices { padding: 8px 0; border-bottom: 1px solid var(--gray-light); }
+.notice-loading { padding: 12px 20px; color: var(--gray); font-size: 0.85rem; }
+.notice-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px; font-size: 0.875rem; color: var(--text);
+  transition: var(--transition); text-decoration: none;
+  border-bottom: 1px solid var(--gray-light);
+}
+.notice-item:last-child { border-bottom: 0; }
+.notice-item:hover { background: var(--off-white); color: var(--blue); }
+.notice-item i:first-child { color: var(--gold); font-size: 0.85rem; flex-shrink: 0; }
+.notice-item span { flex: 1; }
+.notice-arrow { color: var(--gray); font-size: 0.75rem; }
+.notice-fallback { color: var(--text-muted); font-size: 0.82rem; }
+.bulletin-embed-wrap { height: 240px; overflow: hidden; }
+.bulletin-embed-wrap iframe { width: 100%; height: 100%; border: 0; display: block; }
+.news-bulletin .btn-drive-open { margin: 12px 20px 16px; }
+
+/* HRAD 블록 */
+.news-hrad {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.hrad-intro {
+  padding: 10px 20px 0; font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;
+}
+.hrad-form {
+  padding: 14px 20px 16px;
+  border-bottom: 1px solid var(--gray-light);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.hrad-input-name {
+  padding: 8px 12px; border: 1.5px solid var(--gray-light);
+  border-radius: 8px; font-size: 0.875rem; font-family: inherit;
+  width: 180px;
+  transition: var(--transition);
+}
+.hrad-input-name:focus { border-color: var(--blue); outline: none; }
+.hrad-input-text {
+  padding: 10px 12px; border: 1.5px solid var(--gray-light);
+  border-radius: 8px; font-size: 0.875rem; font-family: inherit;
+  resize: none; line-height: 1.6;
+  transition: var(--transition);
+}
+.hrad-input-text:focus { border-color: var(--blue); outline: none; }
+.hrad-submit-btn {
+  align-self: flex-end;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--navy); color: white;
+  padding: 9px 20px; border-radius: 50px;
+  font-size: 0.875rem; font-weight: 700;
+  cursor: pointer; border: none; transition: var(--transition);
+}
+.hrad-submit-btn:hover { background: var(--blue); transform: translateY(-1px); }
+/* 게시글 목록 */
+.hrad-list {
+  max-height: 320px; overflow-y: auto;
+  padding: 8px 0;
+}
+.hrad-list::-webkit-scrollbar { width: 4px; }
+.hrad-list::-webkit-scrollbar-thumb { background: var(--gray-light); border-radius: 2px; }
+.hrad-empty { padding: 32px 20px; text-align: center; color: var(--gray); font-size: 0.9rem; }
+.hrad-post {
+  padding: 12px 20px; border-bottom: 1px solid var(--gray-light);
+  transition: var(--transition);
+}
+.hrad-post:last-child { border-bottom: 0; }
+.hrad-post:hover { background: var(--off-white); }
+.hrad-post-meta {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+}
+.hrad-post-name { font-size: 0.82rem; font-weight: 700; color: var(--navy); }
+.hrad-post-time { font-size: 0.75rem; color: var(--gray); flex: 1; }
+.hrad-del-btn {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: transparent; color: var(--gray);
+  font-size: 0.7rem; cursor: pointer; border: none;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.hrad-del-btn:hover { background: #fee2e2; color: #e74c3c; }
+.hrad-post-text { font-size: 0.875rem; color: var(--text); line-height: 1.6; }
+
+/* 교회역사 — 가치카드 */
+.history-intro-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+  align-items: start; margin-bottom: 64px;
+}
+.history-intro-text .section-label { color: var(--sky-light); }
+.history-intro-desc {
+  font-style: italic; color: rgba(255,255,255,0.6);
+  font-size: 0.95rem; line-height: 1.8; margin-bottom: 20px;
+}
+.history-intro-body {
+  color: rgba(255,255,255,0.75); line-height: 2; font-size: 0.95rem;
+}
+.history-intro-body strong { color: var(--gold-light); }
+.history-values {
+  display: flex; flex-direction: column; gap: 16px;
+}
+.value-card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  display: flex; gap: 16px; align-items: flex-start;
+  transition: var(--transition);
+}
+.value-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(201,168,76,0.4); }
+.value-num {
+  font-size: 2rem; font-weight: 900; color: var(--gold);
+  line-height: 1; font-family: var(--font-serif); opacity: 0.7;
+  flex-shrink: 0;
+}
+.value-card h4 { color: white; font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+.value-card p  { color: rgba(255,255,255,0.55); font-size: 0.85rem; line-height: 1.6; }
+
+/* 반응형 */
+@media (max-width: 900px) {
+  .news-layout { grid-template-columns: 1fr; }
+  .history-intro-grid { grid-template-columns: 1fr; gap: 36px; }
+}
+@media (max-width: 640px) {
+  .bulletin-embed-wrap { height: 180px; }
+  .hrad-list { max-height: 240px; }
+}
+
+/* =============================================
+   BLOG
+   ============================================= */
 .section-blog { background: var(--white); }
 .blog-layout { display: grid; grid-template-columns: 380px 1fr; gap: 80px; align-items: start; }
 .blog-header-col .section-title span { color: var(--gold); }

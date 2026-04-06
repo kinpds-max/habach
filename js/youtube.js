@@ -234,16 +234,15 @@ const YT = (() => {
       const allShorts  = [...rssShorts, ...pageShorts];
 
       /* ④ 즉시 렌더 (빠른 표시) */
-      renderGrid('grid-all',       normals,    9);
       renderGrid('grid-sunday',    sunday,     3);
       renderGrid('grid-dawn',      dawn,       3);
       renderGrid('grid-wednesday', wednesday,  3);
       renderGrid('grid-friday',    friday,     3);
-      renderShorts(allShorts,                  5);
+      renderShorts(allShorts,                  5); /* 모바일에서는 CSS로 4개 표시 */
 
       /* ⑤ 숏폼 제목 보완 (비동기 백그라운드) */
       if (pageShorts.length) {
-        fetchTitles(pageShorts).then(() => renderShorts(allShorts, 5));
+        fetchTitles(pageShorts).then(() => renderShorts(allShorts, 5)); /* 모바일 CSS로 4개 제한 */
       }
 
       /* ⑥ 예배 카테고리 부족 시 채널 검색으로 보완 */
@@ -261,7 +260,7 @@ const YT = (() => {
 
     } catch (err) {
       console.warn('[YT] 초기화 실패:', err.message);
-      ['grid-all','grid-sunday','grid-dawn','grid-wednesday','grid-friday','grid-shorts'].forEach(id => {
+      ['grid-sunday','grid-dawn','grid-wednesday','grid-friday','grid-shorts'].forEach(id => {
         const g = document.getElementById(id);
         if (g) g.innerHTML = `
           <div class="video-empty" style="grid-column:1/-1;padding:60px 20px;text-align:center">

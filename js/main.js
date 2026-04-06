@@ -42,19 +42,24 @@ window.addEventListener('scroll', () => {
 const hamburger = document.getElementById('hamburger');
 const mainNav   = document.getElementById('mainNav');
 
+function closeNav() {
+  mainNav?.classList.remove('open');
+  hamburger?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 hamburger?.addEventListener('click', () => {
   const open = mainNav?.classList.toggle('open');
   hamburger.classList.toggle('open', open);
   document.body.style.overflow = open ? 'hidden' : '';
 });
 
+// 닫기 버튼
+document.getElementById('navClose')?.addEventListener('click', closeNav);
+
 // 모바일 메뉴 링크 클릭시 닫기
-mainNav?.querySelectorAll('a').forEach(a => {
-  a.addEventListener('click', () => {
-    mainNav.classList.remove('open');
-    hamburger?.classList.remove('open');
-    document.body.style.overflow = '';
-  });
+mainNav?.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', closeNav);
 });
 
 /* =============================================
@@ -248,10 +253,123 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* =============================================
+   HRAD 자유 게시판 (localStorage 기반)
+   ============================================= */
+const HRAD_KEY = 'hrad_posts_v1';
+const HRAD_MAX = 30; // 최대 30개 유지
+
+function hradLoad() {
+  try { return JSON.parse(localStorage.getItem(HRAD_KEY)) || []; }
+  catch { return []; }
+}
+function hradSave(posts) {
+  localStorage.setItem(HRAD_KEY, JSON.stringify(posts.slice(0, HRAD_MAX)));
+}
+function hradRender() {
+  const list  = document.getElementById('hradList');
+  if (!list) return;
+  const posts = hradLoad();
+  if (!posts.length) {
+    list.innerHTML = '<p class="hrad-empty">첫 번째 소식을 남겨주세요 🙏</p>';
+    return;
+  }
+  list.innerHTML = posts.map((p, i) => `
+    <div class="hrad-post" data-idx="${i}">
+      <div class="hrad-post-meta">
+        <span class="hrad-post-name">${escapeHtml(p.name || '익명')}</span>
+        <span class="hrad-post-time">${p.time}</span>
+        <button class="hrad-del-btn" onclick="hradDelete(${i})" title="삭제">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <p class="hrad-post-text">${escapeHtml(p.text)}</p>
+    </div>`).join('');
+}
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function hradPost() {
+  const name = (document.getElementById('hradName')?.value || '').trim() || '익명';
+  const text = (document.getElementById('hradText')?.value || '').trim();
+  if (!text) { document.getElementById('hradText')?.focus(); return; }
+  const posts = hradLoad();
+  const now   = new Date();
+  const time  = `${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  posts.unshift({ name, text, time });
+  hradSave(posts);
+  hradRender();
+  if (document.getElementById('hradText')) document.getElementById('hradText').value = '';
+}
+function hradDelete(idx) {
+  if (!confirm('이 게시글을 삭제할까요?')) return;
+  const posts = hradLoad();
+  posts.splice(idx, 1);
+  hradSave(posts);
+  hradRender();
+}
+
+/* =============================================
+   교회주보 공지 (구글 드라이브 임베드 파일명 표시)
+   Drive embed iframe load 후 파일명 파싱은 CORS 제한으로
+   불가 → Drive 폴더 RSS/공개 API 방식 사용
+   ============================================= */
+async function loadBulletinNotices() {
+  const el = document.getElementById('bulletinNotices');
+  if (!el) return;
+
+  // 구글 드라이브 폴더를 공개 설정 후 RSS: https://drive.google.com/feeds/list/FOLDER_ID/private/full?alt=rss
+  // 공개 폴더 API (API Key 없이): 불가 → 수동 공지 목록 + 드라이브 링크로 안내
+  const BULLETIN_FOLDER = '1g5J2k_jByx0O2prQH_0JEZmDZJqe-5-e';
+  const BULLETIN_URL    = `https://drive.google.com/drive/folders/${BULLETIN_FOLDER}?usp=sharing`;
+
+  // allorigins로 드라이브 폴더 HTML 파싱 시도
+  try {
+    const proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url='];
+    let html = null;
+    for (const p of proxies) {
+      try {
+        const r = await fetch(p + encodeURIComponent(`https://drive.google.com/embeddedfolderview?id=${BULLETIN_FOLDER}#list`),
+                              { signal: AbortSignal.timeout(7000) });
+        if (r.ok) { html = await r.text(); break; }
+      } catch { /* 다음 */ }
+    }
+    if (html) {
+      // 파일명 추출: <div class="flip-entry-title">주보 2026-04-06</div>
+      const names = [...html.matchAll(/class="flip-entry-title"[^>]*>([^<]+)</g)]
+                     .map(m => m[1].trim()).filter(Boolean).slice(0, 5);
+      if (names.length) {
+        el.innerHTML = names.map(n => `
+          <a href="${BULLETIN_URL}" target="_blank" class="notice-item">
+            <i class="fas fa-file-alt"></i>
+            <span>${escapeHtml(n)}</span>
+            <i class="fas fa-chevron-right notice-arrow"></i>
+          </a>`).join('');
+        return;
+      }
+    }
+  } catch { /* 폴백 */ }
+
+  // 폴백: 링크 안내
+  el.innerHTML = `
+    <a href="${BULLETIN_URL}" target="_blank" class="notice-item notice-fallback">
+      <i class="fab fa-google-drive"></i>
+      <span>주보 폴더 바로가기 (주보를 드라이브에 업로드하면 자동 표시됩니다)</span>
+      <i class="fas fa-external-link-alt notice-arrow"></i>
+    </a>`;
+}
+
+/* =============================================
    INIT
    ============================================= */
 document.addEventListener('DOMContentLoaded', () => {
   loadBlogPosts();
+  hradRender();
+  loadBulletinNotices();
+
+  /* Enter키로 게시 */
+  document.getElementById('hradText')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); hradPost(); }
+  });
 
   /* ── 플로팅 바: 스크롤 300px 이후 표시 ── */
   const floatBar = document.getElementById('floatBar');
