@@ -622,6 +622,19 @@ section{padding:100px 0}
 .bcar-dot{width:7px;height:7px;border-radius:50%;background:var(--gray-light);cursor:pointer;transition:background 0.2s}
 .bcar-dot.active{background:var(--gold)}
 @media(max-width:600px){.bulletin-carousel-wrap{padding:0 36px}.bcar-btn{width:30px;height:30px;font-size:0.8rem}}
+/* ===== 교회 역사 타임라인 ===== */
+.history-timeline{display:flex;flex-direction:column;max-width:680px;margin:0 auto}
+.htl-item{display:flex;align-items:flex-start;gap:24px}
+.htl-dot{flex-shrink:0;width:52px;height:52px;border-radius:50%;background:rgba(201,168,76,0.15);border:2px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.1rem;transition:var(--transition)}
+.htl-current .htl-dot{background:var(--gold);border-color:var(--gold);color:var(--navy);box-shadow:0 0 0 6px rgba(201,168,76,0.2)}
+.htl-content{flex:1;padding-bottom:8px}
+.htl-step{font-size:0.72rem;font-weight:700;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;opacity:0.8}
+.htl-title{font-family:var(--font-serif);font-size:1.25rem;font-weight:700;color:white;margin:6px 0 8px}
+.htl-desc{color:rgba(255,255,255,0.65);font-size:0.9rem;line-height:1.7}
+.htl-desc strong{color:var(--gold-light)}
+.htl-current-badge{display:inline-flex;align-items:center;gap:6px;margin-top:12px;background:var(--gold);color:var(--navy);font-size:0.75rem;font-weight:700;padding:4px 12px;border-radius:20px}
+.htl-connector{width:2px;height:36px;background:linear-gradient(to bottom,rgba(201,168,76,0.4),rgba(201,168,76,0.15));margin-left:25px}
+@media(max-width:640px){.htl-dot{width:42px;height:42px;font-size:0.95rem}.htl-title{font-size:1.05rem}.htl-connector{margin-left:20px}}
 /* ===== 중보기도 요청 섹션 ===== */
 .prayer-request-box{background:linear-gradient(135deg,rgba(201,168,76,0.06),rgba(90,168,216,0.04));border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius-lg);padding:28px;margin-top:24px}
 .section-prayer{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);padding:72px 0}
@@ -795,43 +808,73 @@ section{padding:100px 0}
   <!-- ===== 교회 역사 ===== -->
   <section id="history" class="section-history">
     <div class="container">
-      <div class="history-intro-grid" data-aos="fade-up">
-        <div class="history-intro-text">
-          <p class="section-label light">하늘바람교회 역사</p>
-          <h2 class="section-title light">한 씨앗에서<br>자라나다</h2>
-          <p class="history-intro-desc">
-            "홀연히 하늘로부터 급하고 강한 바람 같은 소리가 있어"<br>
-            <em>— 사도행전 2:2</em>
-          </p>
-          <p class="history-intro-body">
-            하늘바람교회는 <strong>성경을 성경되게, 성령을 성령되게, 교회를 교회되게</strong>
-            하는 3대 가치를 품고 경기도 김포시 운양동에 세워진
-            예수교대한성결교회 소속 복음주의 교회입니다.<br><br>
-            담임목사 전승학은 "하나님이 디자인하신 교회"를 꿈꾸며
-            성령의 바람이 강하게 역사하는 건강한 공동체를 세우고
-            세계 비전을 이루기 위해 달려가고 있습니다.
-          </p>
-        </div>
-        <div class="history-values" data-aos="fade-left" data-aos-delay="150">
-          <div class="value-card">
-            <span class="value-num">01</span>
-            <h4>성경을 성경되게</h4>
-            <p>말씀이 살아 역사하는<br>말씀 중심의 공동체</p>
-          </div>
-          <div class="value-card">
-            <span class="value-num">02</span>
-            <h4>성령을 성령되게</h4>
-            <p>성령의 불과 바람이<br>임하는 예배 공동체</p>
-          </div>
-          <div class="value-card">
-            <span class="value-num">03</span>
-            <h4>교회를 교회되게</h4>
-            <p>하나님이 디자인하신<br>건강한 교회 공동체</p>
-          </div>
-        </div>
+      <div class="section-header" data-aos="fade-up" style="text-align:center;margin-bottom:48px">
+        <p class="section-label light">하늘바람교회 역사</p>
+        <h2 class="section-title light">한 씨앗에서<br>자라나다</h2>
+        <p style="color:rgba(255,255,255,0.55);font-size:0.95rem;margin-top:12px">
+          "홀연히 하늘로부터 급하고 강한 바람 같은 소리가 있어" — <em>사도행전 2:2</em>
+        </p>
       </div>
 
-      <!-- 역사 타임라인: 내용 업데이트 예정 -->
+      <!-- 타임라인 -->
+      <div class="history-timeline" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="htl-item">
+          <div class="htl-dot"><i class="fas fa-link"></i></div>
+          <div class="htl-content">
+            <span class="htl-step">STEP 01</span>
+            <h3 class="htl-title">교회 통합</h3>
+            <p class="htl-desc">
+              <strong>성은장로교회</strong>와 <strong>하늘바람 성결교회</strong>가<br>
+              하나의 공동체로 통합하여 새롭게 시작하다
+            </p>
+          </div>
+        </div>
+
+        <div class="htl-connector"></div>
+
+        <div class="htl-item">
+          <div class="htl-dot"><i class="fas fa-church"></i></div>
+          <div class="htl-content">
+            <span class="htl-step">STEP 02</span>
+            <h3 class="htl-title">걸포 북변예배당 이전</h3>
+            <p class="htl-desc">
+              김포시 걸포동 북변지구에 예배당을 마련하고<br>
+              지역 복음화의 첫 발걸음을 내딛다
+            </p>
+          </div>
+        </div>
+
+        <div class="htl-connector"></div>
+
+        <div class="htl-item">
+          <div class="htl-dot"><i class="fas fa-map-marker-alt"></i></div>
+          <div class="htl-content">
+            <span class="htl-step">STEP 03</span>
+            <h3 class="htl-title">도사리예배당 이전</h3>
+            <p class="htl-desc">
+              성장하는 공동체를 위해<br>
+              도사리에 더 넓은 예배당으로 이전하다
+            </p>
+          </div>
+        </div>
+
+        <div class="htl-connector"></div>
+
+        <div class="htl-item htl-current">
+          <div class="htl-dot"><i class="fas fa-wind"></i></div>
+          <div class="htl-content">
+            <span class="htl-step">현재</span>
+            <h3 class="htl-title">운양동예배당 이전</h3>
+            <p class="htl-desc">
+              경기도 김포시 운양동에 새 예배당을 세우고<br>
+              <strong>하늘의 바람이 이 땅에 임하는 교회</strong>로 함께 나아가다
+            </p>
+            <span class="htl-current-badge"><i class="fas fa-map-pin"></i> 현 위치</span>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
