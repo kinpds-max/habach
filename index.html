@@ -155,7 +155,7 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 #hero{position:relative;width:100%;height:100vh;min-height:700px;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
 .hero-video-wrap{position:absolute;inset:0;z-index:0;overflow:hidden;background:var(--navy)}
 .hero-fallback-bg{position:absolute;inset:-5%;background:url('https://i.ytimg.com/vi/k-Q5Wjq7uPM/maxresdefault.jpg') center/cover no-repeat;filter:blur(3px) brightness(0.65);z-index:0}
-#heroBgVideo{position:absolute;top:50%;left:50%;width:max(100%,calc(100vh*16/9));height:max(100%,calc(100vw*9/16));transform:translate(-50%,-50%);pointer-events:none;border:0;z-index:1;opacity:0;transition:opacity 1.4s ease}
+#heroBgVideo{display:none;position:absolute;top:50%;left:50%;width:max(100%,calc(100vh*16/9));height:max(100%,calc(100vw*9/16));transform:translate(-50%,-50%);pointer-events:none;border:0;z-index:1;opacity:0;transition:opacity 1.4s ease}
 #heroBgVideo.loaded{opacity:1}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,20,50,0.78) 0%,rgba(15,32,68,0.55) 50%,rgba(10,20,50,0.35) 100%)}
 .hero-content{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:0 40px;width:100%}
@@ -592,8 +592,35 @@ section{padding:100px 0}
 
 /* AOS overrides */
 @media(max-width:1100px){.worship-grid{grid-template-columns:repeat(2,1fr)}.welcome-grid{gap:48px}.blog-layout{grid-template-columns:300px 1fr;gap:48px}.shorts-grid{grid-template-columns:repeat(4,1fr)}}
-@media(max-width:900px){.container{padding:0 24px}section{padding:72px 0}.main-nav{display:none}.hamburger{display:flex}.mobile-brand{display:block}.main-nav.open{display:flex;flex-direction:column;position:fixed;inset:0;background:rgba(8,16,44,0.98);backdrop-filter:blur(20px);z-index:999;padding:28px 32px 40px;overflow-y:auto;gap:0}.main-nav.open .nav-overlay-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:24px;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.1)}.main-nav.open .nav-translate{display:none}.main-nav.open ul{flex-direction:column;gap:0;flex:1}.main-nav.open>ul>li>a{font-size:1.2rem;font-weight:500;padding:15px 0;border-bottom:1px solid rgba(255,255,255,0.07);border-radius:0;height:auto;display:flex;align-items:center;justify-content:space-between;color:rgba(255,255,255,0.85)}.main-nav.open>ul>li>a::after{content:'›';font-size:1.3rem;opacity:0.4}.main-nav.open>ul>li>a:hover{color:var(--gold-light);padding-left:8px;border-bottom-color:rgba(201,168,76,0.3)}.main-nav.open>ul>li>a.active{color:var(--gold-light)}.main-nav.open .nav-overlay-footer{display:flex;align-items:center;gap:12px;padding-top:24px;margin-top:8px;border-top:1px solid rgba(255,255,255,0.08)}.sub-menu{position:static;transform:none;background:transparent;box-shadow:none;opacity:1;visibility:visible;padding:0 0 0 16px;pointer-events:all}.sub-menu li a{font-size:1rem;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)}.welcome-grid{grid-template-columns:1fr}.welcome-visual{order:-1}.blog-layout{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}.video-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid-3 { grid-template-columns: 1fr; }.mission-stats { flex-direction: column; gap: 30px; }}
-@media(max-width:768px){#heroBgVideo{display:none}.hero-fallback-bg{inset:0;filter:brightness(0.65)}.hero-title{font-size:clamp(1.9rem,8vw,3rem)}.hero-desc{font-size:0.875rem}.section-title{font-size:clamp(1.5rem,5vw,2rem)}.worship-card{padding:28px 16px}.worship-card h3{font-size:1rem}.media-tabs{flex-wrap:wrap;gap:6px}.tab-btn{padding:8px 14px;font-size:0.8rem}.video-grid{grid-template-columns:repeat(2,1fr);gap:14px}.shorts-grid{grid-template-columns:repeat(2,1fr);gap:12px}.shorts-grid .shorts-card:nth-child(n+5){display:none}.blog-card{padding:16px;gap:12px}.cafe-grid{grid-template-columns:repeat(2,1fr);gap:14px}.cafe-card{padding:24px 16px}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}.footer-bottom{flex-direction:column;text-align:center}.float-btn{width:42px;height:42px;font-size:1rem}.float-bar{bottom:20px;right:14px;gap:8px}.drive-embed{height:380px}.album-drive-wrap{min-height:380px}}
+@media(max-width:900px){
+  #heroBgVideo{display:block;opacity:0}
+  .container{padding:0 24px}
+  section{padding:72px 0}
+  .main-nav{display:none}
+  .hamburger{display:flex}
+  .mobile-brand{display:block}
+  .main-nav.open{display:flex;flex-direction:column;position:fixed;inset:0;background:rgba(8,16,44,0.98);backdrop-filter:blur(20px);z-index:999;padding:28px 32px 40px;overflow-y:auto;gap:0}
+  .main-nav.open .nav-overlay-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:24px;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.1)}
+  .main-nav.open .nav-translate{display:none}
+  .main-nav.open ul{flex-direction:column;gap:0;flex:1}
+  .main-nav.open>ul>li>a{font-size:1.2rem;font-weight:500;padding:15px 0;border-bottom:1px solid rgba(255,255,255,0.07);border-radius:0;height:auto;display:flex;align-items:center;justify-content:space-between;color:rgba(255,255,255,0.85)}
+  .main-nav.open>ul>li>a::after{content:'›';font-size:1.3rem;opacity:0.4}
+  .main-nav.open>ul>li>a:hover{color:var(--gold-light);padding-left:8px;border-bottom-color:rgba(201,168,76,0.3)}
+  .main-nav.open>ul>li>a.active{color:var(--gold-light)}
+  .main-nav.open .nav-overlay-footer{display:flex;align-items:center;gap:12px;padding-top:24px;margin-top:8px;border-top:1px solid rgba(255,255,255,0.08)}
+  .sub-menu{position:static;transform:none;background:transparent;box-shadow:none;opacity:1;visibility:visible;padding:0 0 0 16px;pointer-events:all}
+  .sub-menu li a{font-size:1rem;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+  .welcome-grid{grid-template-columns:1fr}
+  .welcome-visual{order:-1}
+  .blog-layout{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .video-grid{grid-template-columns:repeat(2,1fr)}
+  .cafe-grid{grid-template-columns:repeat(2,1fr)}
+  .cafe-grid-3 { grid-template-columns: 1fr; }
+  .mission-stats { flex-direction: column; gap: 30px; }
+}
+@media(max-width:768px){.hero-fallback-bg{inset:0;filter:brightness(0.65)}.hero-title{font-size:clamp(1.9rem,8vw,3rem)}.hero-desc{font-size:0.875rem}.section-title{font-size:clamp(1.5rem,5vw,2rem)}.worship-card{padding:28px 16px}.worship-card h3{font-size:1rem}.media-tabs{flex-wrap:wrap;gap:6px}.tab-btn{padding:8px 14px;font-size:0.8rem}.video-grid{grid-template-columns:repeat(2,1fr);gap:14px}.shorts-grid{grid-template-columns:repeat(2,1fr);gap:12px}.shorts-grid .shorts-card:nth-child(n+5){display:none}.blog-card{padding:16px;gap:12px}.cafe-grid{grid-template-columns:repeat(2,1fr);gap:14px}.cafe-card{padding:24px 16px}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}.footer-bottom{flex-direction:column;text-align:center}.float-btn{width:42px;height:42px;font-size:1rem}.float-bar{bottom:20px;right:14px;gap:8px}.drive-embed{height:380px}.album-drive-wrap{min-height:380px}}
 @media(max-width:640px){.container{padding:0 20px}section{padding:60px 0}.worship-grid{grid-template-columns:1fr 1fr}.video-grid{grid-template-columns:1fr}.cafe-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}.hero-btns{flex-direction:column}.welcome-card-wrap{grid-template-columns:1fr 1fr}.header-inner{padding:0 20px}}
 /* 모바일: 예배탭 2개만 표시 */
 @media(max-width:768px){
@@ -799,20 +826,6 @@ section{padding:100px 0}
           <a href="https://cafe.naver.com/haneulbaramchurch" target="_blank" class="btn-primary">교회 더 알아보기</a>
         </div>
         <div class="welcome-visual" data-aos="fade-left">
-          <!-- 교회소개영상 -->
-          <div class="church-intro-video" data-aos="fade-up" data-aos-delay="50">
-            <div class="civ-label"><i class="fas fa-play-circle"></i> 하늘바람교회 소개영상</div>
-            <div class="civ-wrap">
-              <iframe
-                src="https://www.youtube.com/embed/k-Q5Wjq7uPM?rel=0&modestbranding=1&playsinline=1"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-                title="하늘바람교회 소개영상"
-                loading="lazy">
-              </iframe>
-            </div>
-          </div>
           <div class="welcome-card-wrap">
             <div class="welcome-card">
               <i class="fas fa-dove"></i>
