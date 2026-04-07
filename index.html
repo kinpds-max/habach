@@ -583,9 +583,10 @@ section{padding:100px 0}
 .worship-table{width:100%;border-collapse:collapse;font-size:0.875rem}
 .worship-table tbody tr{border-bottom:1px solid var(--gray-light)}
 .worship-table tbody tr:last-child{border-bottom:none}
-.worship-table td{padding:9px 4px;color:var(--text)}
+.worship-table td{padding:9px 4px;color:var(--text);white-space:nowrap}
 .worship-table td:first-child{font-weight:600;width:55%}
 .worship-table td:last-child{color:var(--navy);font-weight:700;text-align:right}
+@media(max-width:480px){.worship-table{font-size:0.78rem}.worship-table td{padding:8px 2px}}
 .wt-sub{font-size:0.7rem;background:rgba(201,168,76,0.15);color:var(--gold);padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:500}
 
 /* CHURCH HISTORY */
@@ -1071,7 +1072,7 @@ section{padding:100px 0}
               가족과 함께, 이웃과 함께 드리는 귀한 예배 자리에 여러분을 진심으로 초대합니다.
             </p>
           </div>
-          <table class="worship-table" style="width:100%;font-size:1.05rem;">
+          <table class="worship-table" style="width:100%;font-size:1.05rem;table-layout:fixed;">
             <tbody>
               <tr>
                 <td style="padding:18px 8px;font-weight:700;border-bottom:1px solid rgba(0,0,0,0.05);text-align:left;">시편의예배 <span class="wt-sub">클래식</span></td>
