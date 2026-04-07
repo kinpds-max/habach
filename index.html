@@ -165,7 +165,7 @@ body{top:0!important}
 /* ===== 모바일 전용 상단 헤더 ===== */
 .mobile-top-header{display:none;position:fixed;top:0;left:0;right:0;z-index:1100;height:100px;padding:0 16px;align-items:center;justify-content:space-between;background:transparent;transition:background 0.35s}
 .mobile-top-header.scrolled{background:rgba(8,15,42,0.92);backdrop-filter:blur(16px)}
-.mobile-top-logo{height:42px;width:auto;object-fit:contain;display:block;background:rgba(255,255,255,0.92);border-radius:8px;padding:4px 8px}
+.mobile-top-logo{height:84px;width:auto;object-fit:contain;display:block;background:rgba(255,255,255,0.92);border-radius:8px;padding:4px 8px}
 .mobile-top-left,.mobile-top-right{width:40px;display:flex;align-items:center}
 .mobile-top-right{justify-content:flex-end}
 .mobile-top-header .translate-menu{left:0;right:auto}
@@ -1023,7 +1023,7 @@ section{padding:100px 0}
         <!-- 교회 소개 본문 -->
         <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 2; max-width: 820px;">
           본 교회는 <strong style="color:var(--text);">[예수교대한성결교회]</strong>에 소속된 복음주의 교회로<br class="mo-br">
-          하나님의 바람, 성령의 바람이 강하게 역사하는 교회입니다.
+          하나님의 바람, 성령의 바람이 강하게 역사하는 <span style="white-space:nowrap">교회입니다.</span>
           <span style="color:var(--gray); font-size:0.9rem; display:block; margin-top:4px;">(산하기관 : 성결대학교)</span>
           <br class="mo-br">
           하나님이 디자인하신 교회를 세워 세계 비전을 이루고자 시작되었으며<br class="mo-br">
@@ -1241,6 +1241,7 @@ section{padding:100px 0}
         <button class="tab-btn" data-tab="friday-videos">금요예배</button>
         <button class="tab-btn" data-tab="david-videos"><i class="fas fa-music"></i> 다윗의찬양</button>
         <button class="tab-btn" data-tab="bridge-videos"><i class="fas fa-music"></i> 브릿지찬양대</button>
+        <button class="tab-btn" data-tab="shorts-videos"><i class="fas fa-mobile-alt"></i> 숏폼모음</button>
       </div>
 
       <!-- Video Panels -->
@@ -1305,6 +1306,15 @@ section{padding:100px 0}
         <div class="panel-actions">
           <button class="btn-expand" data-grid="grid-bridge" data-playlist="PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf" data-cat="bridge"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
           <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
+        </div>
+      </div>
+      <div id="shorts-videos" class="video-panel">
+        <div class="shorts-grid" id="grid-shorts">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <div class="panel-actions" style="margin-top:28px">
+          <button id="btn-shorts-expand" class="btn-expand"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
+          <a href="https://www.youtube.com/@Gimpo_HBC/shorts" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
     </div>
@@ -2198,7 +2208,7 @@ section{padding:100px 0}
       };
       try {
         /* 병렬 fetch */
-        const [sermon3Res, dawnRes, wednesdayRes, fridayRes, praiseRes, worshipRes, bridgeRes] = await Promise.allSettled([
+        const [sermon3Res, dawnRes, wednesdayRes, fridayRes, praiseRes, worshipRes, bridgeRes, shortsRes] = await Promise.allSettled([
           fetchSearchAPI('3분설교'),
           fetchSearchAPI('새벽예배'),
           fetchSearchAPI('수요예배'),
@@ -2206,6 +2216,7 @@ section{padding:100px 0}
           fetchPlaylistAPI(PL.davidPraise,  'david'),
           fetchPlaylistAPI(PL.davidWorship, 'sunday'),
           fetchPlaylistAPI(PL.bridge,       'bridge'),
+          fetchShortsAPI(),
         ]);
 
         const ok = (r, def) => r.status === 'fulfilled' ? r.value : def;
@@ -2217,6 +2228,7 @@ section{padding:100px 0}
         const praiseData    = ok(praiseRes,      empty);
         const worshipData   = ok(worshipRes,     empty);
         const bridgeData    = ok(bridgeRes,      empty);
+        const shortsData    = ok(shortsRes,      empty);
 
         const byDate = arr => arr.slice().sort((a,b) => new Date(b.pubDate||0) - new Date(a.pubDate||0));
 
@@ -2231,6 +2243,10 @@ section{padding:100px 0}
           ig('grid-sunday',    byDate(worshipData.videos),   worshipData.nextPageToken);
           ig('grid-bridge',    byDate(bridgeData.videos),    bridgeData.nextPageToken);
         }
+
+        /* Shorts */
+        renderShorts(shortsData.videos, shortsData.videos.length || 10);
+        if (typeof window._setShortsToken === 'function') window._setShortsToken(shortsData.nextPageToken);
 
       } catch (err) {
         console.warn('[YT]', err);
@@ -2357,6 +2373,35 @@ section{padding:100px 0}
           this.disabled = false;
         }
       });
+    });
+
+    /* ── Shorts 펼쳐보기 ── */
+    let shortsExpandToken = null;
+    window._setShortsToken = (t) => { shortsExpandToken = t; };
+    document.getElementById('btn-shorts-expand')?.addEventListener('click', async function() {
+      const grid = document.getElementById('grid-shorts');
+      if (!grid) return;
+      this.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...';
+      this.disabled = true;
+      if (!shortsExpandToken) {
+        this.innerHTML = '<i class="fas fa-check"></i> 모두 불러옴';
+        this.style.opacity = '0.5'; return;
+      }
+      try {
+        const result = await YT.fetchShorts(shortsExpandToken);
+        result.videos.forEach(v => grid.appendChild(YT.shortsCard(v)));
+        shortsExpandToken = result.nextPageToken;
+        if (shortsExpandToken) {
+          this.innerHTML = '<i class="fas fa-chevron-down"></i> 영상 더보기';
+          this.disabled = false;
+        } else {
+          this.innerHTML = '<i class="fas fa-check"></i> 모두 불러옴';
+          this.style.opacity = '0.5'; this.disabled = true;
+        }
+      } catch {
+        this.innerHTML = '<i class="fas fa-chevron-down"></i> 영상 더보기';
+        this.disabled = false;
+      }
     });
 
   });
