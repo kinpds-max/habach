@@ -3057,10 +3057,10 @@
 
     /* FLOATING BAR */
     /* 배경음악 플로팅 버튼 */
-    .float-bible {
+    .float-music {
       position: fixed;
       bottom: 28px;
-      left: 84px; /* music(20) + btn(48) + gap(16) */
+      left: 20px;
       z-index: 900;
       display: flex;
       flex-direction: column;
@@ -3071,7 +3071,7 @@
       pointer-events: none
     }
 
-    .float-bible.visible {
+    .float-music.visible {
       opacity: 1;
       transform: translateY(0);
       pointer-events: all
@@ -3240,16 +3240,16 @@
       animation: floatPop 0.5s 0.2s both
     }
 
-    .float-btn:nth-child(3) {
-      animation: floatPop 0.5s 0.3s both
-    }
-
-    .float-btn:nth-child(4) {
-      animation: floatPop 0.5s 0.4s both
-    }
-
     .float-btn:nth-child(5) {
       animation: floatPop 0.5s 0.5s both
+    }
+
+    .float-btn:nth-child(6) {
+      animation: floatPop 0.5s 0.6s both
+    }
+
+    .float-bible-right {
+      background: linear-gradient(135deg, #e67e22, #d35400)
     }
 
     @keyframes floatPop {
@@ -4484,16 +4484,15 @@
         text-align: center
       }
 
-      .float-btn, .music-btn, .bible-btn {
+      .float-btn, .music-btn {
         width: 42px;
         height: 42px;
         font-size: 1rem
       }
-      .float-label, .music-label, .bible-label {
+      .float-label, .music-label {
         font-size: 0.62rem;
         padding: 2px 8px;
       }
-      .float-bible { left: 74px; }
       .music-title-bar { bottom: 84px; left: 41px; font-size: 0.65rem; padding: 4px 10px; }
 
       .float-bar {
@@ -6378,14 +6377,6 @@
     <source src="audio/주님이 하십니다 260328.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- 성경 연결 버튼 -->
-  <div class="float-bible" id="floatBible">
-    <span class="bible-label">성경</span>
-    <a href="https://kinpds-max.github.io/hamom-bible-note" target="_blank" class="bible-btn" aria-label="성경 읽기">
-      <i class="fas fa-book"></i>
-    </a>
-  </div>
-
   <!-- 배경음악 컨트롤 -->
   <div class="float-music" id="floatMusic">
     <span class="music-label" id="musicLabel">음악 시작</span>
@@ -6418,6 +6409,10 @@
           d="M12 3C6.477 3 2 6.477 2 10.9c0 2.8 1.6 5.267 4.07 6.787L4.93 21l4.433-2.213C10.24 19.05 11.113 19.2 12 19.2c5.523 0 10-3.477 10-7.9S17.523 3 12 3z" />
       </svg>
       <span class="float-label">오픈채팅</span>
+    </a>
+    <a href="https://kinpds-max.github.io/hamom-bible-note" target="_blank" class="float-btn float-bible-right" aria-label="성경 읽기">
+      <i class="fas fa-book"></i>
+      <span class="float-label">성경</span>
     </a>
   </div>
 
@@ -7404,12 +7399,9 @@
         setMusicState(!isPlaying);
       });
 
-      /* 스크롤 시 음악 및 성경 버튼 표시 */
-      const floatBible = document.getElementById('floatBible');
+      /* 스크롤 시 음악 버튼 표시 */
       const showMusicFloat = () => { 
-        const isVisible = window.scrollY > 100;
-        floatMusic?.classList.toggle('visible', isVisible);
-        floatBible?.classList.toggle('visible', isVisible);
+        floatMusic?.classList.toggle('visible', window.scrollY > 100);
       };
       window.addEventListener('scroll', showMusicFloat, { passive: true });
       showMusicFloat();
