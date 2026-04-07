@@ -1944,28 +1944,18 @@ section{padding:100px 0}
   });
 
   /* =============================================
-     YouTube 크롤링 모듈
+     YouTube Data API v3 모듈
   ============================================= */
   const YT = (() => {
-    const CHANNEL_ID  = 'UCzQ6kPUzNNbU3EtJI5X1mhQ';
-    const RSS_URL     = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
-    const SHORTS_PAGE = `https://www.youtube.com/@Gimpo_HBC/shorts`;
-    const STREAMS_PAGE = `https://www.youtube.com/@Gimpo_HBC/streams`;
-    const VIDEOS_PAGE = `https://www.youtube.com/@Gimpo_HBC/videos`;
-    const PLAYLIST_RSS = `https://www.youtube.com/feeds/videos.xml?playlist_id=PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re`;
-    const FRIDAY_PLAYLIST_ID  = 'PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx';
-    const FRIDAY_PLAYLIST_RSS = `https://www.youtube.com/feeds/videos.xml?playlist_id=${FRIDAY_PLAYLIST_ID}`;
-    const DAVID_PRAISE_ID     = 'PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re';  /* 다윗의찬양 */
-    const DAVID_PRAISE_RSS    = `https://www.youtube.com/feeds/videos.xml?playlist_id=${DAVID_PRAISE_ID}`;
-    const DAVID_WORSHIP_ID    = 'PLmD7ZicLdWIr1pf1o7elRvmMNcylM6N4X';  /* 다윗의예배 */
-    const DAVID_WORSHIP_RSS   = `https://www.youtube.com/feeds/videos.xml?playlist_id=${DAVID_WORSHIP_ID}`;
-    const RAW_PROXIES = [
-      'https://api.allorigins.win/raw?url=',
-      'https://api.codetabs.com/v1/proxy?quest=',
-      'https://corsproxy.io/?',
-    ];
+    const API_KEY    = 'AIzaSyBWfxcKkgBhN30UlMnng0m0RvOjlYo4hyI';
+    const CHANNEL_ID = 'UCzQ6kPUzNNbU3EtJI5X1mhQ';
+    const UPLOADS_PL = 'UU' + CHANNEL_ID.slice(2); /* 채널 전체 업로드 플레이리스트 */
+    const PL = {
+      friday:       'PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx',
+      davidPraise:  'PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re',
+      davidWorship: 'PLmD7ZicLdWIr1pf1o7elRvmMNcylM6N4X',
+    };
     const CATEGORIES = {
-      /* 순서 중요: 구체적인 키워드 먼저 */
       sermon3:   { label: '3분설교',   keywords: ['3분설교','[3분설교]'] },
       david:     { label: '다윗의찬양', keywords: ['다윗의찬양','다윗의 찬양'] },
       sunday:    { label: '주일예배',   keywords: ['다윗의예배','다윗의 예배','시편의예배','시편의 예배','주일설교','주일예배'] },
@@ -1973,122 +1963,39 @@ section{padding:100px 0}
       wednesday: { label: '수요예배',   keywords: ['수요성경예배','수요성경','수요예배','수요 예배','성경예배','수요기도','수요'] },
       friday:    { label: '금요예배',   keywords: ['금요기도회','강청기도','금요예배','금요 예배','금요기도','금요'] },
     };
-
-    /* rss2json → JSON 방식 (CORS 없음, 주 방법) */
-    async function fetchViaRss2Json(rssUrl = RSS_URL, forceCategory = null) {
-      const url = `https://api.rss2json.com/v1/api.json?count=100&rss_url=${encodeURIComponent(rssUrl)}`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
-      if (!res.ok) throw new Error('rss2json 응답 오류');
-      const json = await res.json();
-      if (json.status !== 'ok') throw new Error('rss2json 상태 오류');
-      return json.items.map(item => {
-        const videoId = (item.link || '').split('v=')[1]?.split('&')[0] ||
-                        (item.guid  || '').split('v=')[1]?.split('&')[0] || '';
-        let category = forceCategory || classify(item.title||'');
-        let isShorts = (item.link||'').includes('/shorts/') || (item.categories||[]).some(c => /short/i.test(c));
-        if (category !== 'all') isShorts = false;
-        else if (isShorts) category = 'shorts';
-        return { videoId, title: item.title||'', pubDate: item.pubDate||'', isShorts, category };
-      }).filter(v => v.videoId);
+    function classify(title) {
+      for (const [key, cat] of Object.entries(CATEGORIES))
+        if (cat.keywords.some(kw => title.includes(kw))) return key;
+      return 'all';
     }
-
-    /* XML 프록시 폴백 */
-    async function proxyFetch(url) {
-      for (const px of RAW_PROXIES) {
-        try {
-          const res = await fetch(px + encodeURIComponent(url), { signal: AbortSignal.timeout(9000) });
-          if (res.ok) return await res.text();
-        } catch {}
-      }
-      throw new Error('모든 프록시 실패');
-    }
-    function parseXML(xml, forceCategory = null) {
-      const doc = new DOMParser().parseFromString(xml, 'text/xml');
-      return Array.from(doc.querySelectorAll('entry')).map(e => {
-        const videoId = e.querySelector('videoId')?.textContent ||
-                        (e.querySelector('id')?.textContent||'').replace('yt:video:','');
-        const title   = e.querySelector('title')?.textContent || '';
-        const pubDate = e.querySelector('published')?.textContent || '';
-        const href    = e.querySelector('link')?.getAttribute('href') || '';
-        let category = forceCategory || classify(title);
-        let isShorts = href.includes('/shorts/');
-        if (category !== 'all') isShorts = false;
-        else if (isShorts) category = 'shorts';
-        return { videoId, title, pubDate, isShorts, category };
-      }).filter(v => v.videoId);
-    }
-
     function fmt(str) {
       const d = new Date(str);
       return isNaN(d) ? '' : `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
     }
-    function classify(title) {
-      for (const [key, cat] of Object.entries(CATEGORIES)) {
-        if (cat.keywords.some(kw => title.includes(kw))) return key;
-      }
-      return 'all';
+
+    /* YouTube Data API v3 playlistItems 호출 */
+    async function fetchPlaylistAPI(playlistId, category, pageToken = null) {
+      let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${API_KEY}`;
+      if (pageToken) url += `&pageToken=${pageToken}`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
+      if (!res.ok) throw new Error(`API ${res.status}`);
+      const json = await res.json();
+      const videos = (json.items || []).map(item => {
+        const s = item.snippet;
+        const videoId = s.resourceId?.videoId || '';
+        const title   = s.title || '';
+        if (!videoId || title === 'Private video' || title === 'Deleted video') return null;
+        return {
+          videoId,
+          title,
+          pubDate:  s.publishedAt || '',
+          isShorts: false,
+          category: category || classify(title),
+        };
+      }).filter(Boolean);
+      return { videos, nextPageToken: json.nextPageToken || null };
     }
 
-    async function fetchShortsPage(limit = 10) {
-      try {
-        const html = await proxyFetch(SHORTS_PAGE);
-        const ids = [...new Set([...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)].map(m=>m[1]))].slice(0, limit);
-        return ids.map(videoId => ({ videoId, title:'', pubDate:'', isShorts:true, category:'shorts' }));
-      } catch { return []; }
-    }
-    async function fetchStreamsPage(limit = 20) {
-      try {
-        const html = await proxyFetch(STREAMS_PAGE);
-        /* videoId와 title 동시 추출 시도 */
-        const titledMap = new Map();
-        const raw = [...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"[^}]*?"title":\{"runs":\[\{"text":"([^"]+)"/g)];
-        raw.forEach(m => titledMap.set(m[1], m[2]));
-        /* videoId만 추출 (폴백) */
-        const ids = [...new Set([...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)].map(m=>m[1]))].slice(0, limit);
-        return ids.map(videoId => {
-          const title = titledMap.get(videoId)||'';
-          /* 제목으로 분류, 없으면 streams탭 = 기본적으로 주일예배 */
-          const cat = title ? classify(title) : 'sunday';
-          return { videoId, title, pubDate:'', isShorts:false, category: cat === 'all' ? 'sunday' : cat };
-        });
-      } catch { return []; }
-    }
-    async function fetchVideosPage(limit = 10) {
-      try {
-        const html = await proxyFetch(VIDEOS_PAGE);
-        const ids = [...new Set([...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)].map(m=>m[1]))].slice(0, limit);
-        return ids.map(videoId => ({ videoId, title:'', pubDate:'', isShorts:false, category:'all' }));
-      } catch { return []; }
-    }
-    async function fetchPlaylistPage(playlistId, category, knownIds = new Set(), limit = 50) {
-      try {
-        const html = await proxyFetch(`https://www.youtube.com/playlist?list=${playlistId}`);
-        const titledMap = new Map();
-        [...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"[^}]{0,300}"text":"([^"]{3,120})"/g)]
-          .forEach(m => { if (!titledMap.has(m[1])) titledMap.set(m[1], m[2]); });
-        const ids = [...new Set([...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)].map(m => m[1]))]
-          .filter(id => !knownIds.has(id)).slice(0, limit);
-        return ids.map(videoId => ({
-          videoId, title: titledMap.get(videoId) || '', pubDate: '', isShorts: false, category
-        }));
-      } catch { return []; }
-    }
-    const fetchFridayPlaylistPage = (k, l) => fetchPlaylistPage(FRIDAY_PLAYLIST_ID, 'friday', k, l);
-    const fetchDavidPraiseMore    = (k, l) => fetchPlaylistPage(DAVID_PRAISE_ID,    'david',  k, l);
-    const fetchDavidWorshipMore   = (k, l) => fetchPlaylistPage(DAVID_WORSHIP_ID,   'sunday', k, l);
-    async function fetchTitles(videos) {
-      await Promise.allSettled(videos.map(async v => {
-        if (v.title) return;
-        const oembedUrl = `https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v=${v.videoId}`;
-        for (const px of RAW_PROXIES) {
-          try {
-            const res = await fetch(px + encodeURIComponent(oembedUrl), { signal: AbortSignal.timeout(6000) });
-            if (res.ok) { const j = await res.json(); v.title = j.title||''; break; }
-          } catch {}
-        }
-      }));
-      return videos;
-    }
     function createCard(v) {
       const catInfo = CATEGORIES[v.category] || { label: '영상' };
       const card = document.createElement('div');
@@ -2146,30 +2053,31 @@ section{padding:100px 0}
       }
       list.forEach(v => grid.appendChild(createShortsCard(v)));
     }
-    function setupMoreBtn(wrapId, btnId, initialList, fetchFn, gridId) {
+    /* 더보기 버튼: nextPageToken 기반 페이지네이션 */
+    function setupMoreBtn(wrapId, btnId, playlistId, category, initialToken, gridId) {
       const wrap = document.getElementById(wrapId);
       const btn  = document.getElementById(btnId);
       if (!wrap || !btn) return;
+      if (!initialToken) { wrap.style.display = 'none'; return; }
       wrap.style.display = 'block';
-      const shownIds = new Set(initialList.map(v => v.videoId));
-      let loading = false;
+      let token = initialToken, loading = false;
       btn.addEventListener('click', async () => {
-        if (loading) return;
+        if (loading || !token) return;
         loading = true;
         btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...';
         btn.disabled = true;
         try {
+          const result = await fetchPlaylistAPI(playlistId, category, token);
           const grid = document.getElementById(gridId);
-          const more = await fetchFn(shownIds, 30);
-          if (more.length) {
-            more.forEach(v => { shownIds.add(v.videoId); grid.appendChild(createCard(v)); });
+          result.videos.forEach(v => grid.appendChild(createCard(v)));
+          token = result.nextPageToken;
+          if (token) {
             btn.innerHTML = '<i class="fas fa-chevron-down"></i> 더보기';
             btn.disabled = false;
           } else {
             btn.innerHTML = '모두 불러왔습니다';
             btn.style.opacity = '0.5';
             btn.style.cursor = 'default';
-            btn.disabled = true;
           }
         } catch {
           btn.innerHTML = '<i class="fas fa-chevron-down"></i> 더보기';
@@ -2186,101 +2094,54 @@ section{padding:100px 0}
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
-  async function init() {
-      const showError = () => {
-        ['grid-sermon3','grid-sunday','grid-dawn','grid-wednesday','grid-friday','grid-david','grid-shorts'].forEach(id => {
-          const g = document.getElementById(id);
-          if (g) g.innerHTML = `<div class="video-empty" style="grid-column:1/-1;padding:60px 20px;text-align:center"><i class="fab fa-youtube" style="font-size:3rem;color:#ff0000;margin-bottom:16px;display:block"></i><p style="margin-bottom:20px">유튜브 채널에서 영상을 확인하세요</p><a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" style="background:#ff0000;color:white;padding:12px 28px;border-radius:50px;font-weight:700;text-decoration:none"><i class="fab fa-youtube"></i> 유튜브 채널 바로가기</a></div>`;
-        });
+    async function init() {
+      const showErr = (id) => {
+        const g = document.getElementById(id);
+        if (g) g.innerHTML = `<div class="video-empty" style="grid-column:1/-1;padding:40px 20px;text-align:center"><i class="fab fa-youtube" style="font-size:2.5rem;color:#ff0000;margin-bottom:12px;display:block"></i><p>영상을 불러올 수 없습니다</p></div>`;
       };
       try {
-        /* 독립적인 병렬 크롤링 및 폴백 지원 */
-        let rssVideos = [], shortsFromPage = [], streamsFromPage = [];
-        let usedVideosFallback = false;
-
-        const [rssRes, davidPraiseRes, davidWorshipRes, fridayRssRes, shortsRes, streamsRes] = await Promise.allSettled([
-          fetchViaRss2Json(RSS_URL).catch(async () => {
-             usedVideosFallback = true;
-             return await fetchVideosPage(20);
-          }),
-          fetchViaRss2Json(DAVID_PRAISE_RSS,  'david' ).catch(async () => parseXML(await proxyFetch(DAVID_PRAISE_RSS),  'david')),
-          fetchViaRss2Json(DAVID_WORSHIP_RSS, 'sunday').catch(async () => parseXML(await proxyFetch(DAVID_WORSHIP_RSS), 'sunday')),
-          fetchViaRss2Json(FRIDAY_PLAYLIST_RSS, 'friday').catch(async () => parseXML(await proxyFetch(FRIDAY_PLAYLIST_RSS), 'friday')),
-          fetchShortsPage(10),
-          fetchStreamsPage(15)
+        /* 5개 소스 병렬 fetch */
+        const [uploadsRes, fridayRes, praiseRes, worshipRes] = await Promise.allSettled([
+          fetchPlaylistAPI(UPLOADS_PL, null),
+          fetchPlaylistAPI(PL.friday,       'friday'),
+          fetchPlaylistAPI(PL.davidPraise,  'david'),
+          fetchPlaylistAPI(PL.davidWorship, 'sunday'),
         ]);
 
-        let davidPraiseVideos = [], davidWorshipVideos = [], fridayPlaylistVideos = [];
-        if (rssRes.status === 'fulfilled')         rssVideos          = rssRes.value          || [];
-        if (davidPraiseRes.status === 'fulfilled') davidPraiseVideos  = davidPraiseRes.value  || [];
-        if (davidWorshipRes.status === 'fulfilled') davidWorshipVideos = davidWorshipRes.value || [];
-        if (fridayRssRes.status === 'fulfilled')   fridayPlaylistVideos = fridayRssRes.value  || [];
-        if (shortsRes.status === 'fulfilled') shortsFromPage = shortsRes.value || [];
-        if (streamsRes.status === 'fulfilled') streamsFromPage = streamsRes.value || [];
+        const uploads      = uploadsRes.status  === 'fulfilled' ? uploadsRes.value  : { videos: [], nextPageToken: null };
+        const fridayData   = fridayRes.status   === 'fulfilled' ? fridayRes.value   : { videos: [], nextPageToken: null };
+        const praiseData   = praiseRes.status   === 'fulfilled' ? praiseRes.value   : { videos: [], nextPageToken: null };
+        const worshipData  = worshipRes.status  === 'fulfilled' ? worshipRes.value  : { videos: [], nextPageToken: null };
 
-        const needsTitles = [];
-        if (usedVideosFallback) needsTitles.push(...rssVideos.filter(v => !v.title));
-        if (streamsFromPage.length) needsTitles.push(...streamsFromPage.filter(v => !v.title));
-
-        if (needsTitles.length) {
-          await fetchTitles(needsTitles);
-          needsTitles.forEach(v => {
-             v.category = classify(v.title);
-             if (v.category !== 'all') v.isShorts = false;
-          });
-        }
-
-        /* 채널 RSS + streams 병합 */
-        const rssIds = new Set(rssVideos.map(v => v.videoId));
-        const newStreams = streamsFromPage.filter(v => !rssIds.has(v.videoId));
-        const allVideos = [...rssVideos, ...newStreams];
-
-        const byDate = arr => arr.slice().sort((a,b) => {
-          const da = a.pubDate ? new Date(a.pubDate) : new Date(0);
-          const db = b.pubDate ? new Date(b.pubDate) : new Date(0);
-          return db - da;
-        });
-
-        const normals   = allVideos.filter(v => !v.isShorts);
+        /* 채널 업로드에서 카테고리별 분류 */
+        const byDate = arr => arr.slice().sort((a,b) => new Date(b.pubDate||0) - new Date(a.pubDate||0));
+        const normals = uploads.videos.filter(v => !v.isShorts);
         const sermon3   = byDate(normals.filter(v => v.category === 'sermon3'));
         const dawn      = byDate(normals.filter(v => v.category === 'dawn'));
         const wednesday = byDate(normals.filter(v => v.category === 'wednesday'));
-        const rssShorts = allVideos.filter(v => v.isShorts);
-        const rssShortIds    = new Set(rssShorts.map(v => v.videoId));
-        const pageShorts = shortsFromPage.filter(v => !rssShortIds.has(v.videoId));
-        const allShorts  = [...rssShorts, ...pageShorts];
 
         renderGrid('grid-sermon3',   sermon3,   3);
         renderGrid('grid-dawn',      dawn,      3);
         renderGrid('grid-wednesday', wednesday, 3);
-        renderShorts(allShorts, 5);
 
-        /* ── 다윗의찬양: 플레이리스트 전용 + 더보기 ── */
-        const dpIds = new Set(davidPraiseVideos.map(v => v.videoId));
-        const dpExtra = byDate(normals.filter(v => v.category === 'david' && !dpIds.has(v.videoId)));
-        const allDavidPraise = [...byDate(davidPraiseVideos), ...dpExtra];
-        renderGrid('grid-david', allDavidPraise, null);
-        setupMoreBtn('david-more-wrap', 'btn-david-more', allDavidPraise, fetchDavidPraiseMore, 'grid-david');
+        /* 금요예배 */
+        renderGrid('grid-friday', byDate(fridayData.videos), null);
+        setupMoreBtn('friday-more-wrap', 'btn-friday-more', PL.friday, 'friday', fridayData.nextPageToken, 'grid-friday');
 
-        /* ── 다윗의예배 (주일예배 탭): 플레이리스트 전용 + 더보기 ── */
-        const dwIds = new Set(davidWorshipVideos.map(v => v.videoId));
-        const dwExtra = byDate(normals.filter(v => v.category === 'sunday' && !dwIds.has(v.videoId)));
-        const allSunday = [...byDate(davidWorshipVideos), ...dwExtra];
-        renderGrid('grid-sunday', allSunday, null);
-        /* sunday 탭은 더보기 wrap이 없으므로 조건부 */
+        /* 다윗의찬양 */
+        renderGrid('grid-david', byDate(praiseData.videos), null);
+        setupMoreBtn('david-more-wrap', 'btn-david-more', PL.davidPraise, 'david', praiseData.nextPageToken, 'grid-david');
 
-        /* ── 금요예배: 플레이리스트 전용 + 더보기 ── */
-        const friIds = new Set(fridayPlaylistVideos.map(v => v.videoId));
-        const friExtra = byDate(normals.filter(v => v.category === 'friday' && !friIds.has(v.videoId)));
-        const allFriday = [...byDate(fridayPlaylistVideos), ...friExtra];
-        renderGrid('grid-friday', allFriday, null);
-        setupMoreBtn('friday-more-wrap', 'btn-friday-more', allFriday, fetchFridayPlaylistPage, 'grid-friday');
+        /* 주일예배(다윗의예배) */
+        renderGrid('grid-sunday', byDate(worshipData.videos), null);
 
-        if (pageShorts.length) fetchTitles(pageShorts).then(() => renderShorts(allShorts, 5));
+        /* Shorts: 업로드 중 쇼츠 */
+        const shorts = uploads.videos.filter(v => v.isShorts);
+        renderShorts(shorts, 5);
 
       } catch (err) {
-        console.warn('[YT] 초기화 실패:', err.message);
-        showError();
+        console.warn('[YT]', err);
+        ['grid-sermon3','grid-sunday','grid-dawn','grid-wednesday','grid-friday','grid-david'].forEach(showErr);
       }
     }
     return { init, openModal };
