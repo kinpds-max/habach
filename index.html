@@ -2217,8 +2217,6 @@ section{padding:100px 0}
         if (fridayRssRes.status === 'fulfilled')   fridayPlaylistVideos = fridayRssRes.value  || [];
         if (shortsRes.status === 'fulfilled') shortsFromPage = shortsRes.value || [];
         if (streamsRes.status === 'fulfilled') streamsFromPage = streamsRes.value || [];
-        
-        rssVideos = [...rssVideos, ...pRssVideos];
 
         const needsTitles = [];
         if (usedVideosFallback) needsTitles.push(...rssVideos.filter(v => !v.title));
