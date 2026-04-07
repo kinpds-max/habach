@@ -4484,11 +4484,17 @@
         text-align: center
       }
 
-      .float-btn {
+      .float-btn, .music-btn, .bible-btn {
         width: 42px;
         height: 42px;
         font-size: 1rem
       }
+      .float-label, .music-label, .bible-label {
+        font-size: 0.62rem;
+        padding: 2px 8px;
+      }
+      .float-bible { left: 74px; }
+      .music-title-bar { bottom: 84px; left: 41px; font-size: 0.65rem; padding: 4px 10px; }
 
       .float-bar {
         bottom: 20px;
@@ -6384,7 +6390,7 @@
   <div class="float-music" id="floatMusic">
     <span class="music-label" id="musicLabel">음악 시작</span>
     <button class="music-btn" id="musicBtn" aria-label="배경음악 재생/일시정지">
-      <i class="fas fa-music"></i>
+      <i class="fa-solid fa-music"></i>
     </button>
   </div>
   <div class="music-title-bar" id="musicTitleBar">🎵 주님이 하십니다</div>
@@ -7369,13 +7375,13 @@
         isPlaying = playing;
         if (playing) {
           bgMusic.play().catch(() => { });
-          musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
+          musicBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
           musicBtn.classList.add('playing');
           musicLabel.textContent = '음악 정지';
           titleBar.classList.add('show');
         } else {
           bgMusic.pause();
-          musicBtn.innerHTML = '<i class="fas fa-music"></i>';
+          musicBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
           musicBtn.classList.remove('playing');
           musicLabel.textContent = '음악 시작';
           titleBar.classList.remove('show');
