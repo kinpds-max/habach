@@ -6115,12 +6115,31 @@
             <h3 style="color:var(--gold); font-family:var(--font-serif); font-size:1.2rem; margin-bottom:20px; text-align:center;">
               <i class="fab fa-youtube" style="margin-right:8px;"></i> 미션브릿지 기도요청 영상
             </h3>
-            <div class="video-grid" id="grid-mission-bridge" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
+            <div class="mission-video-grid" id="grid-mission-bridge">
               <div class="video-loading" style="color:rgba(255,255,255,0.5); grid-column: 1/-1;">
                 <i class="fas fa-circle-notch fa-spin"></i> 영상을 불러오는 중...
               </div>
             </div>
+            <div style="text-align:center; margin-top:20px;">
+              <button class="btn-expand" data-grid="grid-mission-bridge" data-playlist="PLmD7ZicLdWIpCvLBIHgm-c5Al-sh5pi9Y" data-cat="mission" 
+                      style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:8px 24px; border-radius:50px; font-size:0.85rem; cursor:pointer; transition:all 0.3s;">
+                <i class="fas fa-chevron-down"></i> 영상 더보기
+              </button>
+            </div>
           </div>
+          
+          <style>
+            .mission-video-grid {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 16px;
+            }
+            @media (max-width: 768px) {
+              .mission-video-grid {
+                grid-template-columns: 1fr;
+              }
+            }
+          </style>
         </div>
       </div>
     </div>
@@ -6964,7 +6983,7 @@
           grid.innerHTML = `<div class="video-empty"><i class="fas fa-film" style="font-size:2rem;opacity:.3;display:block;margin-bottom:12px"></i>해당 예배 영상이 준비 중입니다</div>`;
           return;
         }
-        const batch = getBatch();
+        const batch = gridId === 'grid-mission-bridge' ? 3 : getBatch();
         videos.forEach((v, i) => {
           const card = YT.card(v);
           if (i >= batch) card.setAttribute('data-card-hidden', '');
@@ -6991,7 +7010,7 @@
           const state = gridVideoState[gridId] || {};
           if (!grid) return;
 
-          const batch = getBatch();
+          const batch = gridId === 'grid-mission-bridge' ? 3 : getBatch();
 
           /* 숨겨진 기존 카드 먼저 공개 */
           const hiddenCards = Array.from(grid.querySelectorAll('.video-card[data-card-hidden]'));
