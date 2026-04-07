@@ -5679,7 +5679,7 @@
         <button class="tab-btn" data-tab="wednesday-videos">수요예배</button>
         <button class="tab-btn" data-tab="friday-videos">금요예배</button>
         <button class="tab-btn" data-tab="david-videos"><i class="fas fa-music"></i> 다윗의찬양</button>
-        <button class="tab-btn" data-tab="bridge-videos"><i class="fas fa-satellite-dish"></i> 미션브릿지</button>
+        <button class="tab-btn" data-tab="bridge-videos"><i class="fas fa-music"></i> 브릿지 찬양대</button>
         <button class="tab-btn" data-tab="shorts-videos"><i class="fas fa-mobile-alt"></i> 숏폼모음</button>
       </div>
 
@@ -5755,9 +5755,9 @@
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-bridge" data-playlist="PLmD7ZicLdWIpCvLBIHgm-c5Al-sh5pi9Y"
+          <button class="btn-expand" data-grid="grid-bridge" data-playlist="PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf"
             data-cat="bridge"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
-          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIpCvLBIHgm-c5Al-sh5pi9Y" target="_blank"
+          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf" target="_blank"
             class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
@@ -6303,6 +6303,23 @@
       newItem.innerHTML = `<i class="fas fa-bullhorn"></i> [실시간] ${_escHtml(name)}님: ${_escHtml(text)}`;
       ticker.prepend(newItem);
     }
+    
+    async function initTickerFromGAS() {
+      const ticker = document.getElementById('tickerContent');
+      if (!ticker || !GAS_API_URL) return;
+      try {
+        const response = await fetch(`${GAS_API_URL}?action=getLatestMessages`);
+        const json = await response.json();
+        if (json.result === 'success' && json.messages) {
+          const items = json.messages.map(m => `<span><i class="fas fa-bullhorn"></i> [나눔] ${_escHtml(m.name)}: ${_escHtml(m.text)}</span>`);
+          ticker.innerHTML = items.join('') + ticker.innerHTML;
+        }
+      } catch (e) {
+        console.warn('[Ticker] GAS 데이터 로드 실패');
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', initTickerFromGAS);
     function hradDelete(idx) {
       if (!confirm('이 게시글을 삭제할까요?')) return;
       const posts = hradLoad();
@@ -6523,7 +6540,7 @@
         friday: 'PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re',
         davidPraise: 'PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re',
         davidWorship: 'PLmD7ZicLdWIr1pf1o7elRvmMNcylM6N4X',
-        bridge: 'PLmD7ZicLdWIpCvLBIHgm-c5Al-sh5pi9Y',
+        bridge: 'PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf',
       };
       const CATEGORIES = {
         sermon3: { label: '3분설교', keywords: ['3분설교', '[3분설교]'] },
@@ -6532,7 +6549,7 @@
         dawn: { label: '새벽예배', keywords: ['새벽예배', '새벽기도', '촛불새벽', '새벽'] },
         wednesday: { label: '수요예배', keywords: ['수요성경예배', '수요성경', '수요예배', '수요 예배', '성경예배', '수요기도', '수요'] },
         friday: { label: '금요예배', keywords: ['금요기도회', '강청기도', '금요예배', '금요 예배', '금요기도', '금요'] },
-        bridge: { label: '미션브릿지 기도요청', keywords: ['미션브릿지', '미션 브릿지', '기도요청'] },
+        bridge: { label: '브릿지 찬양대', keywords: ['브릿지찬양대', '브릿지 찬양대', '브릿지'] },
       };
       function classify(title) {
         for (const [key, cat] of Object.entries(CATEGORIES))

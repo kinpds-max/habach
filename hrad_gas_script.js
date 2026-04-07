@@ -58,6 +58,48 @@ function doGet(e) {
   const action = e.parameter.action;
   const folderId = e.parameter.folderId;
 
+  // 공지/기도 티커(Ticker)를 위한 최신 메시지 조회
+  if (action === 'getLatestMessages') {
+    try {
+      const ss     = SpreadsheetApp.openById(SHEET_ID);
+      const hrad   = ss.getSheetByName('HRAD');
+      const pray   = ss.getSheetByName('중보기도');
+      const messages = [];
+
+      const getRows = (sheet) => {
+        if (!sheet) return;
+        const lastRow = sheet.getLastRow();
+        if (lastRow <= 1) return;
+        const numRows = Math.min(10, lastRow - 1);
+        const data = sheet.getRange(lastRow - numRows + 1, 1, numRows, 6).getValues();
+        data.forEach(row => {
+          messages.push({
+            name: row[3],
+            text: row[4],
+            time: row[1], // M/D
+            fullDate: row[5] // ISO
+          });
+        });
+      };
+
+      getRows(hrad);
+      getRows(pray);
+
+      // 최신 등록순 정렬 (ISO 기준)
+      messages.sort((a, b) => (b.fullDate||'').localeCompare(a.fullDate||''));
+      const finalMsg = messages.slice(0, 15); // 상위 15개만
+
+      return ContentService
+        .createTextOutput(JSON.stringify({ result: 'success', messages: finalMsg }))
+        .setMimeType(ContentService.MimeType.JSON);
+
+    } catch (err) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ result: 'error', message: err.message }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
   // 정식 Drive API 연동: 파일 목록 조회
   if (action === 'listFiles' && folderId) {
     try {

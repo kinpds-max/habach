@@ -23,7 +23,7 @@ const YT = (() => {
     dawn:      { label: '새벽예배',   keywords: ['새벽','새벽예배','촛불새벽','새벽기도'] },
     wednesday: { label: '수요예배',   keywords: ['수요','수요예배','성경예배','수요 예배'] },
     friday:    { label: '금요예배',   keywords: ['금요','금요예배','강청기도','금요기도','금요 예배'] },
-    bridge:    { label: '미션브릿지', keywords: ['미션브릿지','기도요청'] },
+    bridge:    { label: '브릿지 찬양대', keywords: ['브릿지찬양대','브릿지 찬양대','브릿지'] },
   };
 
   /* ─── 프록시 폴백 fetch ─── */
@@ -266,7 +266,7 @@ const YT = (() => {
         fetchShortsPage(10),
         fetchVideosPage(30),
         fetchPlaylistPage('PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re', 'friday', 30),
-        fetchPlaylistPage('PLmD7ZicLdWIpCvLBIHgm-c5Al-sh5pi9Y', 'bridge', 30),
+        fetchPlaylistPage('PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf', 'bridge', 30),
       ]);
 
       const rssVideos = rssText.status === 'fulfilled' ? parseRSS(rssText.value) : [];
