@@ -2952,7 +2952,7 @@
 
     .footer-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1.4fr;
+      grid-template-columns: 1.2fr 1fr 1fr 1.2fr;
       gap: 60px;
       padding-bottom: 56px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08)
@@ -5525,11 +5525,15 @@
       </style>
       <script>
         function switchIntroVideo(id, btn, e) {
-          if (e) e.preventDefault();
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
           const player = document.getElementById('introMainPlayer');
           if(player) player.src = `https://www.youtube.com/embed/${id}?rel=0`;
           document.querySelectorAll('.intro-tab-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
+          return false;
         }
       </script>
 
