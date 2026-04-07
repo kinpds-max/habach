@@ -112,9 +112,10 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 #header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:transparent;border-bottom:1px solid transparent;transition:background 0.4s,box-shadow 0.4s,border-color 0.4s}
 #header.scrolled{background:rgba(8,15,42,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 32px rgba(0,0,0,0.45);border-bottom-color:rgba(255,255,255,0.1)}
 .header-inner{max-width:1400px;margin:0 auto;padding:0 48px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;height:120px;gap:32px}
-.nav-logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
-.logo-img{height:52px;width:auto;object-fit:contain;display:block;filter:brightness(0) invert(1);opacity:0.93;transition:opacity 0.2s}
-.logo-img:hover{opacity:1}
+.nav-logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none;background:rgba(255,255,255,0.92);border-radius:10px;padding:5px 10px;backdrop-filter:blur(4px);transition:background 0.3s}
+.nav-logo:hover{background:rgba(255,255,255,1)}
+.logo-img{height:48px;width:auto;object-fit:contain;display:block;transition:opacity 0.2s}
+.logo-img:hover{opacity:0.9}
 
 .mobile-brand{display:none}
 .main-nav{display:flex;align-items:center;justify-content:center}
@@ -157,7 +158,7 @@ body{top:0!important}
 /* ===== 모바일 전용 상단 헤더 ===== */
 .mobile-top-header{display:none;position:fixed;top:0;left:0;right:0;z-index:1100;height:100px;padding:0 16px;align-items:center;justify-content:space-between;background:transparent;transition:background 0.35s}
 .mobile-top-header.scrolled{background:rgba(8,15,42,0.92);backdrop-filter:blur(16px)}
-.mobile-top-logo{height:42px;width:auto;object-fit:contain;display:block;filter:brightness(0) invert(1)}
+.mobile-top-logo{height:42px;width:auto;object-fit:contain;display:block;background:rgba(255,255,255,0.92);border-radius:8px;padding:4px 8px}
 .mobile-top-left,.mobile-top-right{width:40px;display:flex;align-items:center}
 .mobile-top-right{justify-content:flex-end}
 .mobile-top-header .translate-menu{left:0;right:auto}
@@ -1720,35 +1721,23 @@ section{padding:100px 0}
 
   async function loadBulletinNotices() {
     const el = document.getElementById('bulletinNotices');
-    if (!el) return;
+    if (!el || !GAS_API_URL) return;
     try {
-      const proxies = ['https://corsproxy.io/?','https://api.allorigins.win/raw?url='];
-      let html = null;
-      for (const px of proxies) {
-        try {
-          const r = await fetch(px + encodeURIComponent(`https://drive.google.com/embeddedfolderview?id=${BULLETIN_FOLDER}#list`),
-                                { signal: AbortSignal.timeout(8000) });
-          if (r.ok) { html = await r.text(); break; }
-        } catch {}
+      const r = await fetch(`${GAS_API_URL}?action=listFiles&folderId=${BULLETIN_FOLDER}`);
+      const json = await r.json();
+      if (json.result === 'success' && json.files.length) {
+        _bulletinAllItems = json.files;
+        renderBulletinAlbum(0, _bulletinShowing);
+        renderBulletinCarousel();
+        return;
       }
-      if (html) {
-        const entries = [...html.matchAll(/id="entry-([^"]+)"[\s\S]*?class="flip-entry-title"[^>]*>([^<]+)</g)]
-          .map(m => ({ id: m[1].trim(), name: m[2].trim() }))
-          .filter(e => e.name && e.id);
-        /* 최신순 정렬 */
-        entries.sort((a, b) => b.name.localeCompare(a.name));
-        if (entries.length) {
-          _bulletinAllItems = entries;
-          renderBulletinAlbum(0, _bulletinShowing);
-          renderBulletinCarousel(); // 캐러셀 렌더링
-          return;
-        }
-      }
-    } catch {}
+    } catch (err) {
+      console.warn('[Bulletin] API 로드 실패:', err.message);
+    }
     el.innerHTML = `
       <a href="${BULLETIN_URL}" target="_blank" style="display:flex;align-items:center;gap:10px;padding:20px;color:var(--text-muted);text-decoration:none">
         <i class="fab fa-google-drive" style="font-size:1.4rem;color:#4285f4"></i>
-        <span>교회 소식, 행사 캡쳐 이미지를 Drive에 업로드하면 바로 공지사항으로 등록됩니다</span>
+        <span>Google Drive에서 소식 확인하기</span>
         <i class="fas fa-external-link-alt" style="margin-left:auto;opacity:0.4"></i>
       </a>`;
   }
@@ -1858,39 +1847,23 @@ section{padding:100px 0}
 
   async function loadSermonAudio() {
     const el = document.getElementById('sermonAudioList');
-    if (!el) return;
+    if (!el || !GAS_API_URL) return;
     try {
-      const proxies = ['https://api.allorigins.win/raw?url=','https://api.codetabs.com/v1/proxy?quest=','https://corsproxy.io/?'];
-      let html = null;
-      for (const px of proxies) {
-        try {
-          const r = await fetch(px + encodeURIComponent(
-            `https://drive.google.com/embeddedfolderview?id=${SERMON_FOLDER_ID}#list`
-          ), { signal: AbortSignal.timeout(8000) });
-          if (r.ok) { html = await r.text(); break; }
-        } catch {}
+      const r = await fetch(`${GAS_API_URL}?action=listFiles&folderId=${SERMON_FOLDER_ID}`);
+      const json = await r.json();
+      if (json.result === 'success' && json.files.length) {
+        const latestEntries = json.files.slice(0, 15);
+        el.innerHTML = latestEntries.map(e => `
+          <button class="sa-item" onclick="openAudioModal('${e.id}','${_escHtml(e.name)}')">
+            <span class="sa-play-btn"><i class="fas fa-play"></i></span>
+            <span class="sa-item-name">${_escHtml(e.name)}</span>
+            <i class="fas fa-chevron-right sa-item-open"></i>
+          </button>`).join('');
+        return;
       }
-      if (html) {
-        /* entry-ID와 파일명 동시 추출 */
-        const entries = [...html.matchAll(/id="entry-([^"]+)"[\s\S]*?class="flip-entry-title"[^>]*>([^<]+)</g)]
-          .map(m => ({ id: m[1].trim(), name: m[2].trim() }))
-          .filter(e => e.name && e.id);
-
-        /* 최신순 정렬 (파일명 내림차순) */
-        entries.sort((a, b) => b.name.localeCompare(a.name));
-        const latestEntries = entries.slice(0, 15);
-
-        if (latestEntries.length) {
-          el.innerHTML = latestEntries.map(e => `
-            <button class="sa-item" onclick="openAudioModal('${e.id}','${_escHtml(e.name)}')">
-              <span class="sa-play-btn"><i class="fas fa-play"></i></span>
-              <span class="sa-item-name">${_escHtml(e.name)}</span>
-              <i class="fas fa-chevron-right sa-item-open"></i>
-            </button>`).join('');
-          return;
-        }
-      }
-    } catch {}
+    } catch (err) {
+      console.warn('[Sermon] API 로드 실패:', err.message);
+    }
     /* 폴백: 드라이브 링크 안내 */
     el.innerHTML = `
       <div class="sa-fallback">
@@ -1904,38 +1877,29 @@ section{padding:100px 0}
   ============================================= */
   const ALBUM_FOLDER_ID = '1XK4HoQKw60pfZpTOks7pOdPptJkIiCRZ';
   async function loadAlbumNotices() {
-    const el = document.getElementById('placeholderChurch'); // 앨범 영역의 텍스트 영역 활용 또는 별도 리스트
-    if (!el) return;
+    const el = document.getElementById('placeholderChurch');
+    if (!el || !GAS_API_URL) return;
     try {
-      const proxies = ['https://api.allorigins.win/raw?url=','https://api.codetabs.com/v1/proxy?quest=','https://corsproxy.io/?'];
-      let html = null;
-      for (const px of proxies) {
-        try {
-          const r = await fetch(px + encodeURIComponent(`https://drive.google.com/embeddedfolderview?id=${ALBUM_FOLDER_ID}#list`), { signal: AbortSignal.timeout(8000) });
-          if (r.ok) { html = await r.text(); break; }
-        } catch {}
-      }
-      if (html) {
-        const names = [...html.matchAll(/class="flip-entry-title"[^>]*>([^<]+)</g)]
-                       .map(m => m[1].trim()).filter(Boolean);
-        names.sort((a, b) => b.localeCompare(a));
-        const latest = names.slice(0, 3);
-        if (latest.length) {
-          const inner = el.querySelector('.drive-placeholder-inner');
-          if (inner) {
-            inner.innerHTML = `
-              <i class="fas fa-images" style="font-size:2rem;color:var(--gold);margin-bottom:15px"></i>
-              <h3 style="margin-bottom:10px">최신 업데이트 사진</h3>
-              <ul style="text-align:left;list-style:none;padding:0;margin-bottom:20px;font-size:0.85rem;color:var(--navy)">
-                ${latest.map(n => `<li style="margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><i class="fas fa-check-circle" style="color:var(--gold);margin-right:6px"></i> ${n}</li>`).join('')}
-              </ul>
-              <a href="https://drive.google.com/drive/folders/${ALBUM_FOLDER_ID}" target="_blank" class="btn-primary">앨범 크게보기</a>
-            `;
-            el.style.background = 'rgba(255,255,255,0.95)';
-          }
+      const r = await fetch(`${GAS_API_URL}?action=listFiles&folderId=${ALBUM_FOLDER_ID}`);
+      const json = await r.json();
+      if (json.result === 'success' && json.files.length) {
+        const latest = json.files.slice(0, 3);
+        const inner  = el.querySelector('.drive-placeholder-inner');
+        if (inner) {
+          inner.innerHTML = `
+            <i class="fas fa-images" style="font-size:2rem;color:var(--gold);margin-bottom:15px"></i>
+            <h3 style="margin-bottom:10px">최신 업데이트 사진</h3>
+            <ul style="text-align:left;list-style:none;padding:0;margin-bottom:20px;font-size:0.85rem;color:var(--navy)">
+              ${latest.map(n => `<li style="margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><i class="fas fa-check-circle" style="color:var(--gold);margin-right:6px"></i> ${n.name}</li>`).join('')}
+            </ul>
+            <a href="https://drive.google.com/drive/folders/${ALBUM_FOLDER_ID}" target="_blank" class="btn-primary">앨범 크게보기</a>
+          `;
+          el.style.background = 'rgba(255,255,255,0.95)';
         }
       }
-    } catch {}
+    } catch (err) {
+      console.warn('[AlbumNotice] API 로드 실패:', err.message);
+    }
   }
 
   function openAudioModal(fileId, fileName) {
@@ -2442,8 +2406,8 @@ section{padding:100px 0}
   document.getElementById('mbnOverlay')?.addEventListener('click', mbnCloseDrawer);
   // 스크롤 위치에 따라 탭 자동 하이라이트
   window.addEventListener('scroll', () => {
-    const sections = ['worship','media','prayer','contact'];
-    const ids      = ['mbn-worship','mbn-media','mbn-prayer','mbn-contact'];
+    const sections = ['worship', 'media', 'prayer', 'contact'];
+    const ids = ['mbn-worship', 'mbn-media', 'mbn-prayer', 'mbn-contact'];
     let found = false;
     for (let i = sections.length - 1; i >= 0; i--) {
       const el = document.getElementById(sections[i]);
@@ -2458,10 +2422,9 @@ section{padding:100px 0}
       document.getElementById('mbn-worship')?.classList.add('active');
     }
   }, { passive: true });
-  // 중보기도 저장/렌더 (두 곣 공통)
-  const PRAY_GAS_URL = 'https://script.google.com/macros/s/AKfycbz9eIMavFE3Ihdk2RcdX9xQzQHsJjGgPnANjDULc8qAaiIKZP7Z4pb0IRRiXxJeMbwx2Q/exec';
-  function prayLoad(key) { try { return JSON.parse(localStorage.getItem(key)||'[]'); } catch { return []; } }
-  function praySave(key, arr) { try { localStorage.setItem(key, JSON.stringify(arr.slice(0,30))); } catch {} }
+  // 중보기도 저장/렌더 (두 곳 공통)
+  function prayLoad(key) { try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; } }
+  function praySave(key, arr) { try { localStorage.setItem(key, JSON.stringify(arr.slice(0, 30))); } catch { } }
   function prayRender(listId, key) {
     const el = document.getElementById(listId);
     if (!el) return;
@@ -2492,7 +2455,7 @@ section{padding:100px 0}
     praySave(key, arr); prayRender(listId, key);
     document.getElementById(textId).value = '';
     // 구글시트 저장
-    if (PRAY_GAS_URL) fetch(PRAY_GAS_URL, { method:'POST', mode:'no-cors',
+    if (GAS_API_URL) fetch(GAS_API_URL, { method:'POST', mode:'no-cors',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ name, text, time, date: now.toISOString(), type: key })
     }).catch(()=>{});
@@ -2566,36 +2529,25 @@ section{padding:100px 0}
 
   async function loadAlbumPhotos(key, limit = 12) {
     const cfg = ALBUM_CONFIG[key];
-    if (!cfg) return;
+    if (!cfg || !GAS_API_URL) return;
     const grid = document.getElementById(cfg.gridId);
     if (!grid) return;
 
-    const folderUrl = `https://drive.google.com/embeddedfolderview?id=${cfg.folderId}#grid`;
-    let html = '';
-    for (const px of ALBUM_PROXIES) {
-      try {
-        const res = await fetch(px + encodeURIComponent(folderUrl), { signal: AbortSignal.timeout(10000) });
-        if (res.ok) { html = await res.text(); break; }
-      } catch {}
+    try {
+      const r = await fetch(`${GAS_API_URL}?action=listFiles&folderId=${cfg.folderId}`);
+      const json = await r.json();
+      if (json.result === 'success' && json.files.length) {
+        const ids = json.files.map(f => f.id);
+        _albumState[key] = { ids, shown: 0, limit };
+        renderAlbumPage(key);
+        const footer = document.getElementById(cfg.footerId);
+        if (footer) footer.style.display = ids.length > limit ? 'block' : 'none';
+        return;
+      }
+    } catch (err) {
+      console.warn('[Album] API 로드 실패:', err.message);
     }
-    if (!html) {
-      grid.innerHTML = `<div class="photo-loading"><a href="https://drive.google.com/drive/folders/${cfg.folderId}" target="_blank" style="color:var(--blue)"><i class="fab fa-google-drive"></i> Drive에서 보기</a></div>`;
-      return;
-    }
-
-    // Extract file IDs from folder HTML
-    const ids = [...new Set([...html.matchAll(/\/file\/d\/([a-zA-Z0-9_-]{10,})\//g)].map(m => m[1]))];
-    if (!ids.length) {
-      // fallback: try id= pattern
-      const ids2 = [...new Set([...html.matchAll(/[?&]id=([a-zA-Z0-9_-]{10,})/g)].map(m => m[1]))];
-      ids.push(...ids2);
-    }
-
-    _albumState[key] = { ids, shown: 0, limit };
-    renderAlbumPage(key);
-
-    const footer = document.getElementById(cfg.footerId);
-    if (footer) footer.style.display = ids.length > limit ? 'block' : 'none';
+    grid.innerHTML = `<div class="photo-loading"><a href="https://drive.google.com/drive/folders/${cfg.folderId}" target="_blank" style="color:var(--blue)"><i class="fab fa-google-drive"></i> Drive에서 보기</a></div>`;
   }
 
   function renderAlbumPage(key) {
