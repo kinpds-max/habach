@@ -3161,28 +3161,32 @@
 
     .music-title-bar {
       position: fixed;
-      bottom: 86px;
-      left: 20px;
+      bottom: 92px; /* music(28) + btn(48) + gap(16) */
+      left: 44px; /* music_left(20) + button_center(24) */
       z-index: 899;
-      background: rgba(8, 15, 42, 0.88);
+      background: rgba(8, 15, 42, 0.92);
       backdrop-filter: blur(12px);
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 0.75rem;
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--gold-light);
+      font-size: 0.72rem;
+      font-weight: 700;
       padding: 6px 14px;
       border-radius: 20px;
       white-space: nowrap;
-      max-width: 220px;
+      max-width: 250px;
       overflow: hidden;
       text-overflow: ellipsis;
       opacity: 0;
-      transform: translateX(-10px);
-      transition: opacity 0.3s, transform 0.3s;
-      pointer-events: none
+      transform: translate(-50%, 10px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      pointer-events: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.15);
     }
 
     .music-title-bar.show {
       opacity: 1;
-      transform: translateX(0)
+      transform: translate(-50%, 0);
     }
 
     .float-bar {
