@@ -5,6 +5,7 @@
 
 const SHEET_ID = '16L7P-3hQKwKgVMDEvewZYzejQxV5mVMp9el4lPICjYI';
 
+// POST 요청: 게시판 데이터 저장
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
@@ -49,9 +50,47 @@ function doPost(e) {
   }
 }
 
-// GET 테스트용
+/**
+ * GET 요청: 드라이브 API 연동 및 서비스 상태 확인
+ * ?action=listFiles&folderId=FOLDER_ID 형태로 호출 가능
+ */
 function doGet(e) {
+  const action = e.parameter.action;
+  const folderId = e.parameter.folderId;
+
+  // 정식 Drive API 연동: 파일 목록 조회
+  if (action === 'listFiles' && folderId) {
+    try {
+      const folder = DriveApp.getFolderById(folderId);
+      const files  = folder.getFiles();
+      const result = [];
+
+      while (files.hasNext()) {
+        const file = files.next();
+        // 삭제된 파일이나 원치않는 파일 제외 필터링 가능
+        result.push({
+          id: file.getId(),
+          name: file.getName(),
+          created: file.getDateCreated().toISOString(),
+          mimeType: file.getMimeType()
+        });
+      }
+
+      // 최신순 (파일명 기준 내림차순) 정렬
+      result.sort((a, b) => b.name.localeCompare(a.name));
+
+      return ContentService
+        .createTextOutput(JSON.stringify({ result: 'success', files: result }))
+        .setMimeType(ContentService.MimeType.JSON);
+
+    } catch (err) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ result: 'error', message: err.message }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
   return ContentService
-    .createTextOutput('하늘바람교회 GAS running! HRAD + 중보기도 통합 버전')
+    .createTextOutput('하늘바람교회 GAS API 서비스가 정상 작동 중입니다! (Action: ' + (action||'none') + ')')
     .setMimeType(ContentService.MimeType.TEXT);
 }

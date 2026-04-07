@@ -394,10 +394,178 @@ section{padding:100px 0}
         </p>
       </div>
 
-      <!-- 작성 중 안내 -->
-      <p style="color:rgba(255,255,255,0.75);text-align:center;font-size:1.05rem;padding:48px 0;letter-spacing:0.04em" data-aos="fade-up" data-aos-delay="100">
-        ✍️ 교회 역사 내용을 작성 중입니다
-      </p>
+      <!-- 교회 역사 세로 타임라인 -->
+      <style>
+        .history-timeline {
+          position: relative;
+          max-width: 800px;
+          margin: 60px auto 0;
+          padding: 20px 0;
+        }
+        .history-timeline::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 100px;
+          width: 2px;
+          background: rgba(255,255,255,0.15);
+        }
+        .ht-item {
+          display: flex;
+          align-items: flex-start;
+          margin-bottom: 50px;
+          position: relative;
+          z-index: 1;
+        }
+        .ht-item:last-child {
+          margin-bottom: 0;
+        }
+        .ht-step {
+          width: 100px;
+          flex-shrink: 0;
+          text-align: right;
+          padding-right: 30px;
+          font-family: var(--font-serif);
+          font-weight: 700;
+          font-size: 1.1rem;
+          color: rgba(255,255,255,0.4);
+          position: relative;
+          top: 4px;
+        }
+        /* Item Dot */
+        .ht-item::before {
+          content: "";
+          position: absolute;
+          left: 95px;
+          top: 9px;
+          width: 12px;
+          height: 12px;
+          background: var(--navy);
+          border: 2px solid var(--gold);
+          border-radius: 50%;
+          z-index: 2;
+          box-shadow: 0 0 0 4px rgba(15,32,68,1);
+        }
+        .ht-content {
+          background: rgba(255,255,255,0.04);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 12px;
+          padding: 24px 32px;
+          flex: 1;
+          margin-left: 30px;
+          transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .ht-content:hover {
+          background: rgba(255,255,255,0.08);
+          transform: translateY(-3px);
+        }
+        .ht-content h3 {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: var(--white);
+          margin-bottom: 8px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .ht-content p {
+          color: rgba(255,255,255,0.7);
+          font-size: 0.95rem;
+          line-height: 1.6;
+        }
+        /* 현재 위치 하이라이트 */
+        .ht-item.current .ht-step {
+          color: var(--gold);
+          font-size: 1.3rem;
+        }
+        .ht-item.current::before {
+          background: var(--gold);
+          box-shadow: 0 0 0 4px rgba(201,168,76,0.2);
+        }
+        .ht-item.current .ht-content {
+          background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(201,168,76,0.02));
+          border-color: rgba(201,168,76,0.4);
+        }
+        .ht-item.current .ht-content h3 {
+          color: var(--gold-light);
+        }
+        .ht-badge {
+          background: var(--gold);
+          color: var(--navy);
+          font-size: 0.75rem;
+          padding: 2px 8px;
+          border-radius: 20px;
+          font-weight: 800;
+          vertical-align: middle;
+          margin-left: 6px;
+        }
+        @media(max-width: 768px) {
+          .history-timeline::before { left: 24px; }
+          .ht-step { width: auto; font-size: 0.9rem; position: absolute; left: 45px; top: -20px; text-align: left; padding: 0; }
+          .ht-item::before { left: 19px; top: 0; }
+          .ht-item { margin-bottom: 60px; display: block; }
+          .ht-content { margin-left: 45px; padding: 20px; margin-top: 5px; }
+          .ht-item.current .ht-step { font-size: 1rem; }
+        }
+      </style>
+
+      <div class="history-timeline" data-aos="fade-up" data-aos-delay="100">
+        <!-- Step 01 -->
+        <div class="ht-item">
+          <div class="ht-step">STEP 01</div>
+          <div class="ht-content">
+            <h3>🔗 교회 통합</h3>
+            <p>하늘바람 성결교회와 성은 장로교회가 통합</p>
+          </div>
+        </div>
+
+        <!-- Step 02 -->
+        <div class="ht-item">
+          <div class="ht-step">STEP 02</div>
+          <div class="ht-content">
+            <h3>⛪ 걸포 북변예배당 이전</h3>
+            <p>김포시 걸포동 북변지구 예배당 마련</p>
+          </div>
+        </div>
+
+        <!-- Step 03: 미션브릿지 설립 -->
+        <div class="ht-item">
+          <div class="ht-step">STEP 03</div>
+          <div class="ht-content">
+            <h3>🕊️ 미션브릿지 설립</h3>
+            <p>선교와 나눔의 지경을 넓히는 사역의 시작</p>
+          </div>
+        </div>
+
+        <!-- Step 04 -->
+        <div class="ht-item">
+          <div class="ht-step">STEP 04</div>
+          <div class="ht-content">
+            <h3>📍 도사리예배당 이전</h3>
+            <p>성장하는 공동체를 위해 더 넓은 예배당으로</p>
+          </div>
+        </div>
+
+        <!-- 현재: 운양동 예배당 -->
+        <div class="ht-item current">
+          <div class="ht-step">현재</div>
+          <div class="ht-content">
+            <h3>💨 운양동예배당 이전 <span class="ht-badge">현 위치</span></h3>
+            <p>경기도 김포시 운양동 현재</p>
+          </div>
+        </div>
+
+        <!-- 이후: 미션브릿지 법인설립 -->
+        <div class="ht-item">
+          <div class="ht-step" style="font-size:0.85rem; letter-spacing:0.05em;">NEXT</div>
+          <div class="ht-content">
+            <h3>🌐 미션브릿지 법인설립</h3>
+            <p>사역의 구체화 및 법적 기반 구축</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 

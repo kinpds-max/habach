@@ -18,10 +18,11 @@ const YT = (() => {
 
   /* ─── 예배 분류 키워드 ─── */
   const CATEGORIES = {
-    sunday:    { label: '주일예배', keywords: ['주일','다윗의 예배','다윗의예배','시편의 예배','스몰 예배','주일설교'] },
-    dawn:      { label: '새벽예배', keywords: ['새벽','새벽예배','촛불새벽','새벽기도'] },
-    wednesday: { label: '수요예배', keywords: ['수요','수요예배','성경예배','수요 예배'] },
-    friday:    { label: '금요예배', keywords: ['금요','금요예배','강청기도','금요기도','금요 예배'] },
+    sermon3:   { label: '3분설교',    keywords: ['3분설교','[3분설교]'] },
+    sunday:    { label: '주일예배',   keywords: ['주일','다윗의 예배','다윗의예배','시편의 예배','스몰 예배','주일설교'] },
+    dawn:      { label: '새벽예배',   keywords: ['새벽','새벽예배','촛불새벽','새벽기도'] },
+    wednesday: { label: '수요예배',   keywords: ['수요','수요예배','성경예배','수요 예배'] },
+    friday:    { label: '금요예배',   keywords: ['금요','금요예배','강청기도','금요기도','금요 예배'] },
   };
 
   /* ─── 프록시 폴백 fetch ─── */
@@ -29,7 +30,7 @@ const YT = (() => {
     for (const proxy of PROXIES) {
       try {
         const res = await fetch(proxy + encodeURIComponent(url), {
-          signal: AbortSignal.timeout(9000),
+          signal: AbortSignal.timeout(12000),
         });
         if (res.ok) return await res.text();
       } catch { /* 다음 프록시 */ }
@@ -53,7 +54,6 @@ const YT = (() => {
 
   /* ══════════════════════════════════════════
      1. RSS 파싱 → 16:9 예배 영상 (isShorts=false만)
-     /shorts/ URL이 있으면 숏폼으로 분리, 예배탭에서 제외
      ══════════════════════════════════════════ */
   function parseRSS(xml) {
     const doc = new DOMParser().parseFromString(xml, 'text/xml');
@@ -69,42 +69,50 @@ const YT = (() => {
   }
 
   /* ══════════════════════════════════════════
-     2. /shorts 페이지 크롤링 → 9:16 숏폼 전용
-     ytInitialData JSON에서 videoId 추출
+     2-3. 플레이리스트 페이지 크롤링 (금요강청 등 특정 순서 유지용)
      ══════════════════════════════════════════ */
-  async function fetchShortsPage(limit = 10) {
+  async function fetchPlaylistPage(playlistId, category, limit = 30) {
     try {
-      const html    = await proxyFetch(SHORTS_PAGE);
-      const matches = [...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)];
-      const ids     = [...new Set(matches.map(m => m[1]))].slice(0, limit);
+      const url = `https://www.youtube.com/playlist?list=${playlistId}`;
+      const html = await proxyFetch(url);
+      const m = html.match(/var ytInitialData\s*=\s*(\{.+?\});/s);
+      if (!m) return [];
 
-      // 각 videoId의 제목을 썸네일 oEmbed로 가져오기 (선택) — 일단 빈 제목
-      return ids.map(videoId => ({
-        videoId,
-        title:    '',   // 아래 fetchTitles()에서 채움
-        pubDate:  '',
-        isShorts: true,
-        category: 'shorts',
-      }));
-    } catch {
-      return [];
-    }
+      const data = JSON.parse(m[1]);
+      const items = [];
+      JSON.stringify(data, (k, v) => {
+        if (k === 'playlistVideoRenderer' && v?.videoId) {
+          const title = v.title?.runs?.[0]?.text || '';
+          items.push({
+            videoId: v.videoId,
+            title: title,
+            pubDate: '', // UI 스크래핑 시 날짜 보완은 fetchTitles에서 처리
+            isShorts: false,
+            category: category || classify(title)
+          });
+        }
+        return v;
+      });
+      return items.slice(0, limit);
+    } catch { return []; }
   }
 
   /* ══════════════════════════════════════════
-     3. oEmbed로 제목 일괄 보완 (병렬)
+     3. oEmbed로 제목/날짜 일괄 보완 (병렬)
      ══════════════════════════════════════════ */
   async function fetchTitles(videos) {
     await Promise.allSettled(videos.map(async v => {
-      if (v.title) return;
+      if (v.title && v.pubDate) return;
       try {
         const url  = `https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v=${v.videoId}`;
         const res  = await fetch(PROXIES[0] + encodeURIComponent(url), { signal: AbortSignal.timeout(5000) });
         if (res.ok) {
           const j = await res.json();
-          v.title = j.title || '';
+          if (!v.title) v.title = j.title || '';
+          // oEmbed에는 pubDate가 없으므로 fetchVideosPage나 RSS에서 가져온 정보를 우선함
+          v.category = classify(v.title);
         }
-      } catch { /* 제목 없이 표시 */ }
+      } catch { /* 실패 시 유지 */ }
     }));
     return videos;
   }
@@ -143,7 +151,7 @@ const YT = (() => {
       <div class="video-info">
         <span class="video-category">${catInfo.label}</span>
         <p class="video-title">${v.title || catInfo.label}</p>
-        <span class="video-date">${fmt(v.pubDate)}</span>
+        <span class="video-date">${v.pubDate || ''}</span>
       </div>`;
     card.addEventListener('click', () => openModal(v.videoId));
     return card;
@@ -162,7 +170,7 @@ const YT = (() => {
       </div>
       <div class="shorts-info">
         <p class="shorts-title">${v.title || 'Shorts'}</p>
-        <span class="shorts-date">${fmt(v.pubDate)}</span>
+        <span class="shorts-date">${v.pubDate || ''}</span>
       </div>`;
     card.addEventListener('click', () => openModal(v.videoId));
     return card;
@@ -177,7 +185,7 @@ const YT = (() => {
     if (!list.length) {
       grid.innerHTML = `<div class="video-empty">
         <i class="fas fa-film" style="font-size:2rem;opacity:.3;display:block;margin-bottom:12px"></i>
-        해당 예배 영상이 준비 중입니다</div>`;
+        해당 영상이 준비 중입니다</div>`;
       return;
     }
     list.forEach(v => grid.appendChild(createCard(v)));
@@ -212,41 +220,61 @@ const YT = (() => {
      ══════════════════════════════════════════ */
   async function init() {
     try {
-      /* ① RSS + Shorts 페이지 병렬 fetch */
-      const [rssText, shortsFromPage] = await Promise.all([
+      /* ① RSS + Shorts 페이지 + Videos 페이지 + 금요강청 플레이리스트 병렬 fetch */
+      const [rssText, shortsFromPage, videosFromPage, fridayPlaylist] = await Promise.allSettled([
         proxyFetch(RSS_URL),
         fetchShortsPage(10),
+        fetchVideosPage(30),
+        fetchPlaylistPage('PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx', 'friday', 30),
       ]);
 
-      const rssVideos = parseRSS(rssText);
+      const rssVideos = rssText.status === 'fulfilled' ? parseRSS(rssText.value) : [];
+      const sPage     = shortsFromPage.status === 'fulfilled' ? shortsFromPage.value : [];
+      const vPage     = videosFromPage.status === 'fulfilled' ? videosFromPage.value : [];
+      const fPage     = fridayPlaylist.status === 'fulfilled' ? fridayPlaylist.value : [];
 
-      /* ② 16:9 예배 영상 (RSS에서 Shorts 완전 제외) */
-      const normals   = rssVideos.filter(v => !v.isShorts);
-      const sunday    = normals.filter(v => v.category === 'sunday');
-      const dawn      = normals.filter(v => v.category === 'dawn');
-      const wednesday = normals.filter(v => v.category === 'wednesday');
-      const friday    = normals.filter(v => v.category === 'friday');
+      /* ② 전체 합산 및 중복 제거 (최신순 유지 위해 vPage를 앞에) */
+      const allNormals = [...vPage, ...rssVideos.filter(v => !v.isShorts)];
+      const uniqueNormals = [];
+      const normalIds = new Set();
+      
+      // 중복 제거 및 금요강청 플레이리스트 병합
+      const mergedNormals = [...fPage, ...allNormals];
+      mergedNormals.forEach(v => {
+        if (!normalIds.has(v.videoId)) {
+          normalIds.add(v.videoId);
+          uniqueNormals.push(v);
+        }
+      });
 
-      /* ③ 9:16 숏폼: RSS 숏폼 + /shorts 페이지 합산, 중복 제거 */
+      /* ③ 카테고리별 분류 */
+      const sermon3   = uniqueNormals.filter(v => v.category === 'sermon3');
+      const sunday    = uniqueNormals.filter(v => v.category === 'sunday');
+      const dawn      = uniqueNormals.filter(v => v.category === 'dawn');
+      const wednesday = uniqueNormals.filter(v => v.category === 'wednesday');
+      const friday    = uniqueNormals.filter(v => v.category === 'friday');
+
+      /* ④ 9:16 숏폼 합산 */
       const rssShorts  = rssVideos.filter(v => v.isShorts);
-      const rssIds     = new Set(rssShorts.map(v => v.videoId));
-      const pageShorts = shortsFromPage.filter(v => !rssIds.has(v.videoId));
-      const allShorts  = [...rssShorts, ...pageShorts];
+      const rssIds      = new Set(rssShorts.map(v => v.videoId));
+      const allShorts   = [...rssShorts, ...sPage.filter(v => !rssIds.has(v.videoId))];
 
-      /* ④ 즉시 렌더 (빠른 표시) */
+      /* ⑤ 즉시 렌더 */
+      renderGrid('grid-sermon3',   sermon3,    3);
       renderGrid('grid-sunday',    sunday,     3);
       renderGrid('grid-dawn',      dawn,       3);
       renderGrid('grid-wednesday', wednesday,  3);
       renderGrid('grid-friday',    friday,     3);
-      renderShorts(allShorts,                  5); /* 모바일에서는 CSS로 4개 표시 */
+      renderShorts(allShorts,                  5); 
 
-      /* ⑤ 숏폼 제목 보완 (비동기 백그라운드) */
-      if (pageShorts.length) {
-        fetchTitles(pageShorts).then(() => renderShorts(allShorts, 5)); /* 모바일 CSS로 4개 제한 */
+      /* ⑥ 제목 없는 영상(쇼츠 등) 보완 */
+      if (sPage.length) {
+        fetchTitles(allShorts).then(() => renderShorts(allShorts, 5));
       }
 
-      /* ⑥ 예배 카테고리 부족 시 채널 검색으로 보완 */
+      /* ⑦ 부족한 카테고리 검색으로 보완 */
       [
+        { arr: sermon3,   key: '3분설교',  id: 'grid-sermon3' },
         { arr: sunday,    key: '주일예배',  id: 'grid-sunday' },
         { arr: dawn,      key: '새벽예배',  id: 'grid-dawn' },
         { arr: wednesday, key: '수요예배',  id: 'grid-wednesday' },
