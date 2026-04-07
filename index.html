@@ -1458,6 +1458,21 @@
 
     .mission-wrap::after {
       content: '';
+    }
+
+    /* 주보 모바일 여백 수정 */
+    .bflip-viewer .swiper-slide {
+      background: #fff !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .bflip-viewer .swiper-slide img {
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
       position: absolute;
       top: -50%;
       left: -50%;
@@ -5592,7 +5607,7 @@
 
         <!-- HRAD 패널 -->
         <div class="hrad-tab-panel active" id="hrad-panel">
-          <p style="font-size:0.82rem;color:var(--gray);margin-bottom:16px">성도님들이 자유롭게 소식을 나누는 공간입니다</p>
+          <p style="font-size:0.82rem;color:var(--gray);margin-bottom:16px">성도님들의 HRAD 나눔을 자유롭게 나누는 공간입니다. 한줄 나눔이나 했어요도 좋습니다.</p>
           <div class="hrad-body">
             <div class="hrad-form-row">
               <input type="text" id="hradName" class="hrad-input-name" placeholder="이름 (익명 가능)" maxlength="20" />
@@ -5661,7 +5676,7 @@
         <button class="tab-btn" data-tab="wednesday-videos">수요예배</button>
         <button class="tab-btn" data-tab="friday-videos">금요예배</button>
         <button class="tab-btn" data-tab="david-videos"><i class="fas fa-music"></i> 다윗의찬양</button>
-        <button class="tab-btn" data-tab="bridge-videos"><i class="fas fa-music"></i> 브릿지찬양대</button>
+        <button class="tab-btn" data-tab="bridge-videos"><i class="fas fa-satellite-dish"></i> 미션브릿지</button>
         <button class="tab-btn" data-tab="shorts-videos"><i class="fas fa-mobile-alt"></i> 숏폼모음</button>
       </div>
 
@@ -5715,9 +5730,9 @@
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-friday" data-playlist="PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx"
+          <button class="btn-expand" data-grid="grid-friday" data-playlist="PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re"
             data-cat="friday"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
-          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx" target="_blank"
+          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re" target="_blank"
             class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
@@ -5737,9 +5752,9 @@
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-bridge" data-playlist="PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf"
+          <button class="btn-expand" data-grid="grid-bridge" data-playlist="PLmD7ZicLdWIpCvLBIHgm-c5Al-sh5pi9Y"
             data-cat="bridge"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
-          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf" target="_blank"
+          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIpCvLBIHgm-c5Al-sh5pi9Y" target="_blank"
             class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
@@ -6029,7 +6044,7 @@
           <!-- 미션 브릿지 영상 미리보기 (추가) -->
           <div class="mission-video-preview" style="margin-top: 48px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 32px;">
             <h3 style="color:var(--gold); font-family:var(--font-serif); font-size:1.2rem; margin-bottom:20px; text-align:center;">
-              <i class="fab fa-youtube" style="margin-right:8px;"></i> 브릿지 찬양 영상
+              <i class="fab fa-youtube" style="margin-right:8px;"></i> 미션브릿지 기도요청 영상
             </h3>
             <div class="video-grid" id="grid-mission-bridge" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
               <div class="video-loading" style="color:rgba(255,255,255,0.5); grid-column: 1/-1;">
@@ -6263,15 +6278,27 @@
       hradSave(posts);
       hradRender();
       if (document.getElementById('hradText')) document.getElementById('hradText').value = '';
+      
+      // 알림톡/티커 즉시 반영을 위해 페이지 새로고침 없이 티커 업데이트 시도
+      updateTickerWithNewPost(name, text);
       /* 구글시트에도 저장 (취소할 수 있음) */
       if (HRAD_GAS_URL && HRAD_GAS_URL !== 'PASTE_YOUR_GAS_WEB_APP_URL_HERE') {
         fetch(HRAD_GAS_URL, {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, text, time, date: new Date().toISOString() })
-        }).catch(() => { }); // 오류시 조용히 무시
+          body: JSON.stringify({ name, text, time, date: new Date().toISOString(), type: 'HRAD' })
+        }).catch(() => { }); 
       }
+    }
+
+    function updateTickerWithNewPost(name, text) {
+      const ticker = document.getElementById('tickerContent');
+      if (!ticker) return;
+      const newItem = document.createElement('span');
+      newItem.className = 'ticker-item ticker-new';
+      newItem.innerHTML = `<i class="fas fa-bullhorn"></i> [실시간] ${_escHtml(name)}님: ${_escHtml(text)}`;
+      ticker.prepend(newItem);
     }
     function hradDelete(idx) {
       if (!confirm('이 게시글을 삭제할까요?')) return;
@@ -6299,7 +6326,7 @@
     function _bflipInit(files) {
       const seen = new Set();
       const unique = files.filter(f => { if (seen.has(f.id)) return false; seen.add(f.id); return true; });
-      _bflipItems = unique.sort((a, b) => _bflipSortNum(a.name) - _bflipSortNum(b.name));
+      _bflipItems = unique.sort((a, b) => b.name.localeCompare(a.name));
       
       const wrapper = document.getElementById('bflipWrapper');
       const dotsEl = document.getElementById('bflipDots');
@@ -6314,7 +6341,9 @@
       wrapper.innerHTML = _bflipItems.map(f => `
         <div class="swiper-slide">
           <img src="https://drive.google.com/thumbnail?id=${f.id}&sz=w1200" alt="${f.name}" 
-               onload="this.parentElement.classList.add('loaded')">
+               onload="this.parentElement.classList.add('loaded')"
+               onclick="openBulletinPreview('${f.id}','${_escHtml(f.name)}')"
+               style="cursor:zoom-in; background:#fff; object-fit:contain; max-height:100%;">
         </div>
       `).join('');
 
@@ -6322,6 +6351,9 @@
       if (toolbar) toolbar.style.visibility = 'visible';
       if (counter) counter.textContent = `1 / ${_bflipItems.length}`;
       if (extLink) extLink.href = `https://drive.google.com/file/d/${_bflipItems[0].id}/view`;
+      
+      // 최신 주보 자동 팝업 또는 강조 (선택사항)
+      // _bflipItems[0] 이 최신임 (sort 시 고려)
 
       // 도트 생성
       if (dotsEl) {
@@ -6485,10 +6517,10 @@
     const YT = (() => {
       const CHANNEL_ID = 'UCzQ6kPUzNNbU3EtJI5X1mhQ';
       const PL = {
-        friday: 'PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx',
+        friday: 'PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re',
         davidPraise: 'PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re',
         davidWorship: 'PLmD7ZicLdWIr1pf1o7elRvmMNcylM6N4X',
-        bridge: 'PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf',
+        bridge: 'PLmD7ZicLdWIpCvLBIHgm-c5Al-sh5pi9Y',
       };
       const CATEGORIES = {
         sermon3: { label: '3분설교', keywords: ['3분설교', '[3분설교]'] },
@@ -6497,7 +6529,7 @@
         dawn: { label: '새벽예배', keywords: ['새벽예배', '새벽기도', '촛불새벽', '새벽'] },
         wednesday: { label: '수요예배', keywords: ['수요성경예배', '수요성경', '수요예배', '수요 예배', '성경예배', '수요기도', '수요'] },
         friday: { label: '금요예배', keywords: ['금요기도회', '강청기도', '금요예배', '금요 예배', '금요기도', '금요'] },
-        bridge: { label: '브릿지찬양대', keywords: ['브릿지찬양대', '브릿지 찬양대', '브릿지'] },
+        bridge: { label: '미션브릿지 기도요청', keywords: ['미션브릿지', '미션 브릿지', '기도요청'] },
       };
       function classify(title) {
         for (const [key, cat] of Object.entries(CATEGORIES))
@@ -6561,37 +6593,36 @@
           for (const proxy of [
             u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
             u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+            u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
           ]) {
             try {
               const r = await fetch(proxy(url), { signal: AbortSignal.timeout(15000) });
               if (!r.ok) continue;
               html = await r.text();
-              if (html && html.length > 20000) break;
+              const m = html.match(/ytInitialData\s*=\s*(\{.+?\});/) || html.match(/var ytInitialData\s*=\s*(\{.+?\});/);
+              if (m) break;
             } catch { }
           }
           if (!html) return [];
-          const m = html.match(/var ytInitialData\s*=\s*(\{.+?\});\s*<\/script>/s)
-            || html.match(/ytInitialData\s*=\s*(\{.+?\});/s);
+          const m = html.match(/ytInitialData\s*=\s*(\{.+?\});/) || html.match(/var ytInitialData\s*=\s*(\{.+?\});/);
           if (!m) return [];
           const data = JSON.parse(m[1]);
           const items = [];
           JSON.stringify(data, (k, v) => {
             if (k === 'playlistVideoRenderer' && v?.videoId) {
-              const title = v.title?.runs?.[0]?.text || '';
+              const t = v.title?.runs?.[0]?.text || '';
               if (!items.find(it => it.videoId === v.videoId)) {
                 items.push({
-                  videoId: v.videoId,
-                  title: title,
+                  videoId: v.videoId, title: t,
                   pubDate: v.videoInfo?.runs?.[0]?.text || '', 
-                  isShorts: false,
-                  category: category || classify(title)
+                  isShorts: false, category: category || classify(t)
                 });
               }
             }
             return v;
           });
           return items.slice(0, limit);
-        } catch (e) { console.warn('[YT] Playlist Scrape Error:', e); return []; }
+        } catch (e) { console.warn('[YT] Scrape Error:', e); return []; }
       }
 
       function createCard(v) {
@@ -6684,33 +6715,44 @@
           if (g) g.innerHTML = `<div class="video-empty" style="grid-column:1/-1;padding:40px 20px;text-align:center"><i class="fab fa-youtube" style="font-size:2.5rem;color:#ff0000;margin-bottom:12px;display:block"></i><p>영상을 불러올 수 없습니다</p><p style="font-size:0.8rem;opacity:0.6;margin-top:8px">잠시 후 다시 시도해주세요</p></div>`;
         };
         try {
-          /* 병렬 데이터 수집: RSS(일반) + 플레이리스트 직접 스크래핑(중요 카테고리) */
-          const [channelVs, fridayVs, davidVs, worshipVs, bridgeVs] = await Promise.all([
+          /* 병렬 데이터 수집 (안전한 RSS + 풍부한 Scrape 병행) */
+          const [channelVs, fPr, dPr, wPr, bPr] = await Promise.all([
             fetchChannelRSS().catch(() => []),
-            fetchPlaylistPage(PL.friday, 'friday', 12).catch(() => []),
-            fetchPlaylistPage(PL.davidPraise, 'david', 12).catch(() => []), 
-            fetchPlaylistPage(PL.davidWorship, 'sunday', 12).catch(() => []),
-            fetchPlaylistPage(PL.bridge, 'bridge', 12).catch(() => []),
+            fetchPlaylistPage(PL.friday, 'friday', 12),
+            fetchPlaylistPage(PL.davidPraise, 'david', 12), 
+            fetchPlaylistPage(PL.davidWorship, 'sunday', 12),
+            fetchPlaylistPage(PL.bridge, 'bridge', 12),
+          ]);
+
+          /* Scrape 실패 시 RSS로 다시 시도 (안전 장치) */
+          const ensureVideos = async (scraped, plId, cat) => {
+            if (scraped && scraped.length > 0) return scraped;
+            const rss = await fetchPlaylistRSS(plId, cat).catch(() => ({ videos: [] }));
+            return rss.videos || [];
+          };
+
+          const [fVs, dVs, wVs, bVs] = await Promise.all([
+            ensureVideos(fPr, PL.friday, 'friday'),
+            ensureVideos(dPr, PL.davidPraise, 'david'),
+            ensureVideos(wPr, PL.davidWorship, 'sunday'),
+            ensureVideos(bPr, PL.bridge, 'bridge'),
           ]);
 
           const byDate = arr => arr.slice().sort((a, b) => new Date(b.pubDate || 0) - new Date(a.pubDate || 0));
-
-          /* 채널 최신 피드에서 분류 (RSS 폴백용) */
           const sermon3Vs = byDate(channelVs.filter(v => v.category === 'sermon3'));
           const dawnVs = byDate(channelVs.filter(v => v.category === 'dawn'));
           const wednesdayVs = byDate(channelVs.filter(v => v.category === 'wednesday'));
 
-          /* 각 그리드 초기화 및 렌더링 */
           const ig = window._initVideoGrid;
           if (ig) {
             ig('grid-sermon3', sermon3Vs, null);
             ig('grid-dawn', dawnVs, null);
             ig('grid-wednesday', wednesdayVs, null);
-            ig('grid-friday', fridayVs, null);   // 플레이리스트 스크래핑 결과 (최신순)
-            ig('grid-david', davidVs, null);     // 다윗의찬양 최신순
-            ig('grid-sunday', worshipVs, null);
-            ig('grid-bridge', bridgeVs, null);   // 미디어센터 - 브릿지탭
-            ig('grid-mission-bridge', bridgeVs, null); // 미션섹션 하단 - 브릿지영상
+            ig('grid-friday', fVs, null); 
+            ig('grid-david', dVs, null);
+            ig('grid-sunday', wVs, null);
+            ig('grid-bridge', bVs, null);
+            ig('grid-mission-bridge', bVs, null);
           }
         } catch (err) {
           console.warn('[YT]', err);
@@ -7158,6 +7200,11 @@
       arr.unshift({ name, text, time });
       praySave(key, arr); prayRender(listId, key);
       document.getElementById(textId).value = '';
+
+      // 티커 업데이트 
+      if (typeof updateTickerWithNewPost === 'function') {
+        updateTickerWithNewPost(name, `[${key}] ${text}`);
+      }
       // 구글시트 저장
       if (GAS_API_URL) fetch(GAS_API_URL, {
         method: 'POST', mode: 'no-cors',
@@ -7178,7 +7225,7 @@
     /* ===== 포토 앨범 로딩 (Google Drive) ===== */
     const ALBUM_CONFIG = {
       newMember: {
-        folderId: '1P0IK1qxds9XWNVBaU8ylV1HM-LdNJe3b',
+        folderId: '1HNSaFVn2HCANAjVem9xW8ukKuvr1Anb0',
         gridId: 'photoGridNewMember',
         footerId: 'photoFooterNewMember',
       },

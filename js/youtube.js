@@ -23,6 +23,7 @@ const YT = (() => {
     dawn:      { label: '새벽예배',   keywords: ['새벽','새벽예배','촛불새벽','새벽기도'] },
     wednesday: { label: '수요예배',   keywords: ['수요','수요예배','성경예배','수요 예배'] },
     friday:    { label: '금요예배',   keywords: ['금요','금요예배','강청기도','금요기도','금요 예배'] },
+    bridge:    { label: '미션브릿지', keywords: ['미션브릿지','기도요청'] },
   };
 
   /* ─── 프록시 폴백 fetch ─── */
@@ -90,6 +91,45 @@ const YT = (() => {
             isShorts: false,
             category: category || classify(title)
           });
+        }
+        return v;
+      });
+      return items.slice(0, limit);
+    } catch { return []; }
+  }
+
+  /* ══════════════════════════════════════════
+     2-4. 비디오/쇼츠 전체 페이지 크롤링
+     ══════════════════════════════════════════ */
+  async function fetchVideosPage(limit = 30) {
+    try {
+      const url = `https://www.youtube.com/channel/${CHANNEL_ID}/videos`;
+      const html = await proxyFetch(url);
+      const m = html.match(/var ytInitialData\s*=\s*(\{.+?\});/s);
+      if (!m) return [];
+      const data = JSON.parse(m[1]);
+      const items = [];
+      JSON.stringify(data, (k, v) => {
+        if (k === 'videoRenderer' && v?.videoId) {
+          const title = v.title?.runs?.[0]?.text || '';
+          items.push({ videoId: v.videoId, title, pubDate: v.publishedTimeText?.simpleText || '', isShorts: false, category: classify(title) });
+        }
+        return v;
+      });
+      return items.slice(0, limit);
+    } catch { return []; }
+  }
+
+  async function fetchShortsPage(limit = 10) {
+    try {
+      const html = await proxyFetch(SHORTS_PAGE);
+      const m = html.match(/var ytInitialData\s*=\s*(\{.+?\});/s);
+      if (!m) return [];
+      const data = JSON.parse(m[1]);
+      const items = [];
+      JSON.stringify(data, (k, v) => {
+        if (k === 'reelItemRenderer' && v?.videoId) {
+          items.push({ videoId: v.videoId, title: v.headline?.simpleText || '', pubDate: '', isShorts: true, category: 'shorts' });
         }
         return v;
       });
@@ -220,26 +260,28 @@ const YT = (() => {
      ══════════════════════════════════════════ */
   async function init() {
     try {
-      /* ① RSS + Shorts 페이지 + Videos 페이지 + 금요강청 플레이리스트 병렬 fetch */
-      const [rssText, shortsFromPage, videosFromPage, fridayPlaylist] = await Promise.allSettled([
+      /* ① RSS + Shorts 페이지 + Videos 페이지 + 금요강청 + 미션브릿지 병렬 fetch */
+      const [rssText, shortsFromPage, videosFromPage, fridayPlaylist, bridgePlaylist] = await Promise.allSettled([
         proxyFetch(RSS_URL),
         fetchShortsPage(10),
         fetchVideosPage(30),
-        fetchPlaylistPage('PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx', 'friday', 30),
+        fetchPlaylistPage('PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re', 'friday', 30),
+        fetchPlaylistPage('PLmD7ZicLdWIpCvLBIHgm-c5Al-sh5pi9Y', 'bridge', 30),
       ]);
 
       const rssVideos = rssText.status === 'fulfilled' ? parseRSS(rssText.value) : [];
       const sPage     = shortsFromPage.status === 'fulfilled' ? shortsFromPage.value : [];
       const vPage     = videosFromPage.status === 'fulfilled' ? videosFromPage.value : [];
       const fPage     = fridayPlaylist.status === 'fulfilled' ? fridayPlaylist.value : [];
+      const bPage     = bridgePlaylist.status === 'fulfilled' ? bridgePlaylist.value : [];
 
       /* ② 전체 합산 및 중복 제거 (최신순 유지 위해 vPage를 앞에) */
       const allNormals = [...vPage, ...rssVideos.filter(v => !v.isShorts)];
       const uniqueNormals = [];
       const normalIds = new Set();
       
-      // 중복 제거 및 금요강청 플레이리스트 병합
-      const mergedNormals = [...fPage, ...allNormals];
+      // 중복 제거 및 플레이리스트 병합
+      const mergedNormals = [...fPage, ...bPage, ...allNormals];
       mergedNormals.forEach(v => {
         if (!normalIds.has(v.videoId)) {
           normalIds.add(v.videoId);
@@ -253,6 +295,7 @@ const YT = (() => {
       const dawn      = uniqueNormals.filter(v => v.category === 'dawn');
       const wednesday = uniqueNormals.filter(v => v.category === 'wednesday');
       const friday    = uniqueNormals.filter(v => v.category === 'friday');
+      const bridge    = uniqueNormals.filter(v => v.category === 'bridge');
 
       /* ④ 9:16 숏폼 합산 */
       const rssShorts  = rssVideos.filter(v => v.isShorts);
@@ -265,6 +308,7 @@ const YT = (() => {
       renderGrid('grid-dawn',      dawn,       3);
       renderGrid('grid-wednesday', wednesday,  3);
       renderGrid('grid-friday',    friday,     3);
+      renderGrid('grid-bridge',    bridge,     3);
       renderShorts(allShorts,                  5); 
 
       /* ⑥ 제목 없는 영상(쇼츠 등) 보완 */
@@ -279,6 +323,7 @@ const YT = (() => {
         { arr: dawn,      key: '새벽예배',  id: 'grid-dawn' },
         { arr: wednesday, key: '수요예배',  id: 'grid-wednesday' },
         { arr: friday,    key: '금요예배',  id: 'grid-friday' },
+        { arr: bridge,    key: '미션브릿지', id: 'grid-bridge' },
       ].forEach(async ({ arr, key, id }) => {
         if (arr.length < 3) {
           const filled = await fillCategory(arr, key, 3);
