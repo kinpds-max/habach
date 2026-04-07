@@ -5448,10 +5448,10 @@
       <!-- Church Intro Video Tabs -->
       <div class="church-intro-tabs-wrap" data-aos="fade-up" data-aos-delay="50" style="margin-bottom: 70px;">
         <div class="intro-video-tabs">
-          <button class="intro-tab-btn active" onclick="switchIntroVideo('k-Q5Wjq7uPM', this)">시설영상</button>
-          <button class="intro-tab-btn" onclick="switchIntroVideo('QDiuCMbU6QA', this)">교회란?</button>
-          <button class="intro-tab-btn" onclick="switchIntroVideo('1aFKsdp6Tbs', this)">문고리챌린지</button>
-          <button class="intro-tab-btn" onclick="switchIntroVideo('HCOmPxGr1pQ', this)">위대한 응원</button>
+          <button type="button" class="intro-tab-btn active" onclick="switchIntroVideo('k-Q5Wjq7uPM', this, event)">시설영상</button>
+          <button type="button" class="intro-tab-btn" onclick="switchIntroVideo('QDiuCMbU6QA', this, event)">교회란?</button>
+          <button type="button" class="intro-tab-btn" onclick="switchIntroVideo('1aFKsdp6Tbs', this, event)">문고리챌린지</button>
+          <button type="button" class="intro-tab-btn" onclick="switchIntroVideo('HCOmPxGr1pQ', this, event)">위대한 응원</button>
         </div>
         <div class="civ-wrap">
           <iframe id="introMainPlayer" src="https://www.youtube.com/embed/k-Q5Wjq7uPM?rel=0" title="하늘바람교회 소개영상" frameborder="0"
@@ -5496,9 +5496,10 @@
         }
       </style>
       <script>
-        function switchIntroVideo(id, btn) {
+        function switchIntroVideo(id, btn, e) {
+          if (e) e.preventDefault();
           const player = document.getElementById('introMainPlayer');
-          if(player) player.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+          if(player) player.src = `https://www.youtube.com/embed/${id}?rel=0`;
           document.querySelectorAll('.intro-tab-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
         }
@@ -5730,6 +5731,7 @@
         <button class="tab-btn" data-tab="friday-videos">금요예배</button>
         <button class="tab-btn" data-tab="david-videos"><i class="fas fa-music"></i> 다윗의찬양</button>
         <button class="tab-btn" data-tab="bridge-videos"><i class="fas fa-music"></i> 브릿지 찬양대</button>
+        <button class="tab-btn" data-tab="event-videos"><i class="fas fa-video"></i> 행사영상</button>
         <button class="tab-btn" data-tab="shorts-videos"><i class="fas fa-mobile-alt"></i> 숏폼모음</button>
       </div>
 
@@ -5808,6 +5810,17 @@
           <button class="btn-expand" data-grid="grid-bridge" data-playlist="PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf"
             data-cat="bridge"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
           <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf" target="_blank"
+            class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
+        </div>
+      </div>
+      <div id="event-videos" class="video-panel">
+        <div class="video-grid" id="grid-event">
+          <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <div class="panel-actions">
+          <button class="btn-expand" data-grid="grid-event" data-playlist="PLmD7ZicLdWIogu1FRwzVeQEl5u65ergLO"
+            data-cat="event"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
+          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIogu1FRwzVeQEl5u65ergLO" target="_blank"
             class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
@@ -6193,35 +6206,35 @@
           <p class="footer-verse">"홀연히 하늘로부터 급하고 강한 바람 같은<br>소리가 있어" — 사도행전 2:2</p>
         </div>
         <div class="footer-links">
-          <h4>바로가기</h4>
-          <ul>
-            <li><a href="#worship">예배안내</a></li>
-            <li><a href="#media">미디어</a></li>
-            <li><a href="#blog">말씀나눔</a></li>
-            <li><a href="#community">커뮤니티</a></li>
-            <li><a href="#contact">오시는길</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h4>외부 채널</h4>
-          <ul>
-            <li><a href="https://www.youtube.com/@Gimpo_HBC" target="_blank"><i class="fab fa-youtube"></i> 유튜브 채널</a>
-            </li>
-            <li><a href="https://blog.naver.com/habachurch" target="_blank"><i class="fas fa-blog"></i> 네이버 블로그</a></li>
-            <li><a href="https://cafe.naver.com/haneulbaramchurch" target="_blank"><i class="fas fa-mug-hot"></i> 네이버
-                카페</a></li>
-            <li><a href="https://map.naver.com/v5/search/%ED%95%98%EB%8A%98%EB%B0%94%EB%9E%8C%EA%B5%90%ED%9A%8C"
-                target="_blank"><i class="fas fa-map-marked-alt"></i> 네이버 지도</a></li>
+          <h4>예배 안내</h4>
+          <ul style="font-size:0.85rem;line-height:1.6;">
+            <li><strong style="color:white;">주일예배</strong></li>
+            <li>시편의 예배 (1부) - 오전 08:30</li>
+            <li>다윗의 예배 (2부) - 오전 11:00</li>
+            <li>시끄러운 '234스몰' 예배 - 오후 1:00</li>
+            <li>더 설레임 예배 (청소년/청년) - 오후 1:00</li>
+            <li style="margin-top:8px;"><strong style="color:white;">주중예배</strong></li>
+            <li>수요, 성경예배 - 오후 7:30</li>
+            <li>금요, 강청기도회 - 오후 8:30</li>
+            <li style="margin-top:8px;"><strong style="color:white;">부서예배</strong></li>
+            <li>어린이 예배(유치부/초등부) - 주일 오전 11:00</li>
+            <li>청소년/청년예배 - 주일 오후 1:00</li>
           </ul>
         </div>
         <div class="footer-worship">
-          <h4>예배 시간</h4>
-          <ul>
-            <li><span>시편의예배</span><span>주일 오전 09:00</span></li>
-            <li><span>다윗의예배</span><span>주일 오전 11:00</span></li>
-            <li><span>새벽예배</span><span>월~금 오전 05:30</span></li>
-            <li><span>수요·성경예배</span><span>수요일 오후 07:30</span></li>
-            <li><span>금요·강청기도회</span><span>금요일 오후 08:30</span></li>
+          <h4>온라인 헌금 안내</h4>
+          <ul style="font-size:0.85rem;line-height:1.6;">
+            <li><span>[일반헌금]</span><span>농협 301-0225-4290-01</span></li>
+            <li><span>[건축헌금]</span><span>농협 301-0225-4299-21</span></li>
+            <li><span>[선교헌금]</span><span>농협 301-0225-4307-01</span></li>
+            <li style="color:var(--gold);margin-top:4px;">예금주 : 하늘바람교회</li>
+          </ul>
+          <h4 style="margin-top:24px;">전도·기도·상담 문의</h4>
+          <ul style="font-size:0.8rem;line-height:1.6;color:rgba(255,255,255,0.7);">
+            <li>외국인 (박세라 선교사) - 010-2942-1416</li>
+            <li>교육부서 (이예찬 전도사) - 010-4713-2855</li>
+            <li>청년·장년 (안용호 전도사) - 010-5297-3429</li>
+            <li style="margin-top:8px;">이메일: amenabba@daum.net</li>
           </ul>
         </div>
       </div>
@@ -6591,6 +6604,8 @@
         davidPraise: 'PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re',
         davidWorship: 'PLmD7ZicLdWIr1pf1o7elRvmMNcylM6N4X',
         bridge: 'PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf',
+        event: 'PLmD7ZicLdWIogu1FRwzVeQEl5u65ergLO',
+        mission: 'PLmD7ZicLdWIpCvLBIHgm-c5Al-sh5pi9Y'
       };
       const CATEGORIES = {
         sermon3: { label: '3분설교', keywords: ['3분설교', '[3분설교]'] },
@@ -6600,6 +6615,8 @@
         wednesday: { label: '수요예배', keywords: ['수요성경예배', '수요성경', '수요예배', '수요 예배', '성경예배', '수요기도', '수요'] },
         friday: { label: '금요예배', keywords: ['금요기도회', '강청기도', '금요예배', '금요 예배', '금요기도', '금요'] },
         bridge: { label: '브릿지 찬양대', keywords: ['브릿지찬양대', '브릿지 찬양대', '브릿지'] },
+        event: { label: '행사영상', keywords: ['행사영상'] },
+        mission: { label: '미션브릿지', keywords: ['미션브릿지'] }
       };
       function classify(title) {
         for (const [key, cat] of Object.entries(CATEGORIES))
@@ -6821,14 +6838,16 @@
         };
         try {
           /* 병렬 데이터 수집 (안전한 RSS + 풍부한 Scrape 병행) */
-          const [channelVs, fPr, dPr, wPr, bPr, shortsVs, moreVs] = await Promise.all([
+          const [channelVs, fPr, dPr, wPr, bPr, shortsVs, moreVs, eventPr, missionPr] = await Promise.all([
             fetchChannelRSS().catch(() => []),
             fetchPlaylistPage(PL.friday, 'friday', 12),
             fetchPlaylistPage(PL.davidPraise, 'david', 12), 
             fetchPlaylistPage(PL.davidWorship, 'sunday', 12),
             fetchPlaylistPage(PL.bridge, 'bridge', 12),
             fetchShortsPage().catch(() => []),
-            fetchVideosPage(30).catch(() => [])
+            fetchVideosPage(30).catch(() => []),
+            fetchPlaylistPage(PL.event, 'event', 12),
+            fetchPlaylistPage(PL.mission, 'mission', 4)
           ]);
 
           /* Scrape 실패 시 RSS로 다시 시도 (안전 장치) */
@@ -6838,11 +6857,13 @@
             return rss.videos || [];
           };
 
-          const [fVs, dVs, wVs, bVs] = await Promise.all([
+          const [fVs, dVs, wVs, bVs, eventVs, missionVs] = await Promise.all([
             ensureVideos(fPr, PL.friday, 'friday'),
             ensureVideos(dPr, PL.davidPraise, 'david'),
             ensureVideos(wPr, PL.davidWorship, 'sunday'),
             ensureVideos(bPr, PL.bridge, 'bridge'),
+            ensureVideos(eventPr, PL.event, 'event'),
+            ensureVideos(missionPr, PL.mission, 'mission'),
           ]);
 
           const byDate = arr => arr.slice().sort((a, b) => new Date(b.pubDate || 0) - new Date(a.pubDate || 0));
@@ -6860,12 +6881,13 @@
             ig('grid-david', dVs, null);
             ig('grid-sunday', wVs, null);
             ig('grid-bridge', bVs, null);
-            ig('grid-mission-bridge', bVs, null);
+            if (document.getElementById('grid-event')) ig('grid-event', eventVs, null);
+            if (document.getElementById('grid-mission-bridge')) ig('grid-mission-bridge', missionVs, null);
             ig('grid-shorts', shortsVs, true);
           }
         } catch (err) {
           console.warn('[YT]', err);
-          ['grid-sermon3', 'grid-dawn', 'grid-wednesday', 'grid-sunday', 'grid-friday', 'grid-david', 'grid-bridge'].forEach(showErr);
+          ['grid-sermon3', 'grid-dawn', 'grid-wednesday', 'grid-sunday', 'grid-friday', 'grid-david', 'grid-bridge', 'grid-event'].forEach(showErr);
         }
       }
       return { init, openModal, card: createCard, shortsCard: createShortsCard, fetchShorts: fetchShortsPage, classify };
