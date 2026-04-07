@@ -6034,7 +6034,7 @@
       <!-- 교회 앨범 -->
       <div id="album-church" class="album-panel" data-aos="fade-up" data-aos-delay="200">
         <div class="album-action-bar">
-          <a href="https://drive.google.com/drive/folders/1XK4HoQKw60pfZpTOks7pOdPptJkIiCRZ?usp=sharing" target="_blank"
+          <a href="https://drive.google.com/drive/folders/1wt7a3e0V8pJSA1Tso9NjzTV1B1OgLH2A?usp=sharing" target="_blank"
             class="album-upload-btn">
             <i class="fab fa-google-drive"></i> 사진 올리기 (Drive)
           </a>
@@ -6046,7 +6046,7 @@
           <button class="bcar-btn-more" onclick="photoShowMore('church')"><i class="fas fa-plus"></i> 더보기</button>
         </div>
         <div class="album-footer">
-          <a href="https://drive.google.com/drive/folders/1XK4HoQKw60pfZpTOks7pOdPptJkIiCRZ?usp=sharing" target="_blank"
+          <a href="https://drive.google.com/drive/folders/1wt7a3e0V8pJSA1Tso9NjzTV1B1OgLH2A?usp=sharing" target="_blank"
             class="btn-drive-open">
             <i class="fab fa-google-drive"></i> 전체보기
           </a>
@@ -6423,25 +6423,31 @@
     /* =============================================
        HRAD 실시간 게시판 (localStorage 기반)
     ============================================= */
-    const HRAD_KEY = 'hrad_posts_v1';
-    const HRAD_MAX = 50;
     function _escHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-    function hradLoad() { try { return JSON.parse(localStorage.getItem(HRAD_KEY)) || []; } catch { return []; } }
-    function hradSave(p) { localStorage.setItem(HRAD_KEY, JSON.stringify(p.slice(0, HRAD_MAX))); }
+
+    /* ── HRAD 메모리 캐시 + GAS 연동 ── */
+    let _hradPosts = [];
     function hradRender() {
       const list = document.getElementById('hradList');
       if (!list) return;
-      const posts = hradLoad();
-      if (!posts.length) { list.innerHTML = '<p class="hrad-empty">첫 번째 소식을 남겨주세요 🙏</p>'; return; }
-      list.innerHTML = posts.map((p, i) => `
-      <div class="hrad-post">
+      if (!_hradPosts.length) { list.innerHTML = '<p class="hrad-empty">첫 번째 소식을 남겨주세요 🙏</p>'; return; }
+      list.innerHTML = _hradPosts.map(p => `
+      <div class="hrad-post" data-post-id="${p.id}">
         <div class="hrad-post-meta">
           <span class="hrad-post-name">${_escHtml(p.name || '익명')}</span>
           <span class="hrad-post-time">${p.time}</span>
-          <button class="hrad-del-btn" onclick="hradDelete(${i})" title="삭제"><i class="fas fa-times"></i></button>
+          <button class="hrad-del-btn" onclick="hradDelete('${p.id}')" title="삭제"><i class="fas fa-times"></i></button>
         </div>
         <p class="hrad-post-text">${_escHtml(p.text)}</p>
       </div>`).join('');
+    }
+    async function loadHradFromGAS() {
+      if (!window._GAS_API_URL) return;
+      try {
+        const r = await fetch(`${window._GAS_API_URL}?action=getPosts&type=hrad`);
+        const json = await r.json();
+        if (json.result === 'success') { _hradPosts = json.posts || []; hradRender(); }
+      } catch(e) { console.warn('[HRAD] 로드 실패'); }
     }
     /* 커뮤니티 3탭 전환 */
     function switchCommTab(id, btn) {
@@ -6457,30 +6463,35 @@
       btn.classList.add('active');
       document.getElementById(tab + '-panel')?.classList.add('active');
     }
-    const HRAD_GAS_URL = 'https://script.google.com/macros/s/AKfycbz9eIMavFE3Ihdk2RcdX9xQzQHsJjGgPnANjDULc8qAaiIKZP7Z4pb0IRRiXxJeMbwx2Q/exec';
     function hradPost() {
       const name = (document.getElementById('hradName')?.value || '').trim() || '익명';
       const text = (document.getElementById('hradText')?.value || '').trim();
       if (!text) { document.getElementById('hradText')?.focus(); return; }
       const now = new Date();
-      const time = `${now.getMonth() + 1}/${now.getDate()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      const posts = hradLoad();
-      posts.unshift({ name, text, time });
-      hradSave(posts);
+      const time = `${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      const tempId = 't' + Date.now();
+      _hradPosts.unshift({ id: tempId, name, text, time });
       hradRender();
       if (document.getElementById('hradText')) document.getElementById('hradText').value = '';
-      
-      // 알림톡/티커 즉시 반영을 위해 페이지 새로고침 없이 티커 업데이트 시도
       updateTickerWithNewPost(name, text);
-      /* 구글시트에도 저장 (취소할 수 있음) */
-      if (HRAD_GAS_URL && HRAD_GAS_URL !== 'PASTE_YOUR_GAS_WEB_APP_URL_HERE') {
-        fetch(HRAD_GAS_URL, {
+      if (window._GAS_API_URL) {
+        fetch(window._GAS_API_URL, {
           method: 'POST',
-          mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, text, time, date: new Date().toISOString(), type: 'HRAD' })
-        }).catch(() => { }); 
+          body: JSON.stringify({ action: 'addPost', type: 'hrad', name, text })
+        }).then(r => r.json()).then(json => {
+          if (json.result === 'success' && json.id) {
+            const p = _hradPosts.find(p => p.id === tempId);
+            if (p) p.id = json.id;
+          }
+        }).catch(() => {});
       }
+    }
+    function hradDelete(postId) {
+      if (!confirm('이 게시글을 삭제할까요?')) return;
+      _hradPosts = _hradPosts.filter(p => p.id !== String(postId));
+      hradRender();
+      if (window._GAS_API_URL) fetch(`${window._GAS_API_URL}?action=deletePost&type=hrad&id=${encodeURIComponent(postId)}`).catch(() => {});
     }
 
     function updateTickerWithNewPost(name, text) {
@@ -6507,19 +6518,12 @@
       }
     }
     
-    document.addEventListener('DOMContentLoaded', initTickerFromGAS);
-    function hradDelete(idx) {
-      if (!confirm('이 게시글을 삭제할까요?')) return;
-      const posts = hradLoad();
-      posts.splice(idx, 1);
-      hradSave(posts);
-      hradRender();
-    }
+    document.addEventListener('DOMContentLoaded', () => { loadHradFromGAS(); initTickerFromGAS(); });
 
     /* =============================================
        교회주보 미리보기 (구글 드라이브 폴더 크롤링 - 카드 뷰)
     ============================================= */
-    const BULLETIN_FOLDER = '15rRGFV_nXCGg9PIRB7bkHzWssPVppCzZ';
+    const BULLETIN_FOLDER = '1QFQr7WlANQkQqopeVwAtf6JGejj8JFhk';
     const BULLETIN_URL = `https://drive.google.com/drive/folders/${BULLETIN_FOLDER}?usp=sharing`;
 
     /* ===== 주보 플립북 (Swiper 기반) ===== */
@@ -6633,7 +6637,7 @@
     /* =============================================
        주일설교 녹음파일 (구글 드라이브 크롤링)
     ============================================= */
-    const SERMON_FOLDER_ID = '1TY6KCHWGWhgM_FhjqVVN-aTMUPuW3ivX';
+    const SERMON_FOLDER_ID = '1yMP6D7CJqmBDjUXWx2TizBpJFncJ8Zjt';
     const SERMON_FOLDER_URL = `https://drive.google.com/drive/folders/${SERMON_FOLDER_ID}`;
 
     async function loadSermonAudio() {
@@ -6666,7 +6670,7 @@
     /* =============================================
        교회 앨범 (구글 드라이브 크롤링) - 신규 추가
     ============================================= */
-    const ALBUM_FOLDER_ID = '1XK4HoQKw60pfZpTOks7pOdPptJkIiCRZ';
+    const ALBUM_FOLDER_ID = '1wt7a3e0V8pJSA1Tso9NjzTV1B1OgLH2A';
     async function loadAlbumNotices() {
       const el = document.getElementById('placeholderChurch');
       if (!el || !GAS_API_URL) return;
@@ -7464,58 +7468,68 @@
       }
     }, { passive: true });
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbxq3pfh8mw2zwOxiZOFkNVyHdwyEmHHQ_n4u9vb0u0btocHkUwgoRrNwVcGxhLA7-gxBg/exec';
-    // 중보기도 저장/렌더 (두 곳 공통)
-    function prayLoad(key) { try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; } }
-    function praySave(key, arr) { try { localStorage.setItem(key, JSON.stringify(arr.slice(0, 30))); } catch { } }
-    function prayRender(listId, key) {
+    window._GAS_API_URL = GAS_API_URL;
+    /* ── 중보기도 메모리 캐시 + GAS 연동 ── */
+    let _prayPosts = [];
+    function prayRender(listId) {
       const el = document.getElementById(listId);
       if (!el) return;
-      const posts = prayLoad(key);
-      if (!posts.length) { el.innerHTML = '<div class="hrad-empty"><i class="fas fa-dove" style="font-size:1.5rem;opacity:.3;display:block;margin-bottom:8px"></i>아직 기도 요청이 없습니다</div>'; return; }
-      el.innerHTML = posts.map((p, i) => `
-      <div class="hrad-post">
+      if (!_prayPosts.length) { el.innerHTML = '<div class="hrad-empty"><i class="fas fa-dove" style="font-size:1.5rem;opacity:.3;display:block;margin-bottom:8px"></i>아직 기도 요청이 없습니다</div>'; return; }
+      el.innerHTML = _prayPosts.map(p => `
+      <div class="hrad-post" data-post-id="${p.id}">
         <div class="hrad-post-header">
           <span class="hrad-post-name"><i class="fas fa-hands" style="color:var(--gold);margin-right:5px;font-size:0.8rem"></i>${_escHtml(p.name)}</span>
           <span class="hrad-post-time">${p.time}</span>
-          <button class="hrad-del-btn" onclick="prayDelete('${key}','${listId}',${i})"><i class="fas fa-times"></i></button>
+          <button class="hrad-del-btn" onclick="prayDelete('${p.id}')"><i class="fas fa-times"></i></button>
         </div>
         <p class="hrad-post-text">${_escHtml(p.text)}</p>
       </div>`).join('');
     }
-    function prayDelete(key, listId, idx) {
-      if (!confirm('이 기도제목을 삭제할까요?')) return;
-      const arr = prayLoad(key); arr.splice(idx, 1); praySave(key, arr); prayRender(listId, key);
+    async function loadPrayFromGAS() {
+      if (!window._GAS_API_URL) return;
+      try {
+        const r = await fetch(`${window._GAS_API_URL}?action=getPosts&type=pray`);
+        const json = await r.json();
+        if (json.result === 'success') {
+          _prayPosts = json.posts || [];
+          prayRender('prayList'); prayRender('pray2List');
+        }
+      } catch(e) { console.warn('[Pray] 로드 실패'); }
     }
-    function _prayPost(nameId, textId, listId, key) {
+    function prayDelete(postId) {
+      if (!confirm('이 기도제목을 삭제할까요?')) return;
+      _prayPosts = _prayPosts.filter(p => p.id !== String(postId));
+      prayRender('prayList'); prayRender('pray2List');
+      if (window._GAS_API_URL) fetch(`${window._GAS_API_URL}?action=deletePost&type=pray&id=${encodeURIComponent(postId)}`).catch(() => {});
+    }
+    function _prayPost(nameId, textId) {
       const name = (document.getElementById(nameId)?.value || '').trim() || '익명';
       const text = (document.getElementById(textId)?.value || '').trim();
       if (!text) { document.getElementById(textId)?.focus(); return; }
       const now = new Date();
-      const time = `${now.getMonth() + 1}/${now.getDate()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      const arr = prayLoad(key);
-      arr.unshift({ name, text, time });
-      praySave(key, arr); prayRender(listId, key);
+      const time = `${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      const tempId = 't' + Date.now();
+      _prayPosts.unshift({ id: tempId, name, text, time });
+      prayRender('prayList'); prayRender('pray2List');
       document.getElementById(textId).value = '';
-
-      // 티커 업데이트 
-      if (typeof updateTickerWithNewPost === 'function') {
-        updateTickerWithNewPost(name, `[${key}] ${text}`);
+      if (typeof updateTickerWithNewPost === 'function') updateTickerWithNewPost(name, '[기도] ' + text);
+      if (window._GAS_API_URL) {
+        fetch(window._GAS_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'addPost', type: 'pray', name, text })
+        }).then(r => r.json()).then(json => {
+          if (json.result === 'success' && json.id) {
+            const p = _prayPosts.find(p => p.id === tempId);
+            if (p) p.id = json.id;
+          }
+        }).catch(() => {});
       }
-      // 구글시트 저장
-      if (GAS_API_URL) fetch(GAS_API_URL, {
-        method: 'POST', mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, text, time, date: now.toISOString(), type: key })
-      }).catch(() => { });
     }
-    function prayPost() { _prayPost('prayName', 'prayText', 'prayList', '중보기도'); }
-    function pray2Post() { _prayPost('pray2Name', 'pray2Text', 'pray2List', '중보기도'); }
+    function prayPost() { _prayPost('prayName', 'prayText'); }
+    function pray2Post() { _prayPost('pray2Name', 'pray2Text'); }
 
-
-    document.addEventListener('DOMContentLoaded', () => {
-      prayRender('prayList', '중보기도');
-      prayRender('pray2List', '중보기도');
-    });
+    document.addEventListener('DOMContentLoaded', loadPrayFromGAS);
 
 
     /* ===== 포토 앨범 로딩 (Google Drive) ===== */
@@ -7526,7 +7540,7 @@
         footerId: 'photoFooterNewMember',
       },
       church: {
-        folderId: '1XK4HoQKw60pfZpTOks7pOdPptJkIiCRZ',
+        folderId: '1wt7a3e0V8pJSA1Tso9NjzTV1B1OgLH2A',
         gridId: 'photoGridChurch',
         footerId: 'photoFooterChurch',
       },
