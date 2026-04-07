@@ -265,7 +265,7 @@ const YT = (() => {
         proxyFetch(RSS_URL),
         fetchShortsPage(10),
         fetchVideosPage(30),
-        fetchPlaylistPage('PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re', 'friday', 30),
+        fetchPlaylistPage('PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx', 'friday', 30),
         fetchPlaylistPage('PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf', 'bridge', 30),
       ]);
 
