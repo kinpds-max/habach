@@ -3057,25 +3057,60 @@
 
     /* FLOATING BAR */
     /* 배경음악 플로팅 버튼 */
-    .float-music {
+    .float-bible {
       position: fixed;
-      bottom: 28px;
+      bottom: 110px;
       left: 20px;
       z-index: 900;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
       opacity: 0;
       transform: translateY(20px);
       transition: opacity 0.5s ease, transform 0.5s ease;
       pointer-events: none
     }
 
-    .float-music.visible {
+    .float-bible.visible {
       opacity: 1;
       transform: translateY(0);
       pointer-events: all
+    }
+
+    .bible-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: var(--navy);
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s, background 0.3s, color 0.3s;
+      text-decoration: none
+    }
+
+    .bible-btn:hover {
+      transform: scale(1.15);
+      background: var(--gold);
+      color: var(--navy);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35)
+    }
+
+    .bible-label {
+      font-size: 0.65rem;
+      color: var(--navy);
+      background: var(--gold-light);
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)
     }
 
     .music-btn {
@@ -6333,6 +6368,14 @@
     <source src="audio/주님이 하십니다 260328.mp3" type="audio/mpeg">
   </audio>
 
+  <!-- 성경 연결 버튼 -->
+  <div class="float-bible" id="floatBible">
+    <span class="bible-label">성경</span>
+    <a href="https://kinpds-max.github.io/hamom-bible-note" target="_blank" class="bible-btn" aria-label="성경 읽기">
+      <i class="fas fa-book"></i>
+    </a>
+  </div>
+
   <!-- 배경음악 컨트롤 -->
   <div class="float-music" id="floatMusic">
     <span class="music-label" id="musicLabel">음악 시작</span>
@@ -7351,8 +7394,13 @@
         setMusicState(!isPlaying);
       });
 
-      /* 스크롤 시 음악 버튼 표시 */
-      const showMusicFloat = () => { floatMusic?.classList.toggle('visible', window.scrollY > 100); };
+      /* 스크롤 시 음악 및 성경 버튼 표시 */
+      const floatBible = document.getElementById('floatBible');
+      const showMusicFloat = () => { 
+        const isVisible = window.scrollY > 100;
+        floatMusic?.classList.toggle('visible', isVisible);
+        floatBible?.classList.toggle('visible', isVisible);
+      };
       window.addEventListener('scroll', showMusicFloat, { passive: true });
       showMusicFloat();
       /* 앨범 탭 */
