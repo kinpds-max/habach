@@ -1126,10 +1126,6 @@ section{padding:100px 0}
             <h3>교회주보 미리보기</h3>
             <span class="news-badge-drive"><i class="fab fa-google-drive"></i> Drive 자동연동</span>
           </div>
-          <a href="https://drive.google.com/drive/folders/15rRGFV_nXCGg9PIRB7bkHzWssPVppCzZ?usp=sharing"
-             target="_blank" class="news-drive-btn">
-            <i class="fab fa-google-drive"></i> 주보 올리기
-          </a>
         </div>
         <!-- 주보 플립북 -->
         <div class="bflip-wrap">
@@ -1808,7 +1804,10 @@ section{padding:100px 0}
   }
 
   function _bflipInit(files) {
-    _bflipItems = [...files].sort((a, b) => _bflipSortNum(a.name) - _bflipSortNum(b.name));
+    /* 중복 파일 ID 제거 후 번호 순 정렬 */
+    const seen = new Set();
+    const unique = files.filter(f => { if (seen.has(f.id)) return false; seen.add(f.id); return true; });
+    _bflipItems = unique.sort((a, b) => _bflipSortNum(a.name) - _bflipSortNum(b.name));
     _bflipIdx = 0;
     /* 도트 (최대 12개) */
     const dotsEl = document.getElementById('bflipDots');
@@ -1867,6 +1866,26 @@ section{padding:100px 0}
     if (e.key === 'ArrowLeft')  bflipMove(-1);
     if (e.key === 'ArrowRight') bflipMove(1);
   });
+
+  /* 터치 스와이프 지원 */
+  (function() {
+    let _sx = 0, _sy = 0;
+    document.addEventListener('DOMContentLoaded', () => {
+      const book = document.querySelector('.bflip-book');
+      if (!book) return;
+      book.addEventListener('touchstart', e => {
+        _sx = e.touches[0].clientX;
+        _sy = e.touches[0].clientY;
+      }, { passive: true });
+      book.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - _sx;
+        const dy = e.changedTouches[0].clientY - _sy;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+          dx < 0 ? bflipMove(1) : bflipMove(-1);
+        }
+      }, { passive: true });
+    });
+  })();
 
   async function loadBulletinNotices() {
     if (!GAS_API_URL) return;
@@ -2251,8 +2270,6 @@ section{padding:100px 0}
     closeBtn?.addEventListener('click', closeModal);
     modal?.addEventListener('click', e => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-    YT.init();
-
     /* ── 그리드 상태 (배치 제어) ── */
     const gridVideoState = {};  /* gridId → { nextToken } */
     const BATCH_PC = 6, BATCH_MOBILE = 3;
@@ -2275,6 +2292,8 @@ section{padding:100px 0}
         grid.appendChild(card);
       });
     };
+
+    YT.init();
 
     /* SEARCH_* 매핑 (할당량 여유 시 폴백용으로 유지) */
     const SEARCH_META = {
