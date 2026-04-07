@@ -555,6 +555,14 @@ section{padding:100px 0}
 
 /* WORSHIP TABLE (in welcome section) */
 .worship-table-wrap{margin:24px 0;padding:20px;background:var(--off-white);border-radius:var(--radius);border:1px solid var(--gray-light)}
+/* ===== 예배시간 2단 레이아웃 ===== */
+.worship-two-col{display:grid;grid-template-columns:1fr 1fr;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 12px 40px rgba(15,32,68,0.12);width:100%}
+.wt-photo{position:relative;min-height:480px;overflow:hidden}
+.wt-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.6s ease}
+.wt-photo:hover img{transform:scale(1.03)}
+.wt-photo-overlay{position:absolute;inset:0;background:linear-gradient(to right,transparent 60%,rgba(244,247,251,0.4))}
+.wt-content{background:var(--off-white);padding:52px 48px;display:flex;flex-direction:column;justify-content:center;border:1px solid var(--gray-light);border-left:none}
+@media(max-width:900px){.worship-two-col{grid-template-columns:1fr}.wt-photo{min-height:260px}.wt-photo-overlay{display:none}.wt-content{padding:36px 28px;border:none;border-top:1px solid var(--gray-light)}}
 .worship-table-title{font-size:0.82rem;font-weight:700;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .worship-table{width:100%;border-collapse:collapse;font-size:0.875rem}
 .worship-table tbody tr{border-bottom:1px solid var(--gray-light)}
@@ -1019,39 +1027,49 @@ section{padding:100px 0}
         </div>
       </div>
 
-      <!-- Worship Table -->
-      <div class="worship-table-wrap" id="worship" data-aos="fade-up" data-aos-delay="200" style="margin: 0 auto; padding: 48px; background: var(--off-white); border-radius: var(--radius-lg); border: 1px solid var(--gray-light); display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
-        <div style="width: 100%; margin-bottom: 30px;">
-          <div style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; background:rgba(201,168,76,0.15); color:var(--gold); font-size:1.4rem; margin-bottom:16px;">
-            <i class="fas fa-clock"></i>
-          </div>
-          <h3 style="font-family: var(--font-serif); font-size: 2.2rem; font-weight: 700; color: var(--navy); margin-bottom: 12px;">예배 시간 안내</h3>
-          <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem;">
-            가족과 함께, 이웃과 함께 드리는 귀한 예배 자리에 여러분을 진심으로 초대합니다.
-          </p>
+      <!-- Worship Table: 2단 레이아웃 -->
+      <div class="worship-two-col" id="worship" data-aos="fade-up" data-aos-delay="200">
+
+        <!-- 왼쪽: 예배 사진 -->
+        <div class="wt-photo">
+          <img src="images/worship.jpg"
+               onerror="this.src='https://i.ytimg.com/vi/k-Q5Wjq7uPM/maxresdefault.jpg'"
+               alt="하늘바람교회 예배 모습">
+          <div class="wt-photo-overlay"></div>
         </div>
-        <div style="width: 100%;">
-          <table class="worship-table" style="width: 100%; font-size: 1.05rem; text-align: center;">
+
+        <!-- 오른쪽: 예배시간 안내 -->
+        <div class="wt-content">
+          <div style="margin-bottom:28px;">
+            <div style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.15);color:var(--gold);font-size:1.25rem;margin-bottom:14px;">
+              <i class="fas fa-clock"></i>
+            </div>
+            <h3 style="font-family:var(--font-serif);font-size:2rem;font-weight:700;color:var(--navy);margin-bottom:10px;">예배 시간 안내</h3>
+            <p style="color:var(--text-muted);line-height:1.7;font-size:0.95rem;">
+              가족과 함께, 이웃과 함께 드리는 귀한 예배 자리에 여러분을 진심으로 초대합니다.
+            </p>
+          </div>
+          <table class="worship-table" style="width:100%;font-size:1.05rem;">
             <tbody>
               <tr>
-                <td style="padding: 18px 8px; font-weight: 700; border-bottom:1px solid rgba(0,0,0,0.05); text-align: left;">시편의예배 <span class="wt-sub">클래식</span></td>
-                <td style="padding: 18px 8px; text-align: right; color: var(--blue); font-weight:700; border-bottom:1px solid rgba(0,0,0,0.05);">주일 오전 09:00</td>
+                <td style="padding:18px 8px;font-weight:700;border-bottom:1px solid rgba(0,0,0,0.05);text-align:left;">시편의예배 <span class="wt-sub">클래식</span></td>
+                <td style="padding:18px 8px;text-align:right;color:var(--blue);font-weight:700;border-bottom:1px solid rgba(0,0,0,0.05);">주일 오전 09:00</td>
               </tr>
               <tr>
-                <td style="padding: 18px 8px; font-weight: 700; border-bottom:1px solid rgba(0,0,0,0.05); text-align: left;">다윗의예배 <span class="wt-sub">모던</span></td>
-                <td style="padding: 18px 8px; text-align: right; color: var(--blue); font-weight:700; border-bottom:1px solid rgba(0,0,0,0.05);">주일 오전 11:00</td>
+                <td style="padding:18px 8px;font-weight:700;border-bottom:1px solid rgba(0,0,0,0.05);text-align:left;">다윗의예배 <span class="wt-sub">모던</span></td>
+                <td style="padding:18px 8px;text-align:right;color:var(--blue);font-weight:700;border-bottom:1px solid rgba(0,0,0,0.05);">주일 오전 11:00</td>
               </tr>
               <tr>
-                <td style="padding: 18px 8px; font-weight: 700; border-bottom:1px solid rgba(0,0,0,0.05); text-align: left;">월~금 새벽예배</td>
-                <td style="padding: 18px 8px; text-align: right; color: var(--blue); font-weight:700; border-bottom:1px solid rgba(0,0,0,0.05);">오전 05:30</td>
+                <td style="padding:18px 8px;font-weight:700;border-bottom:1px solid rgba(0,0,0,0.05);text-align:left;">월~금 새벽예배</td>
+                <td style="padding:18px 8px;text-align:right;color:var(--blue);font-weight:700;border-bottom:1px solid rgba(0,0,0,0.05);">오전 05:30</td>
               </tr>
               <tr>
-                <td style="padding: 18px 8px; font-weight: 700; border-bottom:1px solid rgba(0,0,0,0.05); text-align: left;">수요·성경예배</td>
-                <td style="padding: 18px 8px; text-align: right; color: var(--blue); font-weight:700; border-bottom:1px solid rgba(0,0,0,0.05);">수요일 오후 07:30</td>
+                <td style="padding:18px 8px;font-weight:700;border-bottom:1px solid rgba(0,0,0,0.05);text-align:left;">수요·성경예배</td>
+                <td style="padding:18px 8px;text-align:right;color:var(--blue);font-weight:700;border-bottom:1px solid rgba(0,0,0,0.05);">수요일 오후 07:30</td>
               </tr>
               <tr>
-                <td style="padding: 18px 8px; font-weight: 700; text-align: left;">금요·강청기도회</td>
-                <td style="padding: 18px 8px; text-align: right; color: var(--blue); font-weight:700;">금요일 오후 08:30</td>
+                <td style="padding:18px 8px;font-weight:700;text-align:left;">금요·강청기도회</td>
+                <td style="padding:18px 8px;text-align:right;color:var(--blue);font-weight:700;">금요일 오후 08:30</td>
               </tr>
             </tbody>
           </table>
