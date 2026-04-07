@@ -102,11 +102,10 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 #loader{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.6s ease,visibility 0.6s ease}
 #loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
 .loader-inner{text-align:center}
-.loader-cross{width:48px;height:48px;margin:0 auto 16px;position:relative;animation:pulseCross 1.4s ease-in-out infinite}
-.loader-cross::before,.loader-cross::after{content:'';position:absolute;background:var(--gold);border-radius:3px}
-.loader-cross::before{width:6px;height:48px;left:50%;transform:translateX(-50%)}
-.loader-cross::after{width:48px;height:6px;top:50%;transform:translateY(-50%)}
-@keyframes pulseCross{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(0.85)}}
+.loader-cross{width:56px;height:72px;margin:0 auto 20px;position:relative;animation:pulseCross 1.6s ease-in-out infinite}
+.loader-cross::before{content:'';position:absolute;background:var(--gold);border-radius:4px;width:7px;height:72px;left:50%;transform:translateX(-50%)}
+.loader-cross::after{content:'';position:absolute;background:var(--gold);border-radius:4px;width:48px;height:7px;top:20px;left:50%;transform:translateX(-50%)}
+@keyframes pulseCross{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.45;transform:scale(0.88)}}
 .loader-text{color:var(--white);font-size:1.1rem;letter-spacing:0.15em;font-weight:300;margin-top:8px}
 
 /* HEADER */
@@ -114,8 +113,11 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 #header.scrolled{background:rgba(8,15,42,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 32px rgba(0,0,0,0.45);border-bottom-color:rgba(255,255,255,0.1)}
 .header-inner{max-width:1400px;margin:0 auto;padding:0 48px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;height:120px;gap:32px}
 .nav-logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
-.logo-img{height:100px;width:auto;object-fit:contain;display:block;opacity:0.93;transition:opacity 0.2s;mix-blend-mode:multiply}
+.logo-img{height:48px;width:auto;object-fit:contain;display:block;filter:brightness(0) invert(1);opacity:0.92;transition:opacity 0.2s}
+.logo-name-text{color:rgba(255,255,255,0.92);font-family:var(--font-serif);font-size:1.05rem;font-weight:700;letter-spacing:0.02em;white-space:nowrap;margin-left:10px}
 .logo-img:hover{opacity:1}
+.logo-name-text{color:rgba(255,255,255,0.92);font-family:var(--font-serif);font-size:1.05rem;font-weight:700;letter-spacing:0.02em;white-space:nowrap;margin-left:10px}
+
 .mobile-brand{display:none}
 .main-nav{display:flex;align-items:center;justify-content:center}
 .main-nav ul{display:flex;gap:0;align-items:center;list-style:none;margin:0;padding:0}
@@ -157,7 +159,7 @@ body{top:0!important}
 /* ===== 모바일 전용 상단 헤더 ===== */
 .mobile-top-header{display:none;position:fixed;top:0;left:0;right:0;z-index:1100;height:100px;padding:0 16px;align-items:center;justify-content:space-between;background:transparent;transition:background 0.35s}
 .mobile-top-header.scrolled{background:rgba(8,15,42,0.92);backdrop-filter:blur(16px)}
-.mobile-top-logo{height:80px;width:auto;object-fit:contain;display:block;mix-blend-mode:multiply}
+.mobile-top-logo{height:42px;width:auto;object-fit:contain;display:block;filter:brightness(0) invert(1)}
 .mobile-top-left,.mobile-top-right{width:40px;display:flex;align-items:center}
 .mobile-top-right{justify-content:flex-end}
 .mobile-top-header .translate-menu{left:0;right:auto}
@@ -603,7 +605,7 @@ section{padding:100px 0}
 .bulletin-notice-item .notice-arrow{margin-left:auto;opacity:0.4;font-size:0.75rem}
 .notice-loading{text-align:center;padding:24px;color:var(--gray);font-size:0.9rem}
 /* HRAD */
-.hrad-body{display:grid;grid-template-columns:320px 1fr;gap:24px;align-items:start}
+.hrad-body{display:flex;flex-direction:column;gap:14px}
 .hrad-form-row{display:flex;flex-direction:column;gap:10px}
 .hrad-input-name{width:100%;padding:10px 14px;border:1.5px solid var(--gray-light);border-radius:8px;font-size:0.9rem;font-family:inherit;transition:var(--transition);outline:none}
 .hrad-input-name:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(42,111,173,0.1)}
@@ -800,7 +802,33 @@ section{padding:100px 0}
 .prayer-form-large .hrad-post{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1)}
 .prayer-form-large .hrad-post-name,.prayer-form-large .hrad-del-btn{color:rgba(255,255,255,0.7)}
 .prayer-form-large .hrad-post-text{color:rgba(255,255,255,0.9)}
-  </style>
+  
+/* ===== 포토카드 앨범 그리드 ===== */
+.photo-card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:8px 0}
+.photo-card{border-radius:var(--radius);overflow:hidden;cursor:pointer;background:var(--off-white);aspect-ratio:1;position:relative;box-shadow:var(--shadow-sm);transition:var(--transition)}
+.photo-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.photo-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.35s}
+.photo-card:hover img{transform:scale(1.06)}
+.photo-overlay{position:absolute;inset:0;background:rgba(15,32,68,0.45);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s;color:white;font-size:1.4rem}
+.photo-card:hover .photo-overlay{opacity:1}
+.photo-loading{grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--gray);font-size:0.9rem}
+.photo-grid-footer{text-align:center;margin-top:8px}
+.album-action-bar{display:flex;justify-content:flex-end;margin-bottom:14px}
+.album-upload-btn{display:inline-flex;align-items:center;gap:7px;background:var(--navy);color:white;padding:8px 18px;border-radius:8px;font-size:0.85rem;font-weight:600;transition:var(--transition)}
+.album-upload-btn:hover{background:var(--blue)}
+/* 포토 모달 */
+.photo-modal{display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:20px}
+.photo-modal.active{display:flex}
+.photo-modal-inner{position:relative;max-width:90vw;max-height:90vh}
+.photo-modal-inner img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:8px;display:block}
+.photo-modal-close{position:absolute;top:-16px;right:-16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);color:white;font-size:1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.2s}
+.photo-modal-close:hover{background:rgba(255,255,255,0.3)}
+.photo-modal-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.15);color:white;font-size:1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.2s}
+.photo-modal-nav:hover{background:rgba(255,255,255,0.3)}
+.photo-modal-prev{left:-52px}.photo-modal-next{right:-52px}
+@media(max-width:900px){.photo-card-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.photo-card-grid{grid-template-columns:repeat(2,1fr);gap:10px}.photo-modal-prev{left:-40px}.photo-modal-next{right:-40px}}
+</style>
 </head>
 <body>
 
@@ -844,6 +872,7 @@ section{padding:100px 0}
       <!-- 로고 -->
       <a href="#" class="nav-logo" aria-label="하늘바람교회 홈">
         <img src="images/logo.png" alt="하늘바람교회" class="logo-img">
+        <span class="logo-name-text">하늘바람교회</span>
       </a>
 
       <!-- 데스크톱 네비게이션 -->
@@ -1047,13 +1076,13 @@ section{padding:100px 0}
       <div class="news-bulletin-box" data-aos="fade-up" data-aos-delay="80">
         <div class="news-block-header">
           <div class="nbh-left">
-            <i class="fas fa-bullhorn nbh-icon" style="color:var(--gold);"></i>
-            <h3>공지사항 (소식 및 주보)</h3>
-            <span class="news-badge-drive"><i class="fab fa-google-drive"></i> Drive 자동연동 게시판</span>
+            <i class="fas fa-newspaper nbh-icon" style="color:var(--gold);"></i>
+            <h3>교회주보 미리보기</h3>
+            <span class="news-badge-drive"><i class="fab fa-google-drive"></i> Drive 자동연동</span>
           </div>
           <a href="https://drive.google.com/drive/folders/15rRGFV_nXCGg9PIRB7bkHzWssPVppCzZ?usp=sharing"
              target="_blank" class="news-drive-btn">
-            <i class="fab fa-google-drive"></i> 드라이브에 캡쳐/사진 올리기
+            <i class="fab fa-google-drive"></i> 주보 올리기
           </a>
         </div>
         <!-- 주보 앨범 그리드 -->
@@ -1065,23 +1094,7 @@ section{padding:100px 0}
             <i class="fas fa-plus"></i> 더보기
           </button>
         </div>
-        
-        <!-- 공지사항(크롤링) 캐러셀 ( (2) 파일 ) -->
-        <div class="news-block-header" style="margin-top:40px;">
-          <div class="nbh-left">
-            <i class="fas fa-bullhorn nbh-icon" style="color:var(--gold);"></i>
-            <h3>자동 크롤링 공지사항</h3>
-          </div>
-        </div>
-        <div class="bulletin-carousel-wrap">
-          <button class="bcar-btn bcar-prev" onclick="bcarMove(-1)"><i class="fas fa-chevron-left"></i></button>
-          <div class="bulletin-carousel" id="bulletinCarousel">
-            <div class="notice-loading" style="width:100%;text-align:center;"><i class="fas fa-circle-notch fa-spin"></i> 공지사항 불러오는 중...</div>
-          </div>
-          <button class="bcar-btn bcar-next" onclick="bcarMove(1)"><i class="fas fa-chevron-right"></i></button>
-          <div class="bcar-indicator" id="bulletinCarouselIndicator"></div>
-        </div>
-        
+
       </div>
 
       <!-- HRAD 실시간 + 중보기도 통합 탭 -->
@@ -1294,61 +1307,46 @@ section{padding:100px 0}
 
       <!-- 새신자 소개 앨범 -->
       <div id="album-new-member" class="album-panel active" data-aos="fade-up" data-aos-delay="200">
-        <div class="album-drive-wrap">
-          <iframe
-            id="driveNewMember"
-            class="drive-embed"
-            src="https://drive.google.com/embeddedfolderview?id=1P0IK1qxds9XWNVBaU8ylV1HM-LdNJe3b#grid"
-            allowfullscreen
-            loading="lazy"
-            title="새신자 소개 앨범">
-          </iframe>
-          <div class="drive-placeholder" id="placeholderNewMember">
-            <div class="drive-placeholder-inner">
-              <i class="fab fa-google-drive"></i>
-              <h3>새신자 소개 앨범</h3>
-              <p>구글 드라이브 폴더 ID를 설정하면<br>사진이 자동으로 표시됩니다</p>
-              <a href="#" class="btn-primary drive-setup-btn" data-target="driveNewMember">
-                폴더 연결하기
-              </a>
-            </div>
-          </div>
+        <div class="album-action-bar">
+          <a href="https://drive.google.com/drive/folders/1P0IK1qxds9XWNVBaU8ylV1HM-LdNJe3b?usp=sharing"
+             target="_blank" class="album-upload-btn">
+            <i class="fab fa-google-drive"></i> 사진 올리기 (Drive)
+          </a>
+        </div>
+        <div class="photo-card-grid" id="photoGridNewMember">
+          <div class="photo-loading"><i class="fas fa-circle-notch fa-spin"></i> 사진 불러오는 중...</div>
+        </div>
+        <div class="photo-grid-footer" id="photoFooterNewMember" style="display:none">
+          <button class="bcar-btn-more" onclick="photoShowMore('newMember')"><i class="fas fa-plus"></i> 더보기</button>
         </div>
         <div class="album-footer">
-          <a href="https://drive.google.com/drive/folders/1P0IK1qxds9XWNVBaU8ylV1HM-LdNJe3b?usp=sharing" target="_blank" class="btn-drive-open" id="linkNewMember">
-            <i class="fab fa-google-drive"></i> 구글 드라이브에서 전체보기
+          <a href="https://drive.google.com/drive/folders/1P0IK1qxds9XWNVBaU8ylV1HM-LdNJe3b?usp=sharing"
+             target="_blank" class="btn-drive-open">
+            <i class="fab fa-google-drive"></i> 전체보기
           </a>
         </div>
       </div>
 
       <!-- 교회 앨범 -->
       <div id="album-church" class="album-panel" data-aos="fade-up" data-aos-delay="200">
-        <div class="album-drive-wrap">
-          <iframe
-            id="driveChurch"
-            class="drive-embed"
-            src="https://drive.google.com/embeddedfolderview?id=1XK4HoQKw60pfZpTOks7pOdPptJkIiCRZ#grid"
-            allowfullscreen
-            loading="lazy"
-            title="교회 앨범">
-          </iframe>
-          <div class="drive-placeholder" id="placeholderChurch">
-            <div class="drive-placeholder-inner">
-              <i class="fab fa-google-drive"></i>
-              <h3>교회 앨범</h3>
-              <p>구글 드라이브 폴더 ID를 설정하면<br>사진이 자동으로 표시됩니다</p>
-              <a href="#" class="btn-primary drive-setup-btn" data-target="driveChurch">
-                폴더 연결하기
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="album-footer">
-          <a href="https://drive.google.com/drive/folders/1XK4HoQKw60pfZpTOks7pOdPptJkIiCRZ?usp=sharing" target="_blank" class="btn-drive-open" id="linkChurch">
-            <i class="fab fa-google-drive"></i> 구글 드라이브에서 전체보기
+        <div class="album-action-bar">
+          <a href="https://drive.google.com/drive/folders/1XK4HoQKw60pfZpTOks7pOdPptJkIiCRZ?usp=sharing"
+             target="_blank" class="album-upload-btn">
+            <i class="fab fa-google-drive"></i> 사진 올리기 (Drive)
           </a>
         </div>
-      </div>
+        <div class="photo-card-grid" id="photoGridChurch">
+          <div class="photo-loading"><i class="fas fa-circle-notch fa-spin"></i> 사진 불러오는 중...</div>
+        </div>
+        <div class="photo-grid-footer" id="photoFooterChurch" style="display:none">
+          <button class="bcar-btn-more" onclick="photoShowMore('church')"><i class="fas fa-plus"></i> 더보기</button>
+        </div>
+        <div class="album-footer">
+          <a href="https://drive.google.com/drive/folders/1XK4HoQKw60pfZpTOks7pOdPptJkIiCRZ?usp=sharing"
+             target="_blank" class="btn-drive-open">
+            <i class="fab fa-google-drive"></i> 전체보기
+          </a>
+        </div>
     </div>
   </section>
 
@@ -2530,6 +2528,135 @@ section{padding:100px 0}
     prayRender('pray2List', '중보기도');
   });
 
+
+  /* ===== 포토 앨범 로딩 (Google Drive) ===== */
+  const ALBUM_CONFIG = {
+    newMember: {
+      folderId: '1P0IK1qxds9XWNVBaU8ylV1HM-LdNJe3b',
+      gridId:   'photoGridNewMember',
+      footerId: 'photoFooterNewMember',
+    },
+    church: {
+      folderId: '1XK4HoQKw60pfZpTOks7pOdPptJkIiCRZ',
+      gridId:   'photoGridChurch',
+      footerId: 'photoFooterChurch',
+    },
+  };
+  const ALBUM_PROXIES = [
+    'https://api.allorigins.win/raw?url=',
+    'https://corsproxy.io/?',
+    'https://api.codetabs.com/v1/proxy?quest=',
+  ];
+  const _albumState = {};
+
+  async function loadAlbumPhotos(key, limit = 12) {
+    const cfg = ALBUM_CONFIG[key];
+    if (!cfg) return;
+    const grid = document.getElementById(cfg.gridId);
+    if (!grid) return;
+
+    const folderUrl = `https://drive.google.com/embeddedfolderview?id=${cfg.folderId}#grid`;
+    let html = '';
+    for (const px of ALBUM_PROXIES) {
+      try {
+        const res = await fetch(px + encodeURIComponent(folderUrl), { signal: AbortSignal.timeout(10000) });
+        if (res.ok) { html = await res.text(); break; }
+      } catch {}
+    }
+    if (!html) {
+      grid.innerHTML = `<div class="photo-loading"><a href="https://drive.google.com/drive/folders/${cfg.folderId}" target="_blank" style="color:var(--blue)"><i class="fab fa-google-drive"></i> Drive에서 보기</a></div>`;
+      return;
+    }
+
+    // Extract file IDs from folder HTML
+    const ids = [...new Set([...html.matchAll(/\/file\/d\/([a-zA-Z0-9_-]{10,})\//g)].map(m => m[1]))];
+    if (!ids.length) {
+      // fallback: try id= pattern
+      const ids2 = [...new Set([...html.matchAll(/[?&]id=([a-zA-Z0-9_-]{10,})/g)].map(m => m[1]))];
+      ids.push(...ids2);
+    }
+
+    _albumState[key] = { ids, shown: 0, limit };
+    renderAlbumPage(key);
+
+    const footer = document.getElementById(cfg.footerId);
+    if (footer) footer.style.display = ids.length > limit ? 'block' : 'none';
+  }
+
+  function renderAlbumPage(key) {
+    const cfg = ALBUM_CONFIG[key];
+    const state = _albumState[key];
+    if (!cfg || !state) return;
+    const grid = document.getElementById(cfg.gridId);
+    if (!grid) return;
+
+    const { ids, shown, limit } = state;
+    const page = ids.slice(shown, shown + limit);
+    if (!page.length && shown === 0) {
+      grid.innerHTML = `<div class="photo-loading" style="grid-column:1/-1">사진이 없습니다.<br><a href="https://drive.google.com/drive/folders/${cfg.folderId}" target="_blank" style="color:var(--blue)">Drive에서 업로드</a></div>`;
+      return;
+    }
+    const allShown = ids.slice(0, shown + limit);
+    grid.innerHTML = '';
+    allShown.forEach((id, i) => {
+      const card = document.createElement('div');
+      card.className = 'photo-card';
+      card.dataset.idx = i;
+      card.dataset.albumKey = key;
+      card.innerHTML = `<img src="https://drive.google.com/thumbnail?id=${id}&sz=w400" alt="사진" loading="lazy"><div class="photo-overlay"><i class="fas fa-expand-alt"></i></div>`;
+      card.addEventListener('click', () => openPhotoModal(key, i));
+      grid.appendChild(card);
+    });
+    _albumState[key].shown = shown + limit;
+
+    const footer = document.getElementById(cfg.footerId);
+    if (footer) footer.style.display = _albumState[key].shown >= ids.length ? 'none' : 'block';
+  }
+
+  function photoShowMore(key) { renderAlbumPage(key); }
+
+  /* 포토 모달 */
+  let _photoModalKey = '', _photoModalIdx = 0;
+  function openPhotoModal(key, idx) {
+    const state = _albumState[key];
+    if (!state) return;
+    _photoModalKey = key; _photoModalIdx = idx;
+    const id = state.ids[idx];
+    document.getElementById('photoModalImg').src = `https://drive.google.com/thumbnail?id=${id}&sz=w1200`;
+    document.getElementById('photoModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closePhotoModal(e) {
+    if (e.target.id === 'photoModal') {
+      document.getElementById('photoModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+  function photoModalNav(dir, e) {
+    e.stopPropagation();
+    const state = _albumState[_photoModalKey];
+    if (!state) return;
+    _photoModalIdx = (_photoModalIdx + dir + state.ids.length) % state.ids.length;
+    document.getElementById('photoModalImg').src = `https://drive.google.com/thumbnail?id=${state.ids[_photoModalIdx]}&sz=w1200`;
+  }
+
+  /* 탭 전환 시 앨범 로딩 */
+  document.querySelectorAll('.album-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.album-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.album-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.dataset.album;
+      document.getElementById('album-' + target)?.classList.add('active');
+      const key = target === 'new-member' ? 'newMember' : 'church';
+      if (!_albumState[key]) loadAlbumPhotos(key);
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadAlbumPhotos('newMember');
+  });
+
   /* ===== 번역 기능 ===== */
   function googleTranslateElementInit() {
     new google.translate.TranslateElement({
@@ -2575,6 +2702,16 @@ section{padding:100px 0}
   });
   </script>
 
+
+  <!-- ===== 포토 라이트박스 모달 ===== -->
+  <div class="photo-modal" id="photoModal" onclick="closePhotoModal(event)">
+    <div class="photo-modal-inner">
+      <button class="photo-modal-close" onclick="document.getElementById('photoModal').classList.remove('active')"><i class="fas fa-times"></i></button>
+      <div class="photo-modal-nav photo-modal-prev" onclick="photoModalNav(-1,event)"><i class="fas fa-chevron-left"></i></div>
+      <img id="photoModalImg" src="" alt="사진">
+      <div class="photo-modal-nav photo-modal-next" onclick="photoModalNav(1,event)"><i class="fas fa-chevron-right"></i></div>
+    </div>
+  </div>
   <!-- Google Translate -->
   <div id="google_translate_element" style="display:none"></div>
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
