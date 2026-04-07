@@ -5673,7 +5673,8 @@
 
       <!-- Tab Nav -->
       <div class="media-tabs" data-aos="fade-up" data-aos-delay="100">
-        <button class="tab-btn active" data-tab="sermon3-videos"><i class="fas fa-bible"></i> 3분설교</button>
+        <button class="tab-btn active" data-tab="intro-videos"><i class="fas fa-info-circle"></i> 교회소개</button>
+        <button class="tab-btn" data-tab="sermon3-videos"><i class="fas fa-bible"></i> 3분설교</button>
         <button class="tab-btn" data-tab="sunday-videos">주일예배</button>
         <button class="tab-btn" data-tab="dawn-videos">새벽예배</button>
         <button class="tab-btn" data-tab="wednesday-videos">수요예배</button>
@@ -5684,7 +5685,10 @@
       </div>
 
       <!-- Video Panels -->
-      <div id="sermon3-videos" class="video-panel active">
+      <div id="intro-videos" class="video-panel active">
+        <div class="video-grid" id="grid-intro"></div>
+      </div>
+      <div id="sermon3-videos" class="video-panel">
         <div class="video-grid" id="grid-sermon3">
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
@@ -6541,8 +6545,10 @@
         davidPraise: 'PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re',
         davidWorship: 'PLmD7ZicLdWIr1pf1o7elRvmMNcylM6N4X',
         bridge: 'PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf',
+        intro: ['k-Q5Wjq7uPM', 'QDiuCMbU6QA', '1aFKsdp6Tbs', 'HCOmPxGr1pQ']
       };
       const CATEGORIES = {
+        intro: { label: '교회소개', keywords: [] },
         sermon3: { label: '3분설교', keywords: ['3분설교', '[3분설교]'] },
         david: { label: '다윗의찬양', keywords: ['다윗의찬양', '다윗의 찬양'] },
         sunday: { label: '주일예배', keywords: ['다윗의예배', '다윗의 예배', '시편의예배', '시편의 예배', '주일설교', '주일예배'] },
@@ -6730,6 +6736,24 @@
       }
 
       async function init() {
+        // 교회소개 수동 렌더링
+        const introTitles = ['하늘바람교회 시설영상', '하늘바람교회는?', '문고리챌린지', '위대한 응원'];
+        const introGrid = document.getElementById('grid-intro');
+        if (introGrid) {
+          introGrid.innerHTML = PL.intro.map((id, i) => `
+            <div class="video-card" onclick="YT.openModal('${id}')">
+              <div class="video-thumb">
+                <img src="https://i.ytimg.com/vi/${id}/mqdefault.jpg" alt="${introTitles[i]}">
+                <div class="video-play-overlay"><div class="video-play-btn"><i class="fas fa-play"></i></div></div>
+              </div>
+              <div class="video-info">
+                <span class="video-category">교회소개</span>
+                <p class="video-title">${introTitles[i]}</p>
+              </div>
+            </div>
+          `).join('');
+        }
+
         const showErr = (id) => {
           const g = document.getElementById(id);
           if (g) g.innerHTML = `<div class="video-empty" style="grid-column:1/-1;padding:40px 20px;text-align:center"><i class="fab fa-youtube" style="font-size:2.5rem;color:#ff0000;margin-bottom:12px;display:block"></i><p>영상을 불러올 수 없습니다</p><p style="font-size:0.8rem;opacity:0.6;margin-top:8px">잠시 후 다시 시도해주세요</p></div>`;
