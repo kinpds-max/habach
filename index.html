@@ -1250,7 +1250,7 @@ section{padding:100px 0}
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-sermon3" data-playlist="SEARCH_sermon3" data-cat="sermon3"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
+          <button class="btn-expand" data-grid="grid-sermon3" data-playlist="UPLOADS" data-cat="sermon3"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
           <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
@@ -1268,7 +1268,7 @@ section{padding:100px 0}
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-dawn" data-playlist="SEARCH_dawn" data-cat="dawn"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
+          <button class="btn-expand" data-grid="grid-dawn" data-playlist="UPLOADS" data-cat="dawn"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
           <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
@@ -1277,7 +1277,7 @@ section{padding:100px 0}
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-wednesday" data-playlist="SEARCH_wednesday" data-cat="wednesday"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
+          <button class="btn-expand" data-grid="grid-wednesday" data-playlist="UPLOADS" data-cat="wednesday"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
           <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
@@ -2080,6 +2080,18 @@ section{padding:100px 0}
       return { videos, nextPageToken: json.nextPageToken || null };
     }
 
+    /* UPLOADS_PL 최대 N페이지(50개×N) 수집 → 카테고리 필터용 */
+    async function fetchUploadsAll(maxPages = 3) {
+      let all = [], token = null;
+      for (let i = 0; i < maxPages; i++) {
+        const r = await fetchPlaylistAPI(UPLOADS_PL, null, token);
+        all = all.concat(r.videos);
+        token = r.nextPageToken;
+        if (!token) break;
+      }
+      return all;
+    }
+
     /* YouTube Data API v3 playlistItems 호출 */
     async function fetchPlaylistAPI(playlistId, category, pageToken = null) {
       let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${API_KEY}`;
@@ -2208,49 +2220,43 @@ section{padding:100px 0}
       };
       try {
         /* 병렬 fetch */
-        const [sermon3Res, dawnRes, wednesdayRes, fridayRes, praiseRes, worshipRes, bridgeRes, shortsRes] = await Promise.allSettled([
-          fetchSearchAPI('3분설교'),
-          fetchSearchAPI('새벽예배'),
-          fetchSearchAPI('수요예배'),
-          fetchPlaylistAPI(PL.friday,       'friday'),
-          fetchPlaylistAPI(PL.davidPraise,  'david'),
-          fetchPlaylistAPI(PL.davidWorship, 'sunday'),
-          fetchPlaylistAPI(PL.bridge,       'bridge'),
-          fetchShortsAPI(),
+        /* 병렬 fetch: UPLOADS 3페이지 + 전용 플레이리스트 + Shorts */
+        const [uploadsAll, fridayRes, praiseRes, worshipRes, bridgeRes, shortsRes] = await Promise.all([
+          fetchUploadsAll(3).catch(() => []),
+          fetchPlaylistAPI(PL.friday,       'friday').catch(() => ({ videos: [], nextPageToken: null })),
+          fetchPlaylistAPI(PL.davidPraise,  'david').catch(()  => ({ videos: [], nextPageToken: null })),
+          fetchPlaylistAPI(PL.davidWorship, 'sunday').catch(() => ({ videos: [], nextPageToken: null })),
+          fetchPlaylistAPI(PL.bridge,       'bridge').catch(() => ({ videos: [], nextPageToken: null })),
+          fetchShortsAPI().catch(() => ({ videos: [], nextPageToken: null })),
         ]);
 
-        const ok = (r, def) => r.status === 'fulfilled' ? r.value : def;
-        const empty = { videos: [], nextPageToken: null };
-        const sermon3Data   = ok(sermon3Res,    empty);
-        const dawnData      = ok(dawnRes,        empty);
-        const wednesdayData = ok(wednesdayRes,   empty);
-        const fridayData    = ok(fridayRes,      empty);
-        const praiseData    = ok(praiseRes,      empty);
-        const worshipData   = ok(worshipRes,     empty);
-        const bridgeData    = ok(bridgeRes,      empty);
-        const shortsData    = ok(shortsRes,      empty);
-
         const byDate = arr => arr.slice().sort((a,b) => new Date(b.pubDate||0) - new Date(a.pubDate||0));
+
+        /* UPLOADS 3페이지에서 카테고리별 분류 */
+        const normals     = uploadsAll.filter(v => !v.isShorts);
+        const sermon3Vs   = byDate(normals.filter(v => v.category === 'sermon3'));
+        const dawnVs      = byDate(normals.filter(v => v.category === 'dawn'));
+        const wednesdayVs = byDate(normals.filter(v => v.category === 'wednesday'));
 
         /* 각 그리드 초기화 (JS 배치 제어) */
         const ig = window._initVideoGrid;
         if (ig) {
-          ig('grid-sermon3',   byDate(sermon3Data.videos),   sermon3Data.nextPageToken);
-          ig('grid-dawn',      byDate(dawnData.videos),      dawnData.nextPageToken);
-          ig('grid-wednesday', byDate(wednesdayData.videos), wednesdayData.nextPageToken);
-          ig('grid-friday',    byDate(fridayData.videos),    fridayData.nextPageToken);
-          ig('grid-david',     byDate(praiseData.videos),    praiseData.nextPageToken);
-          ig('grid-sunday',    byDate(worshipData.videos),   worshipData.nextPageToken);
-          ig('grid-bridge',    byDate(bridgeData.videos),    bridgeData.nextPageToken);
+          ig('grid-sermon3',   sermon3Vs,              null);
+          ig('grid-dawn',      dawnVs,                 null);
+          ig('grid-wednesday', wednesdayVs,            null);
+          ig('grid-friday',    byDate(fridayRes.videos),  fridayRes.nextPageToken);
+          ig('grid-david',     byDate(praiseRes.videos),  praiseRes.nextPageToken);
+          ig('grid-sunday',    byDate(worshipRes.videos), worshipRes.nextPageToken);
+          ig('grid-bridge',    byDate(bridgeRes.videos),  bridgeRes.nextPageToken);
         }
 
         /* Shorts */
-        renderShorts(shortsData.videos, shortsData.videos.length || 10);
-        if (typeof window._setShortsToken === 'function') window._setShortsToken(shortsData.nextPageToken);
+        renderShorts(shortsRes.videos, shortsRes.videos.length || 10);
+        if (typeof window._setShortsToken === 'function') window._setShortsToken(shortsRes.nextPageToken);
 
       } catch (err) {
         console.warn('[YT]', err);
-        ['grid-sermon3','grid-sunday','grid-dawn','grid-wednesday','grid-friday','grid-david','grid-bridge'].forEach(showErr);
+        ['grid-sermon3','grid-dawn','grid-wednesday','grid-sunday','grid-friday','grid-david','grid-bridge'].forEach(showErr);
       }
     }
     return { init, openModal, fetchPlaylist: fetchPlaylistAPI, fetchShorts: fetchShortsAPI, fetchSearch: fetchSearchAPI, card: createCard, shortsCard: createShortsCard, uploadsPL: () => UPLOADS_PL, classify };
@@ -2296,7 +2302,7 @@ section{padding:100px 0}
       });
     };
 
-    /* SEARCH_* 쿼리/파라미터 매핑 */
+    /* SEARCH_* 매핑 (할당량 여유 시 폴백용으로 유지) */
     const SEARCH_META = {
       SEARCH_sermon3:   { query: '3분설교',  extra: '' },
       SEARCH_dawn:      { query: '새벽예배', extra: '' },
