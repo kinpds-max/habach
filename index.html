@@ -783,7 +783,8 @@ section{padding:100px 0}
 .bflip-ext-btn:hover{background:var(--gold);color:var(--navy)}
 /* iframe 뷰어 영역 */
 .bflip-viewer{position:relative;width:100%;max-width:800px;aspect-ratio:210/297;border-radius:8px;overflow:hidden;box-shadow:0 4px 28px rgba(0,0,0,0.18);background:#f0f0f0}
-.bflip-viewer iframe{position:absolute;inset:0;width:100%;height:100%;border:none;display:block}
+/* iframe을 위아래로 늘려서 Drive 검정 툴바를 클리핑으로 숨김 */
+.bflip-viewer iframe{position:absolute;left:0;width:100%;border:none;display:block;top:-56px;height:calc(100% + 112px)}
 .bflip-viewer-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text-muted);font-size:0.9rem;background:#f8f8f8;transition:opacity 0.3s}
 .bflip-viewer-loading.hidden{opacity:0;pointer-events:none}
 @keyframes bflipFade{0%{opacity:0}100%{opacity:1}}
@@ -1239,7 +1240,7 @@ section{padding:100px 0}
         <button class="tab-btn" data-tab="friday-videos">금요예배</button>
         <button class="tab-btn" data-tab="david-videos"><i class="fas fa-music"></i> 다윗의찬양</button>
         <button class="tab-btn" data-tab="bridge-videos"><i class="fas fa-music"></i> 브릿지찬양대</button>
-        <a href="https://www.youtube.com/@Gimpo_HBC/shorts" target="_blank" class="tab-btn" style="text-decoration:none"><i class="fas fa-mobile-alt"></i> 숏폼 →</a>
+        <button class="tab-btn" data-tab="shorts-videos"><i class="fas fa-mobile-alt"></i> 숏폼모음</button>
       </div>
 
       <!-- Video Panels -->
@@ -1304,6 +1305,14 @@ section{padding:100px 0}
         <div class="panel-actions">
           <button class="btn-expand" data-grid="grid-bridge" data-playlist="PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf" data-cat="bridge"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
           <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
+        </div>
+      </div>
+      <div id="shorts-videos" class="video-panel">
+        <div class="shorts-grid" id="grid-shorts">
+          <div class="video-loading" style="grid-column:1/-1"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+        </div>
+        <div class="panel-actions" style="margin-top:28px">
+          <a href="https://www.youtube.com/@Gimpo_HBC/shorts" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
     </div>
@@ -1834,7 +1843,7 @@ section{padding:100px 0}
     if (loading) loading.classList.remove('hidden');
     if (frame) {
       frame.classList.remove('loaded');
-      frame.src = `https://drive.google.com/file/d/${e.id}/preview`;
+      frame.src = `https://drive.google.com/file/d/${e.id}/preview?embedded=true&rm=minimal`;
       frame.onload = () => {
         frame.classList.add('loaded');
         if (loading) loading.classList.add('hidden');
@@ -2099,6 +2108,62 @@ section{padding:100px 0}
       return card;
     }
 
+    /* Shorts: 채널 Shorts 페이지 스크래핑 (API 불필요) */
+    async function fetchShortsPage() {
+      const url = 'https://www.youtube.com/@Gimpo_HBC/shorts';
+      let html = null;
+      for (const proxy of [
+        u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+        u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+      ]) {
+        try {
+          const r = await fetch(proxy(url), { signal: AbortSignal.timeout(15000) });
+          if (!r.ok) continue;
+          html = await r.text();
+          if (html && html.length > 10000) break;
+        } catch {}
+      }
+      if (!html) return [];
+      /* ytInitialData JSON 추출 */
+      const m = html.match(/var ytInitialData\s*=\s*(\{.+?\});\s*<\/script>/s)
+             || html.match(/ytInitialData\s*=\s*(\{.+?\});/s);
+      if (!m) return [];
+      try {
+        const data = JSON.parse(m[1]);
+        const items = [];
+        JSON.stringify(data, (k, v) => {
+          if (k === 'reelItemRenderer' && v?.videoId) {
+            items.push({
+              videoId: v.videoId,
+              title: v.headline?.runs?.[0]?.text || '',
+              pubDate: '',
+              isShorts: true,
+              category: 'shorts'
+            });
+          }
+          return v;
+        });
+        return items.slice(0, 30);
+      } catch { return []; }
+    }
+
+    function createShortsCard(v) {
+      const card = document.createElement('div');
+      card.className = 'shorts-card';
+      card.innerHTML = `
+        <div class="shorts-thumb">
+          <img src="https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg" alt="${v.title}" loading="lazy"
+               onerror="this.src='https://i.ytimg.com/vi/${v.videoId}/mqdefault.jpg'">
+          <div class="shorts-play-overlay"><div class="shorts-play-btn"><i class="fab fa-youtube"></i></div></div>
+          <span class="shorts-badge"><i class="fas fa-mobile-alt"></i> Shorts</span>
+        </div>
+        <div class="shorts-info">
+          <p class="shorts-title">${v.title || 'Shorts'}</p>
+        </div>`;
+      card.addEventListener('click', () => openModal(v.videoId));
+      return card;
+    }
+
     function openModal(videoId) {
       const modal = document.getElementById('videoModal');
       const iframe = document.getElementById('modalIframe');
@@ -2146,7 +2211,7 @@ section{padding:100px 0}
         ['grid-sermon3','grid-dawn','grid-wednesday','grid-sunday','grid-friday','grid-david','grid-bridge'].forEach(showErr);
       }
     }
-    return { init, openModal, card: createCard, classify };
+    return { init, openModal, card: createCard, shortsCard: createShortsCard, fetchShorts: fetchShortsPage, classify };
   })();
 
   /* =============================================
@@ -2312,12 +2377,29 @@ section{padding:100px 0}
     iframe.addEventListener('load', () => setTimeout(() => iframe.classList.add('loaded'), 300));
   })();
   document.addEventListener('DOMContentLoaded', () => {
+    let _shortsLoaded = false;
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.video-panel').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
         document.getElementById(btn.dataset.tab)?.classList.add('active');
+        /* 숏폼 탭 최초 클릭 시 lazy load */
+        if (btn.dataset.tab === 'shorts-videos' && !_shortsLoaded) {
+          _shortsLoaded = true;
+          const grid = document.getElementById('grid-shorts');
+          YT.fetchShorts().then(videos => {
+            if (!grid) return;
+            grid.innerHTML = '';
+            if (!videos.length) {
+              grid.innerHTML = `<div class="video-empty" style="grid-column:1/-1;text-align:center;padding:40px 20px"><i class="fas fa-mobile-alt" style="font-size:2rem;opacity:.3;display:block;margin-bottom:12px"></i>숏폼 영상을 불러올 수 없습니다</div>`;
+              return;
+            }
+            videos.forEach(v => grid.appendChild(YT.shortsCard(v)));
+          }).catch(() => {
+            if (grid) grid.innerHTML = `<div class="video-empty" style="grid-column:1/-1;text-align:center;padding:40px 20px"><i class="fas fa-mobile-alt" style="font-size:2rem;opacity:.3;display:block;margin-bottom:12px"></i>숏폼 영상을 불러올 수 없습니다</div>`;
+          });
+        }
       });
     });
   });
