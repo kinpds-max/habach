@@ -112,20 +112,27 @@ button{border:none;background:none;cursor:pointer;font-family:inherit}
 #header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:transparent;border-bottom:1px solid transparent;transition:background 0.4s,box-shadow 0.4s,border-color 0.4s}
 #header.scrolled{background:rgba(8,15,42,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 32px rgba(0,0,0,0.45);border-bottom-color:rgba(255,255,255,0.1)}
 .header-inner{max-width:1400px;margin:0 auto;padding:0 48px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;height:120px;gap:32px}
-.nav-logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none;background:rgba(255,255,255,0.92);border-radius:10px;padding:5px 10px;backdrop-filter:blur(4px);transition:background 0.3s}
-.nav-logo:hover{background:rgba(255,255,255,1)}
+.nav-logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none;background:rgba(255,255,255,0.92);border-radius:10px;padding:5px 10px;backdrop-filter:blur(4px);transition:background 0.3s,transform 0.2s,box-shadow 0.2s}
+.nav-logo:hover{background:rgba(255,255,255,1);transform:scale(1.04);box-shadow:0 4px 20px rgba(0,0,0,0.18)}
+.nav-logo:active{transform:scale(0.96)}
+.nav-logo.logo-click{animation:logoBounce 0.5s cubic-bezier(0.36,0.07,0.19,0.97)}
+@keyframes logoBounce{0%{transform:scale(1)}20%{transform:scale(0.88) rotate(-4deg)}45%{transform:scale(1.12) rotate(3deg)}70%{transform:scale(0.97) rotate(-1deg)}100%{transform:scale(1) rotate(0deg)}}
 .logo-img{height:48px;width:auto;object-fit:contain;display:block;transition:opacity 0.2s}
-.logo-img:hover{opacity:0.9}
 
 .mobile-brand{display:none}
 .main-nav{display:flex;align-items:center;justify-content:center}
 .main-nav ul{display:flex;gap:0;align-items:center;list-style:none;margin:0;padding:0}
 .main-nav>ul>li{position:relative}
-.main-nav>ul>li>a{color:rgba(255,255,255,0.68);font-size:0.875rem;font-weight:500;padding:0 16px;transition:color 0.2s;letter-spacing:0.01em;display:flex;align-items:center;height:120px;position:relative;white-space:nowrap}
-.main-nav>ul>li>a::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:2px;background:var(--gold);border-radius:2px 2px 0 0;transition:width 0.25s ease}
-.main-nav>ul>li>a:hover{color:rgba(255,255,255,0.95)}
+.main-nav>ul>li>a{color:rgba(255,255,255,0.68);font-size:0.875rem;font-weight:500;padding:0 16px;transition:color 0.2s,transform 0.15s,letter-spacing 0.2s;letter-spacing:0.01em;display:flex;align-items:center;height:120px;position:relative;white-space:nowrap}
+.main-nav>ul>li>a::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:2px;background:var(--gold);border-radius:2px 2px 0 0;transition:width 0.3s cubic-bezier(0.4,0,0.2,1)}
+.main-nav>ul>li>a::before{content:"";position:absolute;inset:0;background:rgba(255,255,255,0);border-radius:8px;transition:background 0.2s}
+.main-nav>ul>li>a:hover{color:rgba(255,255,255,0.95);transform:translateY(-1px)}
+.main-nav>ul>li>a:hover::before{background:rgba(255,255,255,0.06)}
+.main-nav>ul>li>a:active{transform:translateY(1px) scale(0.97)}
 .main-nav>ul>li>a:hover::after,.main-nav>ul>li>a.active::after{width:calc(100% - 20px)}
 .main-nav>ul>li>a.active{color:var(--white);font-weight:600}
+.main-nav>ul>li>a.nav-clicked{animation:navPop 0.35s cubic-bezier(0.36,0.07,0.19,0.97)}
+@keyframes navPop{0%{transform:translateY(0) scale(1)}30%{transform:translateY(-3px) scale(1.08)}60%{transform:translateY(1px) scale(0.97)}100%{transform:translateY(0) scale(1)}}
 .header-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .btn-yt{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:rgba(255,0,0,0.8);color:white;border-radius:8px;font-size:0.85rem;transition:var(--transition)}
 .btn-yt:hover{background:#ff0000;transform:scale(1.08)}
@@ -2332,9 +2339,23 @@ section{padding:100px 0}
       const target = document.querySelector(id);
       if (!target) return;
       e.preventDefault();
+      // 메뉴 클릭 애니메이션
+      if (a.closest('.main-nav')) {
+        a.classList.remove('nav-clicked');
+        void a.offsetWidth;
+        a.classList.add('nav-clicked');
+        a.addEventListener('animationend', () => a.classList.remove('nav-clicked'), { once: true });
+      }
       const headerH = _header?.offsetHeight || 80;
       window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - headerH, behavior: 'smooth' });
     });
+  });
+  // 로고 클릭 애니메이션
+  document.querySelector('.nav-logo')?.addEventListener('click', function() {
+    this.classList.remove('logo-click');
+    void this.offsetWidth;
+    this.classList.add('logo-click');
+    this.addEventListener('animationend', () => this.classList.remove('logo-click'), { once: true });
   });
   document.addEventListener('DOMContentLoaded', () => {
     const sections = document.querySelectorAll('section[id]');
