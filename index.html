@@ -767,51 +767,37 @@ section{padding:100px 0}
   .float-bar{bottom:24px}
 }
 [data-aos]{will-change:transform,opacity}
-/* ===== 교회주보 앨범 그리드 ===== */
-.bulletin-album-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:4px 0 8px}
-.bul-card{background:var(--white);border:1px solid var(--gray-light);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:var(--transition);box-shadow:0 2px 8px rgba(15,32,68,0.06)}
-.bul-card:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(15,32,68,0.15);border-color:var(--gold)}
-.bul-thumb{position:relative;aspect-ratio:3/4;background:var(--off-white);overflow:hidden;display:flex;align-items:center;justify-content:center}
-.bul-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 0.35s}
-.bul-card:hover .bul-thumb img{transform:scale(1.04)}
-.bul-thumb-icon{font-size:2.5rem;color:var(--gray);opacity:0.3}
-.bul-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,15,42,0.75) 0%,transparent 50%);opacity:0;transition:opacity 0.25s;display:flex;align-items:flex-end;padding:12px}
-.bul-card:hover .bul-overlay{opacity:1}
-.bul-overlay-btn{display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:var(--navy);font-size:0.75rem;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:0.04em}
-.bul-info{padding:10px 12px}
-.bul-name{font-size:0.78rem;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4;margin-bottom:4px}
-.bul-actions{display:flex;align-items:center;gap:6px}
-.bul-open-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:4px;background:var(--off-white);color:var(--navy);border:1px solid var(--gray-light);font-size:0.72rem;font-weight:600;padding:5px 8px;border-radius:6px;transition:var(--transition);text-decoration:none}
-.bul-open-btn:hover{background:var(--navy);color:white;border-color:var(--navy)}
-.bul-drive-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:#4285f4;color:white;border-radius:6px;font-size:0.7rem;transition:var(--transition);flex-shrink:0;text-decoration:none}
-.bul-drive-btn:hover{background:#3367d6}
-.bcar-btn-more{display:flex;align-items:center;gap:8px;background:var(--off-white);color:var(--navy);border:1.5px solid var(--gray-light);padding:10px 28px;border-radius:50px;font-size:0.875rem;font-weight:600;cursor:pointer;transition:var(--transition);margin:8px auto 0;font-family:inherit}
-.bcar-btn-more:hover{background:var(--navy);color:white;border-color:var(--navy)}
-.bulletin-album-footer{text-align:center;margin-top:4px}
-@media(max-width:900px){.bulletin-album-grid{grid-template-columns:repeat(3,1fr);gap:12px}}
-@media(max-width:600px){.bulletin-album-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
+/* ===== 주보 플립북 ===== */
+.bflip-wrap{position:relative;display:flex;align-items:center;justify-content:center;gap:16px;padding:8px 0 16px}
+.bflip-book{position:relative;width:100%;max-width:420px;aspect-ratio:3/4;cursor:pointer;flex-shrink:0}
+.bflip-page{width:100%;height:100%;border-radius:6px;overflow:hidden;background:#fff;box-shadow:6px 6px 24px rgba(0,0,0,0.22),0 0 0 1px rgba(0,0,0,0.07);position:relative}
+.bflip-page img{width:100%;height:100%;object-fit:contain;display:block;background:#f8f8f8}
+.bflip-page-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);display:flex;align-items:center;justify-content:center;gap:8px;color:white;font-size:0.9rem;font-weight:600;opacity:0;transition:background 0.2s,opacity 0.2s}
+.bflip-book:hover .bflip-page-overlay{background:rgba(0,0,0,0.28);opacity:1}
+/* 페이지 넘김 애니메이션 */
+@keyframes bflipOutL{0%{transform:perspective(1000px) rotateY(0);opacity:1}100%{transform:perspective(1000px) rotateY(-80deg);opacity:0}}
+@keyframes bflipInL {0%{transform:perspective(1000px) rotateY(80deg);opacity:0}100%{transform:perspective(1000px) rotateY(0);opacity:1}}
+@keyframes bflipOutR{0%{transform:perspective(1000px) rotateY(0);opacity:1}100%{transform:perspective(1000px) rotateY(80deg);opacity:0}}
+@keyframes bflipInR {0%{transform:perspective(1000px) rotateY(-80deg);opacity:0}100%{transform:perspective(1000px) rotateY(0);opacity:1}}
+.bflip-page.anim-out-l{animation:bflipOutL 0.18s ease-in forwards}
+.bflip-page.anim-in-l {animation:bflipInL  0.2s  ease-out forwards}
+.bflip-page.anim-out-r{animation:bflipOutR 0.18s ease-in forwards}
+.bflip-page.anim-in-r {animation:bflipInR  0.2s  ease-out forwards}
+/* 네비게이션 버튼 */
+.bflip-nav{background:var(--navy);color:white;border:none;width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,0.2)}
+.bflip-nav:hover:not(:disabled){background:var(--gold);transform:scale(1.1)}
+.bflip-nav:disabled{opacity:0.25;cursor:default}
+/* 하단 바 */
+.bflip-footer{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:4px}
+.bflip-counter{font-size:0.9rem;font-weight:700;color:var(--navy);min-width:52px;text-align:center;background:var(--off-white);padding:4px 12px;border-radius:20px;border:1px solid var(--gray-light)}
+.bflip-dots{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:center}
+.bflip-dot{width:9px;height:9px;border-radius:50%;background:var(--gray-light);cursor:pointer;transition:background 0.2s,transform 0.2s;flex-shrink:0}
+.bflip-dot.active{background:var(--navy);transform:scale(1.35)}
+.bflip-open-btn{background:none;border:1.5px solid var(--navy);color:var(--navy);padding:6px 18px;border-radius:20px;font-size:0.82rem;font-weight:600;cursor:pointer;transition:background 0.2s,color 0.2s;display:inline-flex;align-items:center;gap:6px;font-family:inherit}
+.bflip-open-btn:hover{background:var(--navy);color:white}
+.bflip-loading{text-align:center;padding:60px 20px;color:var(--text-muted);font-size:0.9rem}
+@media(max-width:600px){.bflip-book{max-width:280px}.bflip-nav{width:38px;height:38px;font-size:0.85rem}}
 
-/* ===== 교회주보 캐러셀 ===== */
-.bulletin-carousel-wrap{position:relative;padding:0 48px}
-.bulletin-carousel{display:flex;align-items:stretch;min-height:300px}
-.bulletin-carousel .bulletin-preview-card{width:100%;flex-shrink:0;display:none;flex-direction:column;background:var(--white);border:1px solid var(--gray-light);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-md)}
-.bulletin-carousel .bulletin-preview-card.bcar-active{display:flex}
-.bcar-btn{position:absolute;top:50%;transform:translateY(-60%);width:36px;height:36px;border-radius:50%;background:var(--navy);color:white;border:2px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.9rem;transition:var(--transition);z-index:2}
-.bcar-btn:hover{background:var(--gold);border-color:var(--gold)}
-.bcar-prev{left:4px}.bcar-next{right:4px}
-.bcar-indicator{display:flex;justify-content:center;gap:6px;margin-top:10px;position:relative}
-.bcar-dot{width:7px;height:7px;border-radius:50%;background:var(--gray-light);cursor:pointer;transition:background 0.2s}
-.bcar-dot.active{background:var(--gold)}
-.bulletin-carousel .bpc-thumb{flex:1;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:400px;position:relative;}
-.bulletin-carousel .bpc-thumb img{position:absolute;width:100%;height:100%;object-fit:cover;object-position:100% 0%;display:block}
-.bulletin-carousel .bpc-info{padding:12px 16px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--gray-light);background:var(--white)}
-.bulletin-carousel .bpc-name{flex:1;font-size:0.82rem;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bulletin-carousel .bpc-open{flex-shrink:0;font-size:0.75rem;color:var(--blue);display:flex;align-items:center;gap:4px}
-.bulletin-carousel .bpc-open:hover{color:var(--gold)}
-.bulletin-carousel .bpc-thumb{position:relative}
-.bpc-zoom-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.45);color:white;display:flex;align-items:center;justify-content:center;gap:8px;font-size:0.85rem;font-weight:600;opacity:0;transition:opacity 0.25s;border-radius:inherit}
-.bulletin-preview-card:hover .bpc-zoom-overlay{opacity:1}
-@media(max-width:600px){.bulletin-carousel-wrap{padding:0 36px}.bcar-btn{width:30px;height:30px;font-size:0.8rem}}
 /* ===== \uad50\ud68c\uc18c\uac1c\uc601\uc0c1 ===== */
 .church-intro-video{margin-bottom:20px}
 .civ-label{font-size:0.8rem;font-weight:700;color:var(--gold);letter-spacing:0.08em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
@@ -1144,14 +1130,22 @@ section{padding:100px 0}
             <i class="fab fa-google-drive"></i> 주보 올리기
           </a>
         </div>
-        <!-- 주보 앨범 그리드 -->
-        <div class="bulletin-album-grid" id="bulletinNotices">
-          <div class="notice-loading"><i class="fas fa-circle-notch fa-spin"></i> 공지사항 불러오는 중...</div>
+        <!-- 주보 플립북 -->
+        <div class="bflip-wrap">
+          <button class="bflip-nav" id="bflipPrev" onclick="bflipMove(-1)" disabled><i class="fas fa-chevron-left"></i></button>
+          <div class="bflip-book" onclick="bflipOpenCurrent()">
+            <div class="bflip-page" id="bflipPage">
+              <img id="bflipImg" src="" alt="주보" loading="eager" style="display:none">
+              <div class="bflip-loading" id="bflipLoading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
+              <div class="bflip-page-overlay"><i class="fas fa-search-plus"></i> 크게 보기</div>
+            </div>
+          </div>
+          <button class="bflip-nav" id="bflipNext" onclick="bflipMove(1)" disabled><i class="fas fa-chevron-right"></i></button>
         </div>
-        <div class="bulletin-album-footer" id="bulletinAlbumFooter" style="display:none">
-          <button class="bcar-btn-more" onclick="bulletinShowMore()">
-            <i class="fas fa-plus"></i> 더보기
-          </button>
+        <div class="bflip-footer">
+          <span class="bflip-counter" id="bflipCounter" style="visibility:hidden">–</span>
+          <div class="bflip-dots" id="bflipDots"></div>
+          <button class="bflip-open-btn" id="bflipOpenBtn" onclick="bflipOpenCurrent()" style="visibility:hidden"><i class="fas fa-expand-alt"></i> 크게 보기</button>
         </div>
 
       </div>
@@ -1801,114 +1795,93 @@ section{padding:100px 0}
   ============================================= */
   const BULLETIN_FOLDER = '15rRGFV_nXCGg9PIRB7bkHzWssPVppCzZ';
   const BULLETIN_URL    = `https://drive.google.com/drive/folders/${BULLETIN_FOLDER}?usp=sharing`;
-  /* ===== 교회주보 앨범 그리드 크롤링 ===== */
-  let _bulletinAllItems = [];
-  let _bulletinShowing = 8;
+
+  /* ===== 주보 플립북 ===== */
+  let _bflipItems = [];
+  let _bflipIdx   = 0;
+  let _bflipBusy  = false;
+
+  function _bflipSortNum(name) {
+    const m = name.match(/\((\d+)\)/);
+    return m ? parseInt(m[1]) : 999;
+  }
+
+  function _bflipInit(files) {
+    _bflipItems = [...files].sort((a, b) => _bflipSortNum(a.name) - _bflipSortNum(b.name));
+    _bflipIdx = 0;
+    /* 도트 (최대 12개) */
+    const dotsEl = document.getElementById('bflipDots');
+    if (dotsEl) {
+      if (_bflipItems.length <= 12) {
+        dotsEl.innerHTML = _bflipItems.map((_, i) =>
+          `<div class="bflip-dot${i===0?' active':''}" onclick="bflipGo(${i})"></div>`).join('');
+      } else {
+        dotsEl.innerHTML = '';
+      }
+    }
+    _bflipShow(0);
+  }
+
+  function _bflipShow(idx) {
+    const e       = _bflipItems[idx];
+    if (!e) return;
+    const img     = document.getElementById('bflipImg');
+    const loading = document.getElementById('bflipLoading');
+    const counter = document.getElementById('bflipCounter');
+    const prev    = document.getElementById('bflipPrev');
+    const next    = document.getElementById('bflipNext');
+    const openBtn = document.getElementById('bflipOpenBtn');
+    if (loading) loading.style.display = 'none';
+    if (img) { img.style.display = 'block'; img.src = `https://drive.google.com/thumbnail?id=${e.id}&sz=w800`; }
+    if (counter) { counter.textContent = `${idx + 1} / ${_bflipItems.length}`; counter.style.visibility = 'visible'; }
+    if (openBtn) openBtn.style.visibility = 'visible';
+    if (prev) prev.disabled = idx === 0;
+    if (next) next.disabled = idx === _bflipItems.length - 1;
+    document.querySelectorAll('.bflip-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+
+  function bflipGo(idx) {
+    if (_bflipBusy || idx === _bflipIdx || idx < 0 || idx >= _bflipItems.length) return;
+    const dir  = idx > _bflipIdx ? 'l' : 'r';
+    const page = document.getElementById('bflipPage');
+    _bflipBusy = true;
+    page.classList.add(`anim-out-${dir}`);
+    setTimeout(() => {
+      page.classList.remove(`anim-out-${dir}`);
+      _bflipIdx = idx;
+      _bflipShow(idx);
+      page.classList.add(`anim-in-${dir}`);
+      setTimeout(() => { page.classList.remove(`anim-in-${dir}`); _bflipBusy = false; }, 200);
+    }, 180);
+  }
+
+  function bflipMove(dir) { bflipGo(_bflipIdx + dir); }
+  function bflipOpenCurrent() {
+    const e = _bflipItems[_bflipIdx];
+    if (e) openBulletinPreview(e.id, e.name);
+  }
+
+  /* 키보드 좌/우 지원 */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  bflipMove(-1);
+    if (e.key === 'ArrowRight') bflipMove(1);
+  });
 
   async function loadBulletinNotices() {
-    const el = document.getElementById('bulletinNotices');
-    if (!el || !GAS_API_URL) return;
+    if (!GAS_API_URL) return;
     try {
-      const r = await fetch(`${GAS_API_URL}?action=listFiles&folderId=${BULLETIN_FOLDER}`);
+      const r    = await fetch(`${GAS_API_URL}?action=listFiles&folderId=${BULLETIN_FOLDER}`);
       const json = await r.json();
       if (json.result === 'success' && json.files.length) {
-        _bulletinAllItems = json.files;
-        renderBulletinAlbum(0, _bulletinShowing);
-        renderBulletinCarousel();
+        _bflipInit(json.files);
         return;
       }
     } catch (err) {
       console.warn('[Bulletin] API 로드 실패:', err.message);
     }
-    el.innerHTML = `
-      <a href="${BULLETIN_URL}" target="_blank" style="display:flex;align-items:center;gap:10px;padding:20px;color:var(--text-muted);text-decoration:none">
-        <i class="fab fa-google-drive" style="font-size:1.4rem;color:#4285f4"></i>
-        <span>Google Drive에서 소식 확인하기</span>
-        <i class="fas fa-external-link-alt" style="margin-left:auto;opacity:0.4"></i>
-      </a>`;
+    const loading = document.getElementById('bflipLoading');
+    if (loading) loading.innerHTML = `<a href="${BULLETIN_URL}" target="_blank" style="color:var(--blue);text-decoration:none"><i class="fab fa-google-drive"></i> Drive에서 열기</a>`;
   }
-
-  function renderBulletinAlbum(from, count) {
-    const el = document.getElementById('bulletinNotices');
-    const footer = document.getElementById('bulletinAlbumFooter');
-    if (!el) return;
-    const items = _bulletinAllItems.slice(from, from + count);
-    if (from === 0) el.innerHTML = '';
-    items.forEach(e => {
-      const card = document.createElement('div');
-      card.className = 'bul-card';
-      card.innerHTML = `
-        <div class="bul-thumb">
-          <img src="https://drive.google.com/thumbnail?id=${e.id}&sz=w600"
-               alt="${_escHtml(e.name)}" loading="lazy"
-               onerror="this.parentElement.innerHTML='<i class='fas fa-file-pdf bul-thumb-icon'></i>'">
-          <div class="bul-overlay">
-            <span class="bul-overlay-btn"><i class="fas fa-eye"></i> 미리보기</span>
-          </div>
-        </div>
-        <div class="bul-info">
-          <p class="bul-name">${_escHtml(e.name)}</p>
-          <div class="bul-actions">
-            <button class="bul-open-btn" onclick="openBulletinPreview('${e.id}','${_escHtml(e.name)}')">
-              <i class="fas fa-search"></i> 미리보기
-            </button>
-            <a href="https://drive.google.com/file/d/${e.id}/view" target="_blank" class="bul-drive-btn" title="Drive에서 열기">
-              <i class="fab fa-google-drive"></i>
-            </a>
-          </div>
-        </div>`;
-      el.appendChild(card);
-    });
-    /* 더보기 버튼 */
-    if (footer) {
-      footer.style.display = (from + count < _bulletinAllItems.length) ? 'block' : 'none';
-    }
-  }
-
-  function bulletinShowMore() {
-    _bulletinShowing += 8;
-    renderBulletinAlbum(0, _bulletinShowing);
-  }
-
-  /* (2) 파일 공지사항 캐러셀 */
-  let _bcarIndex = 0;
-  function renderBulletinCarousel() {
-    const el = document.getElementById('bulletinCarousel');
-    const ind = document.getElementById('bulletinCarouselIndicator');
-    if (!el || !ind) return;
-    const notices = _bulletinAllItems.filter(e => e.name.includes('(2)'));
-    if (!notices.length) {
-      el.innerHTML = '<div class="notice-loading" style="width:100%;text-align:center;">크롤링할 공지사항 항목이 없습니다.</div>';
-      return;
-    }
-    el.innerHTML = notices.map((e, i) => `
-      <div class="bulletin-preview-card ${i===0?'bcar-active':''}" data-index="${i}">
-        <div class="bpc-thumb" onclick="openBulletinPreview('${e.id}','${_escHtml(e.name)}')">
-          <img src="https://drive.google.com/thumbnail?id=${e.id}&sz=w1000" alt="${_escHtml(e.name)}" loading="lazy">
-          <div class="bpc-zoom-overlay"><i class="fas fa-search-plus"></i> 클릭하여 원본보기</div>
-        </div>
-        <div class="bpc-info">
-          <p class="bpc-name">${_escHtml(e.name)}</p>
-          <button class="bpc-open" onclick="openBulletinPreview('${e.id}','${_escHtml(e.name)}')">
-            크게 보기 <i class="fas fa-external-link-alt"></i>
-          </button>
-        </div>
-      </div>
-    `).join('');
-    ind.innerHTML = notices.map((e, i) => `<div class="bcar-dot ${i===0?'active':''}" onclick="bcarGo(${i})"></div>`).join('');
-    _bcarIndex = 0;
-  }
-  function bcarGo(idx) {
-    const cards = document.querySelectorAll('#bulletinCarousel .bulletin-preview-card');
-    const dots  = document.querySelectorAll('#bulletinCarouselIndicator .bcar-dot');
-    if (!cards.length) return;
-    cards.forEach(c => c.classList.remove('bcar-active'));
-    dots.forEach(d => d.classList.remove('active'));
-    _bcarIndex = (idx + cards.length) % cards.length;
-    cards[_bcarIndex].classList.add('bcar-active');
-    dots[_bcarIndex].classList.add('active');
-  }
-  function bcarMove(dir) { bcarGo(_bcarIndex + dir); }
 
     /* 주보 파일 미리보기 모달 */
   function openBulletinPreview(fileId, fileName) {
@@ -2720,43 +2693,6 @@ section{padding:100px 0}
   function prayPost()  { _prayPost('prayName', 'prayText', 'prayList', '중보기도'); }
   function pray2Post() { _prayPost('pray2Name','pray2Text','pray2List','중보기도'); }
 
-  /* ===== 주보 쳤러셀 JS ===== */
-  let _bcarItems = [], _bcarIdx = 0;
-  function bcarRender() {
-    const el = document.getElementById('bulletinNotices');
-    const ind = document.getElementById('bcarIndicator');
-    if (!el || !_bcarItems.length) return;
-    el.innerHTML = _bcarItems.map((e, i) => `
-      <div class="bulletin-preview-card ${i===0?'bcar-active':''}" style="cursor:pointer"
-           onclick="openBulletinPreview('${e.id}','${_escHtml(e.name)}')">
-        <div class="bpc-thumb">
-          <img src="https://drive.google.com/thumbnail?id=${e.id}&sz=w1200"
-               alt="${_escHtml(e.name)}" loading="lazy"
-               onerror="this.parentElement.innerHTML='<i class=\'fas fa-file-pdf bpc-icon\'></i>'">
-          <div class="bpc-zoom-overlay"><i class="fas fa-search-plus"></i> 클릭하여 확대보기</div>
-        </div>
-        <div class="bpc-info">
-          <p class="bpc-name">${_escHtml(e.name)}</p>
-          <a href="https://drive.google.com/file/d/${e.id}/view" target="_blank" class="bpc-open"
-             onclick="event.stopPropagation()">
-            <i class="fas fa-external-link-alt"></i> 열기
-          </a>
-        </div>
-      </div>`).join('');
-    // 인디케이터
-    if (ind) ind.innerHTML = _bcarItems.map((_,i) => `<span class="bcar-dot ${i===0?'active':''}" onclick="bcarTo(${i})"></span>`).join('');
-  }
-  function bcarTo(idx) {
-    const cards = document.querySelectorAll('#bulletinNotices .bulletin-preview-card');
-    const dots  = document.querySelectorAll('#bcarIndicator .bcar-dot');
-    if (!cards.length) return;
-    cards[_bcarIdx]?.classList.remove('bcar-active');
-    dots[_bcarIdx]?.classList.remove('active');
-    _bcarIdx = (idx + _bcarItems.length) % _bcarItems.length;
-    cards[_bcarIdx]?.classList.add('bcar-active');
-    dots[_bcarIdx]?.classList.add('active');
-  }
-  function bcarMove(dir) { bcarTo(_bcarIdx + dir); }
 
   document.addEventListener('DOMContentLoaded', () => {
     prayRender('prayList',  '중보기도');
