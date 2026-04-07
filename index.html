@@ -1236,13 +1236,21 @@ section{padding:100px 0}
         <div class="video-grid" id="grid-friday">
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
-        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+        <div id="friday-more-wrap" style="display:none;text-align:center;margin-top:28px">
+          <button id="btn-friday-more" class="btn-more" style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;border:none;background:var(--navy);color:white;padding:12px 32px;border-radius:50px;font-weight:600;font-size:0.9rem;transition:background 0.2s,transform 0.15s">
+            <i class="fas fa-chevron-down"></i> 더보기
+          </button>
+        </div>
       </div>
       <div id="david-videos" class="video-panel">
         <div class="video-grid" id="grid-david">
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
-        <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-more">유튜브에서 더 보기 <i class="fas fa-arrow-right"></i></a>
+        <div id="david-more-wrap" style="display:none;text-align:center;margin-top:28px">
+          <button id="btn-david-more" class="btn-more" style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;border:none;background:var(--navy);color:white;padding:12px 32px;border-radius:50px;font-weight:600;font-size:0.9rem;transition:background 0.2s,transform 0.15s">
+            <i class="fas fa-chevron-down"></i> 더보기
+          </button>
+        </div>
       </div>
       <div id="shorts-videos" class="video-panel">
         <div class="shorts-grid" id="grid-shorts">
@@ -1945,6 +1953,12 @@ section{padding:100px 0}
     const STREAMS_PAGE = `https://www.youtube.com/@Gimpo_HBC/streams`;
     const VIDEOS_PAGE = `https://www.youtube.com/@Gimpo_HBC/videos`;
     const PLAYLIST_RSS = `https://www.youtube.com/feeds/videos.xml?playlist_id=PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re`;
+    const FRIDAY_PLAYLIST_ID  = 'PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx';
+    const FRIDAY_PLAYLIST_RSS = `https://www.youtube.com/feeds/videos.xml?playlist_id=${FRIDAY_PLAYLIST_ID}`;
+    const DAVID_PRAISE_ID     = 'PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re';  /* 다윗의찬양 */
+    const DAVID_PRAISE_RSS    = `https://www.youtube.com/feeds/videos.xml?playlist_id=${DAVID_PRAISE_ID}`;
+    const DAVID_WORSHIP_ID    = 'PLmD7ZicLdWIr1pf1o7elRvmMNcylM6N4X';  /* 다윗의예배 */
+    const DAVID_WORSHIP_RSS   = `https://www.youtube.com/feeds/videos.xml?playlist_id=${DAVID_WORSHIP_ID}`;
     const RAW_PROXIES = [
       'https://api.allorigins.win/raw?url=',
       'https://api.codetabs.com/v1/proxy?quest=',
@@ -2046,6 +2060,22 @@ section{padding:100px 0}
         return ids.map(videoId => ({ videoId, title:'', pubDate:'', isShorts:false, category:'all' }));
       } catch { return []; }
     }
+    async function fetchPlaylistPage(playlistId, category, knownIds = new Set(), limit = 50) {
+      try {
+        const html = await proxyFetch(`https://www.youtube.com/playlist?list=${playlistId}`);
+        const titledMap = new Map();
+        [...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"[^}]{0,300}"text":"([^"]{3,120})"/g)]
+          .forEach(m => { if (!titledMap.has(m[1])) titledMap.set(m[1], m[2]); });
+        const ids = [...new Set([...html.matchAll(/"videoId":"([a-zA-Z0-9_-]{11})"/g)].map(m => m[1]))]
+          .filter(id => !knownIds.has(id)).slice(0, limit);
+        return ids.map(videoId => ({
+          videoId, title: titledMap.get(videoId) || '', pubDate: '', isShorts: false, category
+        }));
+      } catch { return []; }
+    }
+    const fetchFridayPlaylistPage = (k, l) => fetchPlaylistPage(FRIDAY_PLAYLIST_ID, 'friday', k, l);
+    const fetchDavidPraiseMore    = (k, l) => fetchPlaylistPage(DAVID_PRAISE_ID,    'david',  k, l);
+    const fetchDavidWorshipMore   = (k, l) => fetchPlaylistPage(DAVID_WORSHIP_ID,   'sunday', k, l);
     async function fetchTitles(videos) {
       await Promise.allSettled(videos.map(async v => {
         if (v.title) return;
@@ -2116,6 +2146,38 @@ section{padding:100px 0}
       }
       list.forEach(v => grid.appendChild(createShortsCard(v)));
     }
+    function setupMoreBtn(wrapId, btnId, initialList, fetchFn, gridId) {
+      const wrap = document.getElementById(wrapId);
+      const btn  = document.getElementById(btnId);
+      if (!wrap || !btn) return;
+      wrap.style.display = 'block';
+      const shownIds = new Set(initialList.map(v => v.videoId));
+      let loading = false;
+      btn.addEventListener('click', async () => {
+        if (loading) return;
+        loading = true;
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...';
+        btn.disabled = true;
+        try {
+          const grid = document.getElementById(gridId);
+          const more = await fetchFn(shownIds, 30);
+          if (more.length) {
+            more.forEach(v => { shownIds.add(v.videoId); grid.appendChild(createCard(v)); });
+            btn.innerHTML = '<i class="fas fa-chevron-down"></i> 더보기';
+            btn.disabled = false;
+          } else {
+            btn.innerHTML = '모두 불러왔습니다';
+            btn.style.opacity = '0.5';
+            btn.style.cursor = 'default';
+            btn.disabled = true;
+          }
+        } catch {
+          btn.innerHTML = '<i class="fas fa-chevron-down"></i> 더보기';
+          btn.disabled = false;
+        }
+        loading = false;
+      });
+    }
     function openModal(videoId) {
       const modal = document.getElementById('videoModal');
       const iframe = document.getElementById('modalIframe');
@@ -2133,21 +2195,26 @@ section{padding:100px 0}
       };
       try {
         /* 독립적인 병렬 크롤링 및 폴백 지원 */
-        let rssVideos = [], pRssVideos = [], shortsFromPage = [], streamsFromPage = [];
+        let rssVideos = [], shortsFromPage = [], streamsFromPage = [];
         let usedVideosFallback = false;
-        
-        const [rssRes, pRssRes, shortsRes, streamsRes] = await Promise.allSettled([
+
+        const [rssRes, davidPraiseRes, davidWorshipRes, fridayRssRes, shortsRes, streamsRes] = await Promise.allSettled([
           fetchViaRss2Json(RSS_URL).catch(async () => {
              usedVideosFallback = true;
              return await fetchVideosPage(20);
           }),
-          fetchViaRss2Json(PLAYLIST_RSS, 'david').catch(async () => parseXML(await proxyFetch(PLAYLIST_RSS), 'david')),
+          fetchViaRss2Json(DAVID_PRAISE_RSS,  'david' ).catch(async () => parseXML(await proxyFetch(DAVID_PRAISE_RSS),  'david')),
+          fetchViaRss2Json(DAVID_WORSHIP_RSS, 'sunday').catch(async () => parseXML(await proxyFetch(DAVID_WORSHIP_RSS), 'sunday')),
+          fetchViaRss2Json(FRIDAY_PLAYLIST_RSS, 'friday').catch(async () => parseXML(await proxyFetch(FRIDAY_PLAYLIST_RSS), 'friday')),
           fetchShortsPage(10),
           fetchStreamsPage(15)
         ]);
 
-        if (rssRes.status === 'fulfilled') rssVideos = rssRes.value || [];
-        if (pRssRes.status === 'fulfilled') pRssVideos = pRssRes.value || [];
+        let davidPraiseVideos = [], davidWorshipVideos = [], fridayPlaylistVideos = [];
+        if (rssRes.status === 'fulfilled')         rssVideos          = rssRes.value          || [];
+        if (davidPraiseRes.status === 'fulfilled') davidPraiseVideos  = davidPraiseRes.value  || [];
+        if (davidWorshipRes.status === 'fulfilled') davidWorshipVideos = davidWorshipRes.value || [];
+        if (fridayRssRes.status === 'fulfilled')   fridayPlaylistVideos = fridayRssRes.value  || [];
         if (shortsRes.status === 'fulfilled') shortsFromPage = shortsRes.value || [];
         if (streamsRes.status === 'fulfilled') streamsFromPage = streamsRes.value || [];
         
@@ -2165,11 +2232,11 @@ section{padding:100px 0}
           });
         }
 
+        /* 채널 RSS + streams 병합 */
         const rssIds = new Set(rssVideos.map(v => v.videoId));
         const newStreams = streamsFromPage.filter(v => !rssIds.has(v.videoId));
         const allVideos = [...rssVideos, ...newStreams];
 
-        /* 최신순 정렬 (pubDate 없는 항목은 뒤로) */
         const byDate = arr => arr.slice().sort((a,b) => {
           const da = a.pubDate ? new Date(a.pubDate) : new Date(0);
           const db = b.pubDate ? new Date(b.pubDate) : new Date(0);
@@ -2178,23 +2245,38 @@ section{padding:100px 0}
 
         const normals   = allVideos.filter(v => !v.isShorts);
         const sermon3   = byDate(normals.filter(v => v.category === 'sermon3'));
-        const sunday    = byDate(normals.filter(v => v.category === 'sunday'));
         const dawn      = byDate(normals.filter(v => v.category === 'dawn'));
         const wednesday = byDate(normals.filter(v => v.category === 'wednesday'));
-        const friday    = byDate(normals.filter(v => v.category === 'friday'));
-        const david     = byDate(normals.filter(v => v.category === 'david'));
         const rssShorts = allVideos.filter(v => v.isShorts);
         const rssShortIds    = new Set(rssShorts.map(v => v.videoId));
         const pageShorts = shortsFromPage.filter(v => !rssShortIds.has(v.videoId));
         const allShorts  = [...rssShorts, ...pageShorts];
 
         renderGrid('grid-sermon3',   sermon3,   3);
-        renderGrid('grid-sunday',    sunday,    3);
         renderGrid('grid-dawn',      dawn,      3);
         renderGrid('grid-wednesday', wednesday, 3);
-        renderGrid('grid-friday',    friday,    3);
-        renderGrid('grid-david',     david,     3);
         renderShorts(allShorts, 5);
+
+        /* ── 다윗의찬양: 플레이리스트 전용 + 더보기 ── */
+        const dpIds = new Set(davidPraiseVideos.map(v => v.videoId));
+        const dpExtra = byDate(normals.filter(v => v.category === 'david' && !dpIds.has(v.videoId)));
+        const allDavidPraise = [...byDate(davidPraiseVideos), ...dpExtra];
+        renderGrid('grid-david', allDavidPraise, null);
+        setupMoreBtn('david-more-wrap', 'btn-david-more', allDavidPraise, fetchDavidPraiseMore, 'grid-david');
+
+        /* ── 다윗의예배 (주일예배 탭): 플레이리스트 전용 + 더보기 ── */
+        const dwIds = new Set(davidWorshipVideos.map(v => v.videoId));
+        const dwExtra = byDate(normals.filter(v => v.category === 'sunday' && !dwIds.has(v.videoId)));
+        const allSunday = [...byDate(davidWorshipVideos), ...dwExtra];
+        renderGrid('grid-sunday', allSunday, null);
+        /* sunday 탭은 더보기 wrap이 없으므로 조건부 */
+
+        /* ── 금요예배: 플레이리스트 전용 + 더보기 ── */
+        const friIds = new Set(fridayPlaylistVideos.map(v => v.videoId));
+        const friExtra = byDate(normals.filter(v => v.category === 'friday' && !friIds.has(v.videoId)));
+        const allFriday = [...byDate(fridayPlaylistVideos), ...friExtra];
+        renderGrid('grid-friday', allFriday, null);
+        setupMoreBtn('friday-more-wrap', 'btn-friday-more', allFriday, fetchFridayPlaylistPage, 'grid-friday');
 
         if (pageShorts.length) fetchTitles(pageShorts).then(() => renderShorts(allShorts, 5));
 
@@ -2443,6 +2525,7 @@ section{padding:100px 0}
       document.getElementById('mbn-worship')?.classList.add('active');
     }
   }, { passive: true });
+  const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbxq3pfh8mw2zwOxiZOFkNVyHdwyEmHHQ_n4u9vb0u0btocHkUwgoRrNwVcGxhLA7-gxBg/exec';
   // 중보기도 저장/렌더 (두 곳 공통)
   function prayLoad(key) { try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; } }
   function praySave(key, arr) { try { localStorage.setItem(key, JSON.stringify(arr.slice(0, 30))); } catch { } }
