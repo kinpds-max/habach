@@ -5445,14 +5445,64 @@
         </div>
       </div>
 
-      <!-- Church Intro Video -->
-      <div class="church-intro-video" data-aos="fade-up" data-aos-delay="50" style="margin-bottom: 70px;">
+      <!-- Church Intro Video Tabs -->
+      <div class="church-intro-tabs-wrap" data-aos="fade-up" data-aos-delay="50" style="margin-bottom: 70px;">
+        <div class="intro-video-tabs">
+          <button class="intro-tab-btn active" onclick="switchIntroVideo('k-Q5Wjq7uPM', this)">시설영상</button>
+          <button class="intro-tab-btn" onclick="switchIntroVideo('QDiuCMbU6QA', this)">교회란?</button>
+          <button class="intro-tab-btn" onclick="switchIntroVideo('1aFKsdp6Tbs', this)">문고리챌린지</button>
+          <button class="intro-tab-btn" onclick="switchIntroVideo('HCOmPxGr1pQ', this)">위대한 응원</button>
+        </div>
         <div class="civ-wrap">
-          <iframe src="https://www.youtube.com/embed/k-Q5Wjq7uPM?rel=0" title="하늘바람교회 소개영상" frameborder="0"
+          <iframe id="introMainPlayer" src="https://www.youtube.com/embed/k-Q5Wjq7uPM?rel=0" title="하늘바람교회 소개영상" frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen></iframe>
         </div>
       </div>
+      
+      <style>
+        .intro-video-tabs {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-bottom: 20px;
+          flex-wrap: wrap;
+        }
+        .intro-tab-btn {
+          background: var(--off-white);
+          border: 1px solid rgba(0,0,0,0.05);
+          padding: 10px 22px;
+          border-radius: 50px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: var(--text-muted);
+          cursor: pointer;
+          transition: all 0.25s;
+        }
+        .intro-tab-btn.active {
+          background: var(--navy);
+          color: white;
+          border-color: var(--navy);
+          box-shadow: var(--shadow-sm);
+        }
+        .intro-tab-btn:hover:not(.active) {
+          background: #eee;
+        }
+        @media (max-width: 600px) {
+          .intro-tab-btn {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+          }
+        }
+      </style>
+      <script>
+        function switchIntroVideo(id, btn) {
+          const player = document.getElementById('introMainPlayer');
+          if(player) player.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+          document.querySelectorAll('.intro-tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        }
+      </script>
 
       <!-- Vision Cards -->
       <div class="welcome-vision-grid" data-aos="fade-up" data-aos-delay="100">
@@ -5673,8 +5723,7 @@
 
       <!-- Tab Nav -->
       <div class="media-tabs" data-aos="fade-up" data-aos-delay="100">
-        <button class="tab-btn active" data-tab="intro-videos"><i class="fas fa-info-circle"></i> 교회소개</button>
-        <button class="tab-btn" data-tab="sermon3-videos"><i class="fas fa-bible"></i> 3분설교</button>
+        <button class="tab-btn active" data-tab="sermon3-videos"><i class="fas fa-bible"></i> 3분설교</button>
         <button class="tab-btn" data-tab="sunday-videos">주일예배</button>
         <button class="tab-btn" data-tab="dawn-videos">새벽예배</button>
         <button class="tab-btn" data-tab="wednesday-videos">수요예배</button>
@@ -5685,10 +5734,7 @@
       </div>
 
       <!-- Video Panels -->
-      <div id="intro-videos" class="video-panel active">
-        <div class="video-grid" id="grid-intro"></div>
-      </div>
-      <div id="sermon3-videos" class="video-panel">
+      <div id="sermon3-videos" class="video-panel active">
         <div class="video-grid" id="grid-sermon3">
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
@@ -6545,10 +6591,8 @@
         davidPraise: 'PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re',
         davidWorship: 'PLmD7ZicLdWIr1pf1o7elRvmMNcylM6N4X',
         bridge: 'PLmD7ZicLdWIppiQiS7qVEm002srY7W9lf',
-        intro: ['k-Q5Wjq7uPM', 'QDiuCMbU6QA', '1aFKsdp6Tbs', 'HCOmPxGr1pQ']
       };
       const CATEGORIES = {
-        intro: { label: '교회소개', keywords: [] },
         sermon3: { label: '3분설교', keywords: ['3분설교', '[3분설교]'] },
         david: { label: '다윗의찬양', keywords: ['다윗의찬양', '다윗의 찬양'] },
         sunday: { label: '주일예배', keywords: ['다윗의예배', '다윗의 예배', '시편의예배', '시편의 예배', '주일설교', '주일예배'] },
@@ -6609,6 +6653,41 @@
         const text = await fetchRSSText(url);
         if (!text) return [];
         return parseRSS(text, null);
+      }
+
+      async function fetchVideosPage(limit = 30) {
+        const url = `https://www.youtube.com/@Gimpo_HBC/videos`;
+        let html = null;
+        for (const proxy of [
+          u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+          u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+        ]) {
+          try {
+            const r = await fetch(proxy(url), { signal: AbortSignal.timeout(15000) });
+            if (!r.ok) continue;
+            html = await r.text();
+            if (html && html.length > 10000) break;
+          } catch { }
+        }
+        if (!html) return [];
+        const m = html.match(/ytInitialData\s*=\s*(\{.+?\});/) || html.match(/var ytInitialData\s*=\s*(\{.+?\});/);
+        if (!m) return [];
+        try {
+          const data = JSON.parse(m[1]);
+          const items = [];
+          JSON.stringify(data, (k, v) => {
+            if (k === 'videoRenderer' && v?.videoId) {
+              const t = v.title?.runs?.[0]?.text || '';
+              items.push({
+                videoId: v.videoId, title: t,
+                pubDate: v.publishedTimeText?.simpleText || '',
+                isShorts: false, category: classify(t)
+              });
+            }
+            return v;
+          });
+          return items.slice(0, limit);
+        } catch { return []; }
       }
 
       /* 플레이리스트 페이지 직접 스크래핑 (RSS보다 정확하고 최신순 유지) */
@@ -6736,37 +6815,20 @@
       }
 
       async function init() {
-        // 교회소개 수동 렌더링
-        const introTitles = ['하늘바람교회 시설영상', '하늘바람교회는?', '문고리챌린지', '위대한 응원'];
-        const introGrid = document.getElementById('grid-intro');
-        if (introGrid) {
-          introGrid.innerHTML = PL.intro.map((id, i) => `
-            <div class="video-card" onclick="YT.openModal('${id}')">
-              <div class="video-thumb">
-                <img src="https://i.ytimg.com/vi/${id}/mqdefault.jpg" alt="${introTitles[i]}">
-                <div class="video-play-overlay"><div class="video-play-btn"><i class="fas fa-play"></i></div></div>
-              </div>
-              <div class="video-info">
-                <span class="video-category">교회소개</span>
-                <p class="video-title">${introTitles[i]}</p>
-              </div>
-            </div>
-          `).join('');
-        }
-
         const showErr = (id) => {
           const g = document.getElementById(id);
           if (g) g.innerHTML = `<div class="video-empty" style="grid-column:1/-1;padding:40px 20px;text-align:center"><i class="fab fa-youtube" style="font-size:2.5rem;color:#ff0000;margin-bottom:12px;display:block"></i><p>영상을 불러올 수 없습니다</p><p style="font-size:0.8rem;opacity:0.6;margin-top:8px">잠시 후 다시 시도해주세요</p></div>`;
         };
         try {
           /* 병렬 데이터 수집 (안전한 RSS + 풍부한 Scrape 병행) */
-          const [channelVs, fPr, dPr, wPr, bPr, shortsVs] = await Promise.all([
+          const [channelVs, fPr, dPr, wPr, bPr, shortsVs, moreVs] = await Promise.all([
             fetchChannelRSS().catch(() => []),
             fetchPlaylistPage(PL.friday, 'friday', 12),
             fetchPlaylistPage(PL.davidPraise, 'david', 12), 
             fetchPlaylistPage(PL.davidWorship, 'sunday', 12),
             fetchPlaylistPage(PL.bridge, 'bridge', 12),
-            fetchShortsPage().catch(() => [])
+            fetchShortsPage().catch(() => []),
+            fetchVideosPage(30).catch(() => [])
           ]);
 
           /* Scrape 실패 시 RSS로 다시 시도 (안전 장치) */
@@ -6784,9 +6846,10 @@
           ]);
 
           const byDate = arr => arr.slice().sort((a, b) => new Date(b.pubDate || 0) - new Date(a.pubDate || 0));
-          const sermon3Vs = byDate(channelVs.filter(v => v.category === 'sermon3'));
-          const dawnVs = byDate(channelVs.filter(v => v.category === 'dawn'));
-          const wednesdayVs = byDate(channelVs.filter(v => v.category === 'wednesday'));
+          const allChannelVs = [...moreVs, ...channelVs];
+          const sermon3Vs = byDate(allChannelVs.filter(v => v.category === 'sermon3'));
+          const dawnVs = byDate(allChannelVs.filter(v => v.category === 'dawn'));
+          const wednesdayVs = byDate(allChannelVs.filter(v => v.category === 'wednesday'));
 
           const ig = window._initVideoGrid;
           if (ig) {
