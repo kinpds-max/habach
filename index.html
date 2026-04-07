@@ -4700,27 +4700,29 @@
       color: var(--navy)
     }
 
-    /* iframe 뷰어 영역 */
+    /* iframe 뷰어 영역 - 주보 가로형(스프레드) 비율로 조정 */
     .bflip-viewer {
       position: relative;
       width: 100%;
-      max-width: 800px;
-      aspect-ratio: 210/297;
-      border-radius: 8px;
+      max-width: 850px;
+      aspect-ratio: 1.4 / 1;
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 28px rgba(0, 0, 0, 0.18);
-      background: #f0f0f0
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      background: #000
     }
 
-    /* iframe을 위아래로 늘려서 Drive 검정 툴바를 클리핑으로 숨김 */
+    /* Drive 검정 여백 및 툴바 제거를 위한 클리핑 강화 */
     .bflip-viewer iframe {
       position: absolute;
       left: 0;
       width: 100%;
       border: none;
       display: block;
-      top: -56px;
-      height: calc(100% + 112px)
+      top: -12%;
+      height: 124%;
+      transform: scale(1.02);
+      transform-origin: center;
     }
 
     .bflip-viewer-loading {
@@ -5981,6 +5983,18 @@
             onmouseover="this.style.background='var(--gold-light)'" onmouseout="this.style.background='var(--gold)'">
             <i class="fas fa-mug-hot"></i> 하늘바람 카페 입장하기
           </a>
+
+          <!-- 미션 브릿지 영상 미리보기 (추가) -->
+          <div class="mission-video-preview" style="margin-top: 48px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 32px;">
+            <h3 style="color:var(--gold); font-family:var(--font-serif); font-size:1.2rem; margin-bottom:20px; text-align:center;">
+              <i class="fab fa-youtube" style="margin-right:8px;"></i> 브릿지 찬양 영상
+            </h3>
+            <div class="video-grid" id="grid-mission-bridge" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
+              <div class="video-loading" style="color:rgba(255,255,255,0.5); grid-column: 1/-1;">
+                <i class="fas fa-circle-notch fa-spin"></i> 영상을 불러오는 중...
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -6522,6 +6536,47 @@
         return parseRSS(text, null);
       }
 
+      /* 플레이리스트 페이지 직접 스크래핑 (RSS보다 정확하고 최신순 유지) */
+      async function fetchPlaylistPage(playlistId, category, limit = 12) {
+        try {
+          const url = `https://www.youtube.com/playlist?list=${playlistId}`;
+          let html = null;
+          for (const proxy of [
+            u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+            u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+          ]) {
+            try {
+              const r = await fetch(proxy(url), { signal: AbortSignal.timeout(15000) });
+              if (!r.ok) continue;
+              html = await r.text();
+              if (html && html.length > 20000) break;
+            } catch { }
+          }
+          if (!html) return [];
+          const m = html.match(/var ytInitialData\s*=\s*(\{.+?\});\s*<\/script>/s)
+            || html.match(/ytInitialData\s*=\s*(\{.+?\});/s);
+          if (!m) return [];
+          const data = JSON.parse(m[1]);
+          const items = [];
+          JSON.stringify(data, (k, v) => {
+            if (k === 'playlistVideoRenderer' && v?.videoId) {
+              const title = v.title?.runs?.[0]?.text || '';
+              if (!items.find(it => it.videoId === v.videoId)) {
+                items.push({
+                  videoId: v.videoId,
+                  title: title,
+                  pubDate: v.videoInfo?.runs?.[0]?.text || '', 
+                  isShorts: false,
+                  category: category || classify(title)
+                });
+              }
+            }
+            return v;
+          });
+          return items.slice(0, limit);
+        } catch (e) { console.warn('[YT] Playlist Scrape Error:', e); return []; }
+      }
+
       function createCard(v) {
         const catInfo = CATEGORIES[v.category] || { label: '영상' };
         const card = document.createElement('div');
@@ -6612,32 +6667,33 @@
           if (g) g.innerHTML = `<div class="video-empty" style="grid-column:1/-1;padding:40px 20px;text-align:center"><i class="fab fa-youtube" style="font-size:2.5rem;color:#ff0000;margin-bottom:12px;display:block"></i><p>영상을 불러올 수 없습니다</p><p style="font-size:0.8rem;opacity:0.6;margin-top:8px">잠시 후 다시 시도해주세요</p></div>`;
         };
         try {
-          /* 병렬 RSS fetch (API 키/할당량 불필요) */
-          const [channelVs, fridayRes, praiseRes, worshipRes, bridgeRes] = await Promise.all([
+          /* 병렬 데이터 수집: RSS(일반) + 플레이리스트 직접 스크래핑(중요 카테고리) */
+          const [channelVs, fridayVs, davidVs, worshipVs, bridgeVs] = await Promise.all([
             fetchChannelRSS().catch(() => []),
-            fetchPlaylistRSS(PL.friday, 'friday').catch(() => ({ videos: [] })),
-            fetchPlaylistRSS(PL.davidPraise, 'david').catch(() => ({ videos: [] })),
-            fetchPlaylistRSS(PL.davidWorship, 'sunday').catch(() => ({ videos: [] })),
-            fetchPlaylistRSS(PL.bridge, 'bridge').catch(() => ({ videos: [] })),
+            fetchPlaylistPage(PL.friday, 'friday', 12).catch(() => []),
+            fetchPlaylistPage(PL.davidPraise, 'david', 12).catch(() => []), 
+            fetchPlaylistPage(PL.davidWorship, 'sunday', 12).catch(() => []),
+            fetchPlaylistPage(PL.bridge, 'bridge', 12).catch(() => []),
           ]);
 
           const byDate = arr => arr.slice().sort((a, b) => new Date(b.pubDate || 0) - new Date(a.pubDate || 0));
 
-          /* 채널 최신 15개에서 카테고리별 분류 */
+          /* 채널 최신 피드에서 분류 (RSS 폴백용) */
           const sermon3Vs = byDate(channelVs.filter(v => v.category === 'sermon3'));
           const dawnVs = byDate(channelVs.filter(v => v.category === 'dawn'));
           const wednesdayVs = byDate(channelVs.filter(v => v.category === 'wednesday'));
 
-          /* 각 그리드 초기화 */
+          /* 각 그리드 초기화 및 렌더링 */
           const ig = window._initVideoGrid;
           if (ig) {
             ig('grid-sermon3', sermon3Vs, null);
             ig('grid-dawn', dawnVs, null);
             ig('grid-wednesday', wednesdayVs, null);
-            ig('grid-friday', byDate(fridayRes.videos), null);
-            ig('grid-david', byDate(praiseRes.videos), null);
-            ig('grid-sunday', byDate(worshipRes.videos), null);
-            ig('grid-bridge', byDate(bridgeRes.videos), null);
+            ig('grid-friday', fridayVs, null);   // 플레이리스트 스크래핑 결과 (최신순)
+            ig('grid-david', davidVs, null);     // 다윗의찬양 최신순
+            ig('grid-sunday', worshipVs, null);
+            ig('grid-bridge', bridgeVs, null);   // 미디어센터 - 브릿지탭
+            ig('grid-mission-bridge', bridgeVs, null); // 미션섹션 하단 - 브릿지영상
           }
         } catch (err) {
           console.warn('[YT]', err);
