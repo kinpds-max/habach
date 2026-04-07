@@ -2972,9 +2972,21 @@
       margin-bottom: 12px
     }
 
-    .footer-brand p {
-      font-size: 0.875rem;
-      line-height: 1.7
+    .footer-brand-title {
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .footer-brand-desc {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+    .footer-brand-corp {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.4);
     }
 
     .footer-verse {
@@ -4413,8 +4425,12 @@
       }
 
       .footer-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 32px
+        grid-template-columns: 1fr;
+        gap: 32px;
+        text-align: center;
+      }
+      .footer-brand, .footer-links, .footer-worship {
+        padding: 0 10px;
       }
 
       .footer-bottom {
@@ -6231,9 +6247,9 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <p style="font-weight:700;color:white;font-size:1.2rem;margin-bottom:10px">하늘바람교회</p>
-          <p>하늘의 바람이 이 땅에 임하는 교회</p>
-          <p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin-top:4px">예수교대한성결교회</p>
+          <span class="footer-brand-title">하늘바람교회</span>
+          <p class="footer-brand-desc">하늘의 바람이 이 땅에 임하는 교회</p>
+          <p class="footer-brand-corp">예수교대한성결교회</p>
           <p class="footer-verse">"홀연히 하늘로부터 급하고 강한 바람 같은<br>소리가 있어" — 사도행전 2:2</p>
         </div>
         <div class="footer-links">
