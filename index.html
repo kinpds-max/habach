@@ -4709,25 +4709,66 @@
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      background: #000
+      background: #000;
+      touch-action: pan-y;
     }
 
-    /* Drive 검정 여백 및 툴바 제거를 위한 클리핑 강화 */
-    .bflip-viewer iframe {
-      position: absolute;
-      left: 0;
+    .bflip-viewer .swiper-slide {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+
+    .bflip-viewer .swiper-slide img {
       width: 100%;
-      border: none;
-      display: block;
-      top: -12%;
-      height: 124%;
-      transform: scale(1.02);
-      transform-origin: center;
+      height: 100%;
+      object-fit: contain;
+      user-select: none;
+    }
+
+    /* 사이드 버튼 스타일 */
+    .bflip-viewer .swiper-button-prev,
+    .bflip-viewer .swiper-button-next {
+      color: var(--gold);
+      background: rgba(0, 0, 0, 0.4);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(4px);
+    }
+
+    .bflip-viewer .swiper-button-prev:after,
+    .bflip-viewer .swiper-button-next:after {
+      font-size: 1.1rem;
+      font-weight: 900;
+    }
+
+    .bflip-viewer .swiper-button-prev:hover,
+    .bflip-viewer .swiper-button-next:hover {
+      background: var(--gold);
+      color: var(--navy);
+      transform: scale(1.1);
+    }
+
+    /* 모바일에서는 버튼 크기 조정 */
+    @media(max-width: 768px) {
+      .bflip-viewer .swiper-button-prev,
+      .bflip-viewer .swiper-button-next {
+        width: 38px;
+        height: 38px;
+      }
+      .bflip-viewer .swiper-button-prev:after,
+      .bflip-viewer .swiper-button-next:after {
+        font-size: 0.9rem;
+      }
     }
 
     .bflip-viewer-loading {
       position: absolute;
       inset: 0;
+      z-index: 10;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -5509,11 +5550,8 @@
         <div class="bflip-wrap">
           <div class="bflip-toolbar" id="bflipToolbar" style="visibility:hidden">
             <div class="bflip-toolbar-left">
-              <button class="bflip-nav" id="bflipPrev" onclick="bflipMove(-1)" disabled><i
-                  class="fas fa-chevron-left"></i></button>
+              <!-- 기존 상단 이동 버튼 제거 (좌우 버튼 요청 대응) -->
               <span class="bflip-counter" id="bflipCounter">–</span>
-              <button class="bflip-nav" id="bflipNext" onclick="bflipMove(1)" disabled><i
-                  class="fas fa-chevron-right"></i></button>
               <div class="bflip-dots" id="bflipDots"></div>
             </div>
             <div class="bflip-toolbar-right">
@@ -5521,12 +5559,16 @@
                   class="fas fa-external-link-alt"></i> 새탭에서 열기</a>
             </div>
           </div>
-          <div class="bflip-viewer" id="bflipViewer">
+          <!-- 주보 뷰어 영역 (Swiper 슬라이더로 변경) -->
+          <div class="bflip-viewer swiper" id="bflipSwiper">
             <div class="bflip-viewer-loading" id="bflipLoading">
               <i class="fas fa-circle-notch fa-spin" style="font-size:1.8rem;color:var(--gold)"></i>
               <span>주보 불러오는 중...</span>
             </div>
-            <iframe id="bflipFrame" src="" title="교회주보" allowfullscreen></iframe>
+            <div class="swiper-wrapper" id="bflipWrapper"></div>
+            <!-- 좌우 화살표 버튼 -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
           </div>
         </div>
 
@@ -6245,10 +6287,9 @@
     const BULLETIN_FOLDER = '15rRGFV_nXCGg9PIRB7bkHzWssPVppCzZ';
     const BULLETIN_URL = `https://drive.google.com/drive/folders/${BULLETIN_FOLDER}?usp=sharing`;
 
-    /* ===== 주보 플립북 ===== */
+    /* ===== 주보 플립북 (Swiper 기반) ===== */
     let _bflipItems = [];
-    let _bflipIdx = 0;
-    let _bflipBusy = false;
+    let _bflipSwiper = null;
 
     function _bflipSortNum(name) {
       const m = name.match(/\((\d+)\)/);
@@ -6256,91 +6297,67 @@
     }
 
     function _bflipInit(files) {
-      /* 중복 파일 ID 제거 후 번호 순 정렬 */
       const seen = new Set();
       const unique = files.filter(f => { if (seen.has(f.id)) return false; seen.add(f.id); return true; });
       _bflipItems = unique.sort((a, b) => _bflipSortNum(a.name) - _bflipSortNum(b.name));
-      _bflipIdx = 0;
-      /* 도트 (최대 12개) */
+      
+      const wrapper = document.getElementById('bflipWrapper');
       const dotsEl = document.getElementById('bflipDots');
-      if (dotsEl) {
-        if (_bflipItems.length <= 12) {
-          dotsEl.innerHTML = _bflipItems.map((_, i) =>
-            `<div class="bflip-dot${i === 0 ? ' active' : ''}" onclick="bflipGo(${i})"></div>`).join('');
-        } else {
-          dotsEl.innerHTML = '';
-        }
-      }
-      _bflipShow(0);
-    }
-
-    function _bflipShow(idx) {
-      const e = _bflipItems[idx];
-      if (!e) return;
-      const frame = document.getElementById('bflipFrame');
+      const toolbar = document.getElementById('bflipToolbar');
       const loading = document.getElementById('bflipLoading');
       const counter = document.getElementById('bflipCounter');
-      const toolbar = document.getElementById('bflipToolbar');
-      const prev = document.getElementById('bflipPrev');
-      const next = document.getElementById('bflipNext');
       const extLink = document.getElementById('bflipExtLink');
-      /* 로딩 표시 */
-      if (loading) loading.classList.remove('hidden');
-      if (frame) {
-        frame.classList.remove('loaded');
-        frame.src = `https://drive.google.com/file/d/${e.id}/preview?embedded=true&rm=minimal`;
-        frame.onload = () => {
-          frame.classList.add('loaded');
-          if (loading) loading.classList.add('hidden');
-        };
-      }
-      if (counter) counter.textContent = `${idx + 1} / ${_bflipItems.length}`;
+
+      if (!wrapper || !_bflipItems.length) return;
+
+      // 슬라이드 생성
+      wrapper.innerHTML = _bflipItems.map(f => `
+        <div class="swiper-slide">
+          <img src="https://drive.google.com/thumbnail?id=${f.id}&sz=w1200" alt="${f.name}" 
+               onload="this.parentElement.classList.add('loaded')">
+        </div>
+      `).join('');
+
+      if (loading) loading.classList.add('hidden');
       if (toolbar) toolbar.style.visibility = 'visible';
-      if (extLink) extLink.href = `https://drive.google.com/file/d/${e.id}/view`;
-      if (prev) prev.disabled = idx === 0;
-      if (next) next.disabled = idx === _bflipItems.length - 1;
-      document.querySelectorAll('.bflip-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
-    }
+      if (counter) counter.textContent = `1 / ${_bflipItems.length}`;
+      if (extLink) extLink.href = `https://drive.google.com/file/d/${_bflipItems[0].id}/view`;
 
-    function bflipGo(idx) {
-      if (_bflipBusy || idx === _bflipIdx || idx < 0 || idx >= _bflipItems.length) return;
-      _bflipBusy = true;
-      _bflipIdx = idx;
-      _bflipShow(idx);
-      setTimeout(() => { _bflipBusy = false; }, 300);
-    }
+      // 도트 생성
+      if (dotsEl) {
+        dotsEl.innerHTML = _bflipItems.map((_, i) =>
+          `<div class="bflip-dot${i === 0 ? ' active' : ''}" onclick="_bflipSwiper.slideTo(${i})"></div>`).join('');
+      }
 
-    function bflipMove(dir) { bflipGo(_bflipIdx + dir); }
+      // Swiper 초기화 호출
+      _bflipInitSwiper();
+    }
+    // 새탭 열기 (현재 슬라이드 기준)
     function bflipOpenCurrent() {
-      const e = _bflipItems[_bflipIdx];
-      if (e) window.open(`https://drive.google.com/file/d/${e.id}/view`, '_blank');
+      if (!_bflipSwiper || !_bflipItems.length) return;
+      const idx = _bflipSwiper.activeIndex;
+      window.open(`https://drive.google.com/file/d/${_bflipItems[idx].id}/view`, '_blank');
     }
 
-    /* 키보드 좌/우 지원 */
-    document.addEventListener('keydown', e => {
-      if (e.key === 'ArrowLeft') bflipMove(-1);
-      if (e.key === 'ArrowRight') bflipMove(1);
-    });
-
-    /* 터치 스와이프 지원 */
-    (function () {
-      let _sx = 0, _sy = 0;
-      document.addEventListener('DOMContentLoaded', () => {
-        const viewer = document.getElementById('bflipViewer');
-        if (!viewer) return;
-        viewer.addEventListener('touchstart', e => {
-          _sx = e.touches[0].clientX;
-          _sy = e.touches[0].clientY;
-        }, { passive: true });
-        viewer.addEventListener('touchend', e => {
-          const dx = e.changedTouches[0].clientX - _sx;
-          const dy = e.changedTouches[0].clientY - _sy;
-          if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
-            dx < 0 ? bflipMove(1) : bflipMove(-1);
+    // Swiper 초기화 시 keyboard 지원 추가
+    function _bflipInitSwiper() {
+      if (_bflipSwiper) _bflipSwiper.destroy();
+      _bflipSwiper = new Swiper('#bflipSwiper', {
+        loop: false,
+        keyboard: { enabled: true },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        on: {
+          slideChange: function() {
+            const idx = this.activeIndex;
+            const counter = document.getElementById('bflipCounter');
+            const extLink = document.getElementById('bflipExtLink');
+            if (counter) counter.textContent = `${idx + 1} / ${_bflipItems.length}`;
+            if (extLink) extLink.href = `https://drive.google.com/file/d/${_bflipItems[idx].id}/view`;
+            document.querySelectorAll('.bflip-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
           }
-        }, { passive: true });
+        }
       });
-    })();
+    }
 
     async function loadBulletinNotices() {
       if (!GAS_API_URL) return;
