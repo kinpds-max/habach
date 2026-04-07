@@ -5428,21 +5428,24 @@
             하나님이 디자인하신 교회를 세워 세계 비전을 이루고자 시작되었으며,<br>
             아래 3대 가치를 품고 건강한 교회를 세우고 확장하는 일에 전력하고 있습니다.
           </p>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;">
-            <div
-              style="flex:1;min-width:180px;background:var(--off-white);border-left:3px solid var(--gold);padding:14px 18px;border-radius:6px;font-size:0.97rem;color:var(--text);">
-              <em>'성경을 성경되게 하는 교회'</em>
-            </div>
-            <div
-              style="flex:1;min-width:180px;background:var(--off-white);border-left:3px solid var(--gold);padding:14px 18px;border-radius:6px;font-size:0.97rem;color:var(--text);">
-              <em>'성령을 성령되게 하는 교회'</em>
-            </div>
-            <div
-              style="flex:1;min-width:180px;background:var(--off-white);border-left:3px solid var(--gold);padding:14px 18px;border-radius:6px;font-size:0.97rem;color:var(--text);">
-              <em>'교회를 교회되게 하는 교회'</em>
-            </div>
+          <div class="intro-value-grid">
+            <div class="intro-value-card"><em>'성경을 성경되게 하는 교회'</em></div>
+            <div class="intro-value-card"><em>'성령을 성령되게 하는 교회'</em></div>
+            <div class="intro-value-card"><em>'교회를 교회되게 하는 교회'</em></div>
           </div>
         </div>
+      </div>
+
+      <style>
+        .intro-value-grid { display:flex; gap:12px; flex-wrap:wrap; }
+        .intro-value-card {
+          flex:1; min-width:180px; background:var(--off-white); border-left:3px solid var(--gold);
+          padding:14px 18px; border-radius:6px; font-size:0.97rem; color:var(--text);
+        }
+        @media (max-width: 768px) {
+          .intro-value-card { min-width: 100%; }
+        }
+      </style>
       </div>
 
       <!-- Church Intro Video Tabs -->
@@ -6209,7 +6212,7 @@
           <h4>예배 안내</h4>
           <ul style="font-size:0.85rem;line-height:1.6;">
             <li><strong style="color:white;">주일예배</strong></li>
-            <li>시편의 예배 (1부) - 오전 08:30</li>
+            <li>시편의 예배 (1부) - 오전 09:00</li>
             <li>다윗의 예배 (2부) - 오전 11:00</li>
             <li>시끄러운 '234스몰' 예배 - 오후 1:00</li>
             <li>더 설레임 예배 (청소년/청년) - 오후 1:00</li>
@@ -6223,11 +6226,11 @@
         </div>
         <div class="footer-worship">
           <h4>온라인 헌금 안내</h4>
-          <ul style="font-size:0.85rem;line-height:1.6;">
-            <li><span>[일반헌금]</span><span>농협 301-0225-4290-01</span></li>
-            <li><span>[건축헌금]</span><span>농협 301-0225-4299-21</span></li>
-            <li><span>[선교헌금]</span><span>농협 301-0225-4307-01</span></li>
-            <li style="color:var(--gold);margin-top:4px;">예금주 : 하늘바람교회</li>
+          <ul style="font-size:0.85rem;line-height:1.6;text-align:left;padding-left:0;list-style:none;">
+            <li style="display:flex;justify-content:flex-start;gap:10px;"><span>[일반헌금]</span><span style="font-weight:600;">농협 301-0225-4290-01</span></li>
+            <li style="display:flex;justify-content:flex-start;gap:10px;"><span>[건축헌금]</span><span style="font-weight:600;">농협 301-0225-4299-21</span></li>
+            <li style="display:flex;justify-content:flex-start;gap:10px;"><span>[선교헌금]</span><span style="font-weight:600;">농협 301-0225-4307-01</span></li>
+            <li style="color:var(--gold);margin-top:4px;text-align:left;">예금주 : 하늘바람교회</li>
           </ul>
           <h4 style="margin-top:24px;">전도·기도·상담 문의</h4>
           <ul style="font-size:0.8rem;line-height:1.6;color:rgba(255,255,255,0.7);">
@@ -6608,15 +6611,16 @@
         mission: 'PLmD7ZicLdWIpCvLBIHgm-c5Al-sh5pi9Y'
       };
       const CATEGORIES = {
-        sermon3: { label: '3분설교', keywords: ['3분설교', '[3분설교]'] },
-        david: { label: '다윗의찬양', keywords: ['다윗의찬양', '다윗의 찬양'] },
-        sunday: { label: '주일예배', keywords: ['다윗의예배', '다윗의 예배', '시편의예배', '시편의 예배', '주일설교', '주일예배'] },
-        dawn: { label: '새벽예배', keywords: ['새벽예배', '새벽기도', '촛불새벽', '새벽'] },
+        sermon3: { label: '3분설교', keywords: ['3분설교', '[3분설교]', '3분 설교', '절대 말씀', '오늘의 말씀'] },
+        david: { label: '다윗의찬양', keywords: ['다윗의찬양', '다윗의 찬양', '찬양 리스트'] },
+        sunday: { label: '주일예배', keywords: ['다윗의예배', '다윗의 예배', '시편의예배', '시편의 예배', '주일설교', '주일예배', '주일 1부', '주일 2부'] },
+        dawn: { label: '새벽예배', keywords: ['새벽예배', '새벽기도', '촛불새벽', '새벽', '제사장의 기도'] },
         wednesday: { label: '수요예배', keywords: ['수요성경예배', '수요성경', '수요예배', '수요 예배', '성경예배', '수요기도', '수요'] },
         friday: { label: '금요예배', keywords: ['금요기도회', '강청기도', '금요예배', '금요 예배', '금요기도', '금요'] },
         bridge: { label: '브릿지 찬양대', keywords: ['브릿지찬양대', '브릿지 찬양대', '브릿지'] },
-        event: { label: '행사영상', keywords: ['행사영상'] },
-        mission: { label: '미션브릿지', keywords: ['미션브릿지'] }
+        event: { label: '행사영상', keywords: ['행사영상', '교회소식', '특별행사'] },
+        mission: { label: '미션브릿지', keywords: ['미션브릿지', 'Mission Bridge'] },
+        shorts: { label: '숏폼', keywords: ['shorts', 'Shorts', '숏츠', '쇼츠'] }
       };
       function classify(title) {
         for (const [key, cat] of Object.entries(CATEGORIES))
@@ -6766,6 +6770,42 @@
         return card;
       }
 
+      /* 라이브 페이지 스크래핑 (새벽예배, 수요예배 등 실시간 영상 수집용) */
+      async function fetchLivePage(limit = 12) {
+        const url = 'https://www.youtube.com/@Gimpo_HBC/streams';
+        let html = null;
+        for (const proxy of [
+          u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+          u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+        ]) {
+          try {
+            const r = await fetch(proxy(url), { signal: AbortSignal.timeout(15000) });
+            if (!r.ok) continue;
+            html = await r.text();
+            if (html && html.length > 10000) break;
+          } catch { }
+        }
+        if (!html) return [];
+        const m = html.match(/ytInitialData\s*=\s*(\{.+?\});/) || html.match(/var ytInitialData\s*=\s*(\{.+?\});/);
+        if (!m) return [];
+        try {
+          const data = JSON.parse(m[1]);
+          const items = [];
+          JSON.stringify(data, (k, v) => {
+            if (k === 'videoRenderer' && v?.videoId) {
+              const t = v.title?.runs?.[0]?.text || '';
+              items.push({
+                videoId: v.videoId, title: t,
+                pubDate: v.publishedTimeText?.simpleText || '라이브',
+                isShorts: false, category: classify(t)
+              });
+            }
+            return v;
+          });
+          return items.slice(0, limit);
+        } catch { return []; }
+      }
+
       /* Shorts: 채널 Shorts 페이지 스크래핑 (API 불필요) */
       async function fetchShortsPage() {
         const url = 'https://www.youtube.com/@Gimpo_HBC/shorts';
@@ -6837,8 +6877,8 @@
           if (g) g.innerHTML = `<div class="video-empty" style="grid-column:1/-1;padding:40px 20px;text-align:center"><i class="fab fa-youtube" style="font-size:2.5rem;color:#ff0000;margin-bottom:12px;display:block"></i><p>영상을 불러올 수 없습니다</p><p style="font-size:0.8rem;opacity:0.6;margin-top:8px">잠시 후 다시 시도해주세요</p></div>`;
         };
         try {
-          /* 병렬 데이터 수집 (안전한 RSS + 풍부한 Scrape 병행) */
-          const [channelVs, fPr, dPr, wPr, bPr, shortsVs, moreVs, eventPr, missionPr] = await Promise.all([
+          /* 병렬 데이터 수집 (안전한 RSS + 풍부한 Scrape + 라이브/숏폼 병행) */
+          const [channelVs, fPr, dPr, wPr, bPr, shortsVs, moreVs, eventPr, missionPr, liveVs] = await Promise.all([
             fetchChannelRSS().catch(() => []),
             fetchPlaylistPage(PL.friday, 'friday', 12),
             fetchPlaylistPage(PL.davidPraise, 'david', 12), 
@@ -6847,7 +6887,8 @@
             fetchShortsPage().catch(() => []),
             fetchVideosPage(30).catch(() => []),
             fetchPlaylistPage(PL.event, 'event', 12),
-            fetchPlaylistPage(PL.mission, 'mission', 4)
+            fetchPlaylistPage(PL.mission, 'mission', 4),
+            fetchLivePage(20).catch(() => [])
           ]);
 
           /* Scrape 실패 시 RSS로 다시 시도 (안전 장치) */
@@ -6867,7 +6908,7 @@
           ]);
 
           const byDate = arr => arr.slice().sort((a, b) => new Date(b.pubDate || 0) - new Date(a.pubDate || 0));
-          const allChannelVs = [...moreVs, ...channelVs];
+          const allChannelVs = [...moreVs, ...channelVs, ...liveVs];
           const sermon3Vs = byDate(allChannelVs.filter(v => v.category === 'sermon3'));
           const dawnVs = byDate(allChannelVs.filter(v => v.category === 'dawn'));
           const wednesdayVs = byDate(allChannelVs.filter(v => v.category === 'wednesday'));
