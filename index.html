@@ -716,11 +716,11 @@ section{padding:100px 0}
 }
 @media(max-width:768px){.hero-fallback-bg{inset:0;filter:brightness(0.65)}.hero-title{font-size:clamp(1.9rem,8vw,3rem)}.hero-desc{font-size:0.875rem}.section-title{font-size:clamp(1.5rem,5vw,2rem)}.worship-card{padding:28px 16px}.worship-card h3{font-size:1rem}.media-tabs{flex-wrap:wrap;gap:6px}.tab-btn{padding:8px 14px;font-size:0.8rem}.video-grid{grid-template-columns:repeat(2,1fr);gap:14px}.shorts-grid{grid-template-columns:repeat(2,1fr);gap:12px}.blog-card{padding:16px;gap:12px}.cafe-grid{grid-template-columns:repeat(2,1fr);gap:14px}.cafe-card{padding:24px 16px}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}.footer-bottom{flex-direction:column;text-align:center}.float-btn{width:42px;height:42px;font-size:1rem}.float-bar{bottom:20px;right:14px;gap:8px}.drive-embed{height:380px}.album-drive-wrap{min-height:380px}}
 @media(max-width:640px){.container{padding:0 20px}section{padding:60px 0}.worship-grid{grid-template-columns:1fr 1fr}.video-grid{grid-template-columns:1fr}.cafe-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}.hero-btns{flex-direction:column}.welcome-card-wrap{grid-template-columns:1fr 1fr}.header-inner{padding:0 20px}}
-/* PC: 3개 초기 노출, 나머지 숨김 */
-.video-grid:not(.expanded) .video-card:nth-child(n+4){display:none}
-/* 모바일: 2개 초기 노출 */
+/* PC: 6개 초기 노출, 나머지 숨김 */
+.video-grid:not(.expanded) .video-card:nth-child(n+7){display:none}
+/* 모바일: 3개 초기 노출 */
 @media(max-width:768px){
-  .video-grid:not(.expanded) .video-card:nth-child(n+3){display:none}
+  .video-grid:not(.expanded) .video-card:nth-child(n+4){display:none}
 }
 /* 패널 액션 */
 .panel-actions{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:28px;flex-wrap:wrap}
@@ -728,10 +728,10 @@ section{padding:100px 0}
 .btn-expand:hover{background:var(--navy);color:white;transform:translateY(-1px)}
 .btn-yt-more{display:inline-flex;align-items:center;gap:7px;background:#ff0000;color:white;padding:11px 24px;border-radius:50px;font-weight:600;font-size:0.875rem;text-decoration:none;transition:background 0.2s,transform 0.15s}
 .btn-yt-more:hover{background:#cc0000;transform:translateY(-1px)}
-/* Shorts: PC 5개, 모바일 4개 초기 노출 */
-.shorts-grid:not(.expanded) .shorts-card:nth-child(n+6){display:none}
+/* Shorts: PC 10개, 모바일 6개 초기 노출 */
+.shorts-grid:not(.expanded) .shorts-card:nth-child(n+11){display:none}
 @media(max-width:768px){
-  .shorts-grid:not(.expanded) .shorts-card:nth-child(n+5){display:none}
+  .shorts-grid:not(.expanded) .shorts-card:nth-child(n+7){display:none}
 }
 @media(max-width:480px){.btn-primary,.btn-outline{padding:12px 22px;font-size:0.875rem}.video-grid{grid-template-columns:1fr}.shorts-grid{grid-template-columns:repeat(2,1fr)}.cafe-grid{grid-template-columns:1fr}.float-label{display:none}.drive-embed{height:300px}.album-drive-wrap{min-height:300px}.shorts-more-wrap{display:flex;justify-content:center;margin-top:24px}}
 /* 모바일 상단 탭 표시 */
@@ -900,7 +900,6 @@ section{padding:100px 0}
       <nav class="main-nav" id="mainNav">
         <ul>
           <li><a href="#welcome">교회소개</a></li>
-          <li><a href="history.html">교회역사</a></li>
           <li><a href="#worship">예배안내</a></li>
           <li><a href="#news">교회소식</a></li>
           <li><a href="#media">미디어</a></li>
@@ -1221,8 +1220,8 @@ section{padding:100px 0}
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-sermon3"><i class="fas fa-chevron-down"></i> 펼쳐보기</button>
-          <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브에서 더보기</a>
+          <button class="btn-expand" data-grid="grid-sermon3"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
+          <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
       <div id="sunday-videos" class="video-panel">
@@ -1230,8 +1229,8 @@ section{padding:100px 0}
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-sunday" data-playlist="PLmD7ZicLdWIr1pf1o7elRvmMNcylM6N4X" data-cat="sunday"><i class="fas fa-chevron-down"></i> 펼쳐보기</button>
-          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIr1pf1o7elRvmMNcylM6N4X" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브에서 더보기</a>
+          <button class="btn-expand" data-grid="grid-sunday" data-playlist="PLmD7ZicLdWIr1pf1o7elRvmMNcylM6N4X" data-cat="sunday"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
+          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIr1pf1o7elRvmMNcylM6N4X" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
       <div id="dawn-videos" class="video-panel">
@@ -1239,8 +1238,8 @@ section{padding:100px 0}
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-dawn"><i class="fas fa-chevron-down"></i> 펼쳐보기</button>
-          <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브에서 더보기</a>
+          <button class="btn-expand" data-grid="grid-dawn"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
+          <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
       <div id="wednesday-videos" class="video-panel">
@@ -1248,8 +1247,8 @@ section{padding:100px 0}
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-wednesday"><i class="fas fa-chevron-down"></i> 펼쳐보기</button>
-          <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브에서 더보기</a>
+          <button class="btn-expand" data-grid="grid-wednesday"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
+          <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
       <div id="friday-videos" class="video-panel">
@@ -1257,8 +1256,8 @@ section{padding:100px 0}
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-friday" data-playlist="PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx" data-cat="friday"><i class="fas fa-chevron-down"></i> 펼쳐보기</button>
-          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브에서 더보기</a>
+          <button class="btn-expand" data-grid="grid-friday" data-playlist="PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx" data-cat="friday"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
+          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
       <div id="david-videos" class="video-panel">
@@ -1266,8 +1265,8 @@ section{padding:100px 0}
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-david" data-playlist="PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re" data-cat="david"><i class="fas fa-chevron-down"></i> 펼쳐보기</button>
-          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브에서 더보기</a>
+          <button class="btn-expand" data-grid="grid-david" data-playlist="PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re" data-cat="david"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
+          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
       <div id="shorts-videos" class="video-panel">
@@ -1275,8 +1274,8 @@ section{padding:100px 0}
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions" style="margin-top:28px">
-          <button id="btn-shorts-expand" class="btn-expand"><i class="fas fa-chevron-down"></i> 펼쳐보기</button>
-          <a href="https://www.youtube.com/@Gimpo_HBC/shorts" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브에서 더보기</a>
+          <button id="btn-shorts-expand" class="btn-expand"><i class="fas fa-chevron-down"></i> 영상 더보기</button>
+          <a href="https://www.youtube.com/@Gimpo_HBC/shorts" target="_blank" class="btn-yt-more"><i class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
     </div>
@@ -2108,7 +2107,7 @@ section{padding:100px 0}
           result.videos.forEach(v => grid.appendChild(createCard(v)));
           token = result.nextPageToken;
           if (token) {
-            btn.innerHTML = '<i class="fas fa-chevron-down"></i> 더보기';
+            btn.innerHTML = '<i class="fas fa-chevron-down"></i> 영상 더보기';
             btn.disabled = false;
           } else {
             btn.innerHTML = '모두 불러왔습니다';
@@ -2116,7 +2115,7 @@ section{padding:100px 0}
             btn.style.cursor = 'default';
           }
         } catch {
-          btn.innerHTML = '<i class="fas fa-chevron-down"></i> 더보기';
+          btn.innerHTML = '<i class="fas fa-chevron-down"></i> 영상 더보기';
           btn.disabled = false;
         }
         loading = false;
@@ -2230,10 +2229,10 @@ section{padding:100px 0}
           }
 
           if (expandTokens[playlist]) {
-            this.innerHTML = '<i class="fas fa-chevron-down"></i> 더보기';
+            this.innerHTML = '<i class="fas fa-chevron-down"></i> 영상 더보기';
             this.disabled = false;
           } else {
-            this.innerHTML = '<i class="fas fa-check"></i> 전체 표시 중';
+            this.innerHTML = '<i class="fas fa-check"></i> 모두 불러옴';
             this.style.opacity = '0.5';
             this.disabled = true;
           }
@@ -2247,15 +2246,15 @@ section{padding:100px 0}
             result.videos.forEach(v => grid.appendChild(YT.card(v)));
             expandTokens[playlist] = result.nextPageToken;
             if (expandTokens[playlist]) {
-              this.innerHTML = '<i class="fas fa-chevron-down"></i> 더보기';
+              this.innerHTML = '<i class="fas fa-chevron-down"></i> 영상 더보기';
               this.disabled = false;
             } else {
-              this.innerHTML = '<i class="fas fa-check"></i> 전체 표시 중';
+              this.innerHTML = '<i class="fas fa-check"></i> 모두 불러옴';
               this.style.opacity = '0.5';
               this.disabled = true;
             }
           } catch {
-            this.innerHTML = '<i class="fas fa-chevron-down"></i> 더보기';
+            this.innerHTML = '<i class="fas fa-chevron-down"></i> 영상 더보기';
             this.disabled = false;
           }
         }
@@ -2279,10 +2278,10 @@ section{padding:100px 0}
           } catch {}
         }
         if (shortsExpandToken) {
-          this.innerHTML = '<i class="fas fa-chevron-down"></i> 더보기';
+          this.innerHTML = '<i class="fas fa-chevron-down"></i> 영상 더보기';
           this.disabled = false;
         } else {
-          this.innerHTML = '<i class="fas fa-check"></i> 전체 표시 중';
+          this.innerHTML = '<i class="fas fa-check"></i> 모두 불러옴';
           this.style.opacity = '0.5';
           this.disabled = true;
         }
@@ -2294,10 +2293,10 @@ section{padding:100px 0}
           const result = await YT.fetchShorts(shortsExpandToken);
           result.videos.forEach(v => grid.appendChild(YT.shortsCard(v)));
           shortsExpandToken = result.nextPageToken;
-          if (shortsExpandToken) { this.innerHTML = '<i class="fas fa-chevron-down"></i> 더보기'; this.disabled = false; }
-          else { this.innerHTML = '<i class="fas fa-check"></i> 전체 표시 중'; this.style.opacity='0.5'; this.disabled=true; }
+          if (shortsExpandToken) { this.innerHTML = '<i class="fas fa-chevron-down"></i> 영상 더보기'; this.disabled = false; }
+          else { this.innerHTML = '<i class="fas fa-check"></i> 모두 불러옴'; this.style.opacity='0.5'; this.disabled=true; }
         } catch {
-          this.innerHTML = '<i class="fas fa-chevron-down"></i> 더보기';
+          this.innerHTML = '<i class="fas fa-chevron-down"></i> 영상 더보기';
           this.disabled = false;
         }
       }
