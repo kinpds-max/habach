@@ -5452,9 +5452,9 @@
       <div class="church-intro-tabs-wrap" data-aos="fade-up" data-aos-delay="50" style="margin-bottom: 70px;">
         <div class="intro-video-tabs">
           <button type="button" class="intro-tab-btn active" onclick="switchIntroVideo('k-Q5Wjq7uPM', this, event)">시설영상</button>
-          <button type="button" class="intro-tab-btn" onclick="switchIntroVideo('QDiuCMbU6QA', this, event)">교회란?</button>
-          <button type="button" class="intro-tab-btn" onclick="switchIntroVideo('1aFKsdp6Tbs', this, event)">문고리챌린지</button>
-          <button type="button" class="intro-tab-btn" onclick="switchIntroVideo('HCOmPxGr1pQ', this, event)">위대한 응원</button>
+          <button type="button" class="intro-tab-btn" onclick="switchIntroVideo('QDiuCMbU6QA', this, event)">하늘바람교회란?</button>
+          <button type="button" class="intro-tab-btn break-mob" onclick="switchIntroVideo('1aFKsdp6Tbs', this, event)">문고리챌린지</button>
+          <button type="button" class="intro-tab-btn break-mob" onclick="switchIntroVideo('HCOmPxGr1pQ', this, event)">위대한 응원</button>
         </div>
         <div class="civ-wrap">
           <iframe id="introMainPlayer" src="https://www.youtube.com/embed/k-Q5Wjq7uPM?rel=0" title="하늘바람교회 소개영상" frameborder="0"
@@ -5495,6 +5495,12 @@
           .intro-tab-btn {
             padding: 8px 16px;
             font-size: 0.8rem;
+            flex: 1 1 45%;
+          }
+          .intro-tab-btn.break-mob {
+            width: 100%;
+            flex: none;
+            margin-top: 4px;
           }
         }
       </style>
