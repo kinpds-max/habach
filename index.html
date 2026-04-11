@@ -5837,9 +5837,9 @@
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-sermon3" data-playlist="UPLOADS" data-cat="sermon3"><i
+          <button class="btn-expand" data-grid="grid-sermon3" data-playlist="PLmD7ZicLdWIqYlRu54fXWc82k0mGBZMnv" data-cat="sermon3"><i
               class="fas fa-chevron-down"></i> 영상 더보기</button>
-          <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt-more"><i
+          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIqYlRu54fXWc82k0mGBZMnv" target="_blank" class="btn-yt-more"><i
               class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
@@ -5859,9 +5859,9 @@
           <div class="video-loading"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>
         </div>
         <div class="panel-actions">
-          <button class="btn-expand" data-grid="grid-dawn" data-playlist="UPLOADS" data-cat="dawn"><i
+          <button class="btn-expand" data-grid="grid-dawn" data-playlist="PLmD7ZicLdWIpZeJVlgfXuYYaOSHjwuG6R" data-cat="dawn"><i
               class="fas fa-chevron-down"></i> 영상 더보기</button>
-          <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="btn-yt-more"><i
+          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIpZeJVlgfXuYYaOSHjwuG6R" target="_blank" class="btn-yt-more"><i
               class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
@@ -5926,7 +5926,7 @@
           </div>
         </div>
         <div class="panel-actions" style="margin-top:28px">
-          <a href="https://www.youtube.com/@Gimpo_HBC/shorts" target="_blank" class="btn-yt-more"><i
+          <a href="https://www.youtube.com/playlist?list=PLmD7ZicLdWIrimHL4h_kYsp2-ggeIG9eZ" target="_blank" class="btn-yt-more"><i
               class="fab fa-youtube"></i> 유튜브 이동</a>
         </div>
       </div>
@@ -6729,6 +6729,9 @@
     const YT = (() => {
       const CHANNEL_ID = 'UCzQ6kPUzNNbU3EtJI5X1mhQ';
       const PL = {
+        sermon3: 'PLmD7ZicLdWIqYlRu54fXWc82k0mGBZMnv',
+        dawn: 'PLmD7ZicLdWIpZeJVlgfXuYYaOSHjwuG6R',
+        shorts: 'PLmD7ZicLdWIrimHL4h_kYsp2-ggeIG9eZ',
         friday: 'PLmD7ZicLdWIqJLAkUiT--mvQ3fy361Pcx',
         davidPraise: 'PLmD7ZicLdWIqLkVxRln2LpyOemwfCT8re',
         davidWorship: 'PLmD7ZicLdWIr1pf1o7elRvmMNcylM6N4X',
@@ -6932,43 +6935,10 @@
         } catch { return []; }
       }
 
-      /* Shorts: 채널 Shorts 페이지 스크래핑 (API 불필요) */
+      /* Shorts: 재생목록 RSS (스크래핑 불필요) */
       async function fetchShortsPage() {
-        const url = 'https://www.youtube.com/@Gimpo_HBC/shorts';
-        let html = null;
-        for (const proxy of [
-          u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-          u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-        ]) {
-          try {
-            const r = await fetch(proxy(url), { signal: AbortSignal.timeout(15000) });
-            if (!r.ok) continue;
-            html = await r.text();
-            if (html && html.length > 10000) break;
-          } catch { }
-        }
-        if (!html) return [];
-        /* ytInitialData JSON 추출 */
-        const m = html.match(/var ytInitialData\s*=\s*(\{.+?\});\s*<\/script>/s)
-          || html.match(/ytInitialData\s*=\s*(\{.+?\});/s);
-        if (!m) return [];
-        try {
-          const data = JSON.parse(m[1]);
-          const items = [];
-          JSON.stringify(data, (k, v) => {
-            if (k === 'reelItemRenderer' && v?.videoId) {
-              items.push({
-                videoId: v.videoId,
-                title: v.headline?.runs?.[0]?.text || '',
-                pubDate: '',
-                isShorts: true,
-                category: 'shorts'
-              });
-            }
-            return v;
-          });
-          return items.slice(0, 30);
-        } catch { return []; }
+        const result = await fetchPlaylistPage(PL.shorts, 'shorts', 50).catch(() => []);
+        return (result || []).map(v => ({ ...v, isShorts: true, category: 'shorts' }));
       }
 
       function createShortsCard(v) {
@@ -7004,10 +6974,12 @@
         };
         try {
           /* 병렬 데이터 수집 (안전한 RSS + 풍부한 Scrape + 라이브/숏폼 병행) */
-          const [channelVs, fPr, dPr, wPr, bPr, shortsVs, moreVs, eventPr, missionPr, liveVs] = await Promise.all([
+          const [channelVs, s3Pr, dawnPr, fPr, dPr, wPr, bPr, shortsVs, moreVs, eventPr, missionPr, liveVs] = await Promise.all([
             fetchChannelRSS().catch(() => []),
+            fetchPlaylistPage(PL.sermon3, 'sermon3', 12),
+            fetchPlaylistPage(PL.dawn, 'dawn', 12),
             fetchPlaylistPage(PL.friday, 'friday', 12),
-            fetchPlaylistPage(PL.davidPraise, 'david', 12), 
+            fetchPlaylistPage(PL.davidPraise, 'david', 12),
             fetchPlaylistPage(PL.davidWorship, 'sunday', 12),
             fetchPlaylistPage(PL.bridge, 'bridge', 12),
             fetchShortsPage().catch(() => []),
@@ -7024,7 +6996,9 @@
             return rss.videos || [];
           };
 
-          const [fVs, dVs, wVs, bVs, eventVs, missionVs] = await Promise.all([
+          const [sermon3Vs, dawnVs, fVs, dVs, wVs, bVs, eventVs, missionVs] = await Promise.all([
+            ensureVideos(s3Pr, PL.sermon3, 'sermon3'),
+            ensureVideos(dawnPr, PL.dawn, 'dawn'),
             ensureVideos(fPr, PL.friday, 'friday'),
             ensureVideos(dPr, PL.davidPraise, 'david'),
             ensureVideos(wPr, PL.davidWorship, 'sunday'),
@@ -7035,8 +7009,6 @@
 
           const byDate = arr => arr.slice().sort((a, b) => new Date(b.pubDate || 0) - new Date(a.pubDate || 0));
           const allChannelVs = [...moreVs, ...channelVs, ...liveVs];
-          const sermon3Vs = byDate(allChannelVs.filter(v => v.category === 'sermon3'));
-          const dawnVs = byDate(allChannelVs.filter(v => v.category === 'dawn'));
           const wednesdayVs = byDate(allChannelVs.filter(v => v.category === 'wednesday'));
 
           const ig = window._initVideoGrid;
@@ -7048,7 +7020,14 @@
             ig('grid-david', dVs, null);
             ig('grid-sunday', wVs, null);
             ig('grid-bridge', bVs, null);
-            if (document.getElementById('grid-event')) ig('grid-event', eventVs, null);
+            if (document.getElementById('grid-event')) {
+              const pinnedEvent = [
+                { videoId: 'B5DVZMhX1Ns', title: '행사영상', pubDate: '', category: 'event' },
+                { videoId: 'q1RTJ9zfils', title: '행사영상', pubDate: '', category: 'event' },
+              ];
+              const deduped = eventVs.filter(v => !pinnedEvent.some(p => p.videoId === v.videoId));
+              ig('grid-event', [...pinnedEvent, ...deduped], null);
+            }
             if (document.getElementById('grid-mission-bridge')) ig('grid-mission-bridge', missionVs, null);
             ig('grid-shorts', shortsVs, true);
           }
@@ -7467,7 +7446,7 @@
         document.getElementById('mbn-worship')?.classList.add('active');
       }
     }, { passive: true });
-    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbxq3pfh8mw2zwOxiZOFkNVyHdwyEmHHQ_n4u9vb0u0btocHkUwgoRrNwVcGxhLA7-gxBg/exec';
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbxh6n5kWfC5LC_3MjWJYjfAmNcCjr7kJz9WU_yGgncuU2UaXlgOHgmTNnPwa2WH4O1oLw/exec';
     window._GAS_API_URL = GAS_API_URL;
     /* ── 중보기도 메모리 캐시 + GAS 연동 ── */
     let _prayPosts = [];
