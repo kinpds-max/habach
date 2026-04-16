@@ -12,9 +12,9 @@
   <meta name="keywords" content="하늘바람교회, 김포교회, 김포성결교회, 예수교대한성결교회, 김포시교회, HBC, Haneulbaram Church" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://habach.kr/" />
-  <link rel="icon" type="image/png" href="https://habach.kr/images/logo.png" />
-  <link rel="shortcut icon" href="https://habach.kr/images/logo.png" />
-  <link rel="apple-touch-icon" href="https://habach.kr/images/logo.png" />
+  <link rel="icon" type="image/png" href="images/KakaoTalk_20260408_121958999.png" />
+  <link rel="shortcut icon" href="images/KakaoTalk_20260408_121958999.png" />
+  <link rel="apple-touch-icon" href="images/KakaoTalk_20260408_121958999.png" />
 
   <!-- Open Graph (카카오·페이스북 공유) -->
   <meta property="og:type" content="website" />
@@ -245,17 +245,17 @@
       right: 0;
       z-index: 1000;
       padding: 0;
-      background: transparent;
-      border-bottom: 1px solid transparent;
+      background: rgba(8, 15, 42, 0.96);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 4px 32px rgba(0, 0, 0, 0.45);
       transition: background 0.4s, box-shadow 0.4s, border-color 0.4s
     }
 
     #header.scrolled {
-      background: rgba(8, 15, 42, 0.96);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 4px 32px rgba(0, 0, 0, 0.45);
-      border-bottom-color: rgba(255, 255, 255, 0.1)
+      background: rgba(8, 15, 42, 0.99);
+      border-bottom-color: rgba(255, 255, 255, 0.12)
     }
 
     .header-inner {
@@ -274,15 +274,14 @@
       align-items: center;
       flex-shrink: 0;
       text-decoration: none;
-      background: rgba(255, 255, 255, 0.92);
+      background: transparent;
       border-radius: 10px;
       padding: 5px 10px;
-      backdrop-filter: blur(4px);
       transition: background 0.3s, transform 0.2s, box-shadow 0.2s
     }
 
     .nav-logo:hover {
-      background: rgba(255, 255, 255, 1);
+      background: rgba(255, 255, 255, 0.1);
       transform: scale(1.04);
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18)
     }
@@ -627,13 +626,13 @@
       padding: 0 16px;
       align-items: center;
       justify-content: space-between;
-      background: transparent;
+      background: rgba(8, 15, 42, 0.96);
+      backdrop-filter: blur(16px);
       transition: background 0.35s
     }
 
     .mobile-top-header.scrolled {
-      background: rgba(8, 15, 42, 0.92);
-      backdrop-filter: blur(16px)
+      background: rgba(8, 15, 42, 0.99)
     }
 
     .mobile-top-logo {
@@ -641,7 +640,7 @@
       width: auto;
       object-fit: contain;
       display: block;
-      background: rgba(255, 255, 255, 0.92);
+      background: transparent;
       border-radius: 8px;
       padding: 4px 8px
     }
@@ -1475,6 +1474,43 @@
       max-width: 100%;
       height: auto;
       object-fit: contain;
+    }
+
+    /* 모바일 2x2 그리드 스타일 */
+    @media (max-width: 768px) {
+      .bflip-viewer.grid-mode {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-rows: repeat(2, 1fr) !important;
+        gap: 12px !important;
+        height: auto !important;
+        aspect-ratio: auto !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+      }
+
+      .bflip-viewer.grid-mode .swiper-wrapper {
+        display: contents !important;
+      }
+
+      .bflip-viewer.grid-mode .swiper-slide {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        background: #fff !important;
+        aspect-ratio: 1/1.4;
+      }
+
+      .bflip-viewer.grid-mode .swiper-button-prev,
+      .bflip-viewer.grid-mode .swiper-button-next,
+      .bflip-viewer.grid-mode .swiper-pagination {
+        display: none !important;
+      }
+
+      .bflip-toolbar {
+        display: none !important;
+      }
     }
 
     .mission-wrap::after {
@@ -3191,22 +3227,30 @@
 
     .float-bar {
       position: fixed;
-      bottom: 28px;
-      right: 20px;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
       z-index: 900;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      gap: 12px;
       opacity: 0;
-      transform: translateY(20px);
       transition: opacity 0.5s ease, transform 0.5s ease;
-      pointer-events: none
+      pointer-events: none;
+      padding: 10px 20px;
+      background: rgba(8, 15, 42, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
     }
 
     .float-bar.visible {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateX(-50%) translateY(0);
       pointer-events: all
     }
 
@@ -4670,7 +4714,23 @@
       }
 
       .float-bar {
-        bottom: 24px
+        bottom: 16px;
+        gap: 8px;
+        padding: 6px 14px;
+        width: max-content;
+        max-width: 95vw;
+        border-radius: 30px;
+        flex-direction: row !important;
+      }
+
+      .float-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 0.95rem;
+      }
+
+      .float-label {
+        display: none !important;
       }
     }
 
@@ -5374,7 +5434,7 @@
       </div>
     </div>
     <a href="#" aria-label="하늘바람교회 홈">
-      <img src="images/logo.png" alt="하늘바람교회" class="mobile-top-logo">
+      <img src="images/KakaoTalk_20260408_121958999.png" alt="하늘바람교회" class="mobile-top-logo">
     </a>
     <div class="mobile-top-right"></div>
   </header>
@@ -5385,7 +5445,7 @@
 
       <!-- 로고 -->
       <a href="#" class="nav-logo" aria-label="하늘바람교회 홈">
-        <img src="images/logo.png" alt="하늘바람교회" class="logo-img">
+        <img src="images/KakaoTalk_20260408_121958999.png" alt="하늘바람교회" class="logo-img">
       </a>
 
       <!-- 데스크톱 네비게이션 -->
@@ -5708,32 +5768,21 @@
           <div class="nbh-left">
             <i class="fas fa-newspaper nbh-icon" style="color:var(--gold);"></i>
             <h3>교회주보 미리보기</h3>
-            <span class="news-badge-drive"><i class="fab fa-google-drive"></i> Drive 자동연동</span>
+            <span class="news-badge-drive" style="background:rgba(66,133,244,0.1);color:#4285f4"><i class="fab fa-google-drive"></i> 드라이브 자동연동</span>
           </div>
         </div>
-        <!-- 주보 뷰어 -->
-        <div class="bflip-wrap">
-          <div class="bflip-toolbar" id="bflipToolbar" style="visibility:hidden">
-            <div class="bflip-toolbar-left">
-              <!-- 기존 상단 이동 버튼 제거 (좌우 버튼 요청 대응) -->
-              <span class="bflip-counter" id="bflipCounter">–</span>
-              <div class="bflip-dots" id="bflipDots"></div>
-            </div>
-            <div class="bflip-toolbar-right">
-              <a id="bflipExtLink" href="#" target="_blank" class="bflip-ext-btn"><i
-                  class="fas fa-external-link-alt"></i> 새탭에서 열기</a>
-            </div>
-          </div>
-          <!-- 주보 뷰어 영역 (Swiper 슬라이더로 변경) -->
-          <div class="bflip-viewer swiper" id="bflipSwiper">
-            <div class="bflip-viewer-loading" id="bflipLoading">
-              <i class="fas fa-circle-notch fa-spin" style="font-size:1.8rem;color:var(--gold)"></i>
+        <!-- 주보 목록 (네이버 카페 자동크롤링) -->
+        <div id="cafeBulletinWrap">
+          <div id="cafeBulletinList">
+            <div class="cafe-bl-loading">
+              <i class="fas fa-circle-notch fa-spin"></i>
               <span>주보 불러오는 중...</span>
             </div>
-            <div class="swiper-wrapper" id="bflipWrapper"></div>
-            <!-- 좌우 화살표 버튼 -->
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
+          </div>
+          <div class="cafe-bl-footer">
+            <a href="https://drive.google.com/open?id=1QFQr7WlANQkQqopeVwAtf6JGejj8JFhk" target="_blank" rel="noopener noreferrer" class="cafe-bl-more-btn">
+              <i class="fab fa-google-drive"></i> 전체 주보 보기
+            </a>
           </div>
         </div>
 
@@ -6344,10 +6393,10 @@
         <div class="footer-worship">
           <h4>온라인 헌금 안내</h4>
           <ul style="font-size:0.85rem;line-height:1.6;text-align:left;padding-left:0;list-style:none;">
-            <li style="display:flex;justify-content:flex-start;gap:10px;"><span>[일반헌금]</span><span style="font-weight:600;">농협 301-0225-4290-01</span></li>
-            <li style="display:flex;justify-content:flex-start;gap:10px;"><span>[건축헌금]</span><span style="font-weight:600;">농협 301-0225-4299-21</span></li>
-            <li style="display:flex;justify-content:flex-start;gap:10px;"><span>[선교헌금]</span><span style="font-weight:600;">농협 301-0225-4307-01</span></li>
-            <li style="color:var(--gold);margin-top:4px;text-align:left;">예금주 : 하늘바람교회</li>
+            <li>[일반헌금] 농협 301-0225-4290-01</li>
+            <li>[건축헌금] 농협 301-0225-4299-21</li>
+            <li>[선교헌금] 농협 301-0225-4307-01</li>
+            <li style="color:var(--gold);margin-top:4px;">예금주 : 하늘바람교회</li>
           </ul>
           <h4 style="margin-top:24px;">전도·기도·상담 문의</h4>
           <ul style="font-size:0.8rem;line-height:1.6;color:rgba(255,255,255,0.7);">
@@ -6359,14 +6408,16 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <div style="margin-bottom: 24px; line-height: 1.8;">
+        <div style="margin-bottom: 24px; line-height: 1.8; font-size: 0.85rem;">
           <p>경기 김포시 모담공원로167번길 101 (운양동)</p>
-          <p>TEL: 010-5711-1416 &nbsp;|&nbsp; 이메일: whanseh@me.com</p>
-          <p>대표자: 전승학 &nbsp;|&nbsp; 사업자 등록번호 안내 (현지문의: 010-5711-1416)</p>
+          <p>TEL: 010-5711-1416</p>
+          <p>이메일: whanseh@me.com</p>
+          <p>대표자: 전승학</p>
+          <p>사업자 등록번호 안내 (현지문의: 010-5711-1416)</p>
         </div>
-        <p>© 2026 하늘바람교회 All Rights Reserved. &nbsp;|&nbsp; Designed with <i class="fas fa-heart"
-            style="color:#e74c3c"></i> for God's Glory &nbsp;|&nbsp; <span style="font-size:0.78rem;opacity:0.55">홈페이지
-            제작문의 <a href="tel:1660-1195" style="color:inherit">1660-1195</a></span></p>
+        <p>© 2026 하늘바람교회 All Rights Reserved.</p>
+        <p>Designed with <i class="fas fa-heart" style="color:#e74c3c"></i> for God's Glory</p>
+        <p style="font-size:0.75rem; opacity:0.6; margin-top:8px;">홈페이지 제작문의: <a href="tel:1660-1195" style="color:inherit">1660-1195</a></p>
       </div>
     </div>
   </footer>
@@ -6391,6 +6442,13 @@
       <i class="fas fa-phone"></i>
       <span class="float-label">전화</span>
     </a>
+    <a href="https://open.kakao.com/o/geMlE0pf" target="_blank" class="float-btn float-kakao" aria-label="카카오 오픈채팅">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path
+          d="M12 3C6.477 3 2 6.477 2 10.9c0 2.8 1.6 5.267 4.07 6.787L4.93 21l4.433-2.213C10.24 19.05 11.113 19.2 12 19.2c5.523 0 10-3.477 10-7.9S17.523 3 12 3z" />
+      </svg>
+      <span class="float-label">카톡</span>
+    </a>
     <a href="https://www.youtube.com/@Gimpo_HBC" target="_blank" class="float-btn float-yt" aria-label="유튜브">
       <i class="fab fa-youtube"></i>
       <span class="float-label">유튜브</span>
@@ -6403,15 +6461,8 @@
       <i class="fas fa-mug-hot"></i>
       <span class="float-label">카페</span>
     </a>
-    <a href="https://open.kakao.com/o/geMlE0pf" target="_blank" class="float-btn float-kakao" aria-label="카카오 오픈채팅">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path
-          d="M12 3C6.477 3 2 6.477 2 10.9c0 2.8 1.6 5.267 4.07 6.787L4.93 21l4.433-2.213C10.24 19.05 11.113 19.2 12 19.2c5.523 0 10-3.477 10-7.9S17.523 3 12 3z" />
-      </svg>
-      <span class="float-label">오픈채팅</span>
-    </a>
-    <a href="https://kinpds-max.github.io/hamom-bible-note" target="_blank" class="float-btn float-bible-right" aria-label="성경 읽기">
-      <i class="fas fa-book"></i>
+    <a href="https://goodtvbible.goodtv.co.kr/onbibleread/0/1/1" target="_blank" class="float-btn float-bible-right" aria-label="성경 읽기">
+      <i class="fas fa-book-bible"></i>
       <span class="float-label">성경</span>
     </a>
   </div>
@@ -6526,112 +6577,74 @@
     const BULLETIN_FOLDER = '1QFQr7WlANQkQqopeVwAtf6JGejj8JFhk';
     const BULLETIN_URL = `https://drive.google.com/drive/folders/${BULLETIN_FOLDER}?usp=sharing`;
 
-    /* ===== 주보 플립북 (Swiper 기반) ===== */
-    let _bflipItems = [];
-    let _bflipSwiper = null;
-
-    function _bflipSortNum(name) {
-      const m = name.match(/\((\d+)\)/);
-      return m ? parseInt(m[1]) : 999;
-    }
-
-    function _bflipInit(files) {
-      const seen = new Set();
-      const unique = files.filter(f => { if (seen.has(f.id)) return false; seen.add(f.id); return true; });
-      _bflipItems = unique.sort((a, b) => b.name.localeCompare(a.name));
-      
-      const wrapper = document.getElementById('bflipWrapper');
-      const dotsEl = document.getElementById('bflipDots');
-      const toolbar = document.getElementById('bflipToolbar');
-      const loading = document.getElementById('bflipLoading');
-      const counter = document.getElementById('bflipCounter');
-      const extLink = document.getElementById('bflipExtLink');
-
-      if (!wrapper || !_bflipItems.length) return;
-
-      // 슬라이드 생성
-      wrapper.innerHTML = _bflipItems.map(f => `
-        <div class="swiper-slide">
-          <img src="https://drive.google.com/thumbnail?id=${f.id}&sz=w1200" alt="${f.name}" 
-               onload="this.parentElement.classList.add('loaded')"
-               onclick="openBulletinPreview('${f.id}','${_escHtml(f.name)}')"
-               style="cursor:zoom-in; background:#fff; object-fit:contain; max-height:100%;">
-        </div>
-      `).join('');
-
-      if (loading) loading.classList.add('hidden');
-      if (toolbar) toolbar.style.visibility = 'visible';
-      if (counter) counter.textContent = `1 / ${_bflipItems.length}`;
-      if (extLink) extLink.href = `https://drive.google.com/file/d/${_bflipItems[0].id}/view`;
-      
-      // 최신 주보 자동 팝업 또는 강조 (선택사항)
-      // _bflipItems[0] 이 최신임 (sort 시 고려)
-
-      // 도트 생성
-      if (dotsEl) {
-        dotsEl.innerHTML = _bflipItems.map((_, i) =>
-          `<div class="bflip-dot${i === 0 ? ' active' : ''}" onclick="_bflipSwiper.slideTo(${i})"></div>`).join('');
-      }
-
-      // Swiper 초기화 호출
-      _bflipInitSwiper();
-    }
-    // 새탭 열기 (현재 슬라이드 기준)
-    function bflipOpenCurrent() {
-      if (!_bflipSwiper || !_bflipItems.length) return;
-      const idx = _bflipSwiper.activeIndex;
-      window.open(`https://drive.google.com/file/d/${_bflipItems[idx].id}/view`, '_blank');
-    }
-
-    // Swiper 초기화 시 keyboard 지원 추가
-    function _bflipInitSwiper() {
-      if (_bflipSwiper) _bflipSwiper.destroy();
-      _bflipSwiper = new Swiper('#bflipSwiper', {
-        loop: false,
-        keyboard: { enabled: true },
-        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-        on: {
-          slideChange: function() {
-            const idx = this.activeIndex;
-            const counter = document.getElementById('bflipCounter');
-            const extLink = document.getElementById('bflipExtLink');
-            if (counter) counter.textContent = `${idx + 1} / ${_bflipItems.length}`;
-            if (extLink) extLink.href = `https://drive.google.com/file/d/${_bflipItems[idx].id}/view`;
-            document.querySelectorAll('.bflip-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
-          }
-        }
-      });
-    }
+    /* ===== 교회주보 목록 (구글 드라이브 자동연동) ===== */
+    const BULLETIN_FOLDER_ID = '1QFQr7WlANQkQqopeVwAtf6JGejj8JFhk';
 
     async function loadBulletinNotices() {
-      if (!GAS_API_URL) return;
+      const listEl = document.getElementById('cafeBulletinList');
+      if (!listEl || !window._GAS_API_URL) return;
+
       try {
-        const r = await fetch(`${GAS_API_URL}?action=listFiles&folderId=${BULLETIN_FOLDER}`);
-        const json = await r.json();
-        if (json.result === 'success' && json.files.length) {
-          _bflipInit(json.files);
-          return;
+        const r = await fetch(
+          `${window._GAS_API_URL}?action=listFiles&folderId=${BULLETIN_FOLDER_ID}`,
+          { signal: AbortSignal.timeout(10000) }
+        );
+        if (r.ok) {
+          const json = await r.json();
+          if (json.result === 'success' && json.files && json.files.length > 0) {
+            _renderDriveFiles(json.files);
+            return;
+          }
         }
-      } catch (err) {
-        console.warn('[Bulletin] API 로드 실패:', err.message);
-      }
-      const loading = document.getElementById('bflipLoading');
-      if (loading) loading.innerHTML = `<a href="${BULLETIN_URL}" target="_blank" style="color:var(--blue);text-decoration:none"><i class="fab fa-google-drive"></i> Drive에서 열기</a>`;
+      } catch(e) { console.warn('[Bulletin] Drive 로드 실패:', e.message); }
+
+      // 폴백: 드라이브 폴더 직접 링크
+      listEl.innerHTML = `
+        <a href="https://drive.google.com/open?id=${BULLETIN_FOLDER_ID}"
+           target="_blank" rel="noopener noreferrer" class="cafe-bl-fallback">
+          <i class="fab fa-google-drive" style="color:#4285f4;font-size:1.2rem;flex-shrink:0"></i>
+          <span>구글 드라이브에서 주보 보기</span>
+          <i class="fas fa-chevron-right" style="margin-left:auto;opacity:0.4"></i>
+        </a>`;
     }
 
-    /* 주보 파일 미리보기 모달 */
-    function openBulletinPreview(fileId, fileName) {
-      const modal = document.getElementById('audioModal');        // 기존 모달 재활용
-      const iframe = document.getElementById('audioModalIframe');
-      const title = document.getElementById('audioModalTitle');
-      const link = document.getElementById('audioModalDriveLink');
-      if (!modal || !iframe) return;
-      title.textContent = fileName;
-      iframe.style.height = '75vh';
-      iframe.src = `https://drive.google.com/file/d/${fileId}/preview`;
-      link.href = `https://drive.google.com/file/d/${fileId}/view`;
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
+    function _renderDriveFiles(files) {
+      const listEl = document.getElementById('cafeBulletinList');
+      if (!listEl) return;
+
+      // 최신순 정렬: 파일명 내림차순 (날짜 prefix 기준) 또는 created 날짜 기준
+      files.sort((a, b) => {
+        if (a.created && b.created) return new Date(b.created) - new Date(a.created);
+        return b.name.localeCompare(a.name);
+      });
+
+      listEl.innerHTML = files.slice(0, 10).map(f => {
+        // 파일명에서 날짜 추출 (예: "26.04.13 주보" 또는 "2026-04-13")
+        let dateLabel = '';
+        const m1 = f.name.match(/(\d{2})\.(\d{2})\.(\d{2})/);
+        const m2 = f.name.match(/(\d{4})-(\d{2})-(\d{2})/);
+        if (m1) dateLabel = `${m1[1]}.${m1[2]}.${m1[3]}`;
+        else if (m2) dateLabel = `${String(m2[1]).slice(2)}.${m2[2]}.${m2[3]}`;
+        else if (f.created) {
+          const d = new Date(f.created);
+          if (!isNaN(d))
+            dateLabel = `${String(d.getFullYear()).slice(2)}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        // 파일명 정리 (날짜 prefix + 확장자 제거)
+        const cleanName = f.name
+          .replace(/\.\w{2,5}$/, '')           // 확장자 제거
+          .replace(/^\d{2,4}[-./]\d{2}[-./]\d{2}\.?\s*/, '') // 날짜 prefix 제거
+          .trim() || '주보';
+
+        return `
+          <a class="cafe-bl-item" href="#"
+             onclick="openAudioModal('${f.id}','${_escHtml(f.name)}');return false;">
+            ${dateLabel ? `<span class="cafe-bl-date">${_escHtml(dateLabel)}</span>` : ''}
+            <span class="cafe-bl-title">${_escHtml(cleanName)}</span>
+            <i class="fas fa-eye cafe-bl-arrow" style="opacity:0.55"></i>
+          </a>`;
+      }).join('');
     }
 
     /* =============================================
@@ -7712,15 +7725,72 @@
   </div>
   <style>
     @keyframes popupIn {
-      from {
-        opacity: 0;
-        transform: scale(0.8)
-      }
+      from { opacity: 0; transform: scale(0.8) }
+      to   { opacity: 1; transform: scale(1)   }
+    }
 
-      to {
-        opacity: 1;
-        transform: scale(1)
-      }
+    /* ===== 교회주보 목록 (네이버 카페) ===== */
+    #cafeBulletinWrap { padding: 4px 0 0; }
+
+    .cafe-bl-loading {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; padding: 40px 20px;
+      color: var(--gray); font-size: 0.9rem;
+    }
+
+    .cafe-bl-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-light);
+      background: var(--white);
+      text-decoration: none; color: var(--text);
+      margin-bottom: 8px;
+      transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+    .cafe-bl-item:hover {
+      border-color: var(--gold);
+      transform: translateX(3px);
+      box-shadow: var(--shadow-sm);
+      color: var(--navy);
+    }
+
+    .cafe-bl-date {
+      flex-shrink: 0;
+      background: var(--gold); color: white;
+      padding: 2px 10px; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.02em;
+    }
+
+    .cafe-bl-title {
+      flex: 1; font-size: 0.9rem; font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .cafe-bl-arrow {
+      flex-shrink: 0; color: var(--gray);
+      font-size: 0.75rem; opacity: 0.45;
+    }
+
+    .cafe-bl-footer {
+      text-align: center; padding-top: 12px;
+    }
+
+    .cafe-bl-more-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(3,199,90,0.1); color: #03c75a;
+      padding: 8px 20px; border-radius: 20px;
+      font-size: 0.82rem; font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .cafe-bl-more-btn:hover { background: rgba(3,199,90,0.22); }
+
+    .cafe-bl-fallback {
+      display: flex; align-items: center; gap: 12px;
+      padding: 20px 16px; border-radius: var(--radius);
+      background: var(--off-white);
+      text-decoration: none; color: var(--text-muted); font-size: 0.9rem;
     }
   </style>
   <script>
