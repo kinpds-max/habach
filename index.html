@@ -5768,21 +5768,28 @@
           <div class="nbh-left">
             <i class="fas fa-newspaper nbh-icon" style="color:var(--gold);"></i>
             <h3>교회주보 미리보기</h3>
-            <span class="news-badge-drive" style="background:rgba(66,133,244,0.1);color:#4285f4"><i class="fab fa-google-drive"></i> 드라이브 자동연동</span>
+            <span class="news-badge-drive" style="background:rgba(3,199,90,.1);color:#03c75a"><i class="fas fa-mug-hot"></i> 카페 자동연동</span>
           </div>
+          <a href="admin/bulletin.html" class="nbh-admin-link" title="주보 관리">
+            <i class="fas fa-cog"></i>
+          </a>
         </div>
-        <!-- 주보 목록 (네이버 카페 자동크롤링) -->
-        <div id="cafeBulletinWrap">
-          <div id="cafeBulletinList">
-            <div class="cafe-bl-loading">
-              <i class="fas fa-circle-notch fa-spin"></i>
-              <span>주보 불러오는 중...</span>
-            </div>
-          </div>
-          <div class="cafe-bl-footer">
-            <a href="https://drive.google.com/open?id=1QFQr7WlANQkQqopeVwAtf6JGejj8JFhk" target="_blank" rel="noopener noreferrer" class="cafe-bl-more-btn">
-              <i class="fab fa-google-drive"></i> 전체 주보 보기
-            </a>
+
+        <!-- 요일 탭 -->
+        <div class="bulletin-day-tabs" id="bulletinDayTabs">
+          <button class="bdt-btn active" data-day="" onclick="switchBulletinTab(this,'')">전체</button>
+          <button class="bdt-btn" data-day="주일" onclick="switchBulletinTab(this,'주일')">주일</button>
+          <button class="bdt-btn" data-day="새벽" onclick="switchBulletinTab(this,'새벽')">새벽</button>
+          <button class="bdt-btn" data-day="수요" onclick="switchBulletinTab(this,'수요')">수요</button>
+          <button class="bdt-btn" data-day="금요" onclick="switchBulletinTab(this,'금요')">금요</button>
+          <button class="bdt-btn" data-day="특별" onclick="switchBulletinTab(this,'특별')">특별</button>
+        </div>
+
+        <!-- 주보 카드 목록 -->
+        <div id="cafeBulletinList">
+          <div class="cafe-bl-loading">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>주보 불러오는 중...</span>
           </div>
         </div>
 
@@ -5842,6 +5849,22 @@
   </section>
 
 
+
+  <!-- 교회주보 뷰어 모달 -->
+  <div id="bulletinModal">
+    <div class="bm-content">
+      <div class="bm-header">
+        <span class="bm-title" id="bmTitle">주보</span>
+        <button class="bm-close" onclick="closeBulletinModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <iframe id="bmIframe" class="bm-iframe" src="" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+      <div class="bm-footer">
+        <a id="bmExtLink" href="#" target="_blank" rel="noopener noreferrer" class="bm-ext-btn">
+          <i class="fas fa-external-link-alt"></i> 카페에서 열기
+        </a>
+      </div>
+    </div>
+  </div>
 
   <!-- 오디오 플레이어 모달 -->
   <div id="audioModal" class="modal-overlay">
@@ -6577,74 +6600,120 @@
     const BULLETIN_FOLDER = '1QFQr7WlANQkQqopeVwAtf6JGejj8JFhk';
     const BULLETIN_URL = `https://drive.google.com/drive/folders/${BULLETIN_FOLDER}?usp=sharing`;
 
-    /* ===== 교회주보 목록 (구글 드라이브 자동연동) ===== */
-    const BULLETIN_FOLDER_ID = '1QFQr7WlANQkQqopeVwAtf6JGejj8JFhk';
+    /* ===== 교회주보 (네이버 카페 에디터 연동) ===== */
+    const _BL_CAFE_ID   = '31371644';
+    const _BL_CLUB_NAME = 'haneulbaramchurch';
+    let _allBulletins   = [];
+    let _blFilterDay    = '';
 
+    /* 카페 embed URL 생성 */
+    function _buildCafeEmbedUrl(articleId) {
+      const inner = `/ArticleRead.nhn?clubid=${_BL_CAFE_ID}&articleid=${articleId}&referrerAllArticles=false`;
+      return `https://cafe.naver.com/${_BL_CLUB_NAME}?iframe_url_utf8=${encodeURIComponent(inner)}`;
+    }
+
+    /* URL에서 게시글 ID 추출 */
+    function _extractArticleId(url) {
+      if (!url) return null;
+      let s = url;
+      try {
+        const m = url.match(/iframe_url_utf8=([^&\s]+)/);
+        if (m) s = decodeURIComponent(decodeURIComponent(m[1]));
+      } catch(e) {}
+      for (const p of [/articleid[=:](\d+)/i, /articles\/(\d+)/i, /\/(\d{3,6})(?:\?|$|&)/]) {
+        const m = s.match(p) || url.match(p);
+        if (m) return m[1];
+      }
+      return null;
+    }
+
+    /* 요일 탭 전환 */
+    function switchBulletinTab(el, day) {
+      document.querySelectorAll('.bdt-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      _blFilterDay = day;
+      _renderBulletinCards();
+    }
+
+    /* 주보 목록 로드 (GAS getBulletins) */
     async function loadBulletinNotices() {
       const listEl = document.getElementById('cafeBulletinList');
       if (!listEl || !window._GAS_API_URL) return;
-
       try {
-        const r = await fetch(
-          `${window._GAS_API_URL}?action=listFiles&folderId=${BULLETIN_FOLDER_ID}`,
-          { signal: AbortSignal.timeout(10000) }
-        );
+        const r = await fetch(`${window._GAS_API_URL}?action=getBulletins`,
+          { signal: AbortSignal.timeout(10000) });
         if (r.ok) {
           const json = await r.json();
-          if (json.result === 'success' && json.files && json.files.length > 0) {
-            _renderDriveFiles(json.files);
+          if (json.result === 'success') {
+            _allBulletins = json.bulletins || [];
+            _renderBulletinCards();
             return;
           }
         }
-      } catch(e) { console.warn('[Bulletin] Drive 로드 실패:', e.message); }
-
-      // 폴백: 드라이브 폴더 직접 링크
+      } catch(e) { console.warn('[Bulletin] 로드 실패:', e.message); }
       listEl.innerHTML = `
-        <a href="https://drive.google.com/open?id=${BULLETIN_FOLDER_ID}"
-           target="_blank" rel="noopener noreferrer" class="cafe-bl-fallback">
-          <i class="fab fa-google-drive" style="color:#4285f4;font-size:1.2rem;flex-shrink:0"></i>
-          <span>구글 드라이브에서 주보 보기</span>
+        <a href="https://cafe.naver.com/${_BL_CLUB_NAME}" target="_blank" rel="noopener noreferrer" class="cafe-bl-fallback">
+          <i class="fas fa-mug-hot" style="color:#03c75a;font-size:1.2rem;flex-shrink:0"></i>
+          <span>네이버 카페에서 주보 보기</span>
           <i class="fas fa-chevron-right" style="margin-left:auto;opacity:0.4"></i>
         </a>`;
     }
 
-    function _renderDriveFiles(files) {
+    /* 카드 렌더링 */
+    function _renderBulletinCards() {
       const listEl = document.getElementById('cafeBulletinList');
       if (!listEl) return;
+      const filtered = _blFilterDay
+        ? _allBulletins.filter(b => b.dayType === _blFilterDay)
+        : _allBulletins;
 
-      // 최신순 정렬: 파일명 내림차순 (날짜 prefix 기준) 또는 created 날짜 기준
-      files.sort((a, b) => {
-        if (a.created && b.created) return new Date(b.created) - new Date(a.created);
-        return b.name.localeCompare(a.name);
-      });
+      if (!filtered.length) {
+        listEl.innerHTML = `<div class="bl-empty"><i class="fas fa-inbox" style="font-size:1.8rem;opacity:.25;display:block;margin-bottom:8px"></i>등록된 주보가 없습니다.<br><small style="font-size:.8rem">관리자 페이지에서 추가하세요.</small></div>`;
+        return;
+      }
 
-      listEl.innerHTML = files.slice(0, 10).map(f => {
-        // 파일명에서 날짜 추출 (예: "26.04.13 주보" 또는 "2026-04-13")
-        let dateLabel = '';
-        const m1 = f.name.match(/(\d{2})\.(\d{2})\.(\d{2})/);
-        const m2 = f.name.match(/(\d{4})-(\d{2})-(\d{2})/);
-        if (m1) dateLabel = `${m1[1]}.${m1[2]}.${m1[3]}`;
-        else if (m2) dateLabel = `${String(m2[1]).slice(2)}.${m2[2]}.${m2[3]}`;
-        else if (f.created) {
-          const d = new Date(f.created);
-          if (!isNaN(d))
-            dateLabel = `${String(d.getFullYear()).slice(2)}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
-        }
-
-        // 파일명 정리 (날짜 prefix + 확장자 제거)
-        const cleanName = f.name
-          .replace(/\.\w{2,5}$/, '')           // 확장자 제거
-          .replace(/^\d{2,4}[-./]\d{2}[-./]\d{2}\.?\s*/, '') // 날짜 prefix 제거
-          .trim() || '주보';
-
+      const ICONS = { '주일':'fa-bible', '새벽':'fa-moon', '수요':'fa-book-open', '금요':'fa-fire', '특별':'fa-star' };
+      const cards = filtered.slice(0, 12).map(b => {
+        const id  = b.articleId || _extractArticleId(b.cafeUrl);
+        const title = b.title || `${b.dayType} 주보`;
+        const dateStr = b.date ? String(b.date).replace(/-/g,'.').slice(2) : '';
+        const icon = ICONS[b.dayType] || 'fa-newspaper';
         return `
-          <a class="cafe-bl-item" href="#"
-             onclick="openAudioModal('${f.id}','${_escHtml(f.name)}');return false;">
-            ${dateLabel ? `<span class="cafe-bl-date">${_escHtml(dateLabel)}</span>` : ''}
-            <span class="cafe-bl-title">${_escHtml(cleanName)}</span>
-            <i class="fas fa-eye cafe-bl-arrow" style="opacity:0.55"></i>
-          </a>`;
+          <div class="bl-card" onclick="${id ? `openBulletinModal('${id}','${_escHtml(title)}','${_escHtml(b.cafeUrl||'')}')` : `window.open('${b.cafeUrl}','_blank')`}">
+            <div class="bl-card-icon day-${b.dayType}">
+              <i class="fas ${icon}" style="opacity:.35;font-size:2.8rem;color:rgba(255,255,255,.9)"></i>
+            </div>
+            <div class="bl-card-info">
+              <div>
+                <span class="bl-card-badge badge-${b.dayType}">${b.dayType}</span>
+              </div>
+              <div class="bl-card-date">${dateStr}</div>
+              <div class="bl-card-title">${_escHtml(title)}</div>
+            </div>
+          </div>`;
       }).join('');
+      listEl.innerHTML = `<div class="bulletin-cards">${cards}</div>`;
+    }
+
+    /* 주보 모달 열기 */
+    function openBulletinModal(articleId, title, cafeUrl) {
+      const modal = document.getElementById('bulletinModal');
+      const iframe = document.getElementById('bmIframe');
+      const titleEl = document.getElementById('bmTitle');
+      const extLink = document.getElementById('bmExtLink');
+      if (!modal) return;
+      titleEl.textContent = title || '주보';
+      iframe.src = _buildCafeEmbedUrl(articleId);
+      extLink.href = cafeUrl || `https://cafe.naver.com/${_BL_CLUB_NAME}/${articleId}`;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeBulletinModal() {
+      const modal = document.getElementById('bulletinModal');
+      modal?.classList.remove('active');
+      document.body.style.overflow = '';
+      setTimeout(() => { const f = document.getElementById('bmIframe'); if(f) f.src=''; }, 300);
     }
 
     /* =============================================
@@ -6734,6 +6803,11 @@
       }
       audioCloseBtn?.addEventListener('click', closeAudioModal);
       audioModal?.addEventListener('click', e => { if (e.target === audioModal) closeAudioModal(); });
+
+      // 주보 모달 배경 클릭 닫기
+      document.getElementById('bulletinModal')?.addEventListener('click', e => {
+        if (e.target === document.getElementById('bulletinModal')) closeBulletinModal();
+      });
     });
 
     /* =============================================
@@ -7729,68 +7803,145 @@
       to   { opacity: 1; transform: scale(1)   }
     }
 
-    /* ===== 교회주보 목록 (네이버 카페) ===== */
-    #cafeBulletinWrap { padding: 4px 0 0; }
+    /* ===== 교회주보 목록 (네이버 카페 에디터 연동) ===== */
+    .nbh-admin-link {
+      margin-left: auto; color: var(--gray); font-size: 0.85rem;
+      width: 30px; height: 30px; display: flex; align-items: center;
+      justify-content: center; border-radius: 50%;
+      border: 1px solid var(--gray-light);
+      transition: all 0.2s;
+    }
+    .nbh-admin-link:hover { color: var(--navy); border-color: var(--navy); }
 
+    /* 요일 탭 */
+    .bulletin-day-tabs {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      padding: 4px 0 16px;
+    }
+    .bdt-btn {
+      padding: 5px 16px; border-radius: 20px;
+      border: 1.5px solid var(--gray-light);
+      background: var(--white); color: var(--gray);
+      font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .bdt-btn.active, .bdt-btn:hover {
+      background: var(--navy); color: var(--white);
+      border-color: var(--navy);
+    }
+
+    /* 카드 그리드 */
+    .bulletin-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px; padding-bottom: 4px;
+    }
+    @media(max-width:500px) {
+      .bulletin-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    }
+
+    /* 개별 카드 */
+    .bl-card {
+      position: relative; border-radius: var(--radius);
+      background: var(--white);
+      border: 1px solid var(--gray-light);
+      overflow: hidden; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      aspect-ratio: 3/4;
+      display: flex; flex-direction: column;
+    }
+    .bl-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--gold);
+    }
+
+    /* 카드 상단 아이콘 영역 */
+    .bl-card-icon {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      font-size: 2.2rem; color: rgba(255,255,255,.15);
+    }
+    .bl-card-icon.day-주일 { background: linear-gradient(135deg,#c9a84c,#e8c97a); }
+    .bl-card-icon.day-새벽 { background: linear-gradient(135deg,#2a6fad,#5ba8d8); }
+    .bl-card-icon.day-수요 { background: linear-gradient(135deg,#1a6b4a,#3aaa7a); }
+    .bl-card-icon.day-금요 { background: linear-gradient(135deg,#7c3aed,#a78bfa); }
+    .bl-card-icon.day-특별 { background: linear-gradient(135deg,#be185d,#f472b6); }
+
+    /* 카드 하단 정보 */
+    .bl-card-info {
+      padding: 10px 10px 12px;
+      background: var(--white);
+    }
+    .bl-card-badge {
+      display: inline-block; font-size: 0.68rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 20px; margin-bottom: 5px;
+    }
+    .badge-주일 { background:#fff3cd; color:#856404; }
+    .badge-새벽 { background:#cfe2ff; color:#084298; }
+    .badge-수요 { background:#d1e7dd; color:#0f5132; }
+    .badge-금요 { background:#f8d7da; color:#842029; }
+    .badge-특별 { background:#e2d9f3; color:#432874; }
+
+    .bl-card-date { font-size: 0.75rem; color: var(--gray); }
+    .bl-card-title {
+      font-size: 0.83rem; font-weight: 600; color: var(--navy);
+      margin-top: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* 로딩/빈 상태 */
     .cafe-bl-loading {
       display: flex; align-items: center; justify-content: center;
       gap: 10px; padding: 40px 20px;
       color: var(--gray); font-size: 0.9rem;
     }
-
-    .cafe-bl-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 11px 14px;
-      border-radius: var(--radius);
-      border: 1px solid var(--gray-light);
-      background: var(--white);
-      text-decoration: none; color: var(--text);
-      margin-bottom: 8px;
-      transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
-    }
-    .cafe-bl-item:hover {
-      border-color: var(--gold);
-      transform: translateX(3px);
-      box-shadow: var(--shadow-sm);
-      color: var(--navy);
-    }
-
-    .cafe-bl-date {
-      flex-shrink: 0;
-      background: var(--gold); color: white;
-      padding: 2px 10px; border-radius: 20px;
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.02em;
-    }
-
-    .cafe-bl-title {
-      flex: 1; font-size: 0.9rem; font-weight: 500;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-
-    .cafe-bl-arrow {
-      flex-shrink: 0; color: var(--gray);
-      font-size: 0.75rem; opacity: 0.45;
-    }
-
-    .cafe-bl-footer {
-      text-align: center; padding-top: 12px;
-    }
-
-    .cafe-bl-more-btn {
-      display: inline-flex; align-items: center; gap: 7px;
-      background: rgba(3,199,90,0.1); color: #03c75a;
-      padding: 8px 20px; border-radius: 20px;
-      font-size: 0.82rem; font-weight: 700;
-      text-decoration: none;
-      transition: background 0.2s;
-    }
-    .cafe-bl-more-btn:hover { background: rgba(3,199,90,0.22); }
-
     .cafe-bl-fallback {
       display: flex; align-items: center; gap: 12px;
       padding: 20px 16px; border-radius: var(--radius);
       background: var(--off-white);
       text-decoration: none; color: var(--text-muted); font-size: 0.9rem;
+    }
+    .bl-empty {
+      text-align:center; padding: 40px 20px;
+      color: var(--gray); font-size: 0.9rem;
+    }
+
+    /* 주보 iframe 모달 */
+    #bulletinModal {
+      position: fixed; inset: 0; background: rgba(0,0,0,.75);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9000; opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    #bulletinModal.active { opacity: 1; pointer-events: all; }
+    .bm-content {
+      background: var(--white); border-radius: 14px;
+      width: min(96vw, 820px); height: min(90vh, 700px);
+      display: flex; flex-direction: column; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.4);
+    }
+    .bm-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 18px; border-bottom: 1px solid var(--gray-light);
+      flex-shrink: 0;
+    }
+    .bm-title { flex: 1; font-weight: 700; color: var(--navy); font-size: 0.95rem; }
+    .bm-close {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: none; background: var(--gray-light); cursor: pointer;
+      font-size: 0.9rem; display: flex; align-items: center; justify-content: center;
+    }
+    .bm-iframe { flex: 1; border: none; width: 100%; }
+    .bm-footer {
+      padding: 10px 18px; border-top: 1px solid var(--gray-light);
+      display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0;
+    }
+    .bm-ext-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 18px; border-radius: 20px;
+      background: rgba(3,199,90,.1); color: #03c75a;
+      font-size: 0.82rem; font-weight: 700; text-decoration: none;
     }
   </style>
   <script>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>교회주보 관리 | 하늘바람교회</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --navy:#0f2044; --blue:#2a6fad; --gold:#c9a84c; --white:#fff;
+      --off:#f4f7fb; --gray:#8899aa; --gray-light:#e8ecf2; --text:#1a2744;
+      --radius:10px; --shadow:0 4px 20px rgba(0,0,0,.1);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:var(--off);color:var(--text);min-height:100vh}
+    a{color:inherit;text-decoration:none}
+
+    /* ===== LOGIN ===== */
+    #loginWrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--navy);z-index:999}
+    .login-box{background:var(--white);border-radius:16px;padding:40px 36px;width:min(90vw,360px);text-align:center;box-shadow:var(--shadow)}
+    .login-box h2{margin-bottom:24px;font-size:1.3rem;color:var(--navy)}
+    .login-box .logo{font-size:2rem;color:var(--gold);margin-bottom:8px}
+    .login-input{width:100%;padding:12px 16px;border:1.5px solid var(--gray-light);border-radius:8px;font-size:1rem;margin-bottom:12px;outline:none;transition:border-color .2s}
+    .login-input:focus{border-color:var(--blue)}
+    .login-btn{width:100%;padding:12px;background:var(--navy);color:var(--white);border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+    .login-btn:hover{background:var(--blue)}
+    .login-err{color:#e55;font-size:.85rem;margin-top:8px;display:none}
+
+    /* ===== LAYOUT ===== */
+    #adminWrap{display:none;max-width:900px;margin:0 auto;padding:32px 20px 60px}
+    .page-header{display:flex;align-items:center;gap:14px;margin-bottom:32px}
+    .page-header h1{font-size:1.5rem;color:var(--navy)}
+    .page-header .badge{background:rgba(201,168,76,.15);color:var(--gold);padding:4px 12px;border-radius:20px;font-size:.8rem;font-weight:700}
+    .home-link{margin-left:auto;color:var(--blue);font-size:.85rem;display:flex;align-items:center;gap:6px}
+
+    /* ===== CARD ===== */
+    .card{background:var(--white);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);margin-bottom:24px}
+    .card-title{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+    .card-title i{color:var(--gold)}
+
+    /* ===== FORM ===== */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group.full{grid-column:1/-1}
+    label{font-size:.82rem;font-weight:600;color:var(--gray)}
+    .form-control{padding:10px 14px;border:1.5px solid var(--gray-light);border-radius:8px;font-size:.93rem;outline:none;transition:border-color .2s;font-family:inherit}
+    .form-control:focus{border-color:var(--blue)}
+    textarea.form-control{resize:vertical;min-height:80px}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border:none;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s}
+    .btn-primary{background:var(--navy);color:var(--white)}
+    .btn-primary:hover{background:var(--blue)}
+    .btn-gold{background:var(--gold);color:var(--white)}
+    .btn-gold:hover{background:#b8953e}
+    .btn-sm{padding:6px 14px;font-size:.8rem}
+    .btn-danger{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5}
+    .btn-danger:hover{background:#fca5a5}
+    .form-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+
+    /* ===== EXTRACTED INFO ===== */
+    .extract-info{background:var(--off);border:1px solid var(--gray-light);border-radius:8px;padding:12px 14px;font-size:.85rem;display:none;margin-top:10px}
+    .extract-info span{color:var(--blue);font-weight:600}
+
+    /* ===== PREVIEW AREA ===== */
+    .preview-wrap{margin-top:16px;display:none}
+    .preview-label{font-size:.8rem;color:var(--gray);margin-bottom:8px;font-weight:600}
+    .preview-iframe{width:100%;height:500px;border:1.5px solid var(--gray-light);border-radius:8px;background:#fff}
+    .preview-note{font-size:.78rem;color:var(--gray);margin-top:6px}
+
+    /* ===== FILTER TABS ===== */
+    .filter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+    .ftab{padding:6px 16px;border-radius:20px;border:1.5px solid var(--gray-light);background:var(--white);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--gray)}
+    .ftab.active,.ftab:hover{background:var(--navy);color:var(--white);border-color:var(--navy)}
+
+    /* ===== BULLETIN LIST ===== */
+    .bulletin-table{width:100%;border-collapse:collapse}
+    .bulletin-table th{text-align:left;padding:10px 12px;font-size:.78rem;color:var(--gray);border-bottom:2px solid var(--gray-light);font-weight:700}
+    .bulletin-table td{padding:11px 12px;font-size:.88rem;border-bottom:1px solid var(--gray-light);vertical-align:middle}
+    .bulletin-table tr:hover td{background:var(--off)}
+    .day-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.73rem;font-weight:700}
+    .day-주일{background:#fff3cd;color:#856404}
+    .day-새벽{background:#cfe2ff;color:#084298}
+    .day-수요{background:#d1e7dd;color:#0f5132}
+    .day-금요{background:#f8d7da;color:#842029}
+    .day-특별{background:#e2d9f3;color:#432874}
+    .empty-msg{text-align:center;padding:40px 20px;color:var(--gray);font-size:.9rem}
+    .loading-msg{text-align:center;padding:30px;color:var(--gray)}
+
+    /* ===== STATUS TOAST ===== */
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:#fff;padding:12px 24px;border-radius:30px;font-size:.9rem;font-weight:600;opacity:0;transition:all .3s;z-index:9999;pointer-events:none}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast.error{background:#dc2626}
+  </style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="loginWrap">
+  <div class="login-box">
+    <div class="logo"><i class="fas fa-church"></i></div>
+    <h2>하늘바람교회<br>주보 관리자</h2>
+    <br>
+    <input id="pwInput" type="password" class="login-input" placeholder="관리자 비밀번호"
+           onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="login-btn" onclick="doLogin()">로그인</button>
+    <div class="login-err" id="loginErr">비밀번호가 올바르지 않습니다.</div>
+  </div>
+</div>
+
+<!-- ===== ADMIN MAIN ===== -->
+<div id="adminWrap">
+  <div class="page-header">
+    <i class="fas fa-newspaper" style="font-size:1.4rem;color:var(--gold)"></i>
+    <h1>교회주보 관리</h1>
+    <span class="badge">Admin</span>
+    <a href="../index.html" class="home-link"><i class="fas fa-home"></i> 홈페이지</a>
+  </div>
+
+  <!-- ===== ADD FORM ===== -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-plus-circle"></i> 주보 추가</div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>예배 유형</label>
+        <select id="fDayType" class="form-control">
+          <option value="주일">주일</option>
+          <option value="새벽">새벽</option>
+          <option value="수요">수요</option>
+          <option value="금요">금요</option>
+          <option value="특별">특별</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>날짜</label>
+        <input id="fDate" type="date" class="form-control"/>
+      </div>
+      <div class="form-group full">
+        <label>제목 <span style="font-weight:400;color:var(--gray)">(선택 — 비워두면 날짜+유형으로 표시)</span></label>
+        <input id="fTitle" type="text" class="form-control" placeholder="예: 부활절 주보, 창립기념 주보"/>
+      </div>
+      <div class="form-group full">
+        <label>네이버 카페 URL <span style="font-weight:400;color:var(--gray)">(게시글 주소 붙여넣기)</span></label>
+        <textarea id="fUrl" class="form-control" placeholder="https://cafe.naver.com/haneulbaramchurch?iframe_url_utf8=..." oninput="onUrlInput()"></textarea>
+        <div class="extract-info" id="extractInfo">
+          게시글 ID <span id="extractedId">—</span> 자동 감지됨
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="saveBulletin()"><i class="fas fa-save"></i> 저장</button>
+      <button class="btn btn-gold" onclick="togglePreview()"><i class="fas fa-eye"></i> 미리보기</button>
+      <button class="btn" style="background:var(--gray-light);color:var(--navy)" onclick="clearForm()"><i class="fas fa-times"></i> 초기화</button>
+    </div>
+
+    <div class="preview-wrap" id="previewWrap">
+      <div class="preview-label">카페 게시글 미리보기</div>
+      <iframe id="previewFrame" class="preview-iframe" src="" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+      <div class="preview-note">※ 네이버 카페 정책상 미리보기가 표시되지 않을 수 있습니다. 저장 후 홈페이지에서 확인하세요.</div>
+    </div>
+  </div>
+
+  <!-- ===== LIST ===== -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-list"></i> 주보 목록
+      <button class="btn btn-sm" style="margin-left:auto;background:var(--off);color:var(--navy)" onclick="loadList()">
+        <i class="fas fa-sync-alt"></i> 새로고침
+      </button>
+    </div>
+
+    <div class="filter-tabs">
+      <div class="ftab active" data-day="" onclick="setFilter(this,'')">전체</div>
+      <div class="ftab" data-day="주일" onclick="setFilter(this,'주일')">주일</div>
+      <div class="ftab" data-day="새벽" onclick="setFilter(this,'새벽')">새벽</div>
+      <div class="ftab" data-day="수요" onclick="setFilter(this,'수요')">수요</div>
+      <div class="ftab" data-day="금요" onclick="setFilter(this,'금요')">금요</div>
+      <div class="ftab" data-day="특별" onclick="setFilter(this,'특별')">특별</div>
+    </div>
+
+    <div id="bulletinList"><div class="loading-msg"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ── 설정 ── */
+  const GAS_URL  = 'https://script.google.com/macros/s/AKfycbxh6n5kWfC5LC_3MjWJYjfAmNcCjr7kJz9WU_yGgncuU2UaXlgOHgmTNnPwa2WH4O1oLw/exec';
+  const ADMIN_PW = 'hbc1416';   // ← 필요 시 변경
+  const CLUB_ID  = '31371644';
+  const CLUB_NAME= 'haneulbaramchurch';
+
+  let _allBulletins = [];
+  let _filterDay = '';
+
+  /* ── 로그인 ── */
+  function doLogin() {
+    if (document.getElementById('pwInput').value === ADMIN_PW) {
+      document.getElementById('loginWrap').style.display = 'none';
+      document.getElementById('adminWrap').style.display = 'block';
+      // 오늘 날짜 자동 입력
+      document.getElementById('fDate').value = new Date().toISOString().split('T')[0];
+      loadList();
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  }
+
+  /* ── URL 파싱: 카페 게시글 ID 추출 ── */
+  function extractArticleId(url) {
+    if (!url) return null;
+    let s = url;
+    // iframe_url_utf8 파라미터 먼저 디코딩
+    try {
+      const m = url.match(/iframe_url_utf8=([^&\s]+)/);
+      if (m) s = decodeURIComponent(decodeURIComponent(m[1]));
+    } catch(e) {}
+    // 여러 패턴 시도
+    const patterns = [
+      /articleid[=:](\d+)/i,
+      /articles\/(\d+)/i,
+      /\/(\d{3,6})(?:\?|$|&)/
+    ];
+    for (const p of patterns) {
+      const m = (s.match(p) || url.match(p));
+      if (m) return m[1];
+    }
+    return null;
+  }
+
+  /* ── embed URL 생성 ── */
+  function buildEmbedUrl(articleId) {
+    const inner = `/ArticleRead.nhn?clubid=${CLUB_ID}&articleid=${articleId}&referrerAllArticles=false`;
+    return `https://cafe.naver.com/${CLUB_NAME}?iframe_url_utf8=${encodeURIComponent(inner)}`;
+  }
+
+  /* ── URL 입력 이벤트 ── */
+  function onUrlInput() {
+    const url = document.getElementById('fUrl').value.trim();
+    const id  = extractArticleId(url);
+    const info = document.getElementById('extractInfo');
+    const extracted = document.getElementById('extractedId');
+    if (id) {
+      extracted.textContent = id;
+      info.style.display = 'block';
+    } else {
+      info.style.display = 'none';
+    }
+  }
+
+  /* ── 미리보기 토글 ── */
+  function togglePreview() {
+    const wrap  = document.getElementById('previewWrap');
+    const frame = document.getElementById('previewFrame');
+    const url   = document.getElementById('fUrl').value.trim();
+    const id    = extractArticleId(url);
+    if (!id) { showToast('카페 URL에서 게시글 ID를 찾지 못했습니다.', true); return; }
+
+    const showing = wrap.style.display === 'block';
+    if (!showing) {
+      frame.src = buildEmbedUrl(id);
+      wrap.style.display = 'block';
+    } else {
+      wrap.style.display = 'none';
+      frame.src = '';
+    }
+  }
+
+  /* ── 저장 ── */
+  async function saveBulletin() {
+    const cafeUrl = document.getElementById('fUrl').value.trim();
+    const date    = document.getElementById('fDate').value;
+    const dayType = document.getElementById('fDayType').value;
+    const title   = document.getElementById('fTitle').value.trim();
+    const articleId = extractArticleId(cafeUrl);
+
+    if (!cafeUrl) { showToast('카페 URL을 입력하세요.', true); return; }
+    if (!date)    { showToast('날짜를 선택하세요.', true); return; }
+
+    try {
+      const r = await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: '주보', date, dayType, title, cafeUrl, articleId: articleId || '' })
+      });
+      const json = await r.json();
+      if (json.result === 'success') {
+        showToast('저장되었습니다!');
+        clearForm();
+        loadList();
+      } else {
+        showToast('저장 실패: ' + (json.message || ''), true);
+      }
+    } catch(e) {
+      showToast('저장 중 오류: ' + e.message, true);
+    }
+  }
+
+  /* ── 초기화 ── */
+  function clearForm() {
+    document.getElementById('fUrl').value = '';
+    document.getElementById('fTitle').value = '';
+    document.getElementById('fDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('extractInfo').style.display = 'none';
+    document.getElementById('previewWrap').style.display = 'none';
+    document.getElementById('previewFrame').src = '';
+  }
+
+  /* ── 목록 필터 ── */
+  function setFilter(el, day) {
+    document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    _filterDay = day;
+    renderList();
+  }
+
+  /* ── 목록 로드 ── */
+  async function loadList() {
+    document.getElementById('bulletinList').innerHTML = '<div class="loading-msg"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>';
+    try {
+      const r = await fetch(`${GAS_URL}?action=getBulletins`);
+      const json = await r.json();
+      if (json.result === 'success') {
+        _allBulletins = json.bulletins || [];
+        renderList();
+      } else {
+        document.getElementById('bulletinList').innerHTML = '<div class="empty-msg">데이터를 불러오지 못했습니다.</div>';
+      }
+    } catch(e) {
+      document.getElementById('bulletinList').innerHTML = '<div class="empty-msg">네트워크 오류: ' + e.message + '</div>';
+    }
+  }
+
+  function renderList() {
+    const filtered = _filterDay
+      ? _allBulletins.filter(b => b.dayType === _filterDay)
+      : _allBulletins;
+
+    if (!filtered.length) {
+      document.getElementById('bulletinList').innerHTML = '<div class="empty-msg"><i class="fas fa-inbox" style="font-size:1.5rem;opacity:.3;display:block;margin-bottom:8px"></i>등록된 주보가 없습니다.</div>';
+      return;
+    }
+
+    const rows = filtered.map(b => {
+      const id = b.articleId || extractArticleId(b.cafeUrl);
+      const cafeLink = id ? buildEmbedUrl(id) : (b.cafeUrl || '#');
+      const display  = b.title || `${b.date} ${b.dayType}`;
+      return `
+        <tr>
+          <td>${b.date || '—'}</td>
+          <td><span class="day-badge day-${b.dayType}">${b.dayType}</span></td>
+          <td>${escHtml(display)}</td>
+          <td>
+            ${id ? `<a href="${cafeLink}" target="_blank" class="btn btn-sm" style="background:rgba(3,199,90,.1);color:#03c75a"><i class="fas fa-eye"></i> 보기</a>` : '—'}
+          </td>
+          <td>
+            <button class="btn btn-sm btn-danger" onclick="deleteBulletin('${b.id}')">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>`;
+    }).join('');
+
+    document.getElementById('bulletinList').innerHTML = `
+      <table class="bulletin-table">
+        <thead><tr><th>날짜</th><th>유형</th><th>제목</th><th>보기</th><th>삭제</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  /* ── 삭제 ── */
+  async function deleteBulletin(id) {
+    if (!confirm('이 주보를 삭제할까요?')) return;
+    try {
+      const r = await fetch(`${GAS_URL}?action=deleteBulletin&id=${encodeURIComponent(id)}`);
+      const json = await r.json();
+      if (json.result === 'success') {
+        showToast('삭제되었습니다.');
+        _allBulletins = _allBulletins.filter(b => String(b.id) !== String(id));
+        renderList();
+      } else {
+        showToast('삭제 실패: ' + (json.message || ''), true);
+      }
+    } catch(e) {
+      showToast('오류: ' + e.message, true);
+    }
+  }
+
+  /* ── 유틸 ── */
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function showToast(msg, isErr) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isErr ? ' error' : '');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

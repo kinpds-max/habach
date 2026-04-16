@@ -11,6 +11,29 @@ function doPost(e) {
     const data = JSON.parse(e.postData.contents);
     const ss   = SpreadsheetApp.openById(SHEET_ID);
 
+    // 주보 저장
+    if (data.type === '주보') {
+      let sheet = ss.getSheetByName('주보목록');
+      if (!sheet) {
+        sheet = ss.insertSheet('주보목록');
+        sheet.appendRow(['id','date','dayType','title','cafeUrl','articleId','createdAt']);
+        sheet.getRange(1,1,1,7).setFontWeight('bold').setBackground('#f3f3f3');
+      }
+      const newId = String(Date.now());
+      sheet.appendRow([
+        newId,
+        data.date     || '',
+        data.dayType  || '주일',
+        data.title    || '',
+        data.cafeUrl  || '',
+        data.articleId|| '',
+        new Date().toISOString()
+      ]);
+      return ContentService
+        .createTextOutput(JSON.stringify({ result: 'success', id: newId }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     // type 필드에 따라 시트 탭 결정
     const sheetName = (data.type === '중보기도') ? '중보기도' : 'HRAD';
 
@@ -129,6 +152,51 @@ function doGet(e) {
       return ContentService
         .createTextOutput(JSON.stringify({ result: 'error', message: err.message }))
         .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  // 주보 목록 조회
+  if (action === 'getBulletins') {
+    try {
+      const ss = SpreadsheetApp.openById(SHEET_ID);
+      const sheet = ss.getSheetByName('주보목록');
+      if (!sheet || sheet.getLastRow() <= 1) {
+        return ContentService.createTextOutput(JSON.stringify({ result: 'success', bulletins: [] }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+      const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 7).getValues();
+      const dayTypeFilter = e.parameter.dayType || '';
+      var bulletins = rows
+        .filter(function(r) { return r[0] && (!dayTypeFilter || r[2] === dayTypeFilter); })
+        .map(function(r) {
+          return { id: r[0], date: r[1], dayType: r[2], title: r[3], cafeUrl: r[4], articleId: r[5], createdAt: r[6] };
+        })
+        .sort(function(a, b) { return String(b.date).localeCompare(String(a.date)); });
+      return ContentService.createTextOutput(JSON.stringify({ result: 'success', bulletins: bulletins }))
+        .setMimeType(ContentService.MimeType.JSON);
+    } catch(err) {
+      return ContentService.createTextOutput(JSON.stringify({ result: 'error', message: err.message }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  // 주보 삭제
+  if (action === 'deleteBulletin') {
+    try {
+      const ss = SpreadsheetApp.openById(SHEET_ID);
+      const sheet = ss.getSheetByName('주보목록');
+      if (!sheet) return ContentService.createTextOutput(JSON.stringify({ result: 'error', message: '시트 없음' })).setMimeType(ContentService.MimeType.JSON);
+      const id = e.parameter.id;
+      const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
+      for (var i = 0; i < rows.length; i++) {
+        if (String(rows[i][0]) === String(id)) {
+          sheet.deleteRow(i + 2);
+          return ContentService.createTextOutput(JSON.stringify({ result: 'success' })).setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({ result: 'error', message: '항목 없음' })).setMimeType(ContentService.MimeType.JSON);
+    } catch(err) {
+      return ContentService.createTextOutput(JSON.stringify({ result: 'error', message: err.message })).setMimeType(ContentService.MimeType.JSON);
     }
   }
 
