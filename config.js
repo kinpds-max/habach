@@ -1,0 +1,1 @@
+window.HABACH_CONFIG={supabaseUrl:'https://veghdecosrimscedkrdo.supabase.co',supabasePublishableKey:'sb_publishable_cwKdgTkhjPQGM4jRclWjkQ_rlpawUxO'};
