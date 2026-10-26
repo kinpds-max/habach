@@ -1,0 +1,11 @@
+# habachnew 배포 브랜치
+- 교회 홈페이지: 하늘바람교회 V5 + 30개 개별 게시판
+- 실사 자연 배경, 모바일 고정 탭, 영어 페이지
+- Supabase: habach-church (기존 교회 전용 프로젝트)
+- 검색 노출: pages/ 30개, en/, sitemap.xml, robots.txt
+- 네이버 카페 주보 자동 수집: 공개 게시물 목록을 하루 1회 오전 10시(KST) 확인
+- 원본: https://cafe.naver.com/f-e/cafes/31371644/menus/28?viewType=L
+- 주의: 네이버 내부 웹 API는 공식 지원 API가 아니므로 차단/변경 시 자동 수집이 중단되며 오류를 반환합니다. 로그인 우회하지 않습니다.
+- Vercel 생산 환경의 CRON_SECRET, SUPABASE_SYNC_TOKEN, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY 필요
+- DNS: gabia A 레코드를 Vercel로 변경 전까지 habach.kr은 GitHub Pages 유지
+- 별도 GitHub 저장소 'habachnew'는 아직 생성되지 않았으며 이 브랜치는 기존 habach 저장소의 habachnew 브랜치입니다.
