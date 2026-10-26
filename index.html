@@ -176,20 +176,20 @@ async function showBoard(page=1,search=''){
  section.querySelector('input').addEventListener('keydown',e=>{if(e.key==='Enter')submit()});
  if(!sb){section.querySelector('.board-results').innerHTML='<div class="board-empty">게시판 서버 연결을 확인해 주세요.</div>';return;}
  const size=10,from=(page-1)*size;
- let q=sb.from('church_posts').select('id,title,body,youtube_id,thumbnail_url,published_at,created_at',{count:'exact'}).eq('section_key',key).eq('published',true);
+ let q=sb.from('church_posts').select('id,title,body,youtube_id,thumbnail_url,source_url,published_at,created_at',{count:'exact'}).eq('section_key',key).eq('published',true);
  if(search)q=q.ilike('title','%'+search.replace(/[%_]/g,'')+'%');
  const {data,error,count}=await q.order('published_at',{ascending:false}).range(from,from+size-1);
  if(token!==requestToken||!section.isConnected||key!==(location.hash||'#/index').slice(2))return;
  const results=section.querySelector('.board-results'),pager=section.querySelector('.board-pager');
  if(error){results.innerHTML='<div class="board-empty">게시글을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';return;}
- if(!data?.length){results.innerHTML='<div class="board-empty">등록된 게시글이 없습니다.</div>';return;}
+ if(!data?.length){results.innerHTML='<div class="board-empty">등록된 게시글이 없습니다.'+(key==='news-2'?'<p><a target="_blank" rel="noopener noreferrer" href="https://cafe.naver.com/f-e/cafes/31371644/menus/28?viewType=L">네이버 카페에서 주보 바로보기</a></p>':'')+'</div>';return;}
  results.innerHTML=data.map((post,i)=>'<button class="detail-row" type="button" data-id="'+clean(post.id)+'"><span class="board-num">'+(count-from-i)+'</span><strong>'+clean(post.title)+'</strong><time>'+clean((post.published_at||post.created_at||'').slice(0,10))+'</time></button>').join('');
  const detail=section.querySelector('.board-detail');
  results.querySelectorAll('[data-id]').forEach(el=>el.onclick=()=>{
  const post=data.find(x=>x.id===el.dataset.id);if(!post)return;
  const vid=/^[A-Za-z0-9_-]{11}$/.test(post.youtube_id||'')?post.youtube_id:null;
  detail.hidden=false;
- detail.innerHTML='<h3>'+clean(post.title)+'</h3><small>'+clean((post.published_at||'').slice(0,10))+'</small>'+(vid?'<iframe loading="lazy" title="교회 영상" src="https://www.youtube-nocookie.com/embed/'+vid+'" allowfullscreen></iframe>':'')+'<div style="white-space:pre-wrap;margin-top:14px">'+clean(post.body)+'</div>';
+ detail.innerHTML='<h3>'+clean(post.title)+'</h3><small>'+clean((post.published_at||'').slice(0,10))+'</small>'+(vid?'<iframe loading="lazy" title="교회 영상" src="https://www.youtube-nocookie.com/embed/'+vid+'" allowfullscreen></iframe>':'')+'<div style="white-space:pre-wrap;margin-top:14px">'+clean(post.body)+'</div>'+(post.source_url&&/^https:\/\/cafe\.naver\.com\/f-e\/cafes\/31371644\/articles\/\d+$/.test(post.source_url)?'<p><a target="_blank" rel="noopener noreferrer" href="'+clean(post.source_url)+'">네이버 카페 원문 보기</a></p>':'');
  detail.scrollIntoView({block:'nearest',behavior:'smooth'});
  });
  const pages=Math.max(1,Math.ceil((count||0)/size));
