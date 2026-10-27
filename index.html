@@ -659,40 +659,17 @@ function applyTranslation(){
 function setupLanguage(){const sel=document.getElementById('languageSelect');if(!sel)return;sel.value=localStorage.getItem('hbc_lang')||'ko';sel.addEventListener('change',()=>{localStorage.setItem('hbc_lang',sel.value);applyTranslation()});applyTranslation()}
 const heroBackgrounds={"index": "https://cdn.pixabay.com/photo/2017/08/02/12/03/nature-2571245_1280.jpg", "about": "https://cdn.pixabay.com/photo/2025/10/03/13/51/sunrise-9871103_1280.jpg", "sermon": "https://cdn.pixabay.com/photo/2017/05/31/18/28/czech-republic-2361205_1280.jpg", "ministry": "https://cdn.pixabay.com/photo/2017/04/12/16/24/lake-2224947_1280.jpg", "next": "https://cdn.pixabay.com/photo/2015/07/10/16/32/mountain-839646_1280.jpg", "news": "https://cdn.pixabay.com/photo/2017/08/01/08/04/river-2563375_1280.jpg", "resources": "https://cdn.pixabay.com/photo/2017/08/02/12/03/nature-2571245_1280.jpg"};
 function render(){const k=(location.hash||"#/index").slice(2);document.getElementById("app").innerHTML=views[k]||views.index;const hero=document.querySelector("#app .hero");if(hero){const prefix=(k.split("-")[0]||"index");hero.classList.add(`route-${prefix}`);const sectionTitles={about:["교회소개","말씀 위에 세워지는 은혜의 공동체"],sermon:["교회영상","말씀으로 새롭게 되는 삶"],ministry:["사역소개","사랑을 나누고 함께 섬기는 교회"],next:["교육부서","다음 세대를 믿음으로 세웁니다"],news:["커뮤니티","함께 나누는 기쁨과 소식"],resources:["자료실","믿음의 기록과 나눔"]};if(prefix!=="index"&&sectionTitles[prefix]){const [heading,description]=sectionTitles[prefix];const title=hero.querySelector(".hero-text h1"),intro=hero.querySelector(".hero-text p"),eyebrow=hero.querySelector(".hero-text span");if(title)title.textContent=heading;if(intro)intro.textContent=description;if(eyebrow)eyebrow.textContent="HANEUL BARAM CHURCH";}const bg=heroBackgrounds[prefix]||heroBackgrounds.index;hero.style.backgroundImage=`linear-gradient(90deg, rgba(8,24,44,.77) 0%, rgba(9,27,45,.46) 48%, rgba(8,24,40,.12) 100%), url(${bg})`;hero.style.backgroundPosition="center center";hero.style.backgroundSize="cover";hero.style.backgroundRepeat="no-repeat";}window.scrollTo(0,0);document.querySelectorAll("#mobileNav a").forEach(a=>a.onclick=()=>{document.getElementById("mobileNav").classList.remove("open");document.getElementById("menuToggle").setAttribute("aria-expanded","false")});}addEventListener("hashchange",render);render();setupLanguage();addEventListener("hashchange",()=>applyTranslation());
-// Sidebar navigation: update ONLY the right article. Never scroll to page top.
+// Use one routing mechanism for all navigation. Native hashchange triggers render().
+// The former sidebar pushState handler prevented hashchange and broke board initialization.
 document.addEventListener('click',function(evt){
- const link=evt.target.closest('#app .side a[href^="#/"]');
- if(!link)return;
- const key=link.getAttribute('href').slice(2);
- const current=(location.hash||'#/index').slice(2);
- if(!views[key])return;
- const currentSection=current.split('-')[0], nextSection=key.split('-')[0];
- if(currentSection!==nextSection)return;
- evt.preventDefault();
- const temp=document.createElement('div'); temp.innerHTML=views[key];
- const incoming=temp.querySelector('.article');
- const existing=document.querySelector('#app .article');
- if(!incoming||!existing)return;
- existing.innerHTML=incoming.innerHTML;
- document.querySelectorAll('#app .side a').forEach(a=>{
-  const selected=a.getAttribute('href')==='#/'+key;
-  a.classList.toggle('on',selected);
-  if(selected)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
- });
- // pushState does not fire hashchange; maintain browser back and forward.
- history.pushState({churchArticle:true},'', '#/'+key);
- if(typeof applyTranslation==='function')applyTranslation();
+ const anchor=evt.target.closest('a[href^="#/"]');
+ if(!anchor)return;
+ const key=anchor.getAttribute('href').slice(2);
+ if(!Object.prototype.hasOwnProperty.call(views,key))return;
+ // Clicking the current route must still recover its view if another widget replaced it.
+ if(location.hash==='#/'+key){evt.preventDefault();render();if(typeof applyTranslation==='function')applyTranslation();}
 });
-window.addEventListener('popstate',()=>{
- const k=(location.hash||'#/index').slice(2);
- const article=document.querySelector('#app .article');
- if(article&&views[k]){
-  const temp=document.createElement('div');temp.innerHTML=views[k];
-  const incoming=temp.querySelector('.article');
-  if(incoming){article.innerHTML=incoming.innerHTML;document.querySelectorAll('#app .side a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#/'+k));if(typeof applyTranslation==='function')applyTranslation();return;}
- }
- render();
-});
+window.addEventListener('popstate',()=>{render();if(typeof applyTranslation==='function')applyTranslation();});
 </script><style>
 .detail-board{margin-top:42px;padding-top:24px;border-top:2px solid #a0b6d0;max-width:100%;font-size:15px}
 .detail-board h3{font-size:22px;color:#344e68;margin:0 0 14px}
