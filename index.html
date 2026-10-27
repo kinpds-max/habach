@@ -984,7 +984,12 @@ async function showBoard(page=1,search=''){
  const vid=/^[A-Za-z0-9_-]{11}$/.test(post.youtube_id||'')?post.youtube_id:null;
  detail.hidden=false;
  detail.innerHTML='<h3>'+clean(post.title)+'</h3><small>'+clean((post.published_at||'').slice(0,10))+'</small>'+(vid?'<iframe loading="lazy" title="교회 영상" src="https://www.youtube-nocookie.com/embed/'+vid+'" allowfullscreen></iframe>':'')+'<div style="white-space:pre-wrap;margin-top:14px">'+clean(post.body)+'</div>'+(post.source_url&&/^https:\/\/cafe\.naver\.com\/f-e\/cafes\/31371644\/articles\/\d+$/.test(post.source_url)?'<p><a target="_blank" rel="noopener noreferrer" href="'+clean(post.source_url)+'">네이버 카페 원문 보기</a></p>':'');
- detail.scrollIntoView({block:'nearest',behavior:'smooth'});
+ // Place the expanded post immediately after its clicked title row.
+ const alreadyOpen=el.getAttribute('aria-expanded')==='true';
+ results.querySelectorAll('[data-id]').forEach(row=>row.setAttribute('aria-expanded','false'));
+ if(alreadyOpen){detail.hidden=true;detail.remove();results.appendChild(detail);return;}
+ el.insertAdjacentElement('afterend',detail);
+ el.setAttribute('aria-expanded','true');
  });
  const pages=Math.max(1,Math.ceil((count||0)/size));
  pager.innerHTML='<button type="button" class="prev" '+(page<=1?'disabled':'')+'>이전</button><span>'+page+' / '+pages+'</span><button type="button" class="next" '+(page>=pages?'disabled':'')+'>다음</button>';
