@@ -971,7 +971,7 @@ async function showBoard(page=1,search=''){
       if(match){
         try{const url=new URL(match[1]);if(url.protocol==='https:'||url.protocol==='http:')return '<a class="hb-business-link" href="'+clean(url.href)+'" target="_blank" rel="noopener noreferrer">'+clean(url.hostname.replace(/^www\./,''))+' ↗</a>';}catch{}
       }
-      return '<div class="hb-business-line">'+clean(line)+'</div>';
+      return '<div class="hb-business-line">'+clean(line).replace(/https?:\/\/[^\s<]+/g,link=>{try{const u=new URL(link);return '<a class="hb-business-link" href="'+clean(u.href)+'" target="_blank" rel="noopener noreferrer">'+clean(u.hostname.replace(/^www\./,''))+' ↗</a>';}catch{return clean(link)}})+'</div>';
     }).join('');
     return '<article class="hb-business-card"><h4>'+clean(post.title)+'</h4>'+info+'</article>';
   }).join('');
