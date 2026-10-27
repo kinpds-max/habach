@@ -967,9 +967,9 @@ async function showBoard(page=1,search=''){
   results.innerHTML=ordered.map(post=>{
     const lines=String(post.body||'').replace(/\\n/g,'\n').split('\n').map(v=>v.trim()).filter(Boolean);
     const info=lines.map(line=>{
-      const match=line.match(/^홈페이지:\\s*(https?:\\/\\/[^\\s]+)/);
+      const match=line.match(/^홈페이지:\s*(https?:\/\/[^\s]+)/);
       if(match){
-        try{const url=new URL(match[1]);if(url.protocol==='https:'||url.protocol==='http:')return '<a class="hb-business-link" href="'+clean(url.href)+'" target="_blank" rel="noopener noreferrer">'+clean(url.hostname.replace(/^www\\./,''))+' ↗</a>';}catch{}
+        try{const url=new URL(match[1]);if(url.protocol==='https:'||url.protocol==='http:')return '<a class="hb-business-link" href="'+clean(url.href)+'" target="_blank" rel="noopener noreferrer">'+clean(url.hostname.replace(/^www\./,''))+' ↗</a>';}catch{}
       }
       return '<div class="hb-business-line">'+clean(line)+'</div>';
     }).join('');
