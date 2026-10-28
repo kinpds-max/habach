@@ -7,6 +7,7 @@ if(base){
 }
 function init(){
 if(location.hash!=='#/resources-7')return;
+if(!document.getElementById('hb-bible-quiz')&&typeof render==='function')render();
 const host=document.getElementById('hb-bible-quiz');if(!host||host.dataset.ready)return;host.dataset.ready='1';
 let count=10,current=0,score=0,chosen=[],pool=[];
 function elem(type,cls,txt,container){const x=document.createElement(type);if(cls)x.className=cls;if(txt!==undefined)x.textContent=txt;(container||host).append(x);return x;}
