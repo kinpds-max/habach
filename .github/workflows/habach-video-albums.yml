@@ -1,0 +1,65 @@
+name: Habach static video albums
+on:
+  schedule:
+    # KST 06:50, after the existing Supabase 06:30 import.
+    - cron: '50 21 * * *'
+  workflow_dispatch:
+  push:
+    branches: [habachnew]
+    paths:
+      - '.github/workflows/habach-video-albums.yml'
+      - 'scripts/sync_video_albums.py'
+      - 'tests/test_video_albums.py'
+permissions:
+  contents: write
+concurrency:
+  group: habach-static-video-albums
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: habachnew
+          persist-credentials: false
+      - name: Verify generator
+        run: python3 -m unittest discover -s tests -v
+      - name: Generate static albums from published public posts
+        run: |
+          python3 scripts/sync_video_albums.py
+          python3 scripts/sync_video_albums.py --check
+      - name: Commit album changes to production branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,subprocess
+          from pathlib import Path
+          if subprocess.run(['git','diff','--quiet','--','index.html']).returncode == 0:
+              print('Published albums are already current; no deployment needed.')
+              raise SystemExit(0)
+          original_blob = subprocess.check_output(['git','rev-parse','HEAD:index.html'],text=True).strip()
+          payload = {
+              'message':'Update static church video albums from published posts',
+              'branch':'habachnew',
+              'sha':original_blob,
+              'content':base64.b64encode(Path('index.html').read_bytes()).decode(),
+          }
+          # Contents API rejects a stale blob SHA if another editor changed index.html.
+          result = subprocess.run(['gh','api','--method','PUT',
+              'repos/'+os.environ['GH_REPO']+'/contents/index.html','--input','-'],
+              input=json.dumps(payload),text=True,capture_output=True)
+          if result.returncode:
+              print('Commit failed; the current production branch was not overwritten.')
+              print(result.stderr)
+              raise SystemExit(result.returncode)
+          commit=json.loads(result.stdout)['commit']['sha']
+          print('Album commit:',commit)
+          # Vercel Git integration deploys habachnew to the existing production project.
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as summary:
+              summary.write('Static albums committed to habachnew: `'+commit+'`.\n')
+              summary.write('Check the matching habachnew Vercel deployment for READY; build readiness is not a playback test.\n')
+          PY
