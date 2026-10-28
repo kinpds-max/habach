@@ -194,7 +194,7 @@ function initBible(){
      if(!moveNext&&!movePrevious)return;
      const inputs=[...list.querySelectorAll('textarea')];
      const index=inputs.indexOf(ta);const other=inputs[index+(moveNext?1:-1)];
-     if(!other){if(e.key==='Enter')e.preventDefault();return;}
+     if(!other){if(e.key==='Enter'&&e.target.value.trim())return;return;}
      e.preventDefault();other.focus();other.setSelectionRange(moveNext?0:other.value.length,moveNext?0:other.value.length);
      other.closest('.hb-bible-verse').scrollIntoView({block:'center',behavior:'smooth'});
     });
