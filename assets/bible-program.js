@@ -66,6 +66,19 @@ function initBible(){
  title(heading,'말씀을 읽고 한 절씩 필사하기');
  attach(heading,'p',{},'개역개정 · 현대인의 성경 / 총 66권 1,189장. 각 말씀 바로 아래에 필사해 보세요.');
 
+ const guide=attach(host,'details',{className:'hb-bible-guide',open:'open'});
+ attach(guide,'summary',{},'성경필사 사용설명 · 처음 이용하시는 분은 읽어 주세요');
+ const guideBody=attach(guide,'div',{className:'hb-bible-guide-body'});
+ const steps=[
+  ['1. 필사 방식 선택','일반 성경필사는 원하는 성경책과 장을 자유롭게 선택합니다. 맥체인 성경필사는 날짜를 선택하고 해당 날짜의 읽기표에서 말씀을 선택합니다.'],
+  ['2. 성경 번역과 장 선택','개역개정 또는 현대인의 성경을 선택합니다. 각 절의 원문 아래에 있는 입력칸에 말씀을 직접 작성해 주세요.'],
+  ['3. 편리한 키보드 이동','Enter 또는 ↓ 방향키로 다음 절, ↑ 방향키로 이전 절로 이동할 수 있습니다. Tab 키로 다음 입력칸을 선택할 수도 있습니다.'],
+  ['4. 자동저장과 완료','입력한 내용은 현재 기기의 브라우저에 자동 저장됩니다. 한 장의 모든 절에 글이 입력되면 작성 완료로 표시됩니다. 오타·띄어쓰기를 원문과 대조해 제한하지 않습니다.'],
+  ['5. 완료 기록 공유','성경필사 공유 영역에 필사자 이름과 직분을 입력합니다(예: 김동현 집사). 모든 절을 작성한 뒤 「이 장 필사 완료 공유」를 누르면 해당 장의 기록이 등록됩니다.'],
+  ['6. 필사 순위 확인','등록된 완료 기록을 절 수 기준으로 집계하여 누적순위·매달순위·매주순위·매일순위로 볼 수 있습니다.'],
+  ['7. 기록 보관 및 주의사항','「이 장 필사 TXT 저장」으로 필사를 보관할 수 있습니다. 자동저장은 같은 브라우저에서만 유지되며, 브라우저 데이터 삭제 또는 기기 변경 시 복원되지 않을 수 있습니다. 공유한 필사자 이름은 다른 방문자에게 공개됩니다.']
+ ];
+ steps.forEach(([heading,body])=>{const section=attach(guideBody,'div',{className:'hb-bible-guide-step'});attach(section,'strong',{},heading);attach(section,'p',{},body);});
  const modeBar=attach(host,'div',{className:'hb-copy-mode-tabs'});
  const normalMode=attach(modeBar,'button',{type:'button',class:'active','aria-pressed':'true'},'일반 성경필사');
  const mcheyneMode=attach(modeBar,'button',{type:'button','aria-pressed':'false'},'맥체인 성경필사');
