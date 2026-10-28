@@ -185,16 +185,16 @@ function initBible(){
     ta.addEventListener('input',()=>{write(key(v),ta.value);completion()});
     ta.addEventListener('keydown',e=>{
      if(e.isComposing||e.altKey||e.ctrlKey||e.metaKey||e.shiftKey)return;
-     if(e.key!=='ArrowDown'&&e.key!=='ArrowUp')return;
+     if(e.key!=='ArrowDown'&&e.key!=='ArrowUp'&&e.key!=='Enter')return;
      const text=ta.value;const pos=ta.selectionStart;
      const before=text.slice(0,pos),after=text.slice(ta.selectionEnd);
      // Keep normal text navigation within multiline content; change verse at its boundaries.
-     const moveNext=e.key==='ArrowDown'&&!after.includes('\n');
+     const moveNext=e.key==='Enter'||(e.key==='ArrowDown'&&!after.includes('\n'));
      const movePrevious=e.key==='ArrowUp'&&!before.includes('\n');
      if(!moveNext&&!movePrevious)return;
      const inputs=[...list.querySelectorAll('textarea')];
      const index=inputs.indexOf(ta);const other=inputs[index+(moveNext?1:-1)];
-     if(!other)return;
+     if(!other){if(e.key==='Enter')e.preventDefault();return;}
      e.preventDefault();other.focus();other.setSelectionRange(moveNext?0:other.value.length,moveNext?0:other.value.length);
      other.closest('.hb-bible-verse').scrollIntoView({block:'center',behavior:'smooth'});
     });
