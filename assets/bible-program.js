@@ -37,7 +37,7 @@ async function loadTranslation(version){
  if(versesCache[version])return versesCache[version];
  let verses;
  try{
-  const response=await fetch('/api/bible?version='+encodeURIComponent(version),{cache:'force-cache'});
+  const response=await fetch('https://veghdecosrimscedkrdo.supabase.co/functions/v1/habach-bible-source?version='+encodeURIComponent(version),{cache:'force-cache'});
   if(!response.ok)throw Error('Server response '+response.status);
   const data=await response.json();
   verses=data.verses;
