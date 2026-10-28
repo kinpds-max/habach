@@ -193,6 +193,7 @@ function initReport(){
  refresh();
 }
 function upgrade(){
+ if(location.hash==='#/resources-6'&&!document.getElementById('hb-group-report')&&typeof render==='function')render();
  if(location.hash==='#/resources-5')initBible();
  if(location.hash==='#/resources-6')initReport();
 }
