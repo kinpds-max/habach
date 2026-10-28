@@ -1425,36 +1425,38 @@ window.addEventListener('hashchange',()=>setTimeout(initBulletinBook,80));
  window.addEventListener('hashchange',()=>setTimeout(mount,240));
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(mount,400));else setTimeout(mount,400);
 })();</script><script>(function(){function init(){if(!window.matchMedia('(max-width:760px)').matches)return;const side=document.querySelector('#app .page-grid>.side');if(!side||side.dataset.mobileReady)return;side.dataset.mobileReady='1';side.querySelectorAll('.hb-prayer-submenu,.hb-event-submenu,.hb-member-submenu').forEach(sub=>{const prev=sub.previousElementSibling;if(!prev||prev.tagName!=='A')return;sub.classList.add('hb-mobile-collapse');prev.classList.add('hb-mobile-parent');prev.setAttribute('aria-expanded','false');const current=(location.hash||'').slice(2);if([...sub.querySelectorAll('a')].some(a=>a.getAttribute('href')==='#/'+current)){sub.classList.add('is-open');prev.setAttribute('aria-expanded','true')}prev.addEventListener('click',e=>{if(window.matchMedia('(max-width:760px)').matches){e.preventDefault();sub.classList.toggle('is-open');prev.setAttribute('aria-expanded',String(sub.classList.contains('is-open')))}})})}window.addEventListener('hashchange',()=>setTimeout(init,120));if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,220));else setTimeout(init,220)})();</script><style id="habach-background-music-style">
-#hb-music-toggle{position:fixed;right:18px;bottom:18px;transform:scale(.6);transform-origin:bottom right;z-index:10050;display:block;width:125px;height:125px;padding:0;background:transparent;border:0;cursor:pointer;filter:drop-shadow(0 8px 12px #12263950)}
-#hb-music-base{position:absolute;inset:0;background:linear-gradient(140deg,#e7f0f8,#bacbd9);border:2px solid #8ea4b7;border-radius:20px}
-#hb-music-disc{position:absolute;top:17px;left:10px;width:88px;height:88px;border-radius:50%;border:3px solid #131b26;background:repeating-radial-gradient(circle,#121c28 0 2px,#293746 3px 4px,#0c1521 5px 7px);box-shadow:0 2px 5px #0006;animation:hb-lp-spin 3s linear infinite;animation-play-state:paused}
-#hb-music-disc:before{content:"";position:absolute;inset:27px;background:radial-gradient(circle,#f1f4f6 0 3px,#b82d3b 4px 100%);border-radius:50%;box-shadow:0 0 0 1px #fff6}
-#hb-music-toggle[aria-pressed="true"] #hb-music-disc{animation-play-state:running}
-#hb-music-tonearm{position:absolute;top:12px;right:13px;z-index:2;width:12px;height:12px;border-radius:50%;background:#677f97;border:2px solid #e7edf4}
-#hb-music-tonearm:after{content:"";position:absolute;top:4px;left:4px;width:6px;height:59px;background:linear-gradient(90deg,#f8fafc,#8c9caf);border:1px solid #788796;border-radius:5px;transform-origin:50% 0;transform:rotate(-35deg);transition:transform .5s ease}
-#hb-music-toggle[aria-pressed="true"] #hb-music-tonearm:after{transform:rotate(25deg)}
-#hb-music-label{position:absolute;bottom:4px;left:0;right:0;color:#1a354d;font:700 11px/1.2 'Noto Sans KR',sans-serif;text-align:center}
-#hb-music-toggle:focus-visible{outline:3px solid #2b79ad;outline-offset:3px;border-radius:20px}
-@keyframes hb-lp-spin{to{transform:rotate(360deg)}}
-@media(max-width:600px){#hb-music-toggle{transform:scale(.6);transform-origin:bottom right;right:12px;bottom:max(14px,env(safe-area-inset-bottom))}}
-@media(prefers-reduced-motion:reduce){#hb-music-disc{animation-duration:12s}}
+#hb-cyber-player{position:fixed;right:16px;bottom:max(16px,env(safe-area-inset-bottom));z-index:10050;width: min(350px,calc(100vw - 32px));height:66px;display:flex;align-items:center;gap:12px;padding:10px 13px;border:1px solid #43bbf79c;border-radius:15px;background:linear-gradient(125deg,#0b172b 0%,#122e50 55%,#07182f 100%);color:#e7f9ff;box-shadow:0 0 20px #1b8fe14a,0 12px 35px #07182b66;box-sizing:border-box;overflow:hidden;font-family:Pretendard,'Noto Sans KR',sans-serif}
+#hb-cyber-player:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 0 40%,#65d7ff15 50%,transparent 60%);opacity:.7}
+#hb-cyber-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#155b91,#112c56);border:1px solid #69caff87;display:flex;align-items:center;justify-content:center;color:#83e3ff;font-size:20px;flex:0 0 auto}
+#hb-cyber-info{flex:1;min-width:0;position:relative}
+#hb-cyber-overline{font-size:9px;letter-spacing:2px;color:#79cde9;font-weight:800}
+#hb-cyber-title{font-size:13px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+#hb-cyber-waves{height:30px;display:flex;align-items:center;gap:3px;flex:0 0 auto}
+#hb-cyber-waves i{display:block;width:3px;height:6px;background:linear-gradient(#8beeff,#20a8ee);border-radius:3px;box-shadow:0 0 5px #46caff72;animation:hb-wave 850ms ease-in-out infinite alternate;animation-play-state:paused}
+#hb-cyber-waves i:nth-child(2n){animation-duration:680ms;animation-delay:-300ms}
+#hb-cyber-waves i:nth-child(3n){animation-duration:1050ms;animation-delay:-550ms}
+#hb-cyber-player[data-playing="true"] #hb-cyber-waves i{animation-play-state:running}
+#hb-music-toggle{position:relative;display:grid;place-items:center;flex:0 0 39px;width:39px;height:39px;border-radius:50%;border:1px solid #7de0ff;background:#1b81b2;color:#fff;box-shadow:0 0 11px #36b8fd6b;cursor:pointer;font-size:17px}
+#hb-music-toggle:hover{background:#27a1d9}
+#hb-music-toggle:focus-visible{outline:2px solid white;outline-offset:3px}
+@keyframes hb-wave{to{height:24px}}
+@media(max-width:440px){#hb-cyber-player{left:12px;right:12px;width:auto;height:60px;gap:9px;padding:8px 10px}#hb-cyber-icon{width:32px;height:32px}#hb-cyber-waves{gap:2px}#hb-cyber-waves i{width:2px}#hb-cyber-title{font-size:12px}}
+@media(prefers-reduced-motion:reduce){#hb-cyber-waves i{animation:none!important}}
 </style>
 <audio id="hb-background-music" preload="auto" loop src="https://d2ol7oe51mr4n9.cloudfront.net/user_38vbAv9qgw2UH7cP3nl562ZKIOp/197fdc3c-345c-4eba-96fe-257be2750653.mp3"></audio>
-<button id="hb-music-toggle" type="button" aria-label="배경음악 재생" aria-pressed="false"><span id="hb-music-base" aria-hidden="true"></span><span id="hb-music-disc" aria-hidden="true"></span><span id="hb-music-tonearm" aria-hidden="true"></span><span id="hb-music-label">하늘바람의 기도</span></button>
+<div id="hb-cyber-player" data-playing="false" role="group" aria-label="배경음악 플레이어"><span id="hb-cyber-icon" aria-hidden="true">♫</span><div id="hb-cyber-info"><div id="hb-cyber-overline">HANEUL BARAM · MUSIC</div><div id="hb-cyber-title">하늘바람의 기도</div></div><div id="hb-cyber-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button id="hb-music-toggle" type="button" aria-label="배경음악 재생" aria-pressed="false"><span id="hb-music-icon" aria-hidden="true">▶</span></button></div>
 <script id="habach-background-music-controller">
 (function(){
- const audio=document.getElementById('hb-background-music'),btn=document.getElementById('hb-music-toggle'),label=document.getElementById('hb-music-label');
- if(!audio||!btn)return;
- audio.volume=.4;
- let blocked=false,manuallyPaused=false;
- function update(){const active=!audio.paused;btn.setAttribute('aria-pressed',String(active));btn.setAttribute('aria-label',active?'배경음악 정지':'배경음악 재생');label.textContent='하늘바람의 기도';}
+ const audio=document.getElementById('hb-background-music'),btn=document.getElementById('hb-music-toggle'),shell=document.getElementById('hb-cyber-player'),icon=document.getElementById('hb-music-icon');
+ if(!audio||!btn||!shell)return;
+ audio.volume=.4;let blocked=false,manuallyPaused=false;
+ function update(){let playing=!audio.paused;shell.dataset.playing=String(playing);btn.setAttribute('aria-pressed',String(playing));btn.setAttribute('aria-label',playing?'배경음악 정지':'배경음악 재생');icon.textContent=playing?'Ⅱ':'▶';}
  function start(){if(manuallyPaused||!audio.paused)return;const p=audio.play();if(p&&p.then)p.then(()=>{blocked=false;update()}).catch(()=>{blocked=true;update()});}
  btn.addEventListener('click',function(){if(audio.paused){manuallyPaused=false;blocked=false;audio.play().then(update).catch(update)}else{manuallyPaused=true;audio.pause();update();}});
- document.addEventListener('pointerdown',function(e){if(e.target.closest('#hb-music-toggle'))return;if(blocked&&!manuallyPaused)start()},{passive:true});
- document.addEventListener('keydown',function(e){if(e.target.closest&&e.target.closest('#hb-music-toggle'))return;if(blocked&&!manuallyPaused)start()});
- audio.addEventListener('play',update);audio.addEventListener('pause',update);
- audio.addEventListener('error',()=>{label.textContent='음원 오류';btn.setAttribute('aria-pressed','false')});
- window.addEventListener('load',function(){setTimeout(start,2000)},{once:true});
+ document.addEventListener('pointerdown',function(e){if(e.target.closest('#hb-cyber-player'))return;if(blocked&&!manuallyPaused)start()},{passive:true});
+ document.addEventListener('keydown',function(e){if(blocked&&!manuallyPaused)start()});
+ audio.addEventListener('play',update);audio.addEventListener('pause',update);audio.addEventListener('error',()=>{shell.dataset.playing='false';btn.setAttribute('aria-label','음원 재생 오류');icon.textContent='!'});
+ window.addEventListener('load',()=>setTimeout(start,2000),{once:true});
  update();
 })();
 </script></body></html>
