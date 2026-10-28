@@ -1404,7 +1404,7 @@ window.addEventListener('hashchange',()=>setTimeout(initBulletinBook,80));
 #hb-music-toggle span[aria-hidden]{font-size:16px}
 @media(max-width:600px){#hb-music-toggle{right:12px;bottom:max(14px,env(safe-area-inset-bottom));padding:11px 14px;font-size:12px}}
 </style>
-<audio id="hb-background-music" preload="none" loop src="https://d2ol7oe51mr4n9.cloudfront.net/user_38vbAv9qgw2UH7cP3nl562ZKIOp/e1581b34-d285-4fde-bd5a-919c84d333fd.mp3"></audio>
+<audio id="hb-background-music" preload="none" loop src="https://d2ol7oe51mr4n9.cloudfront.net/user_38vbAv9qgw2UH7cP3nl562ZKIOp/197fdc3c-345c-4eba-96fe-257be2750653.mp3"></audio>
 <button id="hb-music-toggle" type="button" aria-label="배경음악 재생" aria-pressed="false"><span id="hb-music-icon" aria-hidden="true">▶</span><span id="hb-music-label">음악 재생</span></button>
 <script id="habach-background-music-controller">
 (function(){
@@ -1414,9 +1414,17 @@ window.addEventListener('hashchange',()=>setTimeout(initBulletinBook,80));
  var label=document.getElementById('hb-music-label');
  if(!player||!button)return;
  player.volume=0.4;
+ // Attempt autoplay; if blocked, first deliberate interaction can start playback.
+ var autoBlocked=false,manualPaused=false;
+ function attemptAuto(){if(manualPaused||!player.paused)return;var p=player.play();if(p&&p.then)p.then(function(){autoBlocked=false;render();}).catch(function(){autoBlocked=true;render();});}
+ function resumeAfterInteraction(){if(autoBlocked&&!manualPaused){autoBlocked=false;attemptAuto();}}
+ document.addEventListener('pointerdown',resumeAfterInteraction,{passive:true});
+ document.addEventListener('keydown',resumeAfterInteraction);
+ window.addEventListener('load',attemptAuto,{once:true});
+ 
  function render(){var playing=!player.paused;icon.textContent=playing?'Ⅱ':'▶';label.textContent=playing?'음악 정지':'음악 재생';button.setAttribute('aria-label',playing?'배경음악 정지':'배경음악 재생');button.setAttribute('aria-pressed',String(playing));}
- button.addEventListener('click',function(){if(player.paused){player.play().then(render).catch(function(){render();});}else{player.pause();render();}});
+ button.addEventListener('click',function(){if(player.paused){manualPaused=false;player.play().then(render).catch(function(){render();});}else{manualPaused=true;player.pause();render();}});
  player.addEventListener('play',render);player.addEventListener('pause',render);player.addEventListener('error',function(){label.textContent='음원 재생 오류';button.setAttribute('aria-label','배경음악 재생 오류');});
- render();
+ render();attemptAuto();
 })();
 </script></body></html>
