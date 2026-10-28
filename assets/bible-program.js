@@ -65,6 +65,74 @@ function initBible(){
  const heading=attach(host,'div',{className:'hb-program-head'});
  title(heading,'말씀을 읽고 한 절씩 필사하기');
  attach(heading,'p',{},'개역개정 · 현대인의 성경 / 총 66권 1,189장. 각 말씀 바로 아래에 필사해 보세요.');
+
+ const modeBar=attach(host,'div',{className:'hb-copy-mode-tabs'});
+ const normalMode=attach(modeBar,'button',{type:'button',class:'active','aria-pressed':'true'},'일반 성경필사');
+ const mcheyneMode=attach(modeBar,'button',{type:'button','aria-pressed':'false'},'맥체인 성경필사');
+ const plan=attach(host,'section',{className:'hb-mcheyne-plan',hidden:'hidden'});
+ const planHeader=attach(plan,'div',{className:'hb-mcheyne-header'});
+ attach(planHeader,'h3',{},'맥체인 성경읽기표에 따른 필사');
+ attach(planHeader,'p',{},'날짜별 네 곳 · 앞의 두 곳 가족과 함께, 뒤의 두 곳 개인 묵상');
+ const dateLabel=attach(plan,'label',{className:'hb-mcheyne-date-label'},'날짜 선택');
+ const datePicker=attach(dateLabel,'input',{type:'date'});
+ const passageGrid=attach(plan,'div',{className:'hb-mcheyne-grid'});
+ const planStatus=attach(plan,'p',{className:'hb-mcheyne-status',role:'status'},'맥체인 읽기표를 불러오는 중입니다.');
+ let calendar=null;
+ const aliases="창 출 레 민 신 수 삿 룻 삼상 삼하 왕상 왕하 대상 대하 스 느 에 욥 시 잠 전 아 사 렘 애 겔 단 호 욜 암 옵 욘 미 나 합 습 학 슥 말 마 막 눅 요 행 롬 고전 고후 갈 엡 빌 골 살전 살후 딤전 딤후 딛 몬 히 약 벧전 벧후 요일 요이 요삼 유 계".split(' ');
+ const lookup=aliases.map((v,i)=>({v,i})).sort((a,b)=>b.v.length-a.v.length);
+ let currentPlanPassage='';
+ function setMode(mode){
+  const selected=mode==='mcheyne';
+  if(selected)plan.removeAttribute('hidden');else plan.setAttribute('hidden','');
+  normalMode.classList.toggle('active',!selected);mcheyneMode.classList.toggle('active',selected);
+  normalMode.setAttribute('aria-pressed',String(!selected));mcheyneMode.setAttribute('aria-pressed',String(selected));
+  write('hb-bible-copy-mode',selected?'mcheyne':'normal');
+  if(selected)renderPlan();
+ }
+ function parsePassage(raw){
+  const clean=String(raw).replace(/\s+/g,'');
+  const entry=lookup.find(x=>clean.startsWith(x.v));if(!entry)return null;
+  const spec=clean.slice(entry.v.length);
+  const m=spec.match(/^(\d+)(?::(\d+))?(?:~(\d+)(?::(\d+))?)?$/);
+  if(!m)return null;
+  return {book:entry.i,chapter:Number(m[1]),startVerse:m[2]?Number(m[2]):null,endChapter:m[3]?Number(m[3]):Number(m[1]),endVerse:m[4]?Number(m[4]):null,raw};
+ }
+ function openPlanReference(raw){
+  const ref=parsePassage(raw);
+  if(!ref){planStatus.textContent='읽기표 구간을 해석할 수 없습니다: '+raw;return;}
+  if(ref.chapter<1||ref.chapter>COUNTS[ref.book].length)return;
+  currentPlanPassage=raw;
+  book=ref.book;chapter=ref.chapter;
+  bsel.value=String(book);
+  // Existing manual mode remains available even after selecting a reading-plan passage.
+  display();
+  const caption=ref.endChapter!==ref.chapter?' · '+BOOKS[book]+' '+ref.chapter+'~'+ref.endChapter+'장':'';
+  planStatus.textContent='선택한 본문: '+BOOKS[book]+' '+ref.chapter+'장'+caption+(ref.startVerse?' '+ref.startVerse+'절부터':'')+'. 아래에서 한 절씩 필사하세요.';
+  const targetEl=host.querySelector('.hb-bible-verse-list');
+  if(targetEl)targetEl.scrollIntoView({behavior:'smooth',block:'start'});
+ }
+ function renderPlan(){
+  passageGrid.replaceChildren();
+  if(!calendar){planStatus.textContent='읽기표 데이터를 불러오는 중입니다.';return;}
+  const key=datePicker.value.slice(5);
+  const readings=calendar[key];
+  if(!readings){planStatus.textContent='이 날짜에 해당하는 읽기표가 없습니다.';return;}
+  planStatus.textContent='원하는 성경 구간을 선택하면 기존 절별 필사 화면으로 이동합니다.';
+  readings.forEach((raw,i)=>{
+   const tile=attach(passageGrid,'button',{type:'button',className:'hb-mcheyne-reading'});
+   attach(tile,'span',{className:'hb-mcheyne-reading-type'},i<2?'가족과 함께':'개인 묵상');
+   attach(tile,'strong',{},raw);
+   tile.addEventListener('click',()=>openPlanReference(raw));
+  });
+ }
+ const now=new Date();
+ const koreanDate=new Date(now.toLocaleString('en-US',{timeZone:'Asia/Seoul'}));
+ datePicker.value=koreanDate.getFullYear()+'-'+String(koreanDate.getMonth()+1).padStart(2,'0')+'-'+String(koreanDate.getDate()).padStart(2,'0');
+ datePicker.addEventListener('change',renderPlan);
+ normalMode.addEventListener('click',()=>setMode('normal'));
+ mcheyneMode.addEventListener('click',()=>setMode('mcheyne'));
+ fetch('/assets/mcheyne-calendar.json').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(data=>{calendar=data.schedule;renderPlan()}).catch(()=>{planStatus.textContent='읽기표를 불러오지 못했습니다. 다시 새로고침해 주세요.';});
+ setMode(read('hb-bible-copy-mode','normal'));
  const sticky=attach(host,'div',{className:'hb-bible-sticky'});
  const toolbar=attach(sticky,'div',{className:'hb-bible-toolbar'});
  const vlabel=attach(toolbar,'label',{},'성경 번역');
