@@ -231,24 +231,6 @@ function initBible(){
  const exportButton=attach(bottom,'button',{type:'button'},'이 장 필사 TXT 저장');
  const clearButton=attach(bottom,'button',{type:'button',className:'hb-bible-clear-current'},'현재 장 필사 초기화');
  const topButton=attach(bottom,'button',{type:'button'},'맨 위로 ↑');
- const clearChapter=attach(bottom,'button',{type:'button',className:'hb-bible-clear-chapter'},'현재 장 필사 초기화');
- clearChapter.addEventListener('click',()=>{
-  if(!confirm(BOOKS[book]+' '+chapter+'장의 필사 내용을 모두 지울까요? 공유한 순위 기록은 삭제되지 않습니다.'))return;
-  list.querySelectorAll('textarea').forEach((input,i)=>{
-   input.value='';
-   try{localStorage.removeItem(key(i+1));}catch(e){}
-  });
-  completion();
-  info.textContent='현재 장의 필사 입력 내용이 초기화되었습니다.';
- });
- const resetChapterButton=attach(bottom,'button',{type:'button',className:'hb-bible-clear-button'},'현재 장 필사 초기화');
- resetChapterButton.addEventListener('click',()=>{
-  const label=BOOKS[book]+' '+chapter+'장';
-  if(!confirm(label+'의 필사 입력 내용을 삭제하시겠습니까? 다른 장과 공유된 순위 기록은 유지됩니다.'))return;
-  list.querySelectorAll('textarea').forEach((field,i)=>{field.value='';try{localStorage.removeItem(key(i+1))}catch(e){}});
-  completion();
-  info.textContent=label+' 필사 입력 내용을 초기화했습니다.';
- });
  attach(host,'p',{className:'hb-program-caution'},'필사 내용은 이 브라우저에 자동 저장됩니다. 다른 기기와 동기화되지 않으므로 주기적으로 TXT로 보관해 주세요.');
  let currentVerses=[];
  const key=(v)=>'hb-bible-verse-v2:'+version+':'+book+':'+chapter+':'+v;
