@@ -173,12 +173,12 @@ function initBible(){
  const shareButton=attach(shareSection,'button',{type:'button',class:'hb-rank-submit'},'이 장 필사 완료 공유');
  const shareMessage=attach(shareSection,'p',{role:'status',className:'hb-rank-feedback'},'모든 절을 필사하면 공유할 수 있습니다.');
  const ranking=attach(host,'section',{className:'hb-bible-rankboard'});
- title(ranking,'성경필사 누적 순위');
+ title(ranking,'성경필사 월간 순위');
  const tabs=attach(ranking,'div',{className:'hb-rank-tabs'});
  const rankRows=attach(ranking,'div',{className:'hb-rank-rows'});
- const histories=attach(ranking,'div',{className:'hb-rank-history'});
+ const histories=attach(ranking,'div',{className:'hb-rank-history'});histories.hidden=true;
  const periods=[['all','누적순위'],['month','매달순위'],['week','매주순위'],['day','매일순위']];
- let activePeriod='all',rankingData={};
+ let activePeriod='month',rankingData={};
  const rankingUrl='https://veghdecosrimscedkrdo.supabase.co/functions/v1/habach-bible-ranking';
  function renderRanking(){
   rankRows.replaceChildren();histories.replaceChildren();
@@ -203,7 +203,7 @@ function initBible(){
   const b=attach(tabs,'button',{type:'button'},name);
   b.addEventListener('click',()=>{activePeriod=id;tabs.querySelectorAll('button').forEach((el,i)=>el.classList.toggle('selected',periods[i][0]===id));renderRanking();});
  });
- tabs.firstElementChild.classList.add('selected');
+ tabs.children[1].classList.add('selected');
  async function fetchRanks(){
   try{const r=await fetch(rankingUrl,{cache:'no-store'});if(!r.ok)throw Error(String(r.status));rankingData=await r.json();renderRanking();}
   catch{rankRows.textContent='순위 서버에 연결할 수 없습니다. 새로고침해 주세요.';}
