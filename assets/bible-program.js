@@ -229,10 +229,18 @@ function initBible(){
  fetchRanks();
  const bottom=attach(host,'div',{className:'hb-bible-actions'});
  const exportButton=attach(bottom,'button',{type:'button'},'이 장 필사 TXT 저장');
+ const clearButton=attach(bottom,'button',{type:'button',className:'hb-bible-clear-current'},'현재 장 필사 초기화');
  const topButton=attach(bottom,'button',{type:'button'},'맨 위로 ↑');
  attach(host,'p',{className:'hb-program-caution'},'필사 내용은 이 브라우저에 자동 저장됩니다. 다른 기기와 동기화되지 않으므로 주기적으로 TXT로 보관해 주세요.');
  let currentVerses=[];
  const key=(v)=>'hb-bible-verse-v2:'+version+':'+book+':'+chapter+':'+v;
+ clearButton.addEventListener('click',()=>{
+  if(!confirm(BOOKS[book]+' '+chapter+'장에 작성한 필사 내용을 모두 지울까요? 공유된 순위 기록은 삭제되지 않습니다.'))return;
+  const count=COUNTS[book][chapter-1];
+  for(let v=1;v<=count;v++){try{localStorage.removeItem(key(v));}catch(e){}}
+  list.querySelectorAll('textarea').forEach(input=>{input.value='';input.closest('.hb-bible-verse')?.classList.remove('is-complete','hb-bible-check-needed');});
+  completion();info.textContent='현재 장의 필사 내용을 초기화했습니다. 새로 작성할 수 있습니다.';
+ });
  function persistPos(){write('hb-bible-position-v2',JSON.stringify({version,book,chapter}));}
  function loadChapters(){csel.replaceChildren();COUNTS[book].forEach((_,i)=>attach(csel,'option',{value:String(i+1)},(i+1)+'장'));csel.value=String(chapter);}
  function completion(){
