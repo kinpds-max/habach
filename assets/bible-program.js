@@ -201,7 +201,7 @@ function initBible(){
   if(!currentVerses.length){shareMessage.textContent='말씀을 먼저 불러와 주세요.';return;}
   const writing=[...list.querySelectorAll('textarea')].map(x=>x.value);
   const norm=t=>String(t||'').replace(/\s/g,'');
-  if(!writing.every(x=>x.trim())){shareMessage.textContent='작성하지 않은 절이 있습니다. 모든 절을 먼저 입력해 주세요.';return;}const differing=writing.map((x,i)=>norm(x)===norm(currentVerses[i])?null:i+1).filter(Boolean);if(differing.length){shareMessage.textContent='전부 작성하셨습니다. 다만 공유 검증을 위해 '+differing.join(', ')+'절의 원문 차이를 확인해 주세요.';return;}
+  if(!writing.every(x=>x.trim())){shareMessage.textContent='작성하지 않은 절이 있습니다. 모든 절을 먼저 입력해 주세요.';return;}
   let id=read('hb-rank-visitor-id');if(!id){id=crypto.randomUUID();write('hb-rank-visitor-id',id);}
   shareButton.disabled=true;shareMessage.textContent='필사 기록을 확인하고 공유하는 중입니다.';
   try{
@@ -223,31 +223,18 @@ function initBible(){
  function persistPos(){write('hb-bible-position-v2',JSON.stringify({version,book,chapter}));}
  function loadChapters(){csel.replaceChildren();COUNTS[book].forEach((_,i)=>attach(csel,'option',{value:String(i+1)},(i+1)+'장'));csel.value=String(chapter);}
  function completion(){
-  const inputs=[...list.querySelectorAll('textarea')];let filled=0,exact=0;const mismatches=[];
-  const normalize=t=>String(t||'').normalize('NFKC').replace(/\s/g,'').replace(/[“”„‟"‘’'.,!?;:，。！？；：·ㆍ]/g,'');
-  inputs.forEach((input,i)=>{
-   const original=normalize(currentVerses[i]||'');
-   const typed=normalize(input.value);
-   const hasWriting=input.value.trim().length>0;
-   if(hasWriting)filled++;
-   const correct=hasWriting&&original===typed;
-   if(correct)exact++;
-   else if(hasWriting)mismatches.push(i+1);
+  const inputs=[...list.querySelectorAll('textarea')];
+  const filled=inputs.filter(input=>input.value.trim().length>0).length;
+  inputs.forEach(input=>{
    const item=input.closest('.hb-bible-verse');
-   item.classList.toggle('is-complete',hasWriting);
-   item.classList.toggle('hb-bible-check-needed',hasWriting&&!correct);
-   let hint=item.querySelector('.hb-bible-verse-hint');
-   if(!hint){hint=document.createElement('div');hint.className='hb-bible-verse-hint';item.appendChild(hint);}
-   hint.textContent=hasWriting&&!correct?'원문과 차이가 있습니다. 공유 전 확인해 주세요.':'';
+   item.classList.toggle('is-complete',input.value.trim().length>0);
+   item.classList.remove('hb-bible-check-needed');
+   item.querySelector('.hb-bible-verse-hint')?.remove();
   });
-  const total=inputs.length,pct=total?Math.round(filled/total*100):0;
+  const total=inputs.length;
   status.textContent=BOOKS[book]+' '+chapter+'장 · '+filled+'/'+total+'절 작성'+(filled===total?' 완료':'');
-  progressFill.style.width=pct+'%';
-  if(filled===total){
-   info.textContent=exact===total?'이 장의 모든 절을 작성했고 원문 대조도 완료했습니다.':'전체 '+total+'절을 작성했습니다. 원문 대조 '+exact+'/'+total+'절 일치. 확인할 절: '+mismatches.join(', ')+'절';
-  }else if(mismatches.length){
-   info.textContent='원문과 차이가 있는 절: '+mismatches.join(', ')+'절 (공유 전 확인)';
-  }
+  progressFill.style.width=(total?Math.round(filled/total*100):0)+'%';
+  info.textContent=filled===total?'모든 절 작성을 완료했습니다. 공유할 수 있습니다.':'현재 '+filled+'/'+total+'절 작성 중입니다.';
  }
  async function display(){
   persistPos();loadChapters();list.replaceChildren();info.textContent='선택한 장의 말씀을 불러오는 중입니다.';
