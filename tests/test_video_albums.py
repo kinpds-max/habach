@@ -26,6 +26,17 @@ class AlbumTests(unittest.TestCase):
         self.assertIn('2026-10-28', views['sermon-8'])
         self.assertEqual(sync.synchronize(result, [post, post])[0], result)
 
+    def test_same_day_uses_actual_publish_time(self):
+        posts = [
+            {'section_key': 'sermon-4', 'youtube_id': 'Zbcdef12345', 'title': 'Earlier prayer', 'published_at': '2026-08-29T02:00:00Z'},
+            {'section_key': 'sermon-4', 'youtube_id': 'Abcdef12345', 'title': 'Later choir', 'published_at': '2026-08-29T03:00:00Z'},
+        ]
+        result, _ = sync.synchronize(self.source, posts)
+        views = json.loads(sync.VIEWS.search(result)[2])
+        self.assertLess(views['sermon-4'].index('data-video="Abcdef12345"'), views['sermon-4'].index('data-video="Zbcdef12345"'))
+        home_card = views['index'].split('href="#/sermon-4">')[1].split('</a></div>')[1].split('</a>')[0]
+        self.assertIn('data-video="Abcdef12345"', home_card)
+
     def test_empty_api_does_not_erase_albums(self):
         result, report = sync.synchronize(self.source, [])
         self.assertEqual(json.loads(sync.VIEWS.search(result)[2]), self.views)

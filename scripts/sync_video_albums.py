@@ -97,7 +97,7 @@ def synchronize(source, posts):
         existing = {m[1]: m[0] for m in CARD.finditer(grid[2])}
         # Keep curated static-only videos even if they have not yet been imported to DB.
         preserved = [markup for vid, markup in existing.items() if vid not in by_id]
-        ordered = sorted(by_id.values(), key=lambda p: (post_date(p), p['youtube_id']), reverse=True)
+        ordered = sorted(by_id.values(), key=lambda p: (post_date(p), p.get('published_at') or '', p['youtube_id']), reverse=True)
         cards = ''.join(render_card(p) for p in ordered) + ''.join(preserved)
         page = page[:grid.start(2)] + cards + page[grid.end(2):]
         count = len(by_id) + len(preserved)
