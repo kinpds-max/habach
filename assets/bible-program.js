@@ -83,6 +83,69 @@ function initBible(){
  const progress=attach(sticky,'div',{className:'hb-program-progress'});const progressFill=attach(progress,'span');
  const info=attach(host,'p',{className:'hb-bible-message',role:'status'},'말씀을 불러오는 중입니다.');
  const list=attach(host,'div',{className:'hb-bible-verse-list'});
+ const shareSection=attach(host,'section',{className:'hb-rank-share'});
+ title(shareSection,'성경필사 공유');
+ attach(shareSection,'p',{},'한 장의 모든 절을 정확하게 필사한 후 이름과 직분을 기재해 순위에 등록할 수 있습니다. 공개되는 이름은 다른 방문자에게 표시됩니다.');
+ const shareName=field(shareSection,'필사자 (이름·직분)','text','예: 김동현 집사');
+ shareName.value=read('hb-rank-display-name');
+ shareName.addEventListener('change',()=>write('hb-rank-display-name',shareName.value));
+ const shareButton=attach(shareSection,'button',{type:'button',class:'hb-rank-submit'},'이 장 필사 완료 공유');
+ const shareMessage=attach(shareSection,'p',{role:'status',className:'hb-rank-feedback'},'모든 절을 필사하면 공유할 수 있습니다.');
+ const ranking=attach(host,'section',{className:'hb-bible-rankboard'});
+ title(ranking,'성경필사 누적 순위');
+ const tabs=attach(ranking,'div',{className:'hb-rank-tabs'});
+ const rankRows=attach(ranking,'div',{className:'hb-rank-rows'});
+ const histories=attach(ranking,'div',{className:'hb-rank-history'});
+ const periods=[['all','누적순위'],['month','매달순위'],['week','매주순위'],['day','매일순위']];
+ let activePeriod='all',rankingData={};
+ const rankingUrl='https://veghdecosrimscedkrdo.supabase.co/functions/v1/habach-bible-ranking';
+ function renderRanking(){
+  rankRows.replaceChildren();histories.replaceChildren();
+  const rows=rankingData.rankings?.[activePeriod]||[];
+  const max=Math.max(1,...rows.map(x=>x.verses));
+  if(!rows.length){attach(rankRows,'p',{className:'hb-rank-empty'},'아직 등록된 필사 기록이 없습니다. 첫 번째 필사자가 되어 주세요.');return;}
+  rows.forEach((x,i)=>{
+   const line=attach(rankRows,'div',{className:'hb-rank-line'});
+   attach(line,'span',{className:'hb-rank-position'},i+1+'위');
+   const mid=attach(line,'div',{className:'hb-rank-middle'});
+   attach(mid,'strong',{},x.name);
+   const track=attach(mid,'div',{className:'hb-rank-track'});
+   const bar=attach(track,'span',{className:'hb-rank-bar'});
+   bar.style.setProperty('--rank-width',Math.max(4,x.verses/max*100)+'%');
+   attach(line,'span',{className:'hb-rank-count'},x.chapters+'장 · '+x.verses+'절');
+  });
+  const recent=rankingData.history||[];
+  attach(histories,'h4',{},'최근 공유된 필사 기록');
+  recent.slice(0,10).forEach(x=>attach(histories,'p',{},x.participant_name+' · '+BOOKS[x.book_index]+' '+x.chapter+'장 · '+x.verse_count+'절 · '+new Date(x.created_at).toLocaleDateString('ko-KR')));
+ }
+ periods.forEach(([id,name])=>{
+  const b=attach(tabs,'button',{type:'button'},name);
+  b.addEventListener('click',()=>{activePeriod=id;tabs.querySelectorAll('button').forEach((el,i)=>el.classList.toggle('selected',periods[i][0]===id));renderRanking();});
+ });
+ tabs.firstElementChild.classList.add('selected');
+ async function fetchRanks(){
+  try{const r=await fetch(rankingUrl,{cache:'no-store'});if(!r.ok)throw Error(String(r.status));rankingData=await r.json();renderRanking();}
+  catch{rankRows.textContent='순위 서버에 연결할 수 없습니다. 새로고침해 주세요.';}
+ }
+ shareButton.addEventListener('click',async()=>{
+  const name=shareName.value.trim();
+  if(name.length<2){shareMessage.textContent='필사자 이름과 직분을 입력해 주세요.';shareName.focus();return;}
+  if(!currentVerses.length){shareMessage.textContent='말씀을 먼저 불러와 주세요.';return;}
+  const writing=[...list.querySelectorAll('textarea')].map(x=>x.value);
+  const norm=t=>String(t||'').replace(/\s/g,'');
+  if(!writing.every((x,i)=>norm(x)&&norm(x)===norm(currentVerses[i]))){shareMessage.textContent='현재 장의 모든 절을 정확하게 필사해야 공유할 수 있습니다.';return;}
+  let id=read('hb-rank-visitor-id');if(!id){id=crypto.randomUUID();write('hb-rank-visitor-id',id);}
+  shareButton.disabled=true;shareMessage.textContent='필사 기록을 확인하고 공유하는 중입니다.';
+  try{
+   const r=await fetch(rankingUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,version,book,chapter,writings:writing,visitorId:id})});
+   const result=await r.json();
+   if(!r.ok)throw Error(result.error||'등록 오류');
+   shareMessage.textContent=BOOKS[book]+' '+chapter+'장 필사 공유가 완료되었습니다. 순위에 반영됩니다.';
+   await fetchRanks();
+  }catch(e){shareMessage.textContent='공유 실패: '+e.message;}
+  finally{shareButton.disabled=false;}
+ });
+ fetchRanks();
  const bottom=attach(host,'div',{className:'hb-bible-actions'});
  const exportButton=attach(bottom,'button',{type:'button'},'이 장 필사 TXT 저장');
  const topButton=attach(bottom,'button',{type:'button'},'맨 위로 ↑');
