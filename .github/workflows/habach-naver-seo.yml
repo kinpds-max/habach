@@ -1,0 +1,35 @@
+name: Habach Naver SEO and structured data
+on:
+  push:
+    branches: [habachnew]
+    paths: ['.github/workflows/habach-naver-seo.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enhance discoverability
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          marker='habach-naver-seo-20261028'
+          if marker not in s:
+            data={'@context':'https://schema.org','@type':'Church','name':'하늘바람교회','url':'https://habach.kr/','description':'김포 하늘바람교회 예배시간, 설교영상, 교회 소식과 오시는 길 안내','address':{'@type':'PostalAddress','addressLocality':'김포시','addressRegion':'경기도','addressCountry':'KR'}}
+            tag='<meta name="habach-naver-seo-20261028" content="ready"><link rel="canonical" href="https://habach.kr/"><meta property="og:site_name" content="하늘바람교회"><meta property="og:type" content="website"><meta property="og:title" content="하늘바람교회 | 김포 교회 예배·설교·교회소식"><meta property="og:description" content="김포 하늘바람교회 공식 홈페이지. 예배시간, 설교영상, 기도제목과 교회소식을 확인하세요."><meta property="og:url" content="https://habach.kr/"><script type="application/ld+json">'+json.dumps(data,ensure_ascii=False)+'</script>'
+            s=s.replace('</head>',tag+'</head>',1)
+            p.write_text(s,encoding='utf-8')
+          Path('robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://habach.kr/sitemap.xml\n',encoding='utf-8')
+          Path('sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://habach.kr/</loc></url></urlset>\n',encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html robots.txt sitemap.xml
+          if ! git diff --cached --quiet; then git commit -m "Optimize Habach church for Naver and search engines"; git push; fi
