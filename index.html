@@ -1506,8 +1506,8 @@ window.addEventListener('hashchange',()=>setTimeout(initBulletinBook,80));
  document.addEventListener('pointerdown',function(e){if(e.target.closest('#hb-cyber-player'))return;if(blocked&&!manuallyPaused)start()},{passive:true});
  document.addEventListener('keydown',function(e){if(blocked&&!manuallyPaused)start()});
  audio.addEventListener('play',update);audio.addEventListener('pause',update);audio.addEventListener('error',()=>{shell.dataset.playing='false';btn.setAttribute('aria-label','음원 재생 오류');icon.textContent='!'});
- window.addEventListener('load',()=>setTimeout(start,2000),{once:true});
- update();
+ window.addEventListener('load',start,{once:true});
+ update();start();
 })();
 </script><script id="hb-cyber-header-placement">
 (function(){
