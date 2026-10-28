@@ -50,7 +50,7 @@ async function loadTranslation(version){
   const response=await fetch(urls[version]);
   if(!response.ok)throw Error('성경 본문 로딩 실패');
   const buffer=await response.arrayBuffer();
-  verses=new TextDecoder('euc-kr').decode(buffer).replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
+  verses=new TextDecoder('euc-kr').decode(buffer).replace(/\r/g,'').split('\n');if(verses.length===31103&&verses[31102]==='')verses.pop();verses=verses.map(x=>x.trim());
  }
  if(!Array.isArray(verses)||verses.length!==31102)throw Error('성경 본문 총 절 수가 일치하지 않습니다.');
  versesCache[version]=verses;return verses;
