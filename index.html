@@ -1534,7 +1534,7 @@ window.addEventListener('hashchange',()=>setTimeout(initBulletinBook,80));
 @media(max-width:440px){#hb-cyber-player{left:12px;right:12px;width:auto;height:60px;gap:9px;padding:8px 10px}#hb-cyber-icon{width:32px;height:32px}#hb-cyber-waves{gap:2px}#hb-cyber-waves i{width:2px}#hb-cyber-title{font-size:12px}}
 @media(prefers-reduced-motion:reduce){#hb-cyber-waves i{animation:none!important}}
 </style>
-<audio id="hb-background-music" preload="auto" loop src="https://d2ol7oe51mr4n9.cloudfront.net/user_38vbAv9qgw2UH7cP3nl562ZKIOp/197fdc3c-345c-4eba-96fe-257be2750653.mp3"></audio>
+<audio id="hb-background-music" preload="auto" autoplay loop src="https://d2ol7oe51mr4n9.cloudfront.net/user_38vbAv9qgw2UH7cP3nl562ZKIOp/197fdc3c-345c-4eba-96fe-257be2750653.mp3"></audio>
 <div id="hb-cyber-player" data-playing="false" role="group" aria-label="배경음악 플레이어"><span id="hb-cyber-icon" aria-hidden="true">♫</span><div id="hb-cyber-info"><div id="hb-cyber-overline">HANEUL BARAM · MUSIC</div><div id="hb-cyber-title">하늘바람의 기도</div></div><div id="hb-cyber-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button id="hb-music-toggle" type="button" aria-label="배경음악 재생" aria-pressed="false"><span id="hb-music-icon" aria-hidden="true">▶</span></button></div>
 <script id="habach-background-music-controller">
 (function(){
@@ -1548,6 +1548,8 @@ window.addEventListener('hashchange',()=>setTimeout(initBulletinBook,80));
  document.addEventListener('keydown',function(e){if(blocked&&!manuallyPaused)start()});
  audio.addEventListener('play',update);audio.addEventListener('pause',update);audio.addEventListener('error',()=>{shell.dataset.playing='false';btn.setAttribute('aria-label','음원 재생 오류');icon.textContent='!'});
  window.addEventListener('load',start,{once:true});
+ window.addEventListener('pageshow',start);
+ audio.addEventListener('canplay',start,{once:true});
  update();start();
 })();
 </script><script id="hb-cyber-header-placement">
