@@ -65,7 +65,8 @@ function initBible(){
  const heading=attach(host,'div',{className:'hb-program-head'});
  title(heading,'말씀을 읽고 한 절씩 필사하기');
  attach(heading,'p',{},'개역개정 · 현대인의 성경 / 총 66권 1,189장. 각 말씀 바로 아래에 필사해 보세요.');
- const toolbar=attach(host,'div',{className:'hb-bible-toolbar'});
+ const sticky=attach(host,'div',{className:'hb-bible-sticky'});
+ const toolbar=attach(sticky,'div',{className:'hb-bible-toolbar'});
  const vlabel=attach(toolbar,'label',{},'성경 번역');
  const vsel=attach(vlabel,'select');
  [['revised','개역개정'],['modern','현대인의 성경']].forEach(([value,name])=>{const o=attach(vsel,'option',{value},name);});
@@ -75,11 +76,11 @@ function initBible(){
  bsel.value=String(book);
  const clabel=attach(toolbar,'label',{},'장');
  const csel=attach(clabel,'select');
- const action=attach(host,'div',{className:'hb-bible-actions'});
+ const action=attach(sticky,'div',{className:'hb-bible-actions'});
  const prev=attach(action,'button',{type:'button'},'‹ 이전 장');
  const status=attach(action,'strong',{},'');
  const next=attach(action,'button',{type:'button'},'다음 장 ›');
- const progress=attach(host,'div',{className:'hb-program-progress'});const progressFill=attach(progress,'span');
+ const progress=attach(sticky,'div',{className:'hb-program-progress'});const progressFill=attach(progress,'span');
  const info=attach(host,'p',{className:'hb-bible-message',role:'status'},'말씀을 불러오는 중입니다.');
  const list=attach(host,'div',{className:'hb-bible-verse-list'});
  const bottom=attach(host,'div',{className:'hb-bible-actions'});
@@ -119,6 +120,21 @@ function initBible(){
     const ta=attach(item,'textarea',{rows:'2','aria-label':BOOKS[book]+' '+chapter+'장 '+v+'절 필사',placeholder:'이 말씀을 아래에 직접 필사하세요.'});
     ta.value=read(key(v));
     ta.addEventListener('input',()=>{write(key(v),ta.value);completion()});
+    ta.addEventListener('keydown',e=>{
+     if(e.isComposing||e.altKey||e.ctrlKey||e.metaKey||e.shiftKey)return;
+     if(e.key!=='ArrowDown'&&e.key!=='ArrowUp')return;
+     const text=ta.value;const pos=ta.selectionStart;
+     const before=text.slice(0,pos),after=text.slice(ta.selectionEnd);
+     // Keep normal text navigation within multiline content; change verse at its boundaries.
+     const moveNext=e.key==='ArrowDown'&&!after.includes('\n');
+     const movePrevious=e.key==='ArrowUp'&&!before.includes('\n');
+     if(!moveNext&&!movePrevious)return;
+     const inputs=[...list.querySelectorAll('textarea')];
+     const index=inputs.indexOf(ta);const other=inputs[index+(moveNext?1:-1)];
+     if(!other)return;
+     e.preventDefault();other.focus();other.setSelectionRange(moveNext?0:other.value.length,moveNext?0:other.value.length);
+     other.closest('.hb-bible-verse').scrollIntoView({block:'center',behavior:'smooth'});
+    });
    });
    info.textContent=BOOKS[book]+' '+chapter+'장의 말씀 '+count+'절이 표시되었습니다.';
    prev.disabled=book===0&&chapter===1;
