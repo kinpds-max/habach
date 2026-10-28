@@ -168,7 +168,7 @@ function initReport(){
  function setValue(data={}){names.forEach(k=>{f[k].value=safe(data[k]||'')});if(!f.date.value)f.date.value=fmtToday()}
  function persist(){write(draftKey,JSON.stringify(value()))}
  function entries(){try{const v=JSON.parse(read(listKey,'[]'));return Array.isArray(v)?v:[]}catch{return []}}
- function exportOne(record){const lines=['하늘바람교회 순보고서','',...names.map(k=>({date:'모임 날짜',name:'순 이름',leader:'순장 / 작성자',place:'모임 장소',count:'참석 인원',scripture:'말씀',sharing:'나눔',prayer:'기도제목',next:'다음 계획'}[k]+': '+safe(record[k]))];downloadText('순보고서_'+(record.date||'')+'.txt',lines.join('\n\n'))}
+ function exportOne(record){const lines=['하늘바람교회 순보고서','',...names.map(k=>({date:'모임 날짜',name:'순 이름',leader:'순장 / 작성자',place:'모임 장소',count:'참석 인원',scripture:'말씀',sharing:'나눔',prayer:'기도제목',next:'다음 계획'}[k]+': '+safe(record[k])))];downloadText('순보고서_'+(record.date||'')+'.txt',lines.join('\n\n'))}
  function refresh(){
   savedList.replaceChildren();
   const records=entries();
