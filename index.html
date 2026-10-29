@@ -1877,7 +1877,7 @@ window.addEventListener('hashchange',()=>setTimeout(initBulletinBook,80));
   if(!article||article.querySelector('.hb-service-album'))return;
   const section=document.createElement('section');
   section.className='hb-service-album';section.setAttribute('aria-label','봉사와 섬김 앨범');
-  section.innerHTML='<article class="hb-service-album-card"><h3>지역공연</h3><img src="https://files.mallary.ai/uploads/900/chatgpt_1793299039718_08b8a85b8f3d182c.png" alt="지역공연 사진" loading="lazy"></article><article class="hb-service-album-card"><h3>위대한 응원</h3><img src="https://files.mallary.ai/uploads/900/chatgpt_1793299063734_a817c6ad6e9aa511.png" alt="위대한 응원 사진" loading="lazy"></article>';
+  section.innerHTML='<article class="hb-service-album-card"><h3>봉사와 섬김 현장</h3><img src="https://files.mallary.ai/uploads/900/chatgpt_1793296480403_38508fcd80d452c6.png" alt="교회 의자가 보이는 봉사와 섬김 단체사진" loading="lazy"></article><article class="hb-service-album-card"><h3>지역공연</h3><img src="https://files.mallary.ai/uploads/900/chatgpt_1793299039718_08b8a85b8f3d182c.png" alt="지역공연 사진" loading="lazy"></article><article class="hb-service-album-card"><h3>위대한 응원</h3><img src="https://files.mallary.ai/uploads/900/chatgpt_1793299063734_a817c6ad6e9aa511.png" alt="위대한 응원 사진" loading="lazy"></article>';
   article.querySelectorAll('.hb-service-board,.hb-note-grid,.boardhead,.board-list,.board-pager,.hb-card-board').forEach(n=>n.remove());article.appendChild(section);
  }
  function init(){
@@ -1909,4 +1909,29 @@ function render(){
 }
 function init(){const app=document.getElementById('app');if(app)new MutationObserver(()=>requestAnimationFrame(render)).observe(app,{childList:true});render()}
 addEventListener('hashchange',()=>requestAnimationFrame(render));if(document.readyState==='loading')addEventListener('DOMContentLoaded',init);else init()
-})();</script><style id="hb-location-building-20261030">#app .hb-location-building{width:100%;height:auto;max-height:570px;object-fit:contain;border-radius:14px;margin:18px 0 26px;display:block}#app .hb-kakao-safe-panel p{margin:0}</style><script id="hb-location-building-script">(function(){function show(){if(!/^#\/about-6(?:$|[?#])/.test(location.hash))return;const article=document.querySelector('#app .page-grid .article');if(!article||article.querySelector('.hb-location-building'))return;const img=document.createElement('img');img.className='hb-location-building';img.alt='하늘바람아트센터 하늘바람교회 건물 외관';img.src='https://files.mallary.ai/uploads/900/chatgpt_1793300860256_a15f184da66c2665.png';img.loading='lazy';const title=article.querySelector('.article-title');if(title)title.insertAdjacentElement('afterend',img);else article.prepend(img)}function init(){const root=document.getElementById('app');if(root)new MutationObserver(()=>requestAnimationFrame(show)).observe(root,{childList:true});show()}addEventListener('hashchange',()=>requestAnimationFrame(show));if(document.readyState==='loading')addEventListener('DOMContentLoaded',init);else init()})();</script></body></html>
+})();</script><style id="hb-location-building-20261030">#app .hb-location-building{width:100%;height:auto;max-height:570px;object-fit:contain;border-radius:14px;margin:18px 0 26px;display:block}#app .hb-kakao-safe-panel p{margin:0}</style><script id="hb-location-building-script">(function(){function show(){if(!/^#\/about-6(?:$|[?#])/.test(location.hash))return;const article=document.querySelector('#app .page-grid .article');if(!article||article.querySelector('.hb-location-building'))return;const img=document.createElement('img');img.className='hb-location-building';img.alt='하늘바람아트센터 하늘바람교회 건물 외관';img.src='https://files.mallary.ai/uploads/900/chatgpt_1793300860256_a15f184da66c2665.png';img.loading='lazy';const title=article.querySelector('.article-title');if(title)title.insertAdjacentElement('afterend',img);else article.prepend(img)}function init(){const root=document.getElementById('app');if(root)new MutationObserver(()=>requestAnimationFrame(show)).observe(root,{childList:true});show()}addEventListener('hashchange',()=>requestAnimationFrame(show));if(document.readyState==='loading')addEventListener('DOMContentLoaded',init);else init()})();</script><style id="hb-small-group-selection-20261030">
+#app .hb-small-group-menu:has(a.on)>summary{background:#eaf3fd!important;color:#205a86!important;border-radius:9px;font-weight:850}
+#app .hb-small-group-menu .hb-small-group-links a.on{background:#dbeeff!important;color:#175b91!important;font-weight:850!important;border-radius:7px}
+#app .hb-small-group-mobile-panel a.on{background:#dbeeff!important;color:#175b91!important;font-weight:850!important;border-radius:8px}
+#app .hb-small-group-tile.on,#app .hb-small-group-tile[aria-expanded="true"]{background:#e3f2ff!important;color:#145481!important;box-shadow:inset 0 0 0 2px #96bfe3!important}
+#siteMobileNav .site-mobile-subgroup a.is-current{background:#dbeeff!important;color:#175b91!important;border-radius:8px}
+#siteMobileNav .site-mobile-subgroup:has(a.is-current)>summary{background:#edf6ff!important;color:#175b91!important;border-radius:8px}
+</style>
+<script id="hb-small-group-selection-script-20261030">(function(){
+function update(){
+ const key=(location.hash.match(/^#\/(ministry-[6789])(?:$|[?#])/)||[])[1]||'';
+ document.querySelectorAll('#app .hb-small-group-links a,#app .hb-small-group-mobile-panel a,#siteMobileNav .site-mobile-subgroup a').forEach(a=>{
+   const selected=!!key&&a.getAttribute('href')==='#/'+key;
+   a.classList.toggle('on',selected);
+   a.classList.toggle('is-current',selected);
+   if(selected)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
+ });
+ document.querySelectorAll('#app .hb-small-group-tile').forEach(tile=>{
+   const selected=!!key;
+   tile.classList.toggle('on',selected||tile.getAttribute('aria-expanded')==='true');
+ });
+}
+function init(){const app=document.getElementById('app');if(app)new MutationObserver(()=>requestAnimationFrame(update)).observe(app,{childList:true});update()}
+addEventListener('hashchange',()=>requestAnimationFrame(update));
+if(document.readyState==='loading')addEventListener('DOMContentLoaded',init);else init();
+})();</script></body></html>
