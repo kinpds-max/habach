@@ -1825,4 +1825,25 @@ window.addEventListener('hashchange',()=>setTimeout(initBulletinBook,80));
  addEventListener('hashchange',schedule);
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
  document.addEventListener('click',e=>{if(e.target.closest('a[href="#/resources-7"]'))setTimeout(schedule,100)},true);
-})();</script><script id="hb-hide-old-bible-board">(function(){function clean(){if(location.hash!=='#/resources-5')return;const a=document.querySelector('#app .article');if(!a)return;a.querySelectorAll('.boardhead,.empty').forEach(el=>el.remove());a.querySelectorAll('h2,h3').forEach(el=>{if(/성경필사\s*게시판/.test(el.textContent||'')){const panel=el.closest('section')||el;panel.style.display='none'}})}addEventListener('hashchange',()=>setTimeout(clean,220));if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(clean,350));else setTimeout(clean,350)})();</script></body></html>
+})();</script><script id="hb-hide-old-bible-board">(function(){function clean(){if(location.hash!=='#/resources-5')return;const a=document.querySelector('#app .article');if(!a)return;a.querySelectorAll('.boardhead,.empty').forEach(el=>el.remove());a.querySelectorAll('h2,h3').forEach(el=>{if(/성경필사\s*게시판/.test(el.textContent||'')){const panel=el.closest('section')||el;panel.style.display='none'}})}addEventListener('hashchange',()=>setTimeout(clean,220));if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(clean,350));else setTimeout(clean,350)})();</script><style id="habach-ministry-gallery-20261030">
+.hb-ministry-photo{display:block;width:100%;height:auto;max-height:520px;object-fit:contain;object-position:center;border-radius:16px;margin:20px 0 27px;background:#f3f7fb;box-shadow:0 8px 24px rgba(27,47,73,.08)}
+@media(max-width:900px){.hb-ministry-photo{max-height:none;margin:14px 0 24px;border-radius:12px}}
+</style>
+<script id="habach-ministry-gallery-script">
+(function(){
+ const photos={"ministry-1":{"label":"예배","url":"https://files.mallary.ai/uploads/900/chatgpt_1793296444170_384fe98080d8cabb.jpg"},"ministry-2":{"label":"기도회","url":"https://files.mallary.ai/uploads/900/chatgpt_1793296447509_5bd8c09532d9191c.png"},"ministry-3":{"label":"새가족 안내","url":"https://files.mallary.ai/uploads/900/chatgpt_1793296463268_b9eb4f5601f26f2c.png"},"ministry-5":{"label":"봉사와 섬김","url":"https://files.mallary.ai/uploads/900/chatgpt_1793296480403_38508fcd80d452c6.png"},"ministry-6":{"label":"2·3·4 스몰모임","url":"https://files.mallary.ai/uploads/900/chatgpt_1793296495947_849e47ec23543c93.png"},"ministry-7":{"label":"남자들의모임","url":"https://files.mallary.ai/uploads/900/chatgpt_1793296503773_f7020a1fddb76724.jpg"},"ministry-4":{"label":"전도·선교","url":"https://files.mallary.ai/uploads/900/chatgpt_1793296551299_e13981c7d0aa5856.png"}};
+ let queued=false;
+ function apply(){
+  const key=(location.hash.match(/^#\/(ministry-\d+)/)||[])[1];
+  if(!key||!photos[key])return;
+  const app=document.getElementById('app');if(!app)return;
+  const article=app.querySelector('.page-grid .article');if(!article||article.querySelector('.hb-ministry-photo'))return;
+  const img=document.createElement('img');img.className='hb-ministry-photo';img.src=photos[key].url;img.alt='하늘바람교회 '+photos[key].label+' 사진';img.loading='lazy';img.decoding='async';
+  const title=article.querySelector('.article-title');if(title)title.insertAdjacentElement('afterend',img);else article.insertBefore(img,article.firstChild);
+ }
+ function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}
+ window.addEventListener('hashchange',schedule);
+ const start=()=>{const app=document.getElementById('app');if(app)new MutationObserver(schedule).observe(app,{childList:true,subtree:false});schedule()};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script></body></html>
