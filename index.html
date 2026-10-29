@@ -1350,7 +1350,7 @@ async function showBoard(page=1,search=''){
     const pics=pg[i].data||[];
     const cover=pics.length?'<img loading="lazy" src="'+clean(pics[0].image_url)+'" alt="'+clean(pics[0].alt_text||post.title)+'">':'<div class="hb-bulletin-placeholder">원본 주보 이미지 등록 준비 중</div>';
     const gallery=pics.length?'<div class="hb-bulletin-pages">'+pics.map(p=>'<a href="'+clean(p.image_url)+'" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="'+clean(p.image_url)+'" alt="'+clean(p.alt_text||post.title)+'"><small>원본 확대 보기 ↗</small></a>').join('')+'</div>':'';
-    return '<article class="hb-bulletin-album-card"><button type="button" class="hb-bulletin-cover" aria-expanded="false">'+cover+'<strong>'+clean(post.title)+'</strong><span>내용·주보 보기 ↓</span></button><div class="hb-bulletin-expanded" hidden>'+gallery+'<div class="hb-bulletin-copy">'+clean(post.body||'').replace(/\\n/g,'\\n')+'</div></div></article>';
+    return '<article class="hb-bulletin-album-card"><button type="button" class="hb-bulletin-cover" aria-expanded="false">'+cover+'<strong>'+clean(post.title)+'</strong><span>주보 보기 ↓</span></button><div class="hb-bulletin-expanded" hidden>'+gallery</div></article>';
   }).join('');
   results.querySelectorAll('.hb-bulletin-cover').forEach(btn=>btn.onclick=()=>{const panel=btn.nextElementSibling;panel.hidden=!panel.hidden;btn.setAttribute('aria-expanded',String(!panel.hidden))});
   pager.remove();return;
