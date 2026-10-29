@@ -1852,4 +1852,30 @@ window.addEventListener('hashchange',()=>setTimeout(initBulletinBook,80));
  const start=()=>{const app=document.getElementById('app');if(app)new MutationObserver(schedule).observe(app,{childList:true,subtree:false});schedule()};
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
+</script><style id="hb-service-album-20261030">
+#app .hb-service-album{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-top:28px}
+#app .hb-service-album-card{width:100%;padding:20px;background:#fff;border:1px solid #dce7f0;border-radius:15px;box-shadow:0 6px 16px rgba(30,66,110,.05)}
+#app .hb-service-album-card h3{font-size:19px;color:#365777;margin:0 0 12px}
+#app .hb-service-album-card p{margin:0;font-size:14px;color:#718398}
+@media(max-width:640px){#app .hb-service-album-card{padding:14px}}
+</style>
+<script id="hb-service-album-script-20261030">
+(function(){
+ function render(){
+  if(!/^#\/ministry-5(?:$|[?#])/.test(location.hash))return;
+  const article=document.querySelector('#app .page-grid .article');
+  if(!article||article.querySelector('.hb-service-album'))return;
+  const section=document.createElement('section');
+  section.className='hb-service-album';section.setAttribute('aria-label','봉사와 섬김 앨범');
+  section.innerHTML='<article class="hb-service-album-card"><h3>지역봉사공연</h3><p>활동 사진 등록 준비 중</p></article>';
+  article.appendChild(section);
+ }
+ function init(){
+  const app=document.getElementById('app');
+  if(app)new MutationObserver(()=>requestAnimationFrame(render)).observe(app,{childList:true});
+  render();
+ }
+ addEventListener('hashchange',()=>requestAnimationFrame(render));
+ if(document.readyState==='loading')addEventListener('DOMContentLoaded',init);else init();
+})();
 </script></body></html>
