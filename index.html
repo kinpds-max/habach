@@ -1877,8 +1877,8 @@ window.addEventListener('hashchange',()=>setTimeout(initBulletinBook,80));
   if(!article||article.querySelector('.hb-service-album'))return;
   const section=document.createElement('section');
   section.className='hb-service-album';section.setAttribute('aria-label','봉사와 섬김 앨범');
-  section.innerHTML='<article class="hb-service-album-card"><h3>지역봉사공연</h3><img src="https://files.mallary.ai/uploads/900/chatgpt_1793296480403_38508fcd80d452c6.png" alt="지역봉사공연 기념사진" loading="lazy"></article>';
-  const board=article.querySelector('.hb-service-board,.hb-note-grid,.boardhead,.board-list,.hb-ministry-photo');if(board)article.insertBefore(section,board);else article.appendChild(section);
+  section.innerHTML='<article class="hb-service-album-card"><h3>지역공연</h3><img src="https://files.mallary.ai/uploads/900/chatgpt_1793299039718_08b8a85b8f3d182c.png" alt="지역공연 사진" loading="lazy"></article><article class="hb-service-album-card"><h3>위대한 응원</h3><img src="https://files.mallary.ai/uploads/900/chatgpt_1793299063734_a817c6ad6e9aa511.png" alt="위대한 응원 사진" loading="lazy"></article>';
+  article.querySelectorAll('.hb-service-board,.hb-note-grid,.boardhead,.board-list,.board-pager,.hb-card-board').forEach(n=>n.remove());article.appendChild(section);
  }
  function init(){
   const app=document.getElementById('app');
