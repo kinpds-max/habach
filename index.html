@@ -1966,7 +1966,7 @@ function init(){
  card.addEventListener('click',open);card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}})});
 }
 function photo(){
- if(!/^#\\/ministry-3(?:$|[?#])/.test(location.hash))return;
+ if(!/^#\/ministry-3(?:$|[?#])/.test(location.hash))return;
  const article=document.querySelector('#app .page-grid .article');if(!article||article.querySelector('.hb-welcome-album'))return;
  const old=article.querySelector('.hb-welcome-newphoto');if(old)old.remove();
  const grid=document.createElement('section');grid.className='hb-welcome-album';grid.setAttribute('aria-label','새가족 안내 사진앨범');
