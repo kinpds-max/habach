@@ -25,7 +25,7 @@
   }
   function api(method,query,payload){
     return fetch(base+'/rest/v1/church_community_submissions'+query,{
-      method,headers:{apikey:key,Authorization:'Bearer '+key,'Content-Type':'application/json',Prefer:'return=minimal'},
+      method,headers:{apikey:key,'Content-Type':'application/json',Prefer:'return=minimal'},
       ...(payload?{body:JSON.stringify(payload)}:{})
     }).then(async response=>{if(!response.ok)throw Error((await response.text()).slice(0,300));return response.status===204?[]:response.json();});
   }
