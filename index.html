@@ -1990,4 +1990,51 @@ function photo(){
 function boot(){init();const app=document.getElementById('app');if(app)new MutationObserver(()=>requestAnimationFrame(photo)).observe(app,{childList:true});photo()}
 addEventListener('hashchange',()=>requestAnimationFrame(photo));
 if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);else boot();
-})();</script></body></html>
+})();</script>
+<script data-habach-group-layout-v1>
+(() => {
+  const targets = /(?:2\s*[.·ㆍ]?\s*3\s*[.·ㆍ]?\s*4\s*(?:스몰|소그룹)|스몰모임|형제들의\s*모임|남자들의\s*모임|자매들의\s*모임)/;
+  const is234 = /(?:2\s*[.·ㆍ]?\s*3\s*[.·ㆍ]?\s*4|스몰모임)/;
+  const seen = new WeakSet();
+  function resizeAndSort() {
+    const all = [...document.querySelectorAll('h1,h2,h3,h4,h5,h6,.section-title,.page-title,.board-title,.album-title,.tab-title')];
+    for (const heading of all) {
+      const title = (heading.textContent||'').trim();
+      if (!targets.test(title)) continue;
+      let section = heading.closest('section,article,[class*="page"],[class*="section"],[class*="board"],[class*="album"]') || heading.parentElement?.parentElement;
+      if (!section) continue;
+      const media = section.querySelectorAll('iframe[src*="youtu"],video,[class*="thumb"],[class*="video-thumb"],[class*="reel"],[class*="short"]');
+      media.forEach(el => {
+        const box = el.closest('[class*="thumbnail"],[class*="thumb"],[class*="video-item"],[class*="reel"],[class*="short"]') || el;
+        box.style.setProperty('aspect-ratio','4 / 3','important');
+        box.style.setProperty('height','auto','important');
+        if (box !== el && (el.tagName === 'VIDEO'||el.tagName === 'IFRAME')) {
+          el.style.setProperty('width','100%','important');
+          el.style.setProperty('height','100%','important');
+        }
+        if (el.tagName === 'IMG' || el.tagName === 'VIDEO') el.style.setProperty('object-fit','contain','important');
+      });
+      if (!is234.test(title)) continue;
+      const containers = section.querySelectorAll('[class*="grid"],[class*="list"],[class*="album"],[class*="cards"]');
+      for (const box of containers) {
+        if (seen.has(box)) continue;
+        const children = [...box.children];
+        if (children.length < 2 || children.length > 100) continue;
+        if (!children.every(el => el.querySelector('img,iframe,video') || el.matches('[class*="item"],[class*="card"]'))) continue;
+        const label = el => (el.querySelector('h3,h4,h5,[class*="title"]')?.textContent || el.textContent || '').replace(/\s+/g,' ').trim();
+        if (children.some(el => !label(el))) continue;
+        const sorted = [...children].sort((a,b) => label(a).localeCompare(label(b),'ko'));
+        sorted.forEach(el => box.appendChild(el));
+        seen.add(box);
+        break;
+      }
+    }
+  }
+  let queued=false;
+  function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;resizeAndSort()})}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+  new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
+</body></html>
