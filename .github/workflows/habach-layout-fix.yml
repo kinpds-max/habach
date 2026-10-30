@@ -267,11 +267,69 @@ jobs:
               if '</body>' not in s:raise SystemExit('body close not found')
               p.write_text(s.replace('</body>',snippet+'\n</body>',1),encoding='utf-8')
           PY
+      - name: Format every gathering's notice as info card
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          marker='data-habach-all-gathering-info-v3'
+          if marker not in s:
+              code=r"""
+          <style data-habach-all-gathering-info-v3>
+          .habach-meeting-information{background:#f3f8fd;border:1px solid #dce7ef;border-radius:16px;padding:19px 20px;margin:24px 0 32px;display:grid;gap:14px}
+          .habach-meeting-information-line{display:grid;grid-template-columns:100px minmax(0,1fr);gap:14px;line-height:1.65;font-size:16px;color:#435163}
+          .habach-meeting-information-line strong{color:#146184;font-weight:800}
+          @media(max-width:600px){.habach-meeting-information{padding:16px}.habach-meeting-information-line{grid-template-columns:84px minmax(0,1fr);gap:10px;font-size:15px}}
+          </style>
+          <script data-habach-all-gathering-info-v3>
+          (() => {
+            const records=[
+              {name:/남자들의\s*모임|형제들의\s*모임/,value:'매달 셋째 주 금요철야 후'},
+              {name:/자매들의\s*모임/,value:'매주 화요일 오전 10시'},
+              {name:/청년들의\s*모임/,value:'별도 안내'},
+              {name:/2\s*[.·ㆍ]\s*3\s*[.·ㆍ]\s*4\s*스몰모임/,value:'주일 2부예배 마치고'}
+            ];
+            function run(){
+              const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+              const nodes=[];
+              while(walker.nextNode()){
+                const n=walker.currentNode;
+                if(n.parentElement?.closest('script,style,.habach-meeting-information,.habach-group-info-box,.habach-smallgroup-schedule'))continue;
+                const t=(n.nodeValue||'').replace(/\s+/g,' ').trim();
+                if(t.length>12 && t.length<160 && records.some(r=>r.name.test(t)&&t.includes('안내')))nodes.push(n);
+              }
+              for(const n of nodes){
+                const t=(n.nodeValue||'').replace(/\s+/g,' ').trim();
+                const rec=records.find(r=>r.name.test(t)&&t.includes('안내'));
+                if(!rec)continue;
+                const match=t.match(/안내\s*[:：]\s*(.*)$/);
+                if(!match)continue;
+                let el=n.parentElement;
+                if(!el||el.closest('.habach-meeting-information'))continue;
+                if(el.children.length>0 && (el.querySelector('a,button,img,iframe,video')||el.textContent.length>200))continue;
+                const card=document.createElement('div');card.className='habach-meeting-information';
+                const row=document.createElement('div');row.className='habach-meeting-information-line';
+                const label=document.createElement('strong');label.textContent='모임시간';
+                const val=document.createElement('span');val.textContent=match[1]||rec.value;
+                row.append(label,val);card.append(row);
+                el.replaceWith(card);
+              }
+            }
+            let pending=false;
+            const schedule=()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;run()})};
+            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+            new MutationObserver(schedule).observe(document.documentElement,{subtree:true,childList:true});
+          })();
+          </script>
+          """
+              if '</body>' not in s:raise SystemExit('missing body')
+              p.write_text(s.replace('</body>',code+'\n</body>',1),encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git commit -m "Fix small group meeting notice as boxed schedule [skip ci]"
+          git commit -m "Format all gathering meeting details as cards [skip ci]"
           git push origin HEAD:habachnew
