@@ -2104,4 +2104,47 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 })();
 </script>
 
+
+<style data-habach-smallgroup-schedule-v1>
+.habach-smallgroup-schedule{background:#f4f8fc;border:1px solid #dce7ef;border-radius:14px;padding:19px 20px;margin:20px 0 28px;display:grid;gap:13px;color:#405568}
+.habach-smallgroup-schedule-row{display:grid;grid-template-columns:100px minmax(0,1fr);align-items:start;gap:16px;font-size:16px;line-height:1.65}
+.habach-smallgroup-schedule-row strong{color:#176083;font-weight:800}
+@media(max-width:480px){.habach-smallgroup-schedule{padding:17px 15px}.habach-smallgroup-schedule-row{grid-template-columns:76px minmax(0,1fr);gap:12px;font-size:15px}}
+</style>
+<script data-habach-smallgroup-schedule-v1>
+(() => {
+  function apply(){
+    for(const heading of document.querySelectorAll('h1,h2,h3,h4,h5,h6')){
+      const title=(heading.textContent||'').replace(/\s+/g,' ').trim();
+      if(!/소그룹\s*교제|2\s*[.·ㆍ]\s*3\s*[.·ㆍ]\s*4\s*스몰모임/.test(title))continue;
+      let section=heading.closest('section,article,[class*="page"],[class*="section"]')||heading.parentElement?.parentElement;
+      if(!section)continue;
+      for(const el of section.querySelectorAll('p,div,li')){
+        if(el.classList.contains('habach-smallgroup-schedule')||el.closest('.habach-smallgroup-schedule'))continue;
+        if(el.children.length>4)continue;
+        const content=(el.textContent||'').replace(/\s+/g,' ').trim();
+        if(content.length>250||content.length<15)continue;
+        if(!(/모임\s*시간|모임시간|예배시간/.test(content)&&/장소/.test(content)))continue;
+        if(el.querySelector('iframe,video,img,button'))continue;
+        const lines=content.split(/(?=모임\s*시간\s*[:：]?|예배\s*시간\s*[:：]?|장소\s*[:：]?|담당\s*[:：]?|안내\s*[:：]?)/).map(x=>x.trim()).filter(Boolean);
+        if(lines.length<2||lines.length>8)continue;
+        const box=document.createElement('div');box.className='habach-smallgroup-schedule';
+        for(const line of lines){
+          const m=line.match(/^(모임\s*시간|예배\s*시간|장소|담당|안내)\s*[:：]?\s*(.*)$/);
+          if(!m)continue;
+          const row=document.createElement('div');row.className='habach-smallgroup-schedule-row';
+          const label=document.createElement('strong');label.textContent=m[1].replace(/\s+/g,'');
+          const value=document.createElement('span');value.textContent=m[2];
+          row.append(label,value);box.append(row);
+        }
+        if(box.children.length>=2){el.replaceWith(box);break}
+      }
+    }
+  }
+  let queued=false;const schedule=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+  new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
 </body></html>
