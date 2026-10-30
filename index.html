@@ -1201,8 +1201,8 @@ function initMobileSidebar(){
   smallGroup.replaceWith(tile);
   tile.insertAdjacentElement('afterend',subpanel);
   tile.addEventListener('click',()=>{
-   const open=subpanel.hidden;subpanel.hidden=!open;
-   tile.setAttribute('aria-expanded',String(open));
+   const open=tile.getAttribute('aria-expanded')!=='true';subpanel.hidden=!open;
+   tile.setAttribute('aria-expanded',String(open));tile.classList.toggle('on',open);
   });
  }
  side.appendChild(panel);
@@ -1519,7 +1519,7 @@ document.addEventListener('click',function(e){
  site.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeSite));
  document.addEventListener('click',e=>{if(!site.contains(e.target)&&!siteBtn.contains(e.target))closeSite()});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSite()});
- site.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)site.querySelectorAll('details').forEach(other=>{if(other!==d)other.open=false})}));
+ site.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>{if(!d.open)return;[...d.parentElement.children].filter(other=>other.tagName==='DETAILS'&&other!==d).forEach(other=>{other.open=false});}));
 })();
 </script><script>
 document.addEventListener("click",function(e){
