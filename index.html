@@ -2037,4 +2037,44 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 })();
 </script>
 
+
+<script data-habach-community-tidy-v2>
+(() => {
+  const ko=(a,b)=>a.localeCompare(b,'ko');
+  function fix(){
+    const headings=[...document.querySelectorAll('h1,h2,h3,h4,h5,h6,p,div,span,strong')];
+    for(const el of headings){
+      if(el.children.length && [...el.children].some(c=>c.tagName && ['DIV','P','H1','H2','H3','H4','H5','H6'].includes(c.tagName)))continue;
+      const t=(el.textContent||'').trim().replace(/\s+/g,' ');
+      if(t.includes('함께 모여 말씀과 삶을 나누는 하늘바람교회') && t.length<130 && !el.dataset.communityFixed){
+        el.dataset.communityFixed='1';
+        el.textContent=t.replace(/(나누는)\s*(하늘바람교회)/,'$1\n$2');
+        el.style.whiteSpace='pre-line';
+      }
+      if(/2026년\s*2\s*[.·ㆍ]\s*3\s*[.·ㆍ]\s*4\s*스몰모임\s*앨범/.test(t) && t.length<55){
+        el.style.display='none';
+        el.setAttribute('aria-hidden','true');
+      }
+    }
+    const cards=[...document.querySelectorAll('h2,h3,h4,h5,strong')].filter(x=>/사믿순\s*[·ㆍ]\s*파키스탄|말레이순/.test(x.textContent||''));
+    for(const cardTitle of cards){
+      let card=cardTitle;
+      while(card.parentElement && card.parentElement.children.length<2)card=card.parentElement;
+      let parent=card.parentElement;
+      if(!parent)continue;
+      let items=[...parent.children].filter(x=>x.querySelector('img') && (x.textContent||'').trim());
+      if(items.length<2 || items.length>60)continue;
+      const name=x=>(x.querySelector('h3,h4,h5,strong,[class*="title"]')?.textContent||x.textContent||'').replace(/\s+/g,' ').trim();
+      const sorted=items.slice().sort((a,b)=>ko(name(a),name(b)));
+      if(items.some((x,i)=>x!==sorted[i]))sorted.forEach(x=>parent.appendChild(x));
+      break;
+    }
+  }
+  let busy=false;
+  const schedule=()=>{if(busy)return;busy=true;requestAnimationFrame(()=>{busy=false;fix()})};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+  new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
 </body></html>
