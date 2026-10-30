@@ -75,8 +75,22 @@
     active=page;
     const panel=document.createElement('div');panel.id='habach-moderated-board';panel.dataset.key=page.key;
     panel.innerHTML='<div class="habach-board-toolbar"><span>게시판</span><button type="button">글쓰기</button></div><div class="habach-board-approved"></div>';
-    const anchor=page.anchor.closest('section,article') || page.anchor;
-    anchor.insertAdjacentElement('afterend',panel);
+    // Keep the original hero/banner untouched. Mount only beside the lower board heading.
+    const lower=[...document.querySelectorAll('h2,h3,h4,h5')].filter(el=>{
+      if(!el.getClientRects().length)return false;
+      const t=normalize(el.textContent);
+      return /게시판|영상앨범|사진앨범|교육자료/.test(t) && !el.closest('header,nav,.hero,.banner,#habach-moderated-board');
+    });
+    const anchor=lower.find(el=>el.getBoundingClientRect().top>page.anchor.getBoundingClientRect().top+120);
+    if(!anchor)return;
+    const headingRow=anchor.parentElement;
+    const toolbar=panel.querySelector('.habach-board-toolbar');
+    toolbar.querySelector('span').remove();
+    toolbar.style.border='none';
+    toolbar.style.padding='0';
+    toolbar.style.justifyContent='flex-end';
+    panel.style.margin='8px 0 24px';
+    headingRow.insertAdjacentElement('afterend',panel);
     panel.querySelector('button').onclick=()=>openForm(page);
     loadPosts(page,panel);
   }
