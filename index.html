@@ -2147,4 +2147,40 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 })();
 </script>
 
+
+<style data-habach-smallgroup-schedule-v2>
+.habach-group-info-box{background:#f3f8fd;border:1px solid #dce7ef;border-radius:16px;padding:19px 20px;margin:24px 0 32px;display:grid;gap:13px}
+.habach-group-info-row{display:grid;grid-template-columns:106px minmax(0,1fr);gap:14px;align-items:start;line-height:1.7;font-size:16px;color:#435163}
+.habach-group-info-row b{color:#126084;font-weight:800}
+@media(max-width:600px){.habach-group-info-box{padding:16px 17px}.habach-group-info-row{grid-template-columns:88px minmax(0,1fr);gap:10px;font-size:15px}}
+</style>
+<script data-habach-smallgroup-schedule-v2>
+(() => {
+  const target=/2\s*[.·ㆍ]\s*3\s*[.·ㆍ]\s*4\s*스몰모임\s*안내\s*[:：]?\s*주일\s*2부\s*예배\s*마치고/;
+  function apply(){
+    const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+    const hits=[];
+    while(walker.nextNode()){
+      const node=walker.currentNode;
+      if(node.parentElement?.closest('.habach-group-info-box,script,style'))continue;
+      if(target.test((node.nodeValue||'').replace(/\s+/g,' ')))hits.push(node);
+    }
+    for(const node of hits){
+      const el=node.parentElement;
+      if(!el||el.querySelector('img,video,iframe'))continue;
+      const text=(el.textContent||'').replace(/\s+/g,' ').trim();
+      if(text.length>180 || !target.test(text))continue;
+      const box=document.createElement('div');
+      box.className='habach-group-info-box';
+      function add(k,v){const row=document.createElement('div');row.className='habach-group-info-row';const label=document.createElement('b');label.textContent=k;const value=document.createElement('span');value.textContent=v;row.append(label,value);box.append(row)}
+      add('모임시간','주일 2부예배 마치고');
+      el.replaceWith(box);
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
+  const observer=new MutationObserver(()=>{observer.disconnect();apply();observer.observe(document.body,{subtree:true,childList:true})});
+  observer.observe(document.body,{subtree:true,childList:true});
+})();
+</script>
+
 </body></html>
