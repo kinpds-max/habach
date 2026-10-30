@@ -1312,6 +1312,8 @@ async function showBoard(page=1,search=''){
  const key=(location.hash||'#/index').slice(2),meta=byKey[key],host=document.querySelector('#app .article');
  if(!meta||!host||noBoardRoutes.has(key)||key==='news-7'||key==='news-10')return;
  const token=++requestToken;
+ // 수요설교는 정적 영상 목록 대신 공개일 내림차순 Supabase 앨범만 표시
+ if(key==='sermon-2')host.querySelectorAll('.hb-static-board').forEach(el=>el.remove());
  // 기존 정적 빈 게시판 문구는 실제 데이터 게시판으로 대체
  const old=host.querySelector('.detail-board');if(old)old.remove();
  host.querySelectorAll('.empty').forEach(e=>{if(e.textContent.includes('등록된 게시물이 없습니다')||e.textContent.includes('No posts yet'))e.remove()});
