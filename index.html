@@ -2077,4 +2077,31 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 })();
 </script>
 
+
+<script data-habach-youth-video-4x3-v1>
+(() => {
+  const youth=/청년들의\s*모임/;
+  function apply(){
+    for(const h of document.querySelectorAll('h1,h2,h3,h4,h5,h6,.section-title,.page-title,.board-title,.album-title,.tab-title')){
+      if(!youth.test(h.textContent||''))continue;
+      const section=h.closest('section,article,[class*="page"],[class*="section"],[class*="board"],[class*="album"]')||h.parentElement?.parentElement;
+      if(!section)continue;
+      section.querySelectorAll('iframe[src*="youtu"],video,[class*="thumb"],[class*="video-thumb"],[class*="reel"],[class*="short"]').forEach(el=>{
+        const box=el.closest('[class*="thumbnail"],[class*="thumb"],[class*="video-item"],[class*="reel"],[class*="short"]')||el;
+        box.style.setProperty('aspect-ratio','4 / 3','important');
+        box.style.setProperty('height','auto','important');
+        if(box!==el&&(el.tagName==='IFRAME'||el.tagName==='VIDEO')){
+          el.style.setProperty('width','100%','important');
+          el.style.setProperty('height','100%','important');
+        }
+        if(el.tagName==='IMG'||el.tagName==='VIDEO')el.style.setProperty('object-fit','contain','important');
+      });
+    }
+  }
+  let queued=false;const schedule=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+  new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
 </body></html>
