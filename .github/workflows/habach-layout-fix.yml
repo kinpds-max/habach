@@ -900,6 +900,16 @@ jobs:
           s=re.sub(r'(<(?:dt|strong|span)[^>]*>\\s*활동\\s*</(?:dt|strong|span)>\\s*<(?:dd|span)[^>]*>\\s*주짓수\\s*</(?:dd|span)>)','',s)
           p.write_text(s,encoding='utf-8')
           PY
+      - name: Enable latest directly uploaded bulletin images
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          tag='<script defer src="/assets/bulletin-uploaded-gallery.js"></script>'
+          if tag not in s:
+              assert '</body>' in s
+              p.write_text(s.replace('</body>',tag+'\n</body>',1),encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
