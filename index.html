@@ -1082,6 +1082,12 @@ const translations={
 '등록된 게시물이 없습니다. 관리자 게시판은 추후 연결됩니다.':'No posts yet. Administrator publishing will be available after setup.',
 '번호':'No.','제목':'Title','작성일':'Date','HOME':'HOME'
 };
+Object.assign(translations,{
+'이번주 교회주보':'This Week’s Church Bulletin','이번 주 교회주보':'This Week’s Church Bulletin','이번주 교회주보 업로드':'Upload This Week’s Bulletin','주보게시판':'Bulletin Board','주보 게시판':'Bulletin Board','교회주보':'Church Bulletin','교회일정':'Church Calendar','월간일정':'Monthly Calendar','월간 일정':'Monthly Calendar','주일예배':'Sunday Worship','새벽기도':'Dawn Prayer','새벽예배':'Dawn Worship','금요예배':'Friday Worship','수요예배':'Wednesday Worship','주일설교 영상 앨범':'Sunday Sermon Video Gallery','영상 앨범':'Video Gallery','전체 영상 보기':'View All Videos','전체영상보기':'View All Videos','영상보기':'Watch Video','유튜브 영상 보기':'Watch on YouTube','봉사와 섬김':'Service & Outreach','1. 지역,문화 섬김':'1. Community & Cultural Outreach','2. 자녀세대 섬김':'2. Serving Children & Youth','3. 부모세대 섬김':'3. Serving Parents','지역문화섬김':'Community & Cultural Outreach','자녀세대 섬김':'Serving Children & Youth','부모세대 섬김':'Serving Parents','지역공연':'Community Performances','위대한응원':'Great Encouragement','연예인 지역뮤지컬공연':'Community Musical Performance','지역모노드라마공연':'Community Monodrama Performance',
+'청년들의 모임':'Young Adults Fellowship','남자들의 모임':'Men’s Fellowship','자매들의 모임':'Women’s Fellowship','2·3·4 스몰모임':'2·3·4 Small Groups','소그룹교제':'Small Group Fellowship','봉사와 섬김 게시판':'Service & Outreach Board','주보 목록':'Bulletin List','이미지 3장 보기':'View 3 Pages','새로고침':'Refresh','목록':'List','전체':'All','주일':'Sunday','새벽':'Dawn','수요':'Wednesday','금요':'Friday','특별':'Special','날짜':'Date','유형':'Type','보기':'View','삭제':'Delete','검색':'Search','검색어를 입력하세요':'Enter search terms','등록된 게시물이 없습니다':'No posts have been published','교회앨범':'Church Photo Gallery','새가족앨범':'New Members’ Gallery','기도제목나눔':'Prayer Requests','HRAD나눔':'HRAD Sharing','새가족':'New Members','청년1부':'Young Adults Group 1','청년2부':'Young Adults Group 2','영유아부':'Nursery','유초등부':'Elementary Ministry','유치부':'Preschool','청소년부':'Youth Ministry','말씀나눔':'Sharing the Word','성도나눔':'Member Testimonies','성경필사':'Bible Transcription','성경퀴즈':'Bible Quiz','순모임보고서':'Small Group Report','기도제목':'Prayer Requests','글쓰기':'Write a Post','더보기':'Show More','이전':'Previous','다음':'Next','재생목록 바로 재생하기':'Play This Playlist','홈으로 가기':'Go to Home','교인 사업자정보':'Members’ Business Directory','사업자심방 영상':'Business Visitation Videos',
+'사람을 사랑하며 지역 공동체를 섬깁니다':'Loving people and serving our local community','다음 세대가 사랑과 믿음 안에서 자라도록 함께 응원하고 축복합니다.':'We encourage and bless the next generation as they grow in love and faith.','부모세대의 수고와 사랑에 감사하며, 교제와 위로로 함께하는 섬김입니다.':'We honor parents for their love and dedication, serving them through fellowship and encouragement.',
+'문화적 섬김과 아트센터':'Cultural Ministry & Arts Center','크리스천 바우처 사역':'Christian Care Voucher Ministry','러브트리 · 메디컬트리':'Love Tree · Medical Tree','에듀트리 · 푸드트리':'Education Tree · Food Tree','하우스트리':'House Tree','하늘바람의 기도':'Prayer of Haneulbaram','온라인 예배중입니다':'Worship Is Live Now','온라인 예배 중입니다':'Worship Is Live Now'
+});
 function applyTranslation(){
  const lang=document.getElementById('languageSelect')?.value||'ko';
  document.documentElement.lang=lang;
@@ -1094,10 +1100,15 @@ function applyTranslation(){
     if(lang==='ko'){n.nodeValue=n.__originalText;continue;}
     let t=n.__originalText;
     for(const [ko,en] of Object.entries(translations).sort((a,b)=>b[0].length-a[0].length))t=t.split(ko).join(en);
-    n.nodeValue=t;
+    if(n.nodeValue!==t)n.nodeValue=t;
   }
  });
 }
+let hbTranslationQueued=false;
+function scheduleDynamicTranslation(){if(hbTranslationQueued)return;hbTranslationQueued=true;requestAnimationFrame(()=>{hbTranslationQueued=false;if(document.getElementById('languageSelect')?.value==='en')applyTranslation()})}
+window.addEventListener('hashchange',scheduleDynamicTranslation);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>new MutationObserver(scheduleDynamicTranslation).observe(document.getElementById('app')||document.body,{childList:true,subtree:true}));
+else new MutationObserver(scheduleDynamicTranslation).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
 function setupLanguage(){const sel=document.getElementById('languageSelect');if(!sel)return;sel.value=localStorage.getItem('hbc_lang')||'ko';sel.addEventListener('change',()=>{localStorage.setItem('hbc_lang',sel.value);applyTranslation()});applyTranslation()}
 const heroBackgrounds={"index": "https://cdn.pixabay.com/photo/2017/08/02/12/03/nature-2571245_1280.jpg", "about": "https://cdn.pixabay.com/photo/2025/10/03/13/51/sunrise-9871103_1280.jpg", "sermon": "https://cdn.pixabay.com/photo/2017/05/31/18/28/czech-republic-2361205_1280.jpg", "ministry": "https://cdn.pixabay.com/photo/2017/04/12/16/24/lake-2224947_1280.jpg", "next": "https://cdn.pixabay.com/photo/2015/07/10/16/32/mountain-839646_1280.jpg", "news": "https://cdn.pixabay.com/photo/2017/08/01/08/04/river-2563375_1280.jpg", "resources": "https://cdn.pixabay.com/photo/2017/08/02/12/03/nature-2571245_1280.jpg"};
 
