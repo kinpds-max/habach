@@ -1,18 +1,19 @@
 (()=>{'use strict';
 const names=['지역·문화섬김','자녀세대섬김','부모세대섬김'];
-const ministry=()=>/ministry-5/.test(location.hash);
+const ministry=()=>/ministry-5/.test(location.hash)||[...document.querySelectorAll('h1,h2,h3')].some(h=>/봉사와\s*섬김/.test(h.textContent||''));
 const norm=s=>String(s||'').replace(/\s+/g,'').trim();
 function mainNav(){
- const controls=[...document.querySelectorAll('button,a,[role="tab"]')].filter(e=>e.getClientRects().length);
- const active=controls.find(e=>norm(e.textContent)==='봉사와섬김');
+ const controls=[...document.querySelectorAll('button,a,[role="tab"],li')].filter(e=>e.getClientRects().length);
+ const active=controls.find(e=>norm(e.textContent).replace(/[›⌄∨>]/g,'')==='봉사와섬김'||norm(e.textContent).startsWith('봉사와섬김'));
  if(!active)return null;
  let node=active.parentElement;
- for(let k=0;node&&k<6;k++,node=node.parentElement){
-  const count=[...node.querySelectorAll('button,a,[role="tab"]')].filter(e=>['예배','기도회','새가족안내','전도·선교','봉사와섬김','소그룹교제'].includes(norm(e.textContent))).length;
-  if(count>=5)return node;
+ for(let k=0;node&&k<8;k++,node=node.parentElement){
+  const matches=[...node.querySelectorAll('button,a,[role="tab"]')].filter(e=>['예배','기도회','새가족안내','전도·선교','봉사와섬김','소그룹교제'].some(t=>norm(e.textContent).startsWith(norm(t)))).length;
+  if(matches>=5)return node;
  }
- return null;
+ return active.closest('nav,ul')||active.parentElement;
 }
+
 function ensure(){
  if(!ministry())return;
  const row=mainNav();if(!row)return;
