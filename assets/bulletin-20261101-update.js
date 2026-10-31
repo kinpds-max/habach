@@ -41,6 +41,20 @@ function display(){
   for(const selector of ['#hb-shared-bulletin-feed','#hb-november-first-bulletin','#hb-bulletin-20261025','#hb-home-latest-bulletin','#hb-home-latest-bulletin-restored','#hb-bulletin-one-line-actions','#hb-bulletin-inline-actions']){
    for(const el of box.querySelectorAll(selector))if(!viewer.contains(el)&&el!==actions)el.style.setProperty('display','none','important');
   }
+  // Retain the single main viewer; remove secondary bulletin images/cards below it.
+  if(!location.hash||/^#\\/?(?:home)?$/.test(location.hash)){
+    for(const img of [...box.querySelectorAll('img')]){
+      if(viewer.contains(img))continue;
+      if(/files\\.mallary\\.ai\\/uploads\\/900\\/chatgpt_179344/.test(img.src)){
+        const anchor=img.closest('a[href]');
+        const card=anchor?.parentElement;
+        if(card && card.querySelectorAll('img').length>=2 && !card.contains(viewer)){
+          card.remove();
+        }else if(anchor && !anchor.contains(viewer))anchor.remove();
+        else if(!img.contains(viewer))img.remove();
+      }
+    }
+  }
   for(const el of box.querySelectorAll('p,small,span'))if(!viewer.contains(el)&&el.children.length===0&&/주보를 한 페이지씩 넘기고/.test(el.textContent||''))el.style.setProperty('display','none','important');
  }
 }
