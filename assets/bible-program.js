@@ -264,16 +264,16 @@ function initBible(){
   if(!currentVerses.length){shareMessage.textContent='말씀을 먼저 불러와 주세요.';return;}
   const writing=[...list.querySelectorAll('textarea')].map(x=>x.value);
   const norm=t=>String(t||'').replace(/\s/g,'');
-  if(!writing.every(x=>x.trim())){shareMessage.textContent='작성하지 않은 절이 있습니다. 모든 절을 먼저 입력해 주세요.';return;}
+  if(!writing.some(x=>x.trim())){shareMessage.textContent='한 절 이상 작성한 후 제출해 주세요.';return;}
   let id=read('hb-rank-visitor-id');if(!id){id=crypto.randomUUID();write('hb-rank-visitor-id',id);}
   shareButton.disabled=true;shareMessage.textContent='필사 기록을 확인하고 공유하는 중입니다.';
   try{
    const r=await fetch(rankingUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,version,book,chapter,writings:writing,visitorId:id})});
    const result=await r.json();
    if(!r.ok)throw Error(result.error||'등록 오류');
-   shareMessage.textContent=BOOKS[book]+' '+chapter+'장 필사 공유가 완료되었습니다. 순위에 반영됩니다.';
+   shareMessage.textContent=BOOKS[book]+' '+chapter+'장 '+writing.filter(x=>x.trim()).length+'절 작성 기록이 저장되었습니다. 순위에 반영됩니다.';
    await fetchRanks();
-  }catch(e){shareMessage.textContent='공유 실패: '+e.message;}
+  }catch(e){shareMessage.textContent='제출 실패: '+e.message;}
   finally{shareButton.disabled=false;}
  });
  fetchRanks();
