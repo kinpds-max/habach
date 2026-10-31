@@ -455,11 +455,50 @@ jobs:
               if '</body>' not in s:raise SystemExit('Missing closing body')
               p.write_text(s.replace('</body>',script+'\n</body>',1),encoding='utf-8')
           PY
+      - name: Correct preschool department location label
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          marker='data-habach-preschool-location-v1'
+          if marker not in s:
+              script=r"""
+          <script data-habach-preschool-location-v1>
+          (() => {
+            function fix(){
+              if(!/유치부/.test(document.body.innerText||''))return;
+              const heads=[...document.querySelectorAll('h1,h2')].filter(h=>(h.textContent||'').trim()==='유치부');
+              if(!heads.length)return;
+              const rows=[...document.querySelectorAll('div,li,tr')].filter(el=>{
+                if(el.children.length>5||el.closest('header,nav'))return false;
+                const t=(el.textContent||'').replace(/\s+/g,'').trim();
+                return t==='활동주짓수'||t==='장소유치부실';
+              });
+              for(const row of rows){
+                const text=(row.textContent||'').replace(/\s+/g,'').trim();
+                if(text==='활동주짓수'){row.remove();}
+                if(text==='장소유치부실'){
+                  const val=row.querySelector('span:last-child,td:last-child');
+                  if(val)val.textContent='유치부실, 주짓수';
+                  else row.textContent='장소  유치부실, 주짓수';
+                }
+              }
+            }
+            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fix);else fix();
+            window.addEventListener('hashchange',()=>setTimeout(fix,80));
+            new MutationObserver(()=>{if(window.__preschoolFixing)return;window.__preschoolFixing=true;requestAnimationFrame(()=>{window.__preschoolFixing=false;fix()})}).observe(document.body,{subtree:true,childList:true});
+          })();
+          </script>
+          """
+              if '</body>' not in s:raise SystemExit('No body')
+              p.write_text(s.replace('</body>',script+'\n</body>',1),encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git commit -m "Set homepage dawn worship video L27QCTEVw0k [skip ci]"
+          git commit -m "Correct preschool location to 유치부실, 주짓수 [skip ci]"
           git push origin HEAD:habachnew
