@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const ids=['Nsdeq7or5Kw','icuBPEbxOcg','Y6iVSxI8OWg'];
+const ids=['Nsdeq7or5Kw','icuBPEbxOcg','Y6iVSxI8OWg','jMUktLAYEDw'];
 const service=/교인\s*사업|사업자\s*정보|사업장\s*정보|사업\s*정보/;
 function reorder(){
  const gallery=document.getElementById('hb-business-shorts');if(!gallery)return;
