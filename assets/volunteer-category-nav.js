@@ -15,7 +15,8 @@ function init(){
   groups.forEach((name,i)=>{const a=document.createElement('a');a.href='#/ministry-5';a.textContent=name;a.dataset.volunteerCategory=String(i);a.addEventListener('click',e=>{e.preventDefault();selected=i;menu.open=true;if(location.hash!=='#/ministry-5')location.hash='#/ministry-5';else show();});links.append(a)});
   menu.append(summary,links);current.insertAdjacentElement('afterend',menu);
  }
- current.style.display='none';
+ // Replace the original navigation link rather than leaving two visible parent labels.
+ current.remove();
  if(!menu.dataset.bound){menu.dataset.bound='1';menu.querySelector('summary').addEventListener('click',()=>{if(location.hash!=='#/ministry-5')location.hash='#/ministry-5'})}
  const active=/^#\/?ministry-5$/.test(location.hash);
  menu.open=active;
@@ -39,6 +40,12 @@ function show(){
   area.insertAdjacentElement('afterend',content);
  }
  content.style.display=selected===0?'':'none';
+ // Restore the original regional / cultural ministry explanation if another renderer omitted it.
+ if(selected===0 && !content.querySelector('.source-subhead')){
+  const original=document.createElement('div');original.className='hb-restored-volunteer-description';
+  original.innerHTML='<p class="lead">사람을 사랑하며 지역 공동체를 섬깁니다</p><h3 class="source-subhead">문화적 섬김과 아트센터</h3><p>하늘바람교회는 음악과 문화적 섬김을 통해 교회를 찾는 이와 지역 공동체가 함께 행복해지는 교회를 지향합니다.</p><h3 class="source-subhead">크리스천 바우처 사역</h3><p>지역 공동체와 도움이 필요한 이웃을 섬기기 위해 생활 지원, 의료 지원, 교육, 식사, 집수리 등 실생활의 부족함을 채우는 섬김을 소개하고 있습니다.</p><div class="source-feature-grid"><div><strong>러브트리 · 메디컬트리</strong><p>생활 및 의료 영역의 이웃 사랑</p></div><div><strong>에듀트리 · 푸드트리</strong><p>교육과 따뜻한 식사 나눔</p></div><div><strong>하우스트리</strong><p>주거 및 집수리 섬김</p></div></div>';
+  content.prepend(original);
+ }
  if(selected===0){if(area.childNodes.length)area.replaceChildren();delete area.dataset.choice;return}
  if(area.dataset.choice===String(selected))return;
  area.dataset.choice=String(selected);
