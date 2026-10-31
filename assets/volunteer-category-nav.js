@@ -2,7 +2,7 @@
 const V=[{id:'nweyrCQwGPs',sel:'.hb-ministry-children',name:'너는 잘될 거야'},{id:'uUId-pRdB_w',sel:'.hb-ministry-parents',name:'덕분에 잘되었습니다'}];
 const photos=['chatgpt_1793426450783_0c594477ea84204c.jpg','chatgpt_1793426453670_e345e10bd41d27f7.jpg','chatgpt_1793426456099_aee978fbeb1f582b.jpg','chatgpt_1793426459734_ee4e9a5e493d7e4b.jpg','chatgpt_1793426462359_42e9763907b0fdab.jpg','chatgpt_1793426465419_3226d05108103e6f.jpg'];
 function apply(){
- if(!/^#\\/ministry-5(?:$|[?#])/.test(location.hash))return;
+ if(!location.hash.startsWith('#/ministry-5'))return;
  const article=document.querySelector('#app .page-grid article.article');if(!article)return;
  article.removeAttribute('data-hb-volunteer-category');
  article.querySelectorAll('#hb-volunteer-side-accordion,.hb-volunteer-native-menu').forEach(el=>el.remove());
