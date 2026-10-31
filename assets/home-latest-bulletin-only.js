@@ -4,6 +4,18 @@ const HOME=()=>!location.hash||/^#\/?(?:home)?$/.test(location.hash);
 const matching=t=>/^(?:이번\s*주\s*)?(?:교회\s*)?주보(?:\s*(?:미리보기|앨범))?$/.test((t||'').trim());
 function fix(){
  if(!HOME())return;
+ // Multiple gallery scripts can append the exact same dated bulletin card.
+ // Keep the first complete 3-page gallery; remove later sibling gallery cards.
+ const dated=[...document.querySelectorAll('h2,h3,h4')].filter(h=>h.textContent.trim()==='2026년 10월 25일 교회 주보');
+ if(dated.length>1){
+  const card=h=>h.closest('section,article,[class*="card"]')||h.parentElement;
+  const firstCard=card(dated[0]);
+  for(const h of dated.slice(1)){
+   const duplicate=card(h);
+   if(duplicate&&duplicate!==firstCard&&!duplicate.contains(firstCard)&&!firstCard.contains(duplicate))duplicate.remove();
+  }
+ }
+
  const headings=[...document.querySelectorAll('h1,h2,h3,h4')].filter(h=>h.getClientRects().length&&matching(h.textContent));
  if(!headings.length)return;
  const first=headings[0];const block=h=>h.closest('section,article,[class*="bulletin-card"],[class*="bulletin-section"]')||h.parentElement?.parentElement||h.parentElement;
