@@ -977,6 +977,16 @@ jobs:
               assert '</body>' in s
               p.write_text(s.replace('</body>',tag+'\n</body>',1),encoding='utf-8')
           PY
+      - name: Clean bulletin separators and business album labels
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          html=p.read_text(encoding='utf-8')
+          tag='<script defer src="/assets/bulletin-and-business-label-cleanup.js"></script>'
+          if tag not in html:
+              p.write_text(html.replace('</body>',tag+'\n</body>',1),encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
