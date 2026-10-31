@@ -22,8 +22,8 @@ function render(){
    row.insertAdjacentElement('afterend',tabs);
    if(menuContainer){menuContainer.style.setProperty('display','block');}
    tabs.style.cssText='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px 13px;margin:10px 0 0;border:1px solid #dce7ef;border-radius:15px;background:#f5f9fc;width:100%;box-sizing:border-box';
- }else{section.insertBefore(tabs,section.firstChild);}
- root.insertBefore(section,root.firstChild);tabs.children[0].click();
+ }else{tabs.remove();}
+ root.insertBefore(section,root.firstChild);if(row)tabs.children[0].click();
 
  // Keep this single subnavigation immediately below the six ministry navigation buttons.
  for(const duplicate of document.querySelectorAll('.hb-volunteer-submenu-matches-smallgroups')){
