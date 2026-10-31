@@ -2736,4 +2736,19 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
  #app .sermon-album-thumb img{display:block;width:100%;height:100%;object-fit:cover}
  #app .sermon-album-copy{min-width:0;overflow-wrap:anywhere}
 }
+</style><style id="hb-sunday-mobile-two-columns-v4">
+@media(max-width:900px){
+ body #app .page-grid .article .sermon-album-grid,
+ body #app .page-grid .article .hb-static-sermon-grid,
+ body #app .page-grid .article .hb-worship-album .hb-static-sermon-grid,
+ body #app .page-grid .article .board-results.sermon-album-grid{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;
+ }
+ body #app .page-grid .article .sermon-album-grid>.sermon-album-card,
+ body #app .page-grid .article .hb-static-sermon-grid>.sermon-album-card{
+ width:auto!important;min-width:0!important;max-width:100%!important;grid-column:auto!important;
+ }
+ body #app .page-grid .article .sermon-album-grid>.sermon-album-detail,
+ body #app .page-grid .article .hb-static-sermon-grid>.sermon-album-detail{grid-column:1/-1!important}
+}
 </style></body></html>
