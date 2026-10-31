@@ -107,7 +107,7 @@ function apply(){
   const wrap=document.createElement('div');wrap.className='hb-generation-media';
   const a=document.createElement('a');a.href='https://www.youtube.com/watch?v='+v.id;a.target='_blank';a.rel='noopener noreferrer';a.className='hb-generation-video-card';
   const img=document.createElement('img');img.src='https://i.ytimg.com/vi/'+v.id+'/hqdefault.jpg';img.alt=v.name+' 유튜브 영상';img.loading='lazy';
-  const label=document.createElement('strong');label.textContent=v.name+' · 유튜브 영상 보기';
+  const label=document.createElement('strong');label.textContent='';label.style.display='none';
   const play=document.createElement('span');play.className='hb-preview-play';play.textContent='▶';a.append(img,play,label);wrap.append(a);a.addEventListener('click',function(e){e.preventDefault();const f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+v.id+'?autoplay=1';f.allow='autoplay;encrypted-media;picture-in-picture';f.allowFullscreen=true;f.title=v.name;f.className='hb-inline-video-player';a.replaceWith(f)},{once:true});
   if(i===0){
    const h=document.createElement('h4');h.textContent='덕분에 잘되었습니다 · 자녀세대 행사 사진';wrap.append(h);
@@ -117,6 +117,16 @@ function apply(){
   }
   target.append(wrap);
  });
+ // Remove duplicated generation/video captions marked for deletion; retain video previews and photos.
+ for(const section of group.querySelectorAll('.hb-ministry-children,.hb-ministry-parents')){
+   for(const el of [...section.querySelectorAll('h4,a,strong,p')]){
+     if(el.closest('.hb-generation-photo-grid'))continue;
+     const value=(el.textContent||'').replace(/\s+/g,'').trim();
+     if(el.tagName==='A'&&el.querySelector('img,iframe'))continue;
+     if(/^(너는잘될거야|덕분에잘됐습니다|덕분에잘되었습니다)([·\-]?(유튜브영상보기|영상보기))?$/.test(value)&&!el.closest('.hb-generation-video-card'))el.remove();
+   }
+ }
+
 }
 const style=document.createElement('style');style.textContent='#app .hb-generation-video-card{display:block;text-decoration:none;color:#315675;max-width:520px;margin:16px 0 26px}#app .hb-generation-video-card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px}#app .hb-generation-video-card strong{display:block;margin:9px 0;font-size:16px}#app .hb-generation-photo-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}#app .hb-generation-photo-grid img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px}@media(max-width:700px){#app .hb-generation-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}}';document.head.append(style);
 const polishStyle=document.createElement('style');polishStyle.id='hb-unified-ministry-legibility-20261101';
