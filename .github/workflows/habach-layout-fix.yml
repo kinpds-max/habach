@@ -745,6 +745,19 @@ jobs:
               assert '</body>' in s
               p.write_text(s.replace('</body>',tag+'\n</body>',1),encoding='utf-8')
           PY
+      - name: Remove homepage bulletin and vision disclaimer
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          s=re.sub(r'<script[^>]*src="/assets/(?:home-latest-bulletin-only|bulletin-20261025-gallery)\.js"[^>]*></script>','',s)
+          tag='<script defer src="/assets/home-cleanup-20261031.js"></script>'
+          if tag not in s:
+              assert '</body>' in s
+              s=s.replace('</body>',tag+'\n</body>',1)
+          p.write_text(s,encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
