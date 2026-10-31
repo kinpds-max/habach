@@ -14,6 +14,7 @@ function run(){
   buttons.forEach(b=>{actions.append(b);b.style.cssText+=';display:inline-flex!important;width:auto!important;flex:0 0 auto!important;min-width:0!important;max-width:none!important;white-space:nowrap!important;padding:8px 9px!important;margin:0!important;font-size:clamp(10px,1.7vw,13px)!important;line-height:1.2!important;box-sizing:border-box!important'});
   for(const old of [...box.querySelectorAll('#hb-bulletin-one-line-actions')])if(!old.children.length)old.remove();
   const title=box.querySelector('h2,h3,h4');if(title&&/2026년\s*10월\s*25일/.test(title.textContent))title.textContent='2026년 11월 1일 교회 주보';
+  if(box.querySelector('#hb-shared-bulletin-feed:not([style*="display: none"])'))continue;
   let gallery=box.querySelector('#hb-november-first-bulletin');
   if(!gallery){gallery=document.createElement('div');gallery.id='hb-november-first-bulletin';header.insertAdjacentElement('afterend',gallery)}
   gallery.style.cssText='width:100%;margin:14px 0;display:flex;flex-direction:column;align-items:center;gap:10px';
