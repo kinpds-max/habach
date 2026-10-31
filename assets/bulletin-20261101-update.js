@@ -18,6 +18,7 @@ function run(){
   if(!gallery){gallery=document.createElement('div');gallery.id='hb-november-first-bulletin';header.insertAdjacentElement('afterend',gallery)}
   gallery.style.cssText='width:100%;margin:14px 0;display:flex;flex-direction:column;align-items:center;gap:10px';
   if(!gallery.querySelector('[data-bulletin-slide]')){
+   gallery.replaceChildren();
    const viewer=document.createElement('div');viewer.dataset.bulletinSlide='1';viewer.style.cssText='width:100%;position:relative';
    const link=document.createElement('a');link.href=images[0];link.target='_blank';link.rel='noopener noreferrer';link.style.cssText='display:block;width:100%';
    const img=document.createElement('img');img.src=images[0];img.alt='이번 주 교회 주보 1쪽';img.style.cssText='width:100%;height:auto;display:block;object-fit:contain;border-radius:8px;border:1px solid #dce7ed';link.append(img);viewer.append(link);
