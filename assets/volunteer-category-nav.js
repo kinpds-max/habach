@@ -19,12 +19,12 @@ function render(){
  if(row){row.insertAdjacentElement('afterend',tabs);tabs.style.cssText='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px 12px;margin:8px 0 0;border:1px solid #dce7ef;border-radius:15px;background:#f5f9fc';}
  else {section.insertBefore(tabs,section.firstChild);}
  root.insertBefore(section,root.firstChild);tabs.children[0].click();
- // Keep the existing ministry submenu, never show a second copy inside content.
- const external=[...document.querySelectorAll('button,a,[role="tab"]')].filter(e=>!section.contains(e)&&names.some(n=>e.textContent.replace(/\s+/g,'').trim()===n.replace(/\s+/g,'')));
- if(external.length>=3){
-   tabs.remove();
-   external.forEach(e=>{const i=names.findIndex(n=>e.textContent.replace(/\s+/g,'').trim()===n.replace(/\s+/g,''));if(i<0)return;e.addEventListener('click',()=>{panels.forEach((p,j)=>p.hidden=i!==j);isolateVolunteerCategory()})});
+
+ // Keep this single subnavigation immediately below the six ministry navigation buttons.
+ for(const duplicate of document.querySelectorAll('.hb-volunteer-submenu-matches-smallgroups')){
+  if(duplicate!==tabs)duplicate.remove();
  }
+
 }
 function labelRegionalPerformances(){
  if(!/ministry-5/.test(location.hash))return;
