@@ -20,6 +20,24 @@ function render(){
  else {section.insertBefore(tabs,section.firstChild);}
  root.insertBefore(section,root.firstChild);tabs.children[0].click();
 }
+function labelRegionalPerformances(){
+ if(!/ministry-5/.test(location.hash))return;
+ const heads=[...document.querySelectorAll('h2,h3,h4,h5')].filter(e=>e.getClientRects().length&&e.textContent.trim()==='지역공연');
+ for(const h of heads){
+  const card=h.closest('[class*="card"],article,section')||h.parentElement;
+  if(!card||card.dataset.hbRegionalLabeled==='1')continue;
+  const imgs=[...card.querySelectorAll('img')].filter(im=>im.getClientRects().length);
+  if(!imgs.length)continue;
+  const names=['지역 연예인 뮤지컬 공연','지역 모노로그 공연'];
+  imgs.slice(0,2).forEach((img,i)=>{
+    const figure=img.closest('figure,a')||img;
+    const label=document.createElement('h4');label.textContent=names[i];
+    label.style.cssText='font-size:clamp(17px,3.4vw,22px);font-weight:800;line-height:1.4;color:#2b5269;margin:16px 0 12px';
+    figure.parentElement.insertBefore(label,figure);
+  });
+  h.textContent='지역공연';card.dataset.hbRegionalLabeled='1';
+ }
+}
 function placeCheerButton(){
  if(!/ministry-5/.test(location.hash))return;
  const h=[...document.querySelectorAll('h2,h3,h4,h5')].find(e=>e.getClientRects().length&&e.textContent.trim()==='위대한 응원');
@@ -30,6 +48,6 @@ function placeCheerButton(){
  const a=document.createElement('a');a.dataset.cheerAction='1';a.href='https://naver.me/5SKXOhp0';a.target='_blank';a.rel='noopener noreferrer';a.textContent='응원영상보러가기';a.style.cssText='display:block;width:max-content;max-width:100%;box-sizing:border-box;text-align:center;margin:14px auto 0;padding:12px 23px;border-radius:10px;background:#086b94;color:#fff;text-decoration:none;font-size:16px;font-weight:800';
  (img.closest('a')||img).insertAdjacentElement('afterend',a);
 }
-let queued=false;function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;render();placeCheerButton()})}
+let queued=false;function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;render();placeCheerButton();labelRegionalPerformances()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();window.addEventListener('hashchange',schedule);new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
 })();
