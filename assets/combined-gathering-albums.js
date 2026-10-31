@@ -44,7 +44,7 @@ overflow-wrap:anywhere!important;word-break:keep-all!important;
 }`;
 document.head.append(mobileFix);
 function fixSmallgroup(){
- const route=(location.hash.match(/^#\\/ministry-(6|7|9)(?:$|[?#])/)||[])[1];
+ const route=(location.hash.match(new RegExp('^#/ministry-(6|7|9)(?:$|[?#])'))||[])[1];
  if(!route)return;
  const article=document.querySelector('#app .page-grid .article');if(!article)return;
  const grids=article.querySelectorAll('.hb-unified-album,.hb-static-sermon-grid,.sermon-album-grid');
@@ -63,7 +63,7 @@ function fixSmallgroup(){
  }
 }
 function hideVolunteerBoard(){
- if(!/^#\\/ministry-5(?:$|[?#])/.test(location.hash))return;
+ if(!location.hash.startsWith('#/ministry-5'))return;
  const article=document.querySelector('#app .page-grid .article');if(!article)return;
  for(const board of article.querySelectorAll('.hb-service-board,.detail-board,.hb-static-board,.hb-card-board')){
   if(board.closest('.hb-service-album,.hb-unified-ministry-group'))continue;
@@ -73,6 +73,7 @@ function hideVolunteerBoard(){
  }
 }
 
+const accurate=document.createElement('style');accurate.textContent='@media(max-width:900px){#app .page-grid .article .hb-unified-album,#app .page-grid .article .hb-static-sermon-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;width:100%!important}#app .page-grid .article .hb-unified-album>a,#app .page-grid .article .hb-static-sermon-grid>a,#app .page-grid .article .hb-unified-album>article{width:100%!important;max-width:none!important;min-width:0!important;flex:auto!important;grid-column:auto!important;justify-self:stretch!important}#app .page-grid .article .hb-unified-album img{width:100%!important;max-width:none!important}}';document.head.append(accurate);
 const getId=url=>{const m=(url||'').match(/(?:shorts\/|youtu\.be\/|watch\?v=|embed\/|vi\/)([\w-]{11})/);return m?.[1]||null};
 function visible(e){return e.getClientRects().length>0}
 function videoCard(el){return el.querySelector('img')&&!![...el.querySelectorAll('a[href],iframe[src]')].some(a=>getId(a.href||a.src))||el.matches('a[href]')&&getId(el.href)}
