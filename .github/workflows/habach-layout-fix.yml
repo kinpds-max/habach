@@ -494,11 +494,64 @@ jobs:
               if '</body>' not in s:raise SystemExit('No body')
               p.write_text(s.replace('</body>',script+'\n</body>',1),encoding='utf-8')
           PY
+      - name: Sort 234 small group cards in Korean alphabetical order
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          marker='data-habach-small234-sort-v3'
+          if marker not in s:
+              code=r"""
+          <script data-habach-small234-sort-v3>
+          (() => {
+            const normalize=t=>(t||'').replace(/\s+/g,' ').trim();
+            const isGroupTitle=t=>/2\s*[.·ㆍ]?\s*3\s*[.·ㆍ]?\s*4\s*스몰모임/.test(t||'');
+            const cardName=el=>{
+              const title=el.querySelector('h3,h4,h5,[class*="card-title"],[class*="album-title"],strong');
+              return normalize((title||el).textContent).split(/순장|부순장/)[0];
+            };
+            function apply(){
+              const headings=[...document.querySelectorAll('h1,h2,h3,h4,h5,h6')].filter(el=>isGroupTitle(normalize(el.textContent)));
+              for(const heading of headings){
+                let scope=heading.closest('section,article,[class*="section"],[class*="page"],[class*="album"]')||heading.parentElement?.parentElement;
+                for(let n=0;n<3&&scope;n++,scope=scope.parentElement){
+                  const candidates=[...scope.querySelectorAll('[class*="grid"],[class*="cards"],[class*="album-list"],[class*="list"]')];
+                  const box=candidates.find(container=>{
+                    const items=[...container.children].filter(x=>x.querySelector('img')&&cardName(x));
+                    return items.length>=2&&items.length<=60&&items.some(x=>/순/.test(cardName(x)));
+                  });
+                  if(!box)continue;
+                  const items=[...box.children];
+                  const cards=items.filter(x=>x.querySelector('img')&&cardName(x));
+                  if(cards.length<2)break;
+                  const sorted=[...cards].sort((a,b)=>cardName(a).localeCompare(cardName(b),'ko-KR',{sensitivity:'base',numeric:true}));
+                  // Preserve card elements and all media links; change only their order.
+                  if(sorted.some((el,i)=>el!==cards[i])){
+                    const positions=cards.map(el=>items.indexOf(el));
+                    const result=[...items];
+                    positions.forEach((pos,i)=>result[pos]=sorted[i]);
+                    result.forEach((el,i)=>{if(box.children[i]!==el)box.insertBefore(el,box.children[i]||null)});
+                  }
+                  return;
+                }
+              }
+            }
+            let queued=false;
+            function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}
+            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+            new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+            window.addEventListener('hashchange',schedule);
+          })();
+          </script>
+          """
+              if '</body>' not in s:raise SystemExit('Missing body closing tag')
+              p.write_text(s.replace('</body>',code+'\n</body>',1),encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git commit -m "Correct preschool location to 유치부실, 주짓수 [skip ci]"
+          git commit -m "Sort 234 small groups by Korean names [skip ci]"
           git push origin HEAD:habachnew
