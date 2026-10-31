@@ -8,13 +8,16 @@ function run(){
   const buttons=[...box.querySelectorAll('a,button')].filter(e=>/이번\s*주\s*교회\s*주보\s*업로드|주보\s*게시판/.test(e.textContent||''));
   let header=box.querySelector('#hb-bulletin-inline-heading');
   if(!header){header=document.createElement('div');header.id='hb-bulletin-inline-heading';header.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:nowrap;width:100%;margin:0 0 12px';h.parentElement.insertBefore(header,h);header.append(h)}
-  h.style.cssText+=';margin:0!important;flex:0 1 auto;min-width:0;font-size:clamp(15px,2.8vw,26px)';
+  header.style.setProperty('display','flex','important');header.style.setProperty('flex-wrap','nowrap','important');header.style.setProperty('align-items','center','important');h.style.cssText+=';margin:0!important;flex:1 1 auto;min-width:0;font-size:clamp(14px,2.7vw,24px)';
   let actions=header.querySelector('#hb-bulletin-inline-actions');
   if(!actions){actions=document.createElement('div');actions.id='hb-bulletin-inline-actions';actions.style.cssText='display:flex;gap:6px;align-items:center;justify-content:flex-end;flex:0 1 auto;white-space:nowrap';header.append(actions)}
-  buttons.forEach(b=>{actions.append(b);b.style.cssText+=';display:inline-flex!important;width:auto!important;flex:0 0 auto!important;min-width:0!important;max-width:none!important;white-space:nowrap!important;padding:8px 9px!important;margin:0!important;font-size:clamp(10px,1.7vw,13px)!important;line-height:1.2!important;box-sizing:border-box!important'});
+  actions.style.cssText='display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;gap:6px!important;align-items:center!important;justify-content:flex-end!important;flex:0 0 auto!important;width:auto!important;margin:0!important';buttons.forEach(b=>{actions.append(b);b.style.cssText+=';display:inline-flex!important;width:auto!important;flex:0 0 auto!important;min-width:0!important;max-width:none!important;white-space:nowrap!important;padding:8px 9px!important;margin:0!important;font-size:clamp(10px,1.7vw,13px)!important;line-height:1.2!important;box-sizing:border-box!important'});
   for(const old of [...box.querySelectorAll('#hb-bulletin-one-line-actions')])if(!old.children.length)old.remove();
   const title=box.querySelector('h2,h3,h4');if(title&&/2026년\s*10월\s*25일/.test(title.textContent))title.textContent='2026년 11월 1일 교회 주보';
-  if(box.querySelector('#hb-shared-bulletin-feed:not([style*="display: none"])'))continue;
+  const noteText='주보를 한 페이지씩 넘기고, 이미지를 누르면 확대해서 볼 수 있습니다.';
+  let note=box.querySelector('#hb-bulletin-page-help');
+  if(!note){note=document.createElement('p');note.id='hb-bulletin-page-help';note.textContent=noteText;note.style.cssText='margin:12px 0 4px;font-size:13px;line-height:1.6;color:#839bb0';}
+  if(box.querySelector('#hb-shared-bulletin-feed:not([style*="display: none"])')){const feed=box.querySelector('#hb-shared-bulletin-feed');feed.insertAdjacentElement('afterend',note);continue;}
   let gallery=box.querySelector('#hb-november-first-bulletin');
   if(!gallery){gallery=document.createElement('div');gallery.id='hb-november-first-bulletin';header.insertAdjacentElement('afterend',gallery)}
   gallery.style.cssText='width:100%;margin:14px 0;display:flex;flex-direction:column;align-items:center;gap:10px';
@@ -29,9 +32,10 @@ function run(){
    let index=0;const change=n=>{index=(n+images.length)%images.length;img.src=images[index];img.alt='이번 주 교회 주보 '+(index+1)+'쪽';link.href=images[index];count.textContent=(index+1)+' / '+images.length};back.onclick=()=>change(index-1);next.onclick=()=>change(index+1);
    nav.append(back,count,next);gallery.append(viewer,nav);
   }
+  gallery.insertAdjacentElement('afterend',note);
   // Remove duplicate explanatory text and any legacy pagination outside our current viewer.
   for(const el of [...box.querySelectorAll('p,small,span,div')]){
-   if(el.children.length===0&&/주보를 한 페이지씩 넘기고,? 이미지를 누르면 확대해서 볼 수 있습니다/.test(el.textContent||''))el.remove();
+   if(el!==note&&el.children.length===0&&/주보를 한 페이지씩 넘기고,? 이미지를 누르면 확대해서 볼 수 있습니다/.test(el.textContent||''))el.remove();
   }
   for(const el of [...box.querySelectorAll('div,nav')]){
    if(gallery.contains(el)||el.contains(gallery)||el===box)continue;
