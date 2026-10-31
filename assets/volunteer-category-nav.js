@@ -17,16 +17,18 @@ function render(){
  if(!document.getElementById('hb-volunteer-subnav-layout')){const st=document.createElement('style');st.id='hb-volunteer-subnav-layout';st.textContent='#hb-volunteer-categories .hb-volunteer-submenu-matches-smallgroups,.hb-volunteer-submenu-matches-smallgroups{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:8px 12px!important;margin:8px 0 0!important;border:1px solid #dce7ef!important;border-radius:15px!important;background:#f5f9fc!important;width:100%!important;box-sizing:border-box!important}.hb-volunteer-submenu-matches-smallgroups>button{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-width:0!important;height:43px!important;min-height:43px!important;max-height:43px!important;margin:0!important;padding:7px 5px!important;border:1px solid #d5e0e7!important;border-radius:12px!important;font-size:clamp(12px,2.9vw,16px)!important;line-height:1.35!important;text-align:center!important}.hb-volunteer-submenu-matches-smallgroups>button:last-child:nth-child(odd){grid-column:1!important}';document.head.append(st);}
 
  // Sidebar nested navigation like the existing small-group section.
- const side=[...document.querySelectorAll('aside,nav,[class*="sidebar"],[class*="snb"]')].find(x=>[...x.querySelectorAll('a,button')].some(e=>e.textContent.trim()==='소그룹교제')&&[...x.querySelectorAll('a,button')].some(e=>/봉사와\s*섬김/.test(e.textContent.trim())));
+ const side=[...document.querySelectorAll('aside,nav,[class*="sidebar"],[class*="snb"],.side-menu,.sub-menu')].find(x=>[...x.querySelectorAll('a,button')].some(e=>e.textContent.replace(/\s+/g,'').trim()==='소그룹교제')&&[...x.querySelectorAll('a,button')].some(e=>e.textContent.replace(/\s+/g,'').trim()==='봉사와섬김')) || [...document.querySelectorAll('a,button')].find(e=>e.textContent.replace(/\s+/g,'').trim()==='봉사와섬김')?.closest('aside,nav,[class*="sidebar"],[class*="snb"],ul');
  const parentButton=side&&[...side.querySelectorAll('a,button')].find(e=>e.textContent.replace(/\s+/g,'').trim()==='봉사와섬김');
  if(parentButton){
    let sub=side.querySelector('#hb-volunteer-sidebar-subnav');
-   if(!sub){sub=document.createElement('div');sub.id='hb-volunteer-sidebar-subnav';sub.style.cssText='display:flex;flex-direction:column;padding:0 0 3px 14px';const holder=parentButton.closest('li')||parentButton;holder.insertAdjacentElement('afterend',sub);}
+   if(!sub){sub=document.createElement('div');sub.id='hb-volunteer-sidebar-subnav';sub.style.cssText='display:flex;flex-direction:column;padding:0 0 3px 14px';const holder=parentButton.closest('li')||parentButton.parentElement||parentButton;holder.insertAdjacentElement('afterend',sub);}
    [...tabs.children].forEach((b,i)=>{b.style.cssText='display:block;width:100%;min-height:35px;height:auto;text-align:left;padding:9px 12px;border:0;border-bottom:1px solid #e4eaf0;background:transparent;color:#46627d;font-size:13px;cursor:pointer';sub.append(b)});
    tabs.classList.remove('hb-volunteer-submenu-matches-smallgroups');tabs.classList.add('hb-volunteer-sidebar-tabs');tabs.style.cssText='display:flex!important;flex-direction:column!important;gap:0!important;width:100%!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important';
    sub.style.display='flex';
+   parentButton.setAttribute('aria-expanded','true');
  }
  root.insertBefore(section,root.firstChild);
+ if(parentButton){const title=heading;title.textContent='봉사와 섬김';title.style.setProperty('text-align','center','important');section.style.setProperty('border','0','important');}
  if(parentButton){side.querySelector('#hb-volunteer-sidebar-subnav button')?.click();}
  else {section.insertBefore(tabs,section.firstChild);tabs.children[0]?.click();}
  // Keep the actual sidebar submenu; remove only any stray duplicate in the content.
