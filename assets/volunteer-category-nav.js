@@ -78,9 +78,20 @@ function polishMinistry(article,group){
  }
 }
 
+function removeVolunteerBoard(article){
+ // Remove only the service message board, not ministry descriptions or media albums.
+ for(const heading of [...article.querySelectorAll('h2,h3,h4,strong')]){
+  if(!/봉사와\\s*섬김\\s*게시판/.test(heading.textContent.trim()))continue;
+  const board=heading.closest('.hb-service-board,.detail-board,.hb-static-board,.hb-card-board,section,[class*="board"]');
+  if(board&&board!==article&&!board.classList.contains('hb-unified-ministry-group'))board.remove();
+ }
+ for(const board of [...article.querySelectorAll('.hb-service-board')])board.remove();
+}
+
 function apply(){
  if(!location.hash.startsWith('#/ministry-5'))return;
  const article=document.querySelector('#app .page-grid article.article');if(!article)return;
+ removeVolunteerBoard(article);
  article.removeAttribute('data-hb-volunteer-category');
  article.querySelectorAll('#hb-volunteer-side-accordion,.hb-volunteer-native-menu').forEach(el=>el.remove());
  const current=document.querySelector('.page-grid aside.side a[href="#/ministry-5"]');if(current)current.style.removeProperty('display');
