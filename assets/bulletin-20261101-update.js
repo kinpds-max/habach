@@ -17,10 +17,10 @@ function run(){
   const noteText='주보를 한 페이지씩 넘기고, 이미지를 누르면 확대해서 볼 수 있습니다.';
   let note=box.querySelector('#hb-bulletin-page-help');
   if(!note){note=document.createElement('p');note.id='hb-bulletin-page-help';note.textContent=noteText;note.style.cssText='margin:12px 0 4px;font-size:13px;line-height:1.6;color:#839bb0';}
-  if(box.querySelector('#hb-shared-bulletin-feed:not([style*="display: none"])')){const feed=box.querySelector('#hb-shared-bulletin-feed');feed.insertAdjacentElement('afterend',note);continue;}
+  const oldFeed=box.querySelector('#hb-shared-bulletin-feed');if(oldFeed)oldFeed.style.display='none';
   let gallery=box.querySelector('#hb-november-first-bulletin');
   if(!gallery){gallery=document.createElement('div');gallery.id='hb-november-first-bulletin';header.insertAdjacentElement('afterend',gallery)}
-  gallery.style.cssText='width:100%;margin:14px 0;display:flex;flex-direction:column;align-items:center;gap:10px';
+  gallery.style.cssText='width:100%;margin:14px 0;display:flex!important;flex-direction:column;align-items:center;gap:10px';
   if(!gallery.querySelector('[data-bulletin-slide]')){
    gallery.replaceChildren();
    const viewer=document.createElement('div');viewer.dataset.bulletinSlide='1';viewer.style.cssText='width:100%;position:relative';
