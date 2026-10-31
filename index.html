@@ -2460,7 +2460,7 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 <script defer src="/assets/home-dawn-live-pin.js"></script>
 <script defer src="/assets/small234-extra-videos.js"></script>
 <script defer src="/assets/men-gathering-extra-video.js"></script>
-<script defer src="/assets/volunteer-category-nav.js?v=20261101-gratitude-gallery4"></script>
+<script defer src="/assets/volunteer-category-nav.js?v=20261101-split-gallery-3cols-v9"></script>
 <script defer src="/assets/combined-gathering-albums.js"></script>
 <script defer src="/assets/church-business-videos.js"></script>
 
@@ -2567,6 +2567,17 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 <script defer src="/assets/missionbridge-sunday-youtube-title-20261101.js?v=1"></script>
 <script defer src="/assets/event-healing-like-three-minute-20261101.js?v=2"></script>
 <script defer src="/assets/prayer-bt-playlists-single-link-20261101.js?v=1"></script>
-<script defer src="/assets/full-event-member-video-albums-20261101.js?v=2"></script>
+<script defer src="/assets/full-event-member-video-albums-20261101.js?v=20261101-split-gallery-3cols-v9"></script>
 <script defer src="/assets/community-bulletin-single-row-cleanup-20261101.js?v=2"></script>
+<style id="hb-volunteer-and-overview-layout-v9">
+#app article.article[data-hb-volunteer-category="1"] #hb-volunteer-original-content,
+#app article.article[data-hb-volunteer-category="2"] #hb-volunteer-original-content{display:none!important}
+#app article.article[data-hb-volunteer-category="1"] > :is(.hb-service-album,.hb-service-board,.detail-board,.hb-static-board,.hb-card-board,.hb-note-grid),
+#app article.article[data-hb-volunteer-category="2"] > :is(.hb-service-album,.hb-service-board,.detail-board,.hb-static-board,.hb-card-board,.hb-note-grid){display:none!important}
+#app .hb-youth-gratitude-gallery{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+#app [data-hb-combined-videos]{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important}
+#app [data-hb-combined-videos] > a{min-width:0!important}
+@media(max-width:700px){#app [data-hb-combined-videos]{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}#app .hb-youth-gratitude-gallery{gap:9px!important}}
+@media(max-width:390px){#app [data-hb-combined-videos]{grid-template-columns:1fr!important}}
+</style>
 </body></html>
