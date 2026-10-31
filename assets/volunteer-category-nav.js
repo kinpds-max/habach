@@ -96,7 +96,7 @@ function apply(){
   const a=document.createElement('a');a.href='https://www.youtube.com/watch?v='+v.id;a.target='_blank';a.rel='noopener noreferrer';a.className='hb-generation-video-card';
   const img=document.createElement('img');img.src='https://i.ytimg.com/vi/'+v.id+'/hqdefault.jpg';img.alt=v.name+' 유튜브 영상';img.loading='lazy';
   const label=document.createElement('strong');label.textContent=v.name+' · 유튜브 영상 보기';
-  const play=document.createElement('span');play.className='hb-preview-play';play.textContent='▶';a.insertBefore(play,label);a.append(img,label);wrap.append(a);
+  const play=document.createElement('span');play.className='hb-preview-play';play.textContent='▶';a.append(img,play,label);wrap.append(a);
   if(i===0){
    const h=document.createElement('h4');h.textContent='덕분에 잘되었습니다 · 자녀세대 행사 사진';wrap.append(h);
    const gallery=document.createElement('div');gallery.className='hb-youth-gratitude-gallery hb-generation-photo-grid';
