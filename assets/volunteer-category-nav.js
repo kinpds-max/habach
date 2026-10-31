@@ -27,8 +27,8 @@ function render(){
  }
  root.insertBefore(section,root.firstChild);
  tabs.remove();
- if(parentButton)tabs.style.display='none';
- tabs.children[0]?.click();
+ if(parentButton){side.querySelector('#hb-volunteer-sidebar-subnav button')?.click();}
+ else {section.insertBefore(tabs,section.firstChild);tabs.children[0]?.click();}
  for(const duplicate of [...document.querySelectorAll('.hb-volunteer-submenu-matches-smallgroups')]){
    if(duplicate!==tabs)duplicate.remove();
  }
