@@ -12,7 +12,7 @@ function init(){
   const summary=document.createElement('summary');summary.textContent='봉사와 섬김';
   const arrow=document.createElement('span');arrow.textContent='⌄';summary.append(arrow);
   const links=document.createElement('div');links.className='hb-small-group-links';
-  groups.forEach((name,i)=>{const a=document.createElement('a');a.href='#/ministry-5';a.textContent=name;a.dataset.volunteerCategory=String(i);a.addEventListener('click',e=>{e.preventDefault();selected=i;menu.open=true;if(location.hash!=='#/ministry-5')location.hash='#/ministry-5';else show();});links.append(a)});
+  groups.forEach((name,i)=>{const a=document.createElement('a');a.href='#/ministry-5';a.textContent=name;a.dataset.volunteerCategory=String(i);a.addEventListener('click',e=>{e.preventDefault();selected=i;menu.open=true;if(location.hash!=='#/ministry-5')location.hash='#/ministry-5';else show();tick();});links.append(a)});
   menu.append(summary,links);
   if(current)current.insertAdjacentElement('afterend',menu);
   else {const group=side.querySelector('.hb-small-group-menu');if(group)group.insertAdjacentElement('beforebegin',menu);else side.append(menu)}
@@ -22,8 +22,8 @@ function init(){
  if(!menu.dataset.bound){menu.dataset.bound='1';menu.querySelector('summary').addEventListener('click',()=>{if(location.hash!=='#/ministry-5')location.hash='#/ministry-5'})}
  const active=/^#\/?ministry-5$/.test(location.hash);
  if(menu.open!==active)menu.open=active;
- menu.style.removeProperty('display');
- menu.querySelector('.hb-small-group-links')?.style.removeProperty('display');
+ menu.style.setProperty('display','block','important');
+ menu.querySelector('.hb-small-group-links')?.style.setProperty('display',active?'block':'none','important');
  menu.querySelectorAll('[data-volunteer-category]').forEach((a,i)=>a.classList.toggle('on',active&&selected===i));
  if(active)show();
 }
@@ -33,6 +33,7 @@ function show(){
  const title=article.querySelector('.article-title');
  if(!title)return;
  const titleText=title.querySelector('h2');if(titleText&&titleText.textContent.trim()!=='봉사와 섬김')titleText.textContent='봉사와 섬김';
+ article.dataset.hbVolunteerCategory=String(selected);
  title.style.textAlign='center';
  // Always keep the native centered title and existing introduction; only add category content where needed.
  let area=article.querySelector('#hb-volunteer-selected-content');
@@ -51,7 +52,7 @@ function show(){
   content.prepend(original);
  }
  if(selected===0){if(area.childNodes.length)area.replaceChildren();delete area.dataset.choice;return}
- if(area.dataset.choice===String(selected))return;
+ if(area.dataset.choice===String(selected)&&area.querySelector('.hb-volunteer-generation-video'))return;
  area.dataset.choice=String(selected);
  const h=document.createElement('h3');h.textContent=selected===1?'너는 잘될 거야':'덕분에 잘됐습니다';
  const intro=document.createElement('p');intro.textContent=selected===1?'5월 가정의 달 · 다음 세대를 위한 응원과 축복':'부모세대를 향한 감사와 응원의 마음을 전합니다.';
