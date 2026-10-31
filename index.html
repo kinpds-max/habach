@@ -1227,8 +1227,27 @@ document.addEventListener('click',function(evt){
  if(!anchor)return;
  const key=anchor.getAttribute('href').slice(2);
  if(!Object.prototype.hasOwnProperty.call(views,key))return;
- // Left sidebar navigation keeps the reader at the same viewport position.
- if(anchor.closest('#app .side')){
+ // Church-video sidebar links should start at the top of the selected article.
+ if(anchor.closest('#app .side') && key.startsWith('sermon-')){
+   const focusArticle=()=>{
+     const article=document.querySelector('#app .page-grid .article');
+     if(!article)return;
+     const header=document.querySelector('header');
+     const offset=(header ? header.getBoundingClientRect().height : 80)+16;
+     const top=Math.max(0,article.getBoundingClientRect().top+window.scrollY-offset);
+     window.scrollTo({top,behavior:'instant'});
+   };
+   if(location.hash==='#/'+key){
+     // Same menu item: the router re-renders without firing hashchange.
+     requestAnimationFrame(()=>requestAnimationFrame(focusArticle));
+   }else{
+     window.addEventListener('hashchange',()=>{
+       requestAnimationFrame(()=>requestAnimationFrame(focusArticle));
+     },{once:true});
+   }
+ }
+ // Preserve the previous scroll behavior in other sections.
+ if(anchor.closest('#app .side') && !key.startsWith('sermon-')){
    const y=window.scrollY;
    window.__hbKeepSideScroll=true;
    const restore=()=>window.scrollTo({top:y,left:0,behavior:'instant'});
