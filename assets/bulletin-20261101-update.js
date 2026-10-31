@@ -10,6 +10,12 @@ function run(){
      oldImages.slice(0,3).forEach((im,i)=>{if(im.src!==images[i]){im.src=images[i];im.alt='2026년 11월 1일 교회 주보 '+(i+1)+'쪽';const a=im.closest('a[href]');if(a&&/mallary|주보|bulletin/.test(a.href))a.href=images[i]}});
      oldImages.slice(3).forEach(im=>{const c=im.closest('a')||im;if(c.parentElement)c.remove()});
    }
+   if(oldImages.length<3&&!box.querySelector('#hb-november-first-bulletin')){
+     const gallery=document.createElement('div');gallery.id='hb-november-first-bulletin';
+     gallery.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0;width:100%';
+     images.forEach((url,i)=>{const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';const img=document.createElement('img');img.src=url;img.loading=i===0?'eager':'lazy';img.alt='2026년 11월 1일 교회 주보 '+(i+1)+'쪽';img.style.cssText='width:100%;display:block;aspect-ratio:.72;object-fit:contain;border:1px solid #dee7ef;border-radius:7px';a.append(img);gallery.append(a)});
+     h.insertAdjacentElement('afterend',gallery);
+   }
    const title=box.querySelector('h2,h3,h4');if(title&&/2026년\s*10월\s*25일/.test(title.textContent))title.textContent='2026년 11월 1일 교회 주보';
    const buttons=[...box.querySelectorAll('a,button')].filter(e=>/이번\s*주\s*교회\s*주보\s*업로드|주보\s*게시판/.test(e.textContent||''));
    if(buttons.length){
