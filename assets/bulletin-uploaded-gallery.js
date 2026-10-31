@@ -1,0 +1,8 @@
+(()=>{'use strict';
+const API='https://veghdecosrimscedkrdo.supabase.co/functions/v1/habach-bulletin-upload';
+let latest=null,loaded=false,inflight=false;
+async function load(){if(inflight)return;inflight=true;try{const r=await fetch(API,{cache:'no-store'});if(!r.ok)throw Error('bulletin API');const j=await r.json();latest=(j.bulletins||[]).find(b=>Array.isArray(b.image_urls)&&b.image_urls.length);loaded=true;apply()}catch(e){console.warn('Uploaded church bulletin:',e)}finally{inflight=false}}
+function apply(){if(!loaded||!latest)return;const pages=latest.image_urls;const viewer=document.getElementById('hb-canonical-bulletin-viewer');if(!viewer||viewer.dataset.uploadedId===latest.id)return;const a=viewer.querySelector('a[href]'),img=a?.querySelector('img');const controls=viewer.querySelector('button')?.parentElement;if(!a||!img||!controls)return;viewer.dataset.uploadedId=latest.id;viewer.style.setProperty('display','block','important');let i=0;const prev=controls.querySelector('button:first-child');const next=controls.querySelector('button:last-child');const count=controls.querySelector('span');function render(n){i=(n+pages.length)%pages.length;img.src=pages[i];a.href=pages[i];img.alt=(latest.title||'교회 주보')+' '+(i+1)+'쪽';if(count)count.textContent=(i+1)+' / '+pages.length+'쪽'}if(prev)prev.onclick=()=>render(i-1);if(next)next.onclick=()=>render(i+1);render(0)}
+document.addEventListener('DOMContentLoaded',load);if(document.readyState!=='loading')load();window.addEventListener('hashchange',()=>{loaded=false;load()});
+let queued=false;new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}).observe(document.documentElement,{childList:true,subtree:true});
+})();
