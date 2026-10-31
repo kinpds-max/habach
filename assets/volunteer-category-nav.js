@@ -26,9 +26,12 @@ function render(){
    tabs.classList.remove('hb-volunteer-submenu-matches-smallgroups');tabs.classList.add('hb-volunteer-sidebar-tabs');tabs.style.cssText='display:flex!important;flex-direction:column!important;gap:0!important;width:100%!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important';
    sub.style.display='flex';
    parentButton.setAttribute('aria-expanded','true');
+   if(!parentButton.dataset.hbVolunteerToggle){parentButton.dataset.hbVolunteerToggle='1';parentButton.addEventListener('click',()=>{sub.style.display=sub.style.display==='none'?'flex':'none';parentButton.setAttribute('aria-expanded',String(sub.style.display!=='none'))})}
  }
  root.insertBefore(section,root.firstChild);
  if(parentButton){const title=heading;title.textContent='봉사와 섬김';title.style.setProperty('text-align','center','important');section.style.setProperty('border','0','important');}
+ // The three large category buttons belong exclusively to the sidebar.
+ for(const stray of document.querySelectorAll('.hb-volunteer-submenu-matches-smallgroups')){if(!stray.closest('#hb-volunteer-sidebar-subnav'))stray.remove();}
  if(parentButton){side.querySelector('#hb-volunteer-sidebar-subnav button')?.click();}
  else {section.insertBefore(tabs,section.firstChild);tabs.children[0]?.click();}
  // Keep the actual sidebar submenu; remove only any stray duplicate in the content.
