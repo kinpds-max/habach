@@ -30,3 +30,5 @@ jobs:
           git commit -m "Sync official video links to GitHub"
           git pull --rebase origin habachnew
           git push origin HEAD:habachnew
+
+# Refresh original playlist entries including event albums
