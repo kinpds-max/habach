@@ -2655,4 +2655,32 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
    // Native router already resets the viewport once; no second scroll adjustment.
  },{passive:true});
 })();
+</script><script id="hb-remove-volunteer-ceremony-photo-20261101">
+(function(){
+ const isTarget=()=>/^#\/ministry-5(?:$|[?#])/.test(location.hash)&&[1,2].includes(Number(window.__hbVolunteerSelection));
+ function removePhoto(){
+  if(!isTarget())return;
+  const article=document.querySelector('#app .page-grid .article');
+  if(!article)return;
+  // Only remove the lead presentation photo in the children/parents ministries.
+  const imgs=[...article.querySelectorAll('img')].filter(img=>!img.closest('.side,.hero'));
+  if(!imgs.length)return;
+  const image=imgs.find(img=>/후원금|전달식|너는 잘될|sponsor|donation/i.test([img.alt,img.title,img.src,img.parentElement?.textContent].join(' ')))||imgs[0];
+  const wrapper=image.closest('figure,.hb-service-album-card,.hb-volunteer-image,.photo-card,.hb-photo-card');
+  if(wrapper&&wrapper!==article){wrapper.remove();}else image.remove();
+ }
+ let queued=false;
+ function schedule(){
+  if(queued)return;queued=true;
+  requestAnimationFrame(()=>{queued=false;removePhoto()});
+ }
+ document.addEventListener('click',e=>{
+  if(e.target.closest('[data-volunteer-sub="1"],[data-volunteer-sub="2"]'))setTimeout(schedule,0);
+ });
+ const app=document.getElementById('app');
+ if(app)new MutationObserver(schedule).observe(app,{childList:true,subtree:true});
+ addEventListener('hashchange',schedule);
+ document.addEventListener('DOMContentLoaded',schedule);
+ schedule();
+})();
 </script></body></html>
