@@ -201,6 +201,17 @@ function initBible(){
  shareName.value=read('hb-rank-display-name');
  shareName.addEventListener('change',()=>write('hb-rank-display-name',shareName.value));
  const shareButton=attach(shareSection,'button',{type:'button',class:'hb-rank-submit'},'이 장 필사 완료 공유');
+ // Place participant name and share button together on one compact row.
+ const shareRow=document.createElement('div');
+ shareRow.className='hb-share-inline-row';
+ const nameField=shareName.parentElement;
+ shareSection.insertBefore(shareRow,nameField);
+ shareRow.append(nameField,shareButton);
+ if(!document.getElementById('hb-share-inline-style')){
+  const style=document.createElement('style');style.id='hb-share-inline-style';
+  style.textContent='.hb-share-inline-row{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:9px!important;align-items:end!important;width:100%!important}.hb-share-inline-row>label,.hb-share-inline-row>div{min-width:0!important;margin:0!important}.hb-share-inline-row input{width:100%!important;min-width:0!important;box-sizing:border-box!important}.hb-share-inline-row .hb-rank-submit{white-space:nowrap!important;align-self:end!important;max-width:100%;margin:0!important}@media(max-width:600px){.hb-share-inline-row{grid-template-columns:minmax(0,1fr) auto!important;gap:6px!important}.hb-share-inline-row .hb-rank-submit{padding:11px 9px!important;font-size:12px!important;max-width:136px;white-space:normal!important;line-height:1.25!important}.hb-share-inline-row input{font-size:13px!important;padding:11px 7px!important}}';
+  document.head.append(style);
+ }
  const shareMessage=attach(shareSection,'p',{role:'status',className:'hb-rank-feedback'},'모든 절을 필사하면 공유할 수 있습니다.');
  const floatingSubmit=attach(host,'button',{type:'button',className:'hb-bible-floating-submit'},'이대로 제출하기');
  floatingSubmit.addEventListener('click',()=>{
