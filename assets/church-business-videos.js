@@ -14,7 +14,7 @@ function reorder(){
  }
 }
 function cleanDuplicateHeadings(){
- const heads=[...document.querySelectorAll('h2,h3,h4,h5')].filter(e=>e.textContent.trim()==='교인 사업자정보 영상');
+ const heads=[...document.querySelectorAll('h2,h3,h4,h5')].filter(e=>e.textContent.trim()==='사업자심방 영상');
  const original=document.querySelector('#hb-business-shorts h3');
  for(const h of heads){if(h!==original)h.remove();}
 }
@@ -26,7 +26,7 @@ function init(){
  if(!host)return;
  if(host.querySelector('#hb-business-shorts')){reorder();cleanDuplicateHeadings();return;}
  const section=document.createElement('section');section.id='hb-business-shorts';section.style.cssText='margin:25px 0;padding:16px 0';
- const title=document.createElement('h3');title.textContent='교인 사업자정보 영상';title.style.cssText='margin:0 0 16px;font-size:clamp(20px,4vw,26px);color:#234f68';
+ const title=document.createElement('h3');title.textContent='사업자심방 영상';title.style.cssText='margin:0 0 16px;font-size:clamp(20px,4vw,26px);color:#234f68';
  const grid=document.createElement('div');grid.style.cssText='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px';
  section.append(title,grid);
  const existing=[...host.querySelectorAll('a[href]')].map(a=>a.href).join(' ');
