@@ -51,6 +51,21 @@ function display(){
     const value=(other.textContent||'').replace(/\\s+/g,'');
     if(value.includes('이번주교회주보업로드')||value.includes('주보게시판'))other.style.setProperty('display','none','important');
   }
+  // Force header and both actions into a single horizontal line.
+  headRow.style.setProperty('display','flex','important');
+  headRow.style.setProperty('flex-direction','row','important');
+  headRow.style.setProperty('flex-wrap','nowrap','important');
+  headRow.style.setProperty('align-items','center','important');
+  headRow.style.setProperty('justify-content','space-between','important');
+  actions.style.setProperty('display','flex','important');
+  actions.style.setProperty('flex-direction','row','important');
+  actions.style.setProperty('flex-wrap','nowrap','important');
+  for(const a of actions.querySelectorAll('a'))if(a.href.includes('bulletin.html'))a.textContent='업로드';
+  // Hide duplicated standalone upload pills, without hiding the two heading actions.
+  for(const el of box.querySelectorAll('a,button')){
+    if(actions.contains(el)||viewer.contains(el))continue;
+    if(/^(이번\\s*주\\s*교회주보\\s*업로드|이번주교회주보업로드|주보\\s*게시판)$/.test((el.textContent||'').trim()))el.style.setProperty('display','none','important');
+  }
   if(headRow.nextElementSibling!==viewer)headRow.insertAdjacentElement('afterend',viewer);
   // Hide legacy feed, static November gallery and any old dated gallery, without touching the new viewer.
   for(const selector of ['#hb-shared-bulletin-feed','#hb-november-first-bulletin','#hb-bulletin-20261025','#hb-home-latest-bulletin','#hb-home-latest-bulletin-restored','#hb-bulletin-one-line-actions','#hb-bulletin-inline-actions']){
