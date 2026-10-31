@@ -18,7 +18,7 @@ function render(){
 
  // Sidebar nested navigation like the existing small-group section.
  const side=[...document.querySelectorAll('aside,nav,[class*="sidebar"],[class*="snb"]')].find(x=>[...x.querySelectorAll('a,button')].some(e=>e.textContent.trim()==='소그룹교제')&&[...x.querySelectorAll('a,button')].some(e=>/봉사와\s*섬김/.test(e.textContent.trim())));
- const parentButton=side&&[...side.querySelectorAll('a,button')].find(e=>e.textContent.replace(/\\s+/g,'').trim()==='봉사와섬김');
+ const parentButton=side&&[...side.querySelectorAll('a,button')].find(e=>e.textContent.replace(/\s+/g,'').trim()==='봉사와섬김');
  if(parentButton){
    let sub=side.querySelector('#hb-volunteer-sidebar-subnav');
    if(!sub){sub=document.createElement('div');sub.id='hb-volunteer-sidebar-subnav';sub.style.cssText='display:flex;flex-direction:column;padding:0 0 3px 14px';const holder=parentButton.closest('li')||parentButton;holder.insertAdjacentElement('afterend',sub);}
@@ -26,12 +26,9 @@ function render(){
    sub.style.display='flex';
  }
  root.insertBefore(section,root.firstChild);
- tabs.remove();
  if(parentButton){side.querySelector('#hb-volunteer-sidebar-subnav button')?.click();}
  else {section.insertBefore(tabs,section.firstChild);tabs.children[0]?.click();}
- for(const duplicate of [...document.querySelectorAll('.hb-volunteer-submenu-matches-smallgroups')]){
-   if(duplicate!==tabs)duplicate.remove();
- }
+ // Keep the actual sidebar submenu; remove only any stray duplicate in the content.
 
 }
 function labelRegionalPerformances(){
