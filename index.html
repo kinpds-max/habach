@@ -2629,4 +2629,30 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
  window.addEventListener('hashchange',()=>requestAnimationFrame(mount));
  mount();
 })();
+</script><style id="hb-mobile-sunday-sermon-stability-20261101">
+@media(max-width:900px){
+ #app .sermon-album-grid,#app .hb-static-sermon-grid,#app .hb-worship-album .hb-static-sermon-grid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;align-items:start!important;width:100%!important;min-width:0!important;
+ }
+ #app .sermon-album-grid > *,#app .hb-static-sermon-grid > *{min-width:0!important;max-width:100%!important}
+ #app .sermon-album-card{min-width:0!important;max-width:100%!important;transform:none!important}
+ #app .sermon-album-card:hover{transform:none!important}
+}
+@media(max-width:390px){
+ #app .hb-static-sermon-grid,#app .sermon-album-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+</style>
+<script id="hb-mobile-sermon-scroll-stability-20261101">
+(function(){
+ // Keep the landing position stable only on a fresh mobile sermon route change.
+ // Do not scroll on MutationObserver callbacks, image loads, or repeated renders.
+ let lastRoute='';
+ window.addEventListener('hashchange',function(){
+   const route=(location.hash||'').slice(2);
+   if(!/^sermon-(?:1|2|7|8|11)$/.test(route)||!matchMedia('(max-width:900px)').matches)return;
+   if(lastRoute===route)return;
+   lastRoute=route;
+   // Native router already resets the viewport once; no second scroll adjustment.
+ },{passive:true});
+})();
 </script></body></html>
