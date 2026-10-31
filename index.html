@@ -2393,4 +2393,36 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 })();
 </script>
 
+
+<script data-habach-default-small234-v1>
+(() => {
+  const clean=t=>(t||'').replace(/\s+/g,'').replace(/[·.ㆍ]/g,'');
+  const groupLabel=t=>/소그룹교제/.test(clean(t));
+  const small234=t=>/234스몰모임/.test(clean(t));
+  let pending=false;
+  function activate(){
+    const navs=[...document.querySelectorAll('a,button,[role="tab"]')];
+    const small=navs.filter(x=>small234(x.textContent));
+    if(!small.length)return;
+    // Only switch on entering the parent "소그룹교제" menu, not on selecting a different gathering.
+    for(const trigger of navs.filter(x=>groupLabel(x.textContent) && !small234(x.textContent))){
+      if(trigger.dataset.defaultSmall234Bound)return;
+      trigger.dataset.defaultSmall234Bound='1';
+      trigger.addEventListener('click',()=>{
+        setTimeout(()=>{
+          const candidates=[...document.querySelectorAll('a,button,[role="tab"]')].filter(x=>small234(x.textContent));
+          const btn=candidates.find(x=>x.getClientRects().length && !x.closest('header,nav'))||candidates.find(x=>x.getClientRects().length);
+          if(!btn)return;
+          // Prefer the site's native tab click, which clears prior selection and renders the matching content.
+          btn.click();
+        },120);
+      });
+    }
+  }
+  function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;activate()})}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+  new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
 </body></html>
