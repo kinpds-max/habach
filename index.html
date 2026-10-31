@@ -2622,6 +2622,31 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
    const sel=Number(window.__hbVolunteerSelection||0);
    const selected=box.querySelector('[data-volunteer-sub="'+sel+'"]');
    if(selected)selected.classList.add('on');
+   // The mobile sidebar uses the same button + expandable panel UI as 소그룹교제.
+   if(window.matchMedia('(max-width:900px)').matches){
+     const container=box.parentElement;
+     const tile=document.createElement('button');
+     tile.type='button';
+     tile.className='hb-small-group-tile hb-volunteer-mobile-tile';
+     tile.textContent='봉사와 섬김';
+     const panel=document.createElement('div');
+     panel.id='hb-volunteer-mobile-panel';
+     panel.className='hb-small-group-mobile-panel hb-volunteer-mobile-panel';
+     panel.append(...box.querySelectorAll('[data-volunteer-sub]'));
+     const expanded=location.hash.startsWith('#/ministry-5');
+     tile.setAttribute('aria-controls',panel.id);
+     tile.setAttribute('aria-expanded',String(expanded));
+     tile.classList.toggle('on',expanded);
+     panel.hidden=!expanded;
+     box.replaceWith(tile);
+     tile.insertAdjacentElement('afterend',panel);
+     tile.addEventListener('click',()=>{
+       const open=tile.getAttribute('aria-expanded')!=='true';
+       tile.setAttribute('aria-expanded',String(open));
+       tile.classList.toggle('on',open);
+       panel.hidden=!open;
+     });
+   }
  }
  const app=document.getElementById('app');
  if(app)new MutationObserver(mount).observe(app,{childList:true,subtree:false});
