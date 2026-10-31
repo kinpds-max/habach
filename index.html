@@ -2690,4 +2690,27 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
  addEventListener('hashchange',()=>requestAnimationFrame(apply));
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
 })();
-</script></body></html>
+</script><style id="hb-sunday-mobile-actual-cards-v5">
+/* Only Sunday sermons. Force card widths even when legacy responsive grid rules win. */
+@media screen and (max-width:900px){
+ html body #app .page-grid .article .hb-static-sermon-grid,
+ html body #app .page-grid .article .sermon-album-grid{
+ display:flex!important;flex-flow:row wrap!important;align-items:flex-start!important;justify-content:flex-start!important;column-gap:8px!important;row-gap:12px!important;width:100%!important;max-width:100%!important;min-width:0!important;
+ }
+ html body #app .page-grid .article .hb-static-sermon-grid > a.sermon-album-card,
+ html body #app .page-grid .article .hb-static-sermon-grid > button.sermon-album-card,
+ html body #app .page-grid .article .sermon-album-grid > a.sermon-album-card,
+ html body #app .page-grid .article .sermon-album-grid > button.sermon-album-card{
+ box-sizing:border-box!important;display:flex!important;flex-direction:column!important;
+ flex:0 0 calc((100% - 8px)/2)!important;width:calc((100% - 8px)/2)!important;
+ min-width:0!important;max-width:calc((100% - 8px)/2)!important;
+ margin:0!important;float:none!important;grid-column:auto!important;
+ }
+ html body #app .page-grid .article .hb-static-sermon-grid > .sermon-album-detail,
+ html body #app .page-grid .article .sermon-album-grid > .sermon-album-detail{
+ flex:0 0 100%!important;width:100%!important;max-width:100%!important
+ }
+ html body #app .page-grid .article .sermon-album-card .sermon-album-thumb{width:100%!important;aspect-ratio:16/9!important}
+ html body #app .page-grid .article .sermon-album-card .sermon-album-copy{width:100%!important;min-width:0!important;box-sizing:border-box!important}
+}
+</style></body></html>
