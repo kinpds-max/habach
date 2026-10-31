@@ -30,6 +30,6 @@ const style=document.createElement('style');style.textContent='#app .hb-generati
 let queued=false;function tick(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',tick);else tick();
 window.addEventListener('hashchange',tick);
-const watch=()=>{const app=document.getElementById('app');if(app)new MutationObserver(tick).observe(app,{childList:true,subtree:false})};
+const watch=()=>{const app=document.getElementById('app');if(app)new MutationObserver(tick).observe(app,{childList:true,subtree:true})};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watch);else watch();
 })();
