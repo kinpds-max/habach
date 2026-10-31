@@ -860,16 +860,13 @@ jobs:
               assert '</body>' in s
               p.write_text(s.replace('</body>',tag+'\n</body>',1),encoding='utf-8')
           PY
-      - name: Remove Mission Bridge from homepage footer
+      - name: Restore Mission Bridge footer while keeping bulletin independent
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          p=Path('index.html')
-          s=p.read_text(encoding='utf-8')
-          tag='<script defer src="/assets/home-footer-remove-missionbridge.js"></script>'
-          if tag not in s:
-              assert '</body>' in s
-              p.write_text(s.replace('</body>',tag+'\n</body>',1),encoding='utf-8')
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          s=s.replace('<script defer src="/assets/home-footer-remove-missionbridge.js"></script>','')
+          p.write_text(s,encoding='utf-8')
           PY
       - name: Commit and push production branch
         run: |
