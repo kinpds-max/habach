@@ -589,11 +589,21 @@ jobs:
               if '</body>' not in s:raise SystemExit('No closing body')
               p.write_text(s.replace('</body>',code+'\n</body>',1),encoding='utf-8')
           PY
+      - name: Include corrected small group sorting script
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          tag='<script defer src="/assets/small234-sort-fix.js"></script>'
+          if tag not in s:
+              assert '</body>' in s
+              p.write_text(s.replace('</body>',tag+'\n</body>',1),encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git commit -m "Open small group menu on 234 tab [skip ci]"
+          git commit -m "Correct Korean sorting of small group cards [skip ci]"
           git push origin HEAD:habachnew
