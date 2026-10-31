@@ -20,6 +20,7 @@ more.textContent='더보기 +30';more.style.display=cards.length>limit?'block':'
 const buttons=[...box.querySelectorAll('a,button')].filter(a=>(a.textContent||'').trim()==='공식 전체 영상 보기 ↗');
 let link=buttons[0];if(!link){link=document.createElement('a');link.textContent='공식 전체 영상 보기 ↗';link.target='_blank';link.rel='noopener noreferrer';link.style.cssText='display:table;margin:18px auto 22px;padding:12px 20px;background:#e8f2fb;color:#315e80;border-radius:9px;text-decoration:none;font-weight:700';box.append(link)}
 buttons.slice(1).forEach(a=>a.remove());
+const article=box.closest('article');if(article){for(const a of article.querySelectorAll('a,button')){if(a===link)continue;if((a.textContent||'').trim()==='공식 전체 영상 보기 ↗')a.remove();}}
 link.href=lists[key]?'https://www.youtube.com/playlist?list='+lists[key]:'https://www.youtube.com/@Gimpo_HBC/videos';link.target='_blank';link.rel='noopener noreferrer';
 if(link.parentElement===box&&box.lastElementChild!==link)box.append(link);
 }
