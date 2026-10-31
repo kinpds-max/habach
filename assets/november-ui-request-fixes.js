@@ -48,7 +48,30 @@ function apply(){
  }
  if(key==='ministry-2'){
   const section=article.querySelector('.hb-prayer-section')||article;
-  if(!section.querySelector('#hb-prayer-video-all')){const a=document.createElement('a');a.id='hb-prayer-video-all';a.className='hb-prayer-full-videos';a.href='#/sermon-9';a.textContent='기도집회 영상 전체 보기 →';section.append(a)}
+  let button=section.querySelector('#hb-prayer-video-all');
+  if(!button){button=document.createElement('button');button.type='button';button.id='hb-prayer-video-all';button.className='hb-prayer-full-videos';button.textContent='기도집회 영상 전체 보기 ▾';button.style.cursor='pointer';section.append(button)}
+  if(button.tagName==='A'){const replacement=document.createElement('button');replacement.id=button.id;replacement.className=button.className;replacement.type='button';replacement.textContent='기도집회 영상 전체 보기 ▾';replacement.style.cursor='pointer';button.replaceWith(replacement);button=replacement}
+  if(!button.dataset.previewBound){
+   button.dataset.previewBound='1';
+   button.setAttribute('aria-expanded','false');
+   button.onclick=()=>{
+    let preview=section.querySelector('#hb-prayer-video-preview');
+    if(!preview){
+     preview=document.createElement('div');preview.id='hb-prayer-video-preview';
+     preview.style.cssText='width:100%;margin:12px 0 28px';
+     const frame=document.createElement('iframe');
+     frame.title='하늘바람교회 기도집회 영상 미리보기';
+     frame.src='https://www.youtube-nocookie.com/embed/videoseries?list=PLmD7ZicLdWIpmQHw1_1mLb8xYyxcvfSgp';
+     frame.loading='lazy';frame.allow='accelerometer;autoplay;encrypted-media;picture-in-picture;fullscreen';frame.allowFullscreen=true;
+     frame.style.cssText='width:100%;aspect-ratio:16/9;border:0;border-radius:14px;display:block;background:#132d42';
+     const link=document.createElement('a');link.href='#/sermon-9';link.textContent='기도집회 영상 앨범 전체 보기 →';
+     link.style.cssText='display:inline-block;margin:12px 0;font-weight:700;color:#285b7d';
+     preview.append(frame,link);button.insertAdjacentElement('afterend',preview);
+    }else{preview.hidden=!preview.hidden}
+    button.setAttribute('aria-expanded',String(!preview.hidden));
+    button.textContent=preview.hidden?'기도집회 영상 전체 보기 ▾':'기도집회 영상 미리보기 닫기 ▴';
+   };
+  }
  }
  if(key==='news-10'){
   if(!article.querySelector('.hb-verified-schedule-link')){
