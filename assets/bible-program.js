@@ -148,6 +148,13 @@ function initBible(){
  setMode(read('hb-bible-copy-mode','normal'));
  const sticky=attach(host,'div',{className:'hb-bible-sticky'});
  const toolbar=attach(sticky,'div',{className:'hb-bible-toolbar'});
+ // Keep Bible translation, book and chapter selectors on the same row on mobile.
+ if(!document.getElementById('hb-bible-toolbar-single-row')){
+  const css=document.createElement('style');css.id='hb-bible-toolbar-single-row';
+  css.textContent='.hb-bible-toolbar{display:grid!important;grid-template-columns:minmax(0,1.4fr) minmax(0,1.15fr) minmax(0,.65fr)!important;gap:8px!important;align-items:end!important;flex-wrap:nowrap!important;width:100%!important}.hb-bible-toolbar>label{display:flex!important;flex-direction:column!important;min-width:0!important;width:auto!important;max-width:none!important;gap:6px!important}.hb-bible-toolbar>label select{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}.hb-bible-toolbar>label:nth-child(3) select{padding-left:7px!important;padding-right:18px!important}@media(max-width:480px){.hb-bible-toolbar{gap:5px!important;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr) minmax(0,.57fr)!important}.hb-bible-toolbar>label{font-size:12px!important;white-space:nowrap!important}.hb-bible-toolbar>label select{font-size:13px!important;padding-left:7px!important;padding-right:17px!important;height:42px!important}}';
+  document.head.append(css);
+ }
+
  const vlabel=attach(toolbar,'label',{},'성경 번역');
  const vsel=attach(vlabel,'select');
  [['revised','개역개정'],['modern','현대인의 성경']].forEach(([value,name])=>{const o=attach(vsel,'option',{value},name);});
