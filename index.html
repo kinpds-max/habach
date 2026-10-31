@@ -2681,12 +2681,12 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
   side?.querySelectorAll('.hb-volunteer-accordion,.hb-volunteer-mobile-tile,.hb-volunteer-mobile-panel').forEach(el=>el.remove());
   const existing=article.querySelector('.hb-service-album');
   const section=document.createElement('div');section.className='hb-unified-ministry-group';
-  section.innerHTML='<section class="hb-ministry-children"><h3>자녀세대섬김</h3><h4>너는 잘될 거야</h4><p>자녀세대를 향한 응원과 축복을 함께 나눕니다.</p><h4>덕분에 잘됐습니다 · 자녀세대 행사</h4><p>자녀세대와 함께한 사랑과 격려의 시간을 소개합니다.</p></section><section class="hb-ministry-parents"><h3>부모세대섬김</h3><h4>덕분에 잘됐습니다</h4><p>부모세대를 향한 감사와 사랑을 함께 나눕니다.</p></section>';
+  section.innerHTML='<section class="hb-ministry-children"><h3>02. 자녀세대섬김</h3><p>다음 세대가 사랑과 믿음 안에서 자라도록 함께 응원하고 축복합니다.</p><h4>너는 잘될 거야</h4><p>자녀세대에게 전하는 따뜻한 격려와 희망의 메시지입니다.</p><h4>덕분에 잘됐습니다</h4><p>자녀세대와 함께한 사랑과 감사의 시간을 나눕니다.</p></section><section class="hb-ministry-parents"><h3>03. 부모세대섬김</h3><h4>덕분에 잘됐습니다</h4><p>부모세대의 수고와 사랑에 감사하며, 교제와 위로로 함께하는 섬김입니다.</p></section>';
   if(existing){
     let regional=article.querySelector('.hb-ministry-regional');
     if(!regional){
       regional=document.createElement('section');regional.className='hb-ministry-regional';
-      regional.innerHTML='<h3>지역·문화섬김</h3><p>기존 지역공연 및 문화 섬김 활동</p>';
+      regional.innerHTML='<h3>01. 지역문화섬김</h3><p>기존 지역공연 및 문화 섬김 활동</p>';
       existing.parentNode.insertBefore(regional,existing);
       regional.append(existing);
     }
@@ -2732,4 +2732,15 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 #app .hb-unified-ministry-group section+section{border-top:1px solid #dfe8ef}
 #app .hb-unified-ministry-group h4{font-size:18px;color:#345675;margin:18px 0 8px}
 @media(max-width:700px){#app .hb-ministry-regional>h3{font-size:19px}#app .hb-unified-ministry-group h4{font-size:16px}}
+</style><style id="hb-ministry-unified-responsive-20261101">
+#app .hb-ministry-regional,#app .hb-unified-ministry-group{width:100%;box-sizing:border-box}
+#app .hb-ministry-regional>h3,#app .hb-unified-ministry-group h3{font-weight:800;letter-spacing:-.035em}
+#app .hb-ministry-regional .hb-service-album{max-width:100%}
+@media(max-width:700px){
+#app .hb-ministry-regional .hb-service-album .album-grid,
+#app .hb-ministry-regional .hb-service-album .hb-album-grid,
+#app .hb-ministry-regional .hb-service-album .sermon-album-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+#app .hb-ministry-regional .hb-service-album .album-grid>*,
+#app .hb-ministry-regional .hb-service-album .hb-album-grid>*{min-width:0;max-width:100%}
+}
 </style></body></html>
