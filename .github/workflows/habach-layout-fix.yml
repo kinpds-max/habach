@@ -415,11 +415,51 @@ jobs:
               if '</body>' not in s:raise SystemExit('Missing closing body')
               p.write_text(s.replace('</body>',script+'\n</body>',1),encoding='utf-8')
           PY
+      - name: Pin supplied dawn worship video on homepage
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          marker='data-habach-dawn-video-L27QCTEVw0k'
+          if marker not in s:
+              script=r"""
+          <script data-habach-dawn-video-L27QCTEVw0k>
+          (() => {
+            const id='L27QCTEVw0k';
+            const link='https://www.youtube.com/watch?v='+id;
+            const thumb='https://i.ytimg.com/vi/'+id+'/hqdefault.jpg';
+            function apply(){
+              if(location.hash && !/^#\/?(?:index|home)?$/.test(location.hash))return;
+              for(const h of document.querySelectorAll('h2,h3,h4,h5')){
+                if(!/새벽설교|새벽예배/.test((h.textContent||'').trim()))continue;
+                let scope=h.parentElement;
+                for(let i=0;i<3 && scope;i++,scope=scope.parentElement){
+                  const cards=[...scope.querySelectorAll('a')].filter(a=>a.querySelector('img') && a!==h.closest('a'));
+                  const card=cards.find(a=>a.getBoundingClientRect().top>=h.getBoundingClientRect().bottom-20);
+                  if(!card)continue;
+                  card.href=link;card.target='_blank';card.rel='noopener noreferrer';
+                  const img=card.querySelector('img');if(img){img.src=thumb;img.srcset='';img.alt='새벽예배 영상';}
+                  const title=card.querySelector('h3,h4,h5,[class*="title"]');
+                  if(title)title.textContent='새벽예배 · 하늘바람교회';
+                  card.dataset.dawnVideoId=id;
+                  return;
+                }
+              }
+            }
+            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
+            window.addEventListener('hashchange',()=>setTimeout(apply,100));
+            let tick=false;new MutationObserver(()=>{if(tick)return;tick=true;requestAnimationFrame(()=>{tick=false;apply()})}).observe(document.body,{childList:true,subtree:true});
+          })();
+          </script>
+          """
+              if '</body>' not in s:raise SystemExit('Missing closing body')
+              p.write_text(s.replace('</body>',script+'\n</body>',1),encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git commit -m "Filter Friday worship from dawn sermon homepage [skip ci]"
+          git commit -m "Set homepage dawn worship video L27QCTEVw0k [skip ci]"
           git push origin HEAD:habachnew
