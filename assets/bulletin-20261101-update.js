@@ -30,12 +30,25 @@ function display(){
    viewer.append(note);show(0);
   }
   let headRow=box.querySelector('#hb-bulletin-heading-row');
-  if(!headRow){headRow=make('div','display:flex;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:8px;width:100%');headRow.id='hb-bulletin-heading-row';h.parentNode.insertBefore(headRow,h);headRow.append(h)}
-  if(h.textContent!==LABEL)h.textContent=LABEL;if(!h.dataset.hbBulletinStyled){h.dataset.hbBulletinStyled='1';h.style.cssText+=';margin:0!important;flex:1 1 auto;min-width:0'}
+  if(!headRow){headRow=make('div','');headRow.id='hb-bulletin-heading-row';h.parentNode.insertBefore(headRow,h);headRow.append(h)}
+  headRow.style.cssText='display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;gap:6px!important;width:100%!important;max-width:100%!important;margin:0 0 12px!important';
+  h.textContent=LABEL;
+  h.style.cssText='margin:0!important;padding:0!important;flex:1 1 auto!important;min-width:0!important;font-size:clamp(15px,2.6vw,25px)!important;white-space:nowrap!important';
   let actions=headRow.querySelector('#hb-bulletin-actions');
-  if(!actions){actions=make('div','display:flex;align-items:center;gap:6px;flex:0 0 auto;white-space:nowrap');actions.id='hb-bulletin-actions';headRow.append(actions)}
-  const candidates=[...box.querySelectorAll('a,button')].filter(el=>!viewer.contains(el)&&/이번\s*주\s*교회\s*주보\s*업로드|주보\s*게시판/.test(el.textContent||''));
-  for(const el of candidates.slice(0,2)){if(el.parentElement!==actions)actions.append(el);if(!el.dataset.hbBulletinStyled){el.dataset.hbBulletinStyled='1';el.style.cssText+=';display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;width:auto!important;max-width:none!important;margin:0!important;padding:8px 9px!important;font-size:clamp(10px,2.4vw,13px)!important;white-space:nowrap!important'}}
+  if(!actions){actions=make('div','');actions.id='hb-bulletin-actions';headRow.append(actions)}
+  actions.style.cssText='display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-end!important;gap:5px!important;width:auto!important;min-width:0!important;flex:0 0 auto!important;margin:0!important;padding:0!important';
+  const btns=[['이번 주 교회주보 업로드','/admin/bulletin.html'],['주보 게시판','#news-2']];
+  for(const [label,url] of btns){
+    let a=actions.querySelector('[data-hb-bulletin-action="'+url+'"]');
+    if(!a){a=document.createElement('a');a.dataset.hbBulletinAction=url;a.href=url;a.textContent=label==='이번 주 교회주보 업로드'?'주보 업로드':'주보 게시판';actions.append(a)}
+    a.style.cssText='display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:0!important;padding:8px 9px!important;margin:0!important;border-radius:8px!important;border:1px solid #cee0ec!important;white-space:nowrap!important;font-size:clamp(10px,1.9vw,13px)!important;text-decoration:none!important;background:#fff!important;color:#215476!important';
+  }
+  // Existing buttons are moved out of sight; only this shared action row is visible.
+  for(const other of box.querySelectorAll('a,button')){
+    if(actions.contains(other)||viewer.contains(other))continue;
+    const value=(other.textContent||'').replace(/\\s+/g,'');
+    if(value.includes('이번주교회주보업로드')||value.includes('주보게시판'))other.style.setProperty('display','none','important');
+  }
   if(headRow.nextElementSibling!==viewer)headRow.insertAdjacentElement('afterend',viewer);
   // Hide legacy feed, static November gallery and any old dated gallery, without touching the new viewer.
   for(const selector of ['#hb-shared-bulletin-feed','#hb-november-first-bulletin','#hb-bulletin-20261025','#hb-home-latest-bulletin','#hb-home-latest-bulletin-restored','#hb-bulletin-one-line-actions','#hb-bulletin-inline-actions']){
