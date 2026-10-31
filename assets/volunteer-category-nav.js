@@ -67,6 +67,26 @@ function show(){
  frame.style.cssText='display:block;width:100%;aspect-ratio:16/9;height:auto;min-height:220px;border:0;border-radius:14px;background:#152837';
  const link=document.createElement('a');link.href='https://www.youtube.com/watch?v='+id;link.target='_blank';link.rel='noopener noreferrer';link.textContent='유튜브 원본 영상 보기 ↗';link.style.cssText='display:inline-block;margin-top:12px;color:#315c78;font-weight:700;text-decoration:underline';
  video.append(frame,link);area.replaceChildren(h,intro,video);
+ if(selected===2){
+  // The six individual photographs were previously stored with the former youth gallery.
+  // Display them exclusively for "덕분에 잘되었습니다" and preserve the 16:9 video above.
+  const photos=["https://files.mallary.ai/uploads/900/chatgpt_1793426450783_0c594477ea84204c.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426453670_e345e10bd41d27f7.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426456099_aee978fbeb1f582b.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426459734_ee4e9a5e493d7e4b.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426462359_42e9763907b0fdab.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426465419_3226d05108103e6f.jpg"];
+  const title=document.createElement('h3');title.textContent='덕분에 잘되었습니다 · 행사 사진';
+  title.style.cssText='margin:20px 0 14px;color:#244860;font-size:clamp(19px,2.5vw,24px)';
+  const gallery=document.createElement('div');gallery.className='hb-parent-gratitude-gallery';
+  gallery.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:100%';
+  photos.forEach((src,i)=>{
+   const anchor=document.createElement('a');anchor.href=src;anchor.target='_blank';anchor.rel='noopener noreferrer';
+   const photo=document.createElement('img');photo.src=src;photo.loading='lazy';photo.decoding='async';
+   photo.alt='덕분에 잘되었습니다 행사 사진 '+(i+1);
+   photo.style.cssText='display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px';
+   anchor.append(photo);gallery.append(anchor);
+  });
+  const note=document.createElement('p');note.textContent='사진을 누르면 원본을 크게 볼 수 있습니다.';
+  note.style.cssText='font-size:13px;color:#748698;margin:12px 0 18px';
+  area.append(title,gallery,note);
+ }
+
 }
 let queued=false;
 function tick(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;init()})}
