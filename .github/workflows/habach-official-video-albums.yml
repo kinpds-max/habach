@@ -23,7 +23,7 @@ jobs:
       - run: python scripts/fetch_official_video_albums.py
       - name: Publish fetched video links
         run: |
-          if git diff --quiet -- assets/official-video-albums.json && test -f assets/official-video-albums.json; then exit 0; fi
+          if test -z "$(git status --porcelain -- assets/official-video-albums.json)"; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/official-video-albums.json
