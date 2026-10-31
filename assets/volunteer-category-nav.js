@@ -27,7 +27,7 @@ function show(){
  if(!article||!/^#\/?ministry-5$/.test(location.hash))return;
  const title=article.querySelector('.article-title');
  if(!title)return;
- title.querySelector('h2')?.replaceChildren(document.createTextNode('봉사와 섬김'));
+ const titleText=title.querySelector('h2');if(titleText&&titleText.textContent.trim()!=='봉사와 섬김')titleText.textContent='봉사와 섬김';
  title.style.textAlign='center';
  // Always keep the native centered title and existing introduction; only add category content where needed.
  let area=article.querySelector('#hb-volunteer-selected-content');
@@ -39,7 +39,7 @@ function show(){
   area.insertAdjacentElement('afterend',content);
  }
  content.style.display=selected===0?'':'none';
- if(selected===0){area.replaceChildren();delete area.dataset.choice;return}
+ if(selected===0){if(area.childNodes.length)area.replaceChildren();delete area.dataset.choice;return}
  if(area.dataset.choice===String(selected))return;
  area.dataset.choice=String(selected);
  const h=document.createElement('h3');h.textContent=selected===1?'너는 잘될 거야':'덕분에 잘됐습니다';
