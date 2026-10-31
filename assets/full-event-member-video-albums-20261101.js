@@ -42,6 +42,7 @@ function run(){
  // Replace the category preview with one combined, deduplicated list.
  for(const grid of board.querySelectorAll('.hb-static-sermon-grid:not([data-hb-combined-videos])'))grid.style.setProperty('display','none','important');
  const oldGallery=board.querySelector('#hb-member-sharing-gallery');if(oldGallery)oldGallery.style.setProperty('display','none','important');
+ for(const empty of board.querySelectorAll('.hb-static-empty,.empty'))empty.style.setProperty('display','none','important');
  const head=board.querySelector('.hb-static-board-head h3');if(head)head.textContent=key==='sermon-3'?'행사영상 전체 앨범':'성도나눔 전체 영상 앨범';
  const count=board.querySelector('.hb-static-board-head span');if(count)count.textContent='등록 영상 '+values.length+'개';
  const existing=new Set([...root.querySelectorAll('a[data-video]')].map(a=>a.dataset.video));
