@@ -18,7 +18,7 @@ function render(){
 
  if(row){row.insertAdjacentElement('afterend',tabs);tabs.style.cssText='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px 12px;margin:-20px 0 0;border:1px solid #dce7ef;border-radius:15px;background:#f5f9fc';}
  else {section.insertBefore(tabs,section.firstChild);}
- root.insertBefore(section,root.firstChild);tabs.children[0].click();tabs.style.display='none';
+ root.insertBefore(section,root.firstChild);tabs.children[0].click();tabs.remove();
 }
 function labelRegionalPerformances(){
  if(!/ministry-5/.test(location.hash))return;
