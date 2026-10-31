@@ -9,9 +9,17 @@ function fix(){
  const heading=[...document.querySelectorAll('h1,h2,h3,h4')].find(e=>/이번\s*주\s*교회\s*주보/.test(e.textContent||'')&&e.textContent.length<40);
  if(heading){const box=heading.closest('section,article,[class*="bulletin"]')||heading.parentElement?.parentElement;const bar=box?.querySelector('#hb-bulletin-heading-row');const actions=bar?.querySelector('#hb-bulletin-actions');if(bar&&actions){bar.style.cssText+=';display:flex!important;flex-wrap:nowrap!important;align-items:center!important';actions.style.cssText+=';display:flex!important;flex-wrap:nowrap!important;gap:6px!important;width:auto!important;flex:0 0 auto!important';}}
  for(const e of document.querySelectorAll('small,span,div'))if(e.children.length===0&&/목사\s*[·ㆍ]\s*담당\s*문의/.test(e.textContent||''))e.textContent=e.textContent.replace(/목사\s*[·ㆍ]\s*담당\s*문의/,'담당 · 대표 문의');
- // Hide the standalone pale green Kakao map card, preserving Naver map and other controls.
- const anchors=[...document.querySelectorAll('a')].filter(a=>/카카오맵에서 지도 보기/.test(a.textContent||''));
- anchors.forEach(a=>{const c=a.closest('section,article,.card,[class*="map-card"]')||a.parentElement; if(c&&!c.querySelector('#hb-naver-map-location'))c.style.display='none'});
+ // Remove only the Kakao map card and Kakao buttons; keep the Naver map.
+ const kakao=[...document.querySelectorAll('a,button')].filter(e=>/카카오맵에서\s*(지도\s*)?보기|카카오맵에서\s*지도\s*보기/.test(e.textContent||''));
+ for(const e of kakao){
+   const card=e.closest('.card,[class*="map-card"],[class*="map-preview"]');
+   if(card&&!card.querySelector('#hb-naver-map-location')&&!/네이버\s*지도/.test(card.textContent||'')){card.remove();continue}
+   const box=e.closest('section,article');
+   if(box&&!box.querySelector('#hb-naver-map-location')&&/김포\s*하늘바람교회/.test(box.textContent||'')&&(box.textContent||'').length<250){box.remove();continue}
+   const panel=e.closest('div');
+   if(panel&&panel.parentElement&&!panel.parentElement.querySelector('#hb-naver-map-location')&&/김포\s*하늘바람교회/.test(panel.parentElement.textContent||'')&&(panel.parentElement.textContent||'').length<250){panel.parentElement.remove();continue}
+   e.remove();
+ }
  const navermap=document.getElementById('hb-naver-map-location');
  if(navermap&&!document.getElementById('hb-church-location-video')){
   const block=document.createElement('section');block.id='hb-church-location-video';block.style.cssText='margin:18px 0 26px';
