@@ -18,7 +18,7 @@ function render(){
 
  if(row){row.insertAdjacentElement('afterend',tabs);tabs.style.cssText='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px 12px;margin:-20px 0 0;border:1px solid #dce7ef;border-radius:15px;background:#f5f9fc';}
  else {section.insertBefore(tabs,section.firstChild);}
- root.insertBefore(section,root.firstChild);tabs.children[0].click();
+ root.insertBefore(section,root.firstChild);tabs.children[0].click();tabs.style.display='none';
 }
 function labelRegionalPerformances(){
  if(!/ministry-5/.test(location.hash))return;
@@ -40,6 +40,21 @@ function labelRegionalPerformances(){
    if(h.textContent.trim()==='지역 모노로그 공연')h.textContent='지역 모노드라마 공연';
  }
 }
+function moveMusicalTitleAbovePhoto(){
+ if(!/ministry-5/.test(location.hash))return;
+ const heads=[...document.querySelectorAll('h2,h3,h4,h5')].filter(h=>h.getClientRects().length&&h.textContent.trim()==='지역 연예인 뮤지컬 공연');
+ for(const h of heads){
+   const card=h.closest('[class*="card"],section,article')||h.parentElement;
+   const image=card?.querySelector('img');
+   if(!image)continue;
+   const figure=image.closest('figure')||image.closest('a')||image;
+   if(figure.contains(h))continue;
+   if(h.compareDocumentPosition(figure)&Node.DOCUMENT_POSITION_PRECEDING){
+      figure.parentElement.insertBefore(h,figure);
+      h.style.margin='0 0 16px';
+   }
+ }
+}
 function placeCheerButton(){
  if(!/ministry-5/.test(location.hash))return;
  const h=[...document.querySelectorAll('h2,h3,h4,h5')].find(e=>e.getClientRects().length&&e.textContent.trim()==='위대한 응원');
@@ -50,6 +65,6 @@ function placeCheerButton(){
  const a=document.createElement('a');a.dataset.cheerAction='1';a.href='https://naver.me/5SKXOhp0';a.target='_blank';a.rel='noopener noreferrer';a.textContent='응원영상보러가기';a.style.cssText='display:block;width:max-content;max-width:100%;box-sizing:border-box;text-align:center;margin:14px auto 0;padding:12px 23px;border-radius:10px;background:#086b94;color:#fff;text-decoration:none;font-size:16px;font-weight:800';
  (img.closest('a')||img).insertAdjacentElement('afterend',a);
 }
-let queued=false;function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;render();placeCheerButton();labelRegionalPerformances()})}
+let queued=false;function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;render();placeCheerButton();labelRegionalPerformances();moveMusicalTitleAbovePhoto()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();window.addEventListener('hashchange',schedule);new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
 })();
