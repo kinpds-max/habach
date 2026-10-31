@@ -758,6 +758,14 @@ jobs:
               s=s.replace('</body>',tag+'\n</body>',1)
           p.write_text(s,encoding='utf-8')
           PY
+      - name: Change pastor inquiry label to 담당
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          s=s.replace('목사 · 대표 문의','목사 · 담당 문의').replace('목사·대표 문의','목사·담당 문의')
+          p.write_text(s,encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
