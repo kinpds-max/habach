@@ -8,10 +8,18 @@ const style=document.createElement('style');style.id='hb-community-fixes-v3';sty
 #app .hb-news-bulletin-heading h2{margin:0}
 #app .hb-prayer-full-videos{display:block;width:max-content;max-width:100%;padding:12px 17px;background:#e8f3fd;color:#245477;border-radius:10px;text-decoration:none;font-weight:800;margin:22px 0}
 #app .hb-verified-schedule-link{display:block;border:1px solid #d9e6f1;background:#f7fbff;padding:15px;border-radius:12px;margin-top:18px}
+
+/* Only on the three community pages: remove the extra divider beneath the title. */
+#app .hb-community-clean .article-title{border-bottom:0!important;margin-bottom:12px!important;padding-bottom:10px!important}
+#app .hb-community-clean .hb-legacy-bulletin-preview{display:none!important}
+#app .hb-community-clean .hb-bulletin-admin-link{display:none!important}
+#app .hb-community-clean .hb-board-title-row{display:flex!important;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#app .hb-community-clean .hb-board-title-row>a{font-size:13px;font-weight:750;padding:9px 12px;border-radius:9px;background:#e9f3fb;color:#245477;text-decoration:none;white-space:nowrap}
 `;document.head.append(style);
 function apply(){
  const key=path(),article=document.querySelector('#app .page-grid article.article');
  if(!article)return;
+ if(['news-1','news-2','news-6'].includes(key))article.classList.add('hb-community-clean');
  if(key==='news-1'||key==='news-6'){
   // Remove only the redundant separator directly below the page heading.
   const title=article.querySelector('.article-title');if(title){
@@ -28,14 +36,31 @@ function apply(){
   }
  }
  if(key==='news-2'){
-  const title=article.querySelector('.article-title');
-  if(title){
-   title.classList.add('hb-news-bulletin-heading');
-   let link=title.querySelector('.hb-bulletin-admin-link');
-   if(!link){link=document.createElement('a');link.className='hb-bulletin-admin-link';link.href='/admin/bulletin.html';link.textContent='교회주보 업로드';title.append(link)}
+  // Native board data stays intact. Remove the broken old book viewer and duplicate upload pills.
+  article.querySelectorAll('.hb-book-reader,.hb-book-controls,.hb-book-section,.hb-book-gallery,.hb-book-preview').forEach(el=>{
+    el.classList.add('hb-legacy-bulletin-preview');el.style.setProperty('display','none','important');
+  });
+  for(const img of article.querySelectorAll('img')){
+    if(!img.complete||img.naturalWidth===0){
+      const wrapper=img.closest('.hb-book-page,.hb-book-reader,.hb-book-section,.hb-book-gallery');
+      if(wrapper)wrapper.style.setProperty('display','none','important');
+    }
   }
-  // Old "book" image carousel should never cover the shared bulletin board.
-  article.querySelectorAll('.hb-book-reader,.hb-book-controls').forEach(el=>el.style.setProperty('display','none','important'));
+  const headings=[...article.querySelectorAll('h2,h3,h4')];
+  const boardTitle=headings.find(h=>/주보\\s*게시판/.test(h.textContent||''));
+  if(boardTitle){
+    let row=boardTitle.closest('.hb-board-title-row');
+    if(!row){row=document.createElement('div');row.className='hb-board-title-row';boardTitle.parentNode.insertBefore(row,boardTitle);row.append(boardTitle)}
+    let upload=row.querySelector('a[href="/admin/bulletin.html"]');
+    if(!upload){upload=document.createElement('a');upload.href='/admin/bulletin.html';upload.textContent='업로드';row.append(upload)}
+  }
+  // Hide other upload controls, keeping exactly the one beside the board heading.
+  for(const el of article.querySelectorAll('a,button')){
+    const label=(el.textContent||'').replace(/\\s+/g,'');
+    if(!/^(이번주교회주보업로드|교회주보업로드|업로드)$/.test(label))continue;
+    if(el.closest('.hb-board-title-row'))continue;
+    el.style.setProperty('display','none','important');
+  }
  }
  if(key==='next-1'){
    article.querySelectorAll('.hb-education-schedule').forEach(el=>{
