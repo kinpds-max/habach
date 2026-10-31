@@ -1,11 +1,11 @@
 (()=>{'use strict';
 const names=['지역·문화섬김','자녀세대섬김','부모세대섬김'];
 function render(){
- if(!/ministry-5|봉사와.?섬김/.test(location.hash+location.pathname+' '+document.title)&&![...document.querySelectorAll('h1,h2,h3')].some(h=>h.getClientRects().length&&/봉사와\s*섬김/.test(h.textContent||'')))return;
- const heading=[...document.querySelectorAll('h1,h2,h3,h4')].reverse().find(h=>h.getClientRects().length&&/봉사와\s*섬김/.test(h.textContent||'')&&h.textContent.trim().length<75);
+ if(!/ministry-5/.test(location.hash))return;
+ const heading=[...document.querySelectorAll('h1,h2,h3,h4')].find(h=>h.getClientRects().length&&!h.closest('#hb-volunteer-categories')&&h.textContent.trim()==='봉사와 섬김');
  if(!heading)return;
  const root=heading.closest('article,.article,.page-content,.content-body,.subpage-content')||heading.parentElement?.parentElement||heading.parentElement;
- if(!root||root.querySelector('#hb-volunteer-categories'))return;
+ if(!root||document.getElementById('hb-volunteer-categories'))return;
  const section=document.createElement('section');section.id='hb-volunteer-categories';section.style.cssText='margin:0 0 22px;padding:0;border:0;background:transparent';
  
  const tabs=document.createElement('div');tabs.className='hb-volunteer-submenu-matches-smallgroups';tabs.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 20px';
