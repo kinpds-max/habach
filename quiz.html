@@ -19,9 +19,9 @@
     if(!res.ok)throw Error('HTTP '+res.status);
     const items=await res.json(),best=new Map();
     for(const item of items){const k=item.player_name.trim();if(!best.has(k))best.set(k,item);}
-    const sorted=[...best.values()].sort((a,b)=>b.correct_answers-a.correct_answers||new Date(a.submitted_at)-new Date(b.submitted_at)).slice(0,50);
+    const sorted=[...best.values()].sort((a,b)=>b.correct_answers-a.correct_answers||new Date(a.submitted_at)-new Date(b.submitted_at)).slice(0,10);
     for(let i=0;i<sorted.length;i++){const item=sorted[i],li=document.createElement('li');if(item.player_name===nameEl.value.trim())li.className='me';const strong=document.createElement('strong');strong.textContent=(i+1)+'위 '+item.player_name;li.append(strong,document.createTextNode(' '+item.correct_answers+'개 정답 / '+(item.attempted_questions||item.total_questions)+'문제 풀이'+((item.attempted_questions||item.total_questions)<item.total_questions?' (중간 제출)':'')));list.append(li);}
-    status.textContent=sorted.length?'상위 '+sorted.length+'명 표시':'이 모드의 완료 기록은 아직 없습니다. 20문제 또는 500문제를 끝까지 풀면 등록됩니다.';
+    status.textContent=sorted.length?'TOP 10 순위 · 현재 '+sorted.length+'명 등록':'이 모드의 완료 기록은 아직 없습니다. 20문제 또는 500문제를 끝까지 풀면 등록됩니다.';
    }catch(err){status.textContent='순위를 불러오지 못했습니다. 다시 시도해 주세요.';}
  }
  window.hbQuizComplete=async function(score,total,attempted=total){
