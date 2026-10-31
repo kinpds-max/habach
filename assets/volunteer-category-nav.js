@@ -39,7 +39,7 @@ function show(){
   area.insertAdjacentElement('afterend',content);
  }
  content.style.display=selected===0?'':'none';
- if(selected===0){area.replaceChildren();return}
+ if(selected===0){area.replaceChildren();delete area.dataset.choice;return}
  if(area.dataset.choice===String(selected))return;
  area.dataset.choice=String(selected);
  const h=document.createElement('h3');h.textContent=selected===1?'너는 잘될 거야':'덕분에 잘됐습니다';
