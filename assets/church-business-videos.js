@@ -13,13 +13,18 @@ function reorder(){
   if(container&&container!==gallery&&!container.contains(gallery)&&container.nextElementSibling!==gallery)container.insertAdjacentElement('afterend',gallery);
  }
 }
+function cleanDuplicateHeadings(){
+ const heads=[...document.querySelectorAll('h2,h3,h4,h5')].filter(e=>e.textContent.trim()==='교인 사업자정보 영상');
+ const original=document.querySelector('#hb-business-shorts h3');
+ for(const h of heads){if(h!==original)h.remove();}
+}
 function init(){
  const headings=[...document.querySelectorAll('h1,h2,h3,h4')].filter(el=>el.getClientRects().length&&service.test(el.textContent||'')&&el.textContent.length<75);
  if(!headings.length)return;
  const h=headings[headings.length-1];
  const host=h.closest('article,.article,.page-content,.subpage-content,section')||h.parentElement;
  if(!host)return;
- if(host.querySelector('#hb-business-shorts')){reorder();return;}
+ if(host.querySelector('#hb-business-shorts')){reorder();cleanDuplicateHeadings();return;}
  const section=document.createElement('section');section.id='hb-business-shorts';section.style.cssText='margin:25px 0;padding:16px 0';
  const title=document.createElement('h3');title.textContent='교인 사업자정보 영상';title.style.cssText='margin:0 0 16px;font-size:clamp(20px,4vw,26px);color:#234f68';
  const grid=document.createElement('div');grid.style.cssText='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px';
@@ -36,7 +41,7 @@ function init(){
   fetch('https://www.youtube.com/oembed?url='+encodeURIComponent('https://www.youtube.com/watch?v='+id)+'&format=json').then(r=>{if(!r.ok)throw Error('oEmbed unavailable');return r.json()}).then(data=>{if(data.title)label.textContent=data.title}).catch(()=>fetch('https://noembed.com/embed?url='+encodeURIComponent('https://www.youtube.com/watch?v='+id)).then(r=>r.json()).then(data=>{if(data.title)label.textContent=data.title}).catch(()=>{}));
  }
  if(!grid.children.length)return;
- host.append(section);reorder();
+ host.append(section);reorder();cleanDuplicateHeadings();
 }
 let queued=false;function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;init()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
