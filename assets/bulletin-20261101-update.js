@@ -72,7 +72,7 @@ function display(){
    for(const el of box.querySelectorAll(selector))if(!viewer.contains(el)&&el!==actions)el.style.setProperty('display','none','important');
   }
   // Retain the single main viewer; remove secondary bulletin images/cards below it.
-  if(!location.hash||/^#\\/?(?:home)?$/.test(location.hash)){
+  if(!location.hash||/^#\/?(?:home)?$/.test(location.hash)){
     for(const img of [...box.querySelectorAll('img')]){
       if(viewer.contains(img))continue;
       if(/files\\.mallary\\.ai\\/uploads\\/900\\/chatgpt_179344/.test(img.src)){
