@@ -3,7 +3,7 @@ const PAGES=[
 'https://files.mallary.ai/uploads/900/chatgpt_1793444947230_bf066151de14f8d1.png',
 'https://files.mallary.ai/uploads/900/chatgpt_1793444952790_16e3c7d345f4ffde.png',
 'https://files.mallary.ai/uploads/900/chatgpt_1793444957877_10bec27b7e245292.png'];
-const LABEL='이번주교회주보';
+const LABEL='이번주 교회주보';
 function findHeads(){return [...document.querySelectorAll('h1,h2,h3,h4,h5')].filter(e=>/이번\s*주\s*교회\s*주보|교회\s*주보\s*미리보기/.test(e.textContent.trim())&&e.textContent.length<80)}
 function make(tag,css,text){const e=document.createElement(tag);if(css)e.style.cssText=css;if(text)e.textContent=text;return e}
 function display(){
