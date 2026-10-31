@@ -14,7 +14,7 @@ function addRegionalPreviews(article){
  }
  if(cheerCard&&!cheerCard.querySelector('.hb-added-cheer-link')){
   const a=document.createElement('a');a.className='hb-added-cheer-link';a.href='https://cafe.naver.com/f-e/cafes/31371644/articles/239';a.target='_blank';a.rel='noopener noreferrer';
-  a.innerHTML='<span class="hb-cafe-preview"><span class="hb-cafe-icon">N</span><span><strong>위대한응원 현장 보기</strong><small>네이버 카페 사진·게시글 열기 ↗</small></span></span>';
+  a.innerHTML='<span class="hb-cafe-preview"><span class="hb-cafe-icon">▶</span><span><strong>위대한응원 영상보기</strong><small>네이버 카페에서 영상 보기 ↗</small></span></span>';
   cheerCard.append(a);
  }
 }
@@ -28,7 +28,7 @@ function correctVolunteerGallery(article,group){
  }
  const child=group.querySelector('.hb-ministry-children');
  if(child){
-  child.style.setProperty('border-top','0','important');
+  child.style.setProperty('border-top','1px solid #dce6ef','important');
   const prev=group.previousElementSibling;
   if(prev?.classList.contains('hb-ministry-regional'))prev.style.setProperty('border-bottom','0','important');
  }
@@ -149,7 +149,7 @@ const mediaStyle=document.createElement('style');mediaStyle.textContent=`
 #app .hb-cafe-preview strong,#app .hb-cafe-preview small{display:block;line-height:1.6}
 #app .hb-cafe-preview small{color:#667d8e;font-size:13px}
 `;document.head.append(mediaStyle);const inlineStyle=document.createElement('style');inlineStyle.textContent='#app .hb-inline-video-player{display:block;width:100%;aspect-ratio:16/9;height:auto;border:0;border-radius:14px;margin:18px 0 25px}#app #hb-regional-leading-heading{margin-top:25px!important;margin-bottom:0!important;padding-bottom:0!important}#app #hb-regional-leading-heading+h3,#app #hb-regional-leading-heading+p{margin-top:4px!important}';document.head.append(inlineStyle);
-const cleanLine=document.createElement('style');cleanLine.textContent='#app .hb-unified-ministry-group{border-top:0!important}#app .hb-unified-ministry-group .hb-ministry-children{border-top:0!important}';document.head.append(cleanLine);
+const cleanLine=document.createElement('style');cleanLine.textContent='#app .hb-unified-ministry-group{border-top:0!important}#app .hb-unified-ministry-group .hb-ministry-children{border-top:1px solid #dce6ef!important;margin-top:42px!important;padding-top:28px!important}';document.head.append(cleanLine);
 let queued=false;function tick(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',tick);else tick();
 window.addEventListener('hashchange',tick);
