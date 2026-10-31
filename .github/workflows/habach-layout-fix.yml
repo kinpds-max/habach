@@ -888,6 +888,18 @@ jobs:
               assert '</body>' in s
               p.write_text(s.replace('</body>',tag+'\n</body>',1),encoding='utf-8')
           PY
+      - name: Correct kindergarten location and remove activity row
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('유치부실, 주짓수','유치부실, 팀토주짓수')
+          s=s.replace('장소: 유치부실','장소: 유치부실, 팀토주짓수')
+          s=re.sub(r'(<(?:dt|strong|span)[^>]*>\\s*활동\\s*</(?:dt|strong|span)>\\s*<(?:dd|span)[^>]*>\\s*주짓수\\s*</(?:dd|span)>)','',s)
+          p.write_text(s,encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
