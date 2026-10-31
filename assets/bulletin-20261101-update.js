@@ -3,7 +3,7 @@ const PAGES=[
 'https://files.mallary.ai/uploads/900/chatgpt_1793444947230_bf066151de14f8d1.png',
 'https://files.mallary.ai/uploads/900/chatgpt_1793444952790_16e3c7d345f4ffde.png',
 'https://files.mallary.ai/uploads/900/chatgpt_1793444957877_10bec27b7e245292.png'];
-const LABEL='이번 주 교회주보';
+const LABEL='이번주교회주보';
 function findHeads(){return [...document.querySelectorAll('h1,h2,h3,h4,h5')].filter(e=>/이번\s*주\s*교회\s*주보|교회\s*주보\s*미리보기/.test(e.textContent.trim())&&e.textContent.length<80)}
 function make(tag,css,text){const e=document.createElement(tag);if(css)e.style.cssText=css;if(text)e.textContent=text;return e}
 function display(){
@@ -34,17 +34,19 @@ function display(){
   if(!headRow){headRow=make('div','');headRow.id='hb-bulletin-heading-row';h.parentNode.insertBefore(headRow,h);headRow.append(h)}
   headRow.style.cssText='display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;gap:6px!important;width:100%!important;max-width:100%!important;margin:0 0 12px!important';
   h.textContent=LABEL;
+  h.setAttribute('aria-label',LABEL);
 
   h.style.cssText='margin:0!important;padding:0!important;flex:1 1 auto!important;min-width:0!important;font-size:clamp(15px,2.6vw,25px)!important;white-space:nowrap!important';
   let actions=headRow.querySelector('#hb-bulletin-actions');
   if(!actions){actions=make('div','');actions.id='hb-bulletin-actions';headRow.append(actions)}
   actions.style.cssText='display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-end!important;gap:5px!important;width:auto!important;min-width:0!important;flex:0 0 auto!important;margin:0!important;padding:0!important';
-  const btns=[];
-  actions.querySelectorAll('a').forEach(a=>a.remove());
-  actions.style.setProperty('display','none','important');
+  const btns=[['업로드','/admin/bulletin.html'],['주보게시판','#/news-2']];
+  for(const old of [...actions.querySelectorAll('a')]){
+    if(!btns.some(([,href])=>old.getAttribute('href')===href))old.remove();
+  }
   for(const [label,url] of btns){
     let a=actions.querySelector('[data-hb-bulletin-action="'+url+'"]');
-    if(!a){a=document.createElement('a');a.dataset.hbBulletinAction=url;a.href=url;a.textContent=label==='이번 주 교회주보 업로드'?'업로드':'주보 게시판';actions.append(a)}
+    if(!a){a=document.createElement('a');a.dataset.hbBulletinAction=url;a.href=url;a.textContent=label;actions.append(a)}
     a.style.cssText='display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:0!important;padding:8px 9px!important;margin:0!important;border-radius:8px!important;border:1px solid #cee0ec!important;white-space:nowrap!important;font-size:clamp(10px,1.9vw,13px)!important;text-decoration:none!important;background:#fff!important;color:#215476!important';
   }
   // Existing buttons are moved out of sight; only this shared action row is visible.
@@ -59,7 +61,7 @@ function display(){
   headRow.style.setProperty('flex-wrap','nowrap','important');
   headRow.style.setProperty('align-items','center','important');
   headRow.style.setProperty('justify-content','space-between','important');
-  actions.style.setProperty('display','none','important');
+  actions.style.setProperty('display','flex','important');
   actions.style.setProperty('flex-direction','row','important');
   actions.style.setProperty('flex-wrap','nowrap','important');
   for(const a of actions.querySelectorAll('a'))if(a.href.includes('bulletin.html'))a.textContent='업로드';
