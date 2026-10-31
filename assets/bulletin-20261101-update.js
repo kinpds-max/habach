@@ -75,7 +75,7 @@ function display(){
   if(!location.hash||/^#\/?(?:home)?$/.test(location.hash)){
     for(const img of [...box.querySelectorAll('img')]){
       if(viewer.contains(img))continue;
-      if(/files\\.mallary\\.ai\\/uploads\\/900\\/chatgpt_179344/.test(img.src)){
+      if(img.src.includes('chatgpt_179344')){
         const anchor=img.closest('a[href]');
         const card=anchor?.parentElement;
         if(card && card.querySelectorAll('img').length>=2 && !card.contains(viewer)){
