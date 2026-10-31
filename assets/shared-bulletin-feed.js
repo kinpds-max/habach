@@ -17,12 +17,9 @@ function render(posts){
   host.replaceChildren();
   const meta=document.createElement('strong');meta.textContent='최신 등록 주보 · '+(latest.date||'')+' '+(latest.title||latest.dayType||'교회 주보');meta.style.cssText='display:block;color:#28536e;margin-bottom:8px';host.append(meta);
   if(/^https?:\/\//.test(url)){const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='최신 주보 원본 보기 ↗';link.style.cssText='display:inline-block;padding:9px 14px;background:#e5f1fa;border-radius:8px;color:#225779;font-weight:700;text-decoration:none';host.append(link)}
-  // The same shared bulletin is authoritative in both community and homepage.
-  const legacy=section.querySelector('#hb-november-first-bulletin');
-  if(legacy&&/^https?:\\/\\//.test(url)){
-    legacy.style.setProperty('display','none','important');
-    for(const el of section.querySelectorAll('img'))if(!host.contains(el)&&/mallary\\.ai/.test(el.src))el.closest('a')?.remove();
-  }
+  // The visually supplied latest bulletin is displayed by the shared viewer.
+  // Never hide or delete its pages when metadata from the Cafe API arrives.
+  if(section.querySelector('#hb-november-first-bulletin'))host.style.display='none';
  }
 }
 async function tick(){if(busy||!relevant().length)return;busy=true;try{render(await load())}catch(e){console.warn('주보 연동:',e.message)}finally{busy=false}}
