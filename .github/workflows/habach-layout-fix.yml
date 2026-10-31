@@ -599,6 +599,47 @@ jobs:
               assert '</body>' in s
               p.write_text(s.replace('</body>',tag+'\n</body>',1),encoding='utf-8')
           PY
+      - name: Insert Mission Bridge poster in outreach and missions
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          marker='data-mbmc-2026-outreach-poster'
+          if marker not in s:
+              script=r"""
+          <style data-mbmc-2026-outreach-poster>
+          #hb-mbmc-2026-poster{max-width:790px;margin:30px auto;padding:20px;border:1px solid #dce5ee;border-radius:16px;background:#fff}
+          #hb-mbmc-2026-poster h3{font-size:clamp(20px,4vw,27px);color:#214d68;margin:0 0 14px}
+          #hb-mbmc-2026-poster img{display:block;width:100%;height:auto;object-fit:contain;border-radius:10px}
+          #hb-mbmc-2026-poster p{line-height:1.7;color:#526577;margin:13px 0 0}
+          </style>
+          <script data-mbmc-2026-outreach-poster>
+          (() => {
+            const poster='https://missionbridge.kr/assets/embedded/29f3b505331239947a001036.webp';
+            function show(){
+              if(!/^#\/?ministry-4(?:\b|$)/.test(location.hash))return;
+              if(document.getElementById('hb-mbmc-2026-poster'))return;
+              const heads=[...document.querySelectorAll('h1,h2,h3')].filter(e=>/전도[·와 ]*선교/.test(e.textContent||'')&&e.getClientRects().length);
+              if(!heads.length)return;
+              const heading=heads[heads.length-1];
+              const container=heading.closest('article,.article,.page-content,.subpage-content,main')||heading.parentElement;
+              if(!container)return;
+              const sec=document.createElement('section');sec.id='hb-mbmc-2026-poster';
+              const title=document.createElement('h3');title.textContent='천국의 환대 2026 · 제4회 미션브릿지 선교대회';
+              const link=document.createElement('a');link.href='https://missionbridge.kr/';link.target='_blank';link.rel='noopener noreferrer';
+              const img=document.createElement('img');img.src=poster;img.alt='천국의 환대 2026 선교대회 포스터';img.loading='lazy';
+              const caption=document.createElement('p');caption.textContent='Mission of, for, and by the Next Generation · 2026년 11월 11일(수) ~ 11월 18일(수)';
+              link.append(img);sec.append(title,link,caption);container.append(sec);
+            }
+            let pending=false;function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;show()})}
+            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+            window.addEventListener('hashchange',schedule);new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+          })();
+          </script>
+          """
+              if '</body>' not in s:raise SystemExit('No closing body')
+              p.write_text(s.replace('</body>',script+'\n</body>',1),encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
