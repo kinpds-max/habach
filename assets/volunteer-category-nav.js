@@ -22,20 +22,22 @@ function render(){
 }
 function labelRegionalPerformances(){
  if(!/ministry-5/.test(location.hash))return;
- const heads=[...document.querySelectorAll('h2,h3,h4,h5')].filter(e=>e.getClientRects().length&&e.textContent.trim()==='지역공연');
- for(const h of heads){
-  const card=h.closest('[class*="card"],article,section')||h.parentElement;
-  if(!card||card.dataset.hbRegionalLabeled==='1')continue;
-  const imgs=[...card.querySelectorAll('img')].filter(im=>im.getClientRects().length);
-  if(!imgs.length)continue;
-  const names=['지역 연예인 뮤지컬 공연','지역 모노로그 공연'];
-  imgs.slice(0,2).forEach((img,i)=>{
-    const figure=img.closest('figure,a')||img;
-    const label=document.createElement('h4');label.textContent=names[i];
-    label.style.cssText='font-size:clamp(17px,3.4vw,22px);font-weight:800;line-height:1.4;color:#2b5269;margin:16px 0 12px';
-    figure.parentElement.insertBefore(label,figure);
-  });
-  h.textContent='지역공연';card.dataset.hbRegionalLabeled='1';
+ const local=[...document.querySelectorAll('h2,h3,h4,h5')].filter(h=>h.getClientRects().length&&/^(지역공연|봉사와 섬김 현장)$/.test(h.textContent.trim()));
+ for(const h of local){
+   const title=h.textContent.trim();
+   const card=h.closest('[class*="card"],article,section')||h.parentElement;
+   if(title==='봉사와 섬김 현장'){
+     const img=card?.querySelector('img');
+     if(img){h.textContent='지역 연예인 뮤지컬 공연';h.style.marginBottom='16px';}
+     else h.remove();
+   }else if(title==='지역공연'){
+     h.textContent='지역 모노드라마 공연';
+     h.style.marginBottom='16px';
+   }
+ }
+ for(const h of document.querySelectorAll('h4')){
+   if(h.textContent.trim()==='지역 연예인 뮤지컬 공연'&&h.previousElementSibling?.textContent?.trim()==='지역 모노드라마 공연')h.remove();
+   if(h.textContent.trim()==='지역 모노로그 공연')h.textContent='지역 모노드라마 공연';
  }
 }
 function placeCheerButton(){
