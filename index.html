@@ -1227,24 +1227,20 @@ document.addEventListener('click',function(evt){
  if(!anchor)return;
  const key=anchor.getAttribute('href').slice(2);
  if(!Object.prototype.hasOwnProperty.call(views,key))return;
- // Church-video sidebar links should start at the top of the selected article.
+ // On mobile, allow a single post-render scroll instead of stacking scroll handlers.
  if(anchor.closest('#app .side') && key.startsWith('sermon-')){
-   const focusArticle=()=>{
+   const isSameRoute=location.hash==='#/'+key;
+   const scrollOnce=()=>{
+     if(location.hash!=='#/'+key)return;
      const article=document.querySelector('#app .page-grid .article');
      if(!article)return;
      const header=document.querySelector('header');
-     const offset=(header ? header.getBoundingClientRect().height : 80)+16;
-     const top=Math.max(0,article.getBoundingClientRect().top+window.scrollY-offset);
+     const offset=(header?.getBoundingClientRect().height||80)+12;
+     const top=Math.max(0,window.scrollY+article.getBoundingClientRect().top-offset);
      window.scrollTo({top,behavior:'instant'});
    };
-   if(location.hash==='#/'+key){
-     // Same menu item: the router re-renders without firing hashchange.
-     requestAnimationFrame(()=>requestAnimationFrame(focusArticle));
-   }else{
-     window.addEventListener('hashchange',()=>{
-       requestAnimationFrame(()=>requestAnimationFrame(focusArticle));
-     },{once:true});
-   }
+   if(isSameRoute){requestAnimationFrame(scrollOnce);}
+   else window.addEventListener('hashchange',()=>requestAnimationFrame(scrollOnce),{once:true});
  }
  // Preserve the previous scroll behavior in other sections.
  if(anchor.closest('#app .side') && !key.startsWith('sermon-')){
