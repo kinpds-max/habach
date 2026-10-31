@@ -16,18 +16,11 @@ function render(){
  const row=menu&&[menu.parentElement,menu.parentElement?.parentElement,menu.parentElement?.parentElement?.parentElement].find(el=>el&&[...el.querySelectorAll('button,a,[role="tab"]')].filter(x=>['예배','기도회','새가족 안내','전도·선교','봉사와 섬김','소그룹교제'].includes(x.textContent.trim())).length>=5);
  if(!document.getElementById('hb-volunteer-subnav-layout')){const st=document.createElement('style');st.id='hb-volunteer-subnav-layout';st.textContent='#hb-volunteer-categories .hb-volunteer-submenu-matches-smallgroups,.hb-volunteer-submenu-matches-smallgroups{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:8px 12px!important;margin:8px 0 0!important;border:1px solid #dce7ef!important;border-radius:15px!important;background:#f5f9fc!important;width:100%!important;box-sizing:border-box!important}.hb-volunteer-submenu-matches-smallgroups>button{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-width:0!important;height:43px!important;min-height:43px!important;max-height:43px!important;margin:0!important;padding:7px 5px!important;border:1px solid #d5e0e7!important;border-radius:12px!important;font-size:clamp(12px,2.9vw,16px)!important;line-height:1.35!important;text-align:center!important}.hb-volunteer-submenu-matches-smallgroups>button:last-child:nth-child(odd){grid-column:1!important}';document.head.append(st);}
 
- if(row){
-   const menuContainer=row.parentElement;
-   // Keep submenu inside the SAME navigation wrapper as the six main ministry buttons.
-   row.insertAdjacentElement('afterend',tabs);
-   if(menuContainer){menuContainer.style.setProperty('display','block');}
-   tabs.style.cssText='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px 13px;margin:10px 0 0;border:1px solid #dce7ef;border-radius:15px;background:#f5f9fc;width:100%;box-sizing:border-box';
- }else{tabs.remove();}
- root.insertBefore(section,root.firstChild);if(row)tabs.children[0].click();
-
- // Keep this single subnavigation immediately below the six ministry navigation buttons.
- for(const duplicate of document.querySelectorAll('.hb-volunteer-submenu-matches-smallgroups')){
-  if(duplicate!==tabs)duplicate.remove();
+ section.insertBefore(tabs,section.firstChild);
+ root.insertBefore(section,root.firstChild);
+ tabs.children[0]?.click();
+ for(const duplicate of [...document.querySelectorAll('.hb-volunteer-submenu-matches-smallgroups')]){
+   if(duplicate!==tabs)duplicate.remove();
  }
 
 }
