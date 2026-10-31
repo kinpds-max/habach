@@ -371,11 +371,55 @@ jobs:
               if '</body>' not in s:raise SystemExit('No body')
               p.write_text(s.replace('</body>',code+'\n</body>',1),encoding='utf-8')
           PY
+      - name: Make dawn sermon home card show dawn worship only
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          marker='data-habach-dawn-home-filter-v1'
+          if marker not in s:
+              script=r"""
+          <script data-habach-dawn-home-filter-v1>
+          (() => {
+            const isDawn=t=>/새벽(?:예배|기도|설교)|새벽기도회/.test(t||'')&&!/금요|금요일|금요강청|금요강청기도회/.test(t||'');
+            function fix(){
+              const heads=[...document.querySelectorAll('h1,h2,h3,h4,h5')];
+              for(const head of heads){
+                if(!/새벽설교|새벽예배/.test(head.textContent||''))continue;
+                let section=head.closest('section,article,[class*="video-section"],[class*="home-video"]')||head.parentElement?.parentElement;
+                if(!section)continue;
+                const cards=[...section.querySelectorAll('article,[class*="video-card"],[class*="album-card"],[class*="video-item"]')];
+                const shown=cards.filter(c=>c.querySelector('img,iframe,video'));
+                if(!shown.length)continue;
+                const candidate=shown.find(c=>isDawn(c.textContent));
+                if(candidate){
+                  const primary=shown[0];
+                  if(primary!==candidate){
+                    const firstAnchor=primary.parentElement;
+                    firstAnchor?.insertBefore(candidate,primary);
+                  }
+                }
+                shown.forEach(c=>{
+                  const title=(c.textContent||'').trim();
+                  if(/금요|금요일|금요강청/.test(title))c.style.setProperty('display','none','important');
+                });
+              }
+            }
+            let scheduled=false;
+            function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;fix()})}
+            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+            new MutationObserver(schedule).observe(document.documentElement,{subtree:true,childList:true});
+          })();
+          </script>
+          """
+              if '</body>' not in s:raise SystemExit('Missing closing body')
+              p.write_text(s.replace('</body>',script+'\n</body>',1),encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git commit -m "Deduplicate Friday sermon album cards [skip ci]"
+          git commit -m "Filter Friday worship from dawn sermon homepage [skip ci]"
           git push origin HEAD:habachnew
