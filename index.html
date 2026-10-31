@@ -2603,56 +2603,62 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 </style>
 <script id="hb-volunteer-accordion-fix-script">
 (function(){
+ const names=['지역·문화섬김','자녀세대섬김','부모세대섬김'];
+ const route='#/ministry-5';
  function mount(){
-   const side=document.querySelector('#app .page-grid .side');
-   if(!side||side.querySelector('.hb-volunteer-accordion'))return;
-   const link=side.querySelector('a[href="#/ministry-5"]');
-   if(!link)return;
-   const box=document.createElement('details');
-   box.className='hb-volunteer-accordion';
-   box.open=location.hash.startsWith('#/ministry-5');
-   box.innerHTML='<summary>봉사와 섬김 <span>⌄</span></summary><div class="hb-small-group-links"><a href="#/ministry-5" data-volunteer-sub="0">지역·문화섬김</a><a href="#/ministry-5" data-volunteer-sub="1">자녀세대섬김</a><a href="#/ministry-5" data-volunteer-sub="2">부모세대섬김</a></div>';
-   link.replaceWith(box);
-   box.querySelectorAll('[data-volunteer-sub]').forEach(a=>a.addEventListener('click',()=>{
-     window.__hbVolunteerSelection=Number(a.dataset.volunteerSub);
-     box.querySelectorAll('a').forEach(el=>el.classList.toggle('on',el===a));
-     const article=document.querySelector('#app .page-grid .article');
-     if(article)article.dataset.hbVolunteerCategory=a.dataset.volunteerSub;
-   }));
-   const sel=Number(window.__hbVolunteerSelection||0);
-   const selected=box.querySelector('[data-volunteer-sub="'+sel+'"]');
-   if(selected)selected.classList.add('on');
-   // The mobile sidebar uses the same button + expandable panel UI as 소그룹교제.
-   if(window.matchMedia('(max-width:900px)').matches){
-     const container=box.parentElement;
-     const tile=document.createElement('button');
-     tile.type='button';
-     tile.className='hb-small-group-tile hb-volunteer-mobile-tile';
-     tile.textContent='봉사와 섬김';
-     const panel=document.createElement('div');
-     panel.id='hb-volunteer-mobile-panel';
-     panel.className='hb-small-group-mobile-panel hb-volunteer-mobile-panel';
-     panel.append(...box.querySelectorAll('[data-volunteer-sub]'));
-     const expanded=location.hash.startsWith('#/ministry-5');
-     tile.setAttribute('aria-controls',panel.id);
-     tile.setAttribute('aria-expanded',String(expanded));
-     tile.classList.toggle('on',expanded);
-     panel.hidden=!expanded;
-     box.replaceWith(tile);
-     tile.insertAdjacentElement('afterend',panel);
-     tile.addEventListener('click',()=>{
-       const open=tile.getAttribute('aria-expanded')!=='true';
-       tile.setAttribute('aria-expanded',String(open));
-       tile.classList.toggle('on',open);
-       panel.hidden=!open;
-     });
-   }
+  const side=document.querySelector('#app .page-grid .side');
+  if(!side || side.querySelector('.hb-volunteer-mobile-tile,.hb-volunteer-accordion'))return;
+  const link=side.querySelector('a[href="#/ministry-5"]');
+  if(!link)return;
+  const mobile=matchMedia('(max-width:900px)').matches;
+  const parent=document.createElement(mobile?'button':'details');
+  if(mobile){
+   parent.type='button';parent.className='hb-small-group-tile hb-volunteer-mobile-tile';
+   parent.textContent='봉사와 섬김';parent.setAttribute('aria-controls','hb-volunteer-mobile-panel');
+  }else{
+   parent.className='hb-volunteer-accordion';
+   parent.innerHTML='<summary>봉사와 섬김 <span>⌄</span></summary>';
+  }
+  const panel=document.createElement('div');
+  panel.className=mobile?'hb-small-group-mobile-panel hb-volunteer-mobile-panel':'hb-small-group-links';
+  if(mobile)panel.id='hb-volunteer-mobile-panel';
+  const selection=Number(window.__hbVolunteerSelection||0);
+  names.forEach((name,i)=>{
+   const a=document.createElement('a');
+   a.href=route;a.textContent=name;a.dataset.volunteerSub=String(i);
+   a.classList.toggle('on',selection===i);
+   a.addEventListener('click',e=>{
+    // Same-route submenu navigation must not rebuild and lose existing content.
+    if(location.hash===route)e.preventDefault();
+    window.__hbVolunteerSelection=i;
+    panel.querySelectorAll('a').forEach(x=>x.classList.toggle('on',x===a));
+    const article=document.querySelector('#app .page-grid .article');
+    if(article)article.dataset.hbVolunteerCategory=String(i);
+   });
+   panel.append(a);
+  });
+  link.replaceWith(parent);
+  if(mobile){
+   parent.insertAdjacentElement('afterend',panel);
+   const open=location.hash===route;
+   const toggle=value=>{
+    parent.setAttribute('aria-expanded',String(value));
+    parent.classList.toggle('on',value);
+    panel.hidden=!value;
+   };
+   toggle(open);
+   parent.addEventListener('click',()=>toggle(parent.getAttribute('aria-expanded')!=='true'));
+  }else{
+   parent.append(panel);
+   parent.open=location.hash===route;
+  }
+  const article=document.querySelector('#app .page-grid .article');
+  if(article&&location.hash===route)article.dataset.hbVolunteerCategory=String(selection);
  }
  const app=document.getElementById('app');
  if(app)new MutationObserver(mount).observe(app,{childList:true,subtree:false});
- document.addEventListener('DOMContentLoaded',mount);
- window.addEventListener('hashchange',()=>requestAnimationFrame(mount));
- mount();
+ addEventListener('hashchange',()=>requestAnimationFrame(mount));
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script><style id="hb-mobile-sunday-sermon-stability-20261101">
 @media(max-width:900px){
