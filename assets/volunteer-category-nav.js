@@ -23,7 +23,17 @@ function polishMinistry(article,group){
   if(!lead){lead=document.createElement('div');lead.id='hb-regional-leading-heading'}
   if(title&&title.parentElement!==lead)lead.append(title);
   if(intro&&intro.parentElement!==lead)lead.append(intro);
-  if(original.firstElementChild!==lead)original.prepend(lead);
+  const introduction=original.querySelector('.hb-restored-volunteer-description,.lead');
+  if(introduction&&introduction!==lead){
+   if(introduction.previousElementSibling!==lead)introduction.insertAdjacentElement('beforebegin',lead);
+  }else if(original.firstElementChild!==lead){original.prepend(lead)}
+  // Keep the three existing regional photo cards together, but display them
+  // directly BELOW the voucher list ending with House Tree.
+  const gallery=regional.querySelector('.hb-service-album')||original.querySelector('.hb-service-album');
+  const voucherGrid=original.querySelector('.source-feature-grid');
+  if(gallery&&voucherGrid&&voucherGrid.nextElementSibling!==gallery){
+   voucherGrid.insertAdjacentElement('afterend',gallery);
+  }
   regional.style.display='contents';
  }
  // Preserve all existing media while moving specifically titled cultural cards below House Tree.
