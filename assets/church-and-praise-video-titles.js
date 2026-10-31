@@ -38,7 +38,7 @@ function refresh(){
    }
    if(type==='church'&&(/^(?:교회영상\s*)?\d+$|^교회영상\s*\d+$/i.test(existingTitle)||!/[가-힣]/.test(existingTitle))&&a.dataset.hbTitleFetch!==id){
     a.dataset.hbTitleFetch=id;
-    titleFromYouTube(id).then(title=>{if(title&&a.isConnected){const n=titleNode(a);if(n&&/^교회영상\s*\d+$/i.test(n.textContent.trim()))n.textContent=title}});
+    titleFromYouTube(id).then(title=>{if(title&&a.isConnected){const n=titleNode(a);if(n&&(/[가-힣]/.test(title)||/교회영상\s*\d+/i.test(n.textContent.trim())))n.textContent=title}});
    }
   }
  }
