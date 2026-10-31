@@ -16,6 +16,15 @@ const getId=url=>{const m=(url||'').match(/(?:shorts\/|youtu\.be\/|watch\?v=|emb
 function visible(e){return e.getClientRects().length>0}
 function videoCard(el){return el.querySelector('img')&&!![...el.querySelectorAll('a[href],iframe[src]')].some(a=>getId(a.href||a.src))||el.matches('a[href]')&&getId(el.href)}
 async function nameCard(a,id){if(!id)return;const titleNode=a.querySelector('.hb-unified-caption,[class*=title],h3,h4')||a.lastElementChild;if(!titleNode)return;if(!titleNode.classList.contains('hb-unified-caption'))titleNode.classList.add('hb-unified-caption');if(titleNode.dataset.titleResolved)return;titleNode.dataset.titleResolved='1';try{const response=await fetch('https://noembed.com/embed?url='+encodeURIComponent('https://www.youtube.com/watch?v='+id));if(!response.ok)return;const info=await response.json();if(info.title&&info.title!=='YouTube'){titleNode.textContent=info.title;}}catch(_){}}
+function dedupeVisibleCards(){
+ const ids=new Set();
+ const cards=[...document.querySelectorAll('a[href*="youtube.com/shorts/"],a[href*="youtu.be/"],a[href*="youtube.com/watch"]')].filter(a=>visible(a)&&a.querySelector('img'));
+ for(const a of cards){
+  const id=getId(a.href);if(!id)continue;
+  const card=a.closest('[class*="video-card"],[class*="video-item"],[class*="album-item"],li')||a;
+  if(ids.has(id)){card.remove();}else ids.add(id);
+ }
+}
 function run(config){
  const headings=[...document.querySelectorAll('h1,h2,h3,h4')].filter(e=>visible(e)&&config.title.test(e.textContent||'')&&e.textContent.trim().length<90);
  if(!headings.length)return;
@@ -35,6 +44,6 @@ function run(config){
  for(const item of [...grid.children]){if(!videoCard(item))continue;const a=item.matches('a')?item:item.querySelector('a[href]');const id=getId(a?.href||'')||getId(item.querySelector('iframe[src]')?.src);if(a)nameCard(a,id)}
  if(extra!==grid&&!extra.contains(grid))extra.remove();
 }
-let running=false;function schedule(){if(running)return;running=true;requestAnimationFrame(()=>{running=false;configs.forEach(run)})}
+let running=false;function schedule(){if(running)return;running=true;requestAnimationFrame(()=>{running=false;configs.forEach(run);dedupeVisibleCards()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();addEventListener('hashchange',schedule);new MutationObserver(schedule).observe(document.documentElement,{subtree:true,childList:true});
 })();
