@@ -14,8 +14,8 @@ function display(){
   // Build one reliable image viewer, rather than mutate several independently rendered galleries.
   let viewer=box.querySelector('#hb-canonical-bulletin-viewer');
   if(!viewer){
-   viewer=make('section','display:block!important;width:100%;max-width:860px;margin:18px auto 8px');
-   viewer.id='hb-canonical-bulletin-viewer';
+   viewer=make('section','display:block!important;width:100%;max-width:none;margin:18px auto 8px');
+   viewer.id='hb-canonical-bulletin-viewer';box.style.setProperty('max-width','none','important');
    const link=make('a','display:block;width:100%');link.target='_blank';link.rel='noopener noreferrer';
    const image=make('img','display:block;width:100%;height:auto;max-height:1100px;object-fit:contain;border-radius:9px;border:1px solid #d9e5ed');
    image.alt='2026년 11월 1일 교회 주보 1쪽';link.append(image);viewer.append(link);
