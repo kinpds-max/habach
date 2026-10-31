@@ -15,26 +15,22 @@ function polishMinistry(article,group){
   if(!heading){heading=document.createElement('h3');section.prepend(heading)}
   heading.textContent=label;
  }
- if(regional&&original){
-  // Put the regional heading and description immediately before the existing blue-toned gallery/cards.
-  const title=regional.querySelector('h3');
-  const intro=regional.querySelector('p');
-  let lead=original.querySelector('#hb-regional-leading-heading');
-  if(!lead){lead=document.createElement('div');lead.id='hb-regional-leading-heading'}
-  if(title&&title.parentElement!==lead)lead.append(title);
-  if(intro&&intro.parentElement!==lead)lead.append(intro);
-  const introduction=original.querySelector('.hb-restored-volunteer-description,.lead');
-  if(introduction&&introduction!==lead){
-   if(introduction.previousElementSibling!==lead)introduction.insertAdjacentElement('beforebegin',lead);
-  }else if(original.firstElementChild!==lead){original.prepend(lead)}
-  // Keep the three existing regional photo cards together, but display them
-  // directly BELOW the voucher list ending with House Tree.
-  const gallery=regional.querySelector('.hb-service-album')||original.querySelector('.hb-service-album');
-  const voucherGrid=original.querySelector('.source-feature-grid');
-  if(gallery&&voucherGrid&&voucherGrid.nextElementSibling!==gallery){
-   voucherGrid.insertAdjacentElement('afterend',gallery);
-  }
-  regional.style.display='contents';
+ if(regional){
+  // Move the heading before the actual introductory paragraph, not to a detached regional placeholder.
+  const introPara=[...article.querySelectorAll('p')].find(p=>p.textContent.trim()==='사람을 사랑하며 지역 공동체를 섬깁니다');
+  let heading=article.querySelector('#hb-regional-leading-heading');
+  if(!heading){heading=document.createElement('div');heading.id='hb-regional-leading-heading'}
+  heading.innerHTML='<h3>1. 지역·문화섬김</h3>';
+  if(introPara&&introPara.previousElementSibling!==heading)introPara.insertAdjacentElement('beforebegin',heading);
+  const originalDescription=regional.querySelector('p');
+  if(originalDescription)originalDescription.remove();
+  const oldHeading=regional.querySelector('h3');if(oldHeading)oldHeading.remove();
+  // Gallery cards are rendered asynchronously. Move the whole gallery after the voucher cards.
+  const gallery=article.querySelector('.hb-service-album');
+  const voucherGrid=article.querySelector('.source-feature-grid');
+  if(gallery&&voucherGrid&&voucherGrid.nextElementSibling!==gallery)voucherGrid.insertAdjacentElement('afterend',gallery);
+  if(gallery){gallery.style.setProperty('display','grid','important');gallery.style.removeProperty('visibility');}
+  if(regional&&!regional.children.length)regional.remove();
  }
  // Preserve all existing media while moving specifically titled cultural cards below House Tree.
  const house=[...original?.querySelectorAll('strong,h3,h4')||[]].find(e=>(e.textContent||'').trim()==='하우스트리');
