@@ -7,6 +7,7 @@ const LABEL='이번 주 교회주보';
 function findHeads(){return [...document.querySelectorAll('h1,h2,h3,h4,h5')].filter(e=>/이번\s*주\s*교회\s*주보|교회\s*주보\s*미리보기/.test(e.textContent.trim())&&e.textContent.length<80)}
 function make(tag,css,text){const e=document.createElement(tag);if(css)e.style.cssText=css;if(text)e.textContent=text;return e}
 function display(){
+ if(location.hash && !/^#\/?(?:index|home)?$/.test(location.hash))return;
  const heads=findHeads();if(!heads.length)return;
  for(const h of heads){
   const box=h.closest('section,article,[class*="bulletin"]')||h.parentElement?.parentElement;
