@@ -2599,4 +2599,41 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 @media(max-width:700px){#app [data-hb-combined-videos]{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}#app .hb-youth-gratitude-gallery{gap:9px!important}}
 @media(max-width:390px){#app [data-hb-combined-videos]{grid-template-columns:1fr!important}}
 </style>
-</body></html>
+<style id="hb-volunteer-accordion-fix">
+#app .side .hb-volunteer-accordion{border-bottom:1px solid #e3e6e9;margin:0}
+#app .side .hb-volunteer-accordion summary{display:flex;align-items:center;justify-content:space-between;padding:12px 7px;font-size:13px;font-weight:700;color:#526b85;cursor:pointer;list-style:none}
+#app .side .hb-volunteer-accordion summary::-webkit-details-marker{display:none}
+#app .side .hb-volunteer-accordion summary span{transition:transform .2s}
+#app .side .hb-volunteer-accordion[open] summary span{transform:rotate(180deg)}
+#app .side .hb-volunteer-accordion .hb-small-group-links{padding:0 0 8px 13px}
+#app .side .hb-volunteer-accordion .hb-small-group-links a{display:block;padding:10px 8px;font-size:12px;border-bottom:1px solid #edf1f5;text-decoration:none}
+</style>
+<script id="hb-volunteer-accordion-fix-script">
+(function(){
+ function mount(){
+   const side=document.querySelector('#app .page-grid .side');
+   if(!side||side.querySelector('.hb-volunteer-accordion'))return;
+   const link=side.querySelector('a[href="#/ministry-5"]');
+   if(!link)return;
+   const box=document.createElement('details');
+   box.className='hb-volunteer-accordion';
+   box.open=location.hash.startsWith('#/ministry-5');
+   box.innerHTML='<summary>봉사와 섬김 <span>⌄</span></summary><div class="hb-small-group-links"><a href="#/ministry-5" data-volunteer-sub="0">지역·문화섬김</a><a href="#/ministry-5" data-volunteer-sub="1">자녀세대섬김</a><a href="#/ministry-5" data-volunteer-sub="2">부모세대섬김</a></div>';
+   link.replaceWith(box);
+   box.querySelectorAll('[data-volunteer-sub]').forEach(a=>a.addEventListener('click',()=>{
+     window.__hbVolunteerSelection=Number(a.dataset.volunteerSub);
+     box.querySelectorAll('a').forEach(el=>el.classList.toggle('on',el===a));
+     const article=document.querySelector('#app .page-grid .article');
+     if(article)article.dataset.hbVolunteerCategory=a.dataset.volunteerSub;
+   }));
+   const sel=Number(window.__hbVolunteerSelection||0);
+   const selected=box.querySelector('[data-volunteer-sub="'+sel+'"]');
+   if(selected)selected.classList.add('on');
+ }
+ const app=document.getElementById('app');
+ if(app)new MutationObserver(mount).observe(app,{childList:true,subtree:false});
+ document.addEventListener('DOMContentLoaded',mount);
+ window.addEventListener('hashchange',()=>requestAnimationFrame(mount));
+ mount();
+})();
+</script></body></html>
