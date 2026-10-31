@@ -27,7 +27,7 @@ function placeCheerButton(){
  const card=h.closest('article,section,[class*="card"],[class*="album-item"]')||h.parentElement?.parentElement;
  if(!card||card.querySelector('[data-cheer-action]'))return;
  const img=card.querySelector('img');if(!img)return;
- const a=document.createElement('a');a.dataset.cheerAction='1';a.href='https://naver.me/5SKXOhp0';a.target='_blank';a.rel='noopener noreferrer';a.textContent='응원하기';a.style.cssText='display:inline-block;margin:14px 0 0;padding:12px 23px;border-radius:10px;background:#086b94;color:#fff;text-decoration:none;font-size:16px;font-weight:800';
+ const a=document.createElement('a');a.dataset.cheerAction='1';a.href='https://naver.me/5SKXOhp0';a.target='_blank';a.rel='noopener noreferrer';a.textContent='응원영상보러가기';a.style.cssText='display:block;width:max-content;max-width:100%;box-sizing:border-box;text-align:center;margin:14px auto 0;padding:12px 23px;border-radius:10px;background:#086b94;color:#fff;text-decoration:none;font-size:16px;font-weight:800';
  (img.closest('a')||img).insertAdjacentElement('afterend',a);
 }
 let queued=false;function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;render();placeCheerButton()})}
