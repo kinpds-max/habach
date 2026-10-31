@@ -31,11 +31,11 @@ function display(){
   }
   let headRow=box.querySelector('#hb-bulletin-heading-row');
   if(!headRow){headRow=make('div','display:flex;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:8px;width:100%');headRow.id='hb-bulletin-heading-row';h.parentNode.insertBefore(headRow,h);headRow.append(h)}
-  h.textContent=LABEL;h.style.cssText+=';margin:0!important;flex:1 1 auto;min-width:0';
+  if(h.textContent!==LABEL)h.textContent=LABEL;if(!h.dataset.hbBulletinStyled){h.dataset.hbBulletinStyled='1';h.style.cssText+=';margin:0!important;flex:1 1 auto;min-width:0'}
   let actions=headRow.querySelector('#hb-bulletin-actions');
   if(!actions){actions=make('div','display:flex;align-items:center;gap:6px;flex:0 0 auto;white-space:nowrap');actions.id='hb-bulletin-actions';headRow.append(actions)}
   const candidates=[...box.querySelectorAll('a,button')].filter(el=>!viewer.contains(el)&&/이번\s*주\s*교회\s*주보\s*업로드|주보\s*게시판/.test(el.textContent||''));
-  for(const el of candidates.slice(0,2)){actions.append(el);el.style.cssText+=';display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;width:auto!important;max-width:none!important;margin:0!important;padding:8px 9px!important;font-size:clamp(10px,2.4vw,13px)!important;white-space:nowrap!important'}
+  for(const el of candidates.slice(0,2)){if(el.parentElement!==actions)actions.append(el);if(!el.dataset.hbBulletinStyled){el.dataset.hbBulletinStyled='1';el.style.cssText+=';display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;width:auto!important;max-width:none!important;margin:0!important;padding:8px 9px!important;font-size:clamp(10px,2.4vw,13px)!important;white-space:nowrap!important'}}
   if(headRow.nextElementSibling!==viewer)headRow.insertAdjacentElement('afterend',viewer);
   // Hide legacy feed, static November gallery and any old dated gallery, without touching the new viewer.
   for(const selector of ['#hb-shared-bulletin-feed','#hb-november-first-bulletin','#hb-bulletin-20261025','#hb-home-latest-bulletin','#hb-home-latest-bulletin-restored','#hb-bulletin-one-line-actions','#hb-bulletin-inline-actions']){
