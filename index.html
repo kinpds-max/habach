@@ -2258,4 +2258,38 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 })();
 </script>
 
+
+<script data-habach-dawn-home-filter-v1>
+(() => {
+  const isDawn=t=>/새벽(?:예배|기도|설교)|새벽기도회/.test(t||'')&&!/금요|금요일|금요강청|금요강청기도회/.test(t||'');
+  function fix(){
+    const heads=[...document.querySelectorAll('h1,h2,h3,h4,h5')];
+    for(const head of heads){
+      if(!/새벽설교|새벽예배/.test(head.textContent||''))continue;
+      let section=head.closest('section,article,[class*="video-section"],[class*="home-video"]')||head.parentElement?.parentElement;
+      if(!section)continue;
+      const cards=[...section.querySelectorAll('article,[class*="video-card"],[class*="album-card"],[class*="video-item"]')];
+      const shown=cards.filter(c=>c.querySelector('img,iframe,video'));
+      if(!shown.length)continue;
+      const candidate=shown.find(c=>isDawn(c.textContent));
+      if(candidate){
+        const primary=shown[0];
+        if(primary!==candidate){
+          const firstAnchor=primary.parentElement;
+          firstAnchor?.insertBefore(candidate,primary);
+        }
+      }
+      shown.forEach(c=>{
+        const title=(c.textContent||'').trim();
+        if(/금요|금요일|금요강청/.test(title))c.style.setProperty('display','none','important');
+      });
+    }
+  }
+  let scheduled=false;
+  function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;fix()})}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+  new MutationObserver(schedule).observe(document.documentElement,{subtree:true,childList:true});
+})();
+</script>
+
 </body></html>
