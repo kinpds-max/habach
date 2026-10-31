@@ -146,6 +146,12 @@
           게시글 ID <span id="extractedId">—</span> 자동 감지됨
         </div>
       </div>
+      <div class="form-group full">
+        <label for="fImages">주보 이미지 직접 추가 (JPG, PNG, WEBP · 최대 8장)</label>
+        <input id="fImages" type="file" class="form-control" accept="image/jpeg,image/png,image/webp" multiple onchange="previewBulletinImages()" />
+        <p style="font-size:.78rem;color:var(--gray);margin-top:5px">네이버 카페 링크 없이 이미지만 선택해 저장할 수 있습니다. 선택한 순서대로 페이지가 표시됩니다.</p>
+        <div id="imageFilePreview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:9px;margin-top:12px"></div>
+      </div>
     </div>
 
     <div class="form-actions">
@@ -187,6 +193,7 @@
 <script>
   /* ── 설정 ── */
   const GAS_URL  = 'https://script.google.com/macros/s/AKfycbxh6n5kWfC5LC_3MjWJYjfAmNcCjr7kJz9WU_yGgncuU2UaXlgOHgmTNnPwa2WH4O1oLw/exec';
+  const UPLOAD_API = 'https://veghdecosrimscedkrdo.supabase.co/functions/v1/habach-bulletin-upload';
   const ADMIN_PW = '1004';   // ← 필요 시 변경
   const CLUB_ID  = '31371644';
   const CLUB_NAME= 'haneulbaramchurch';
@@ -267,6 +274,25 @@
     }
   }
 
+  function previewBulletinImages() {
+    const input=document.getElementById('fImages'),grid=document.getElementById('imageFilePreview');
+    grid.replaceChildren();
+    [...input.files].slice(0,8).forEach((f,i)=>{const img=document.createElement('img');img.src=URL.createObjectURL(f);img.alt=(i+1)+'페이지';img.style.cssText='width:100%;height:138px;object-fit:contain;border:1px solid #d4e1ee;border-radius:9px;background:white';img.onload=()=>URL.revokeObjectURL(img.src);grid.append(img)});
+    if(input.files.length>8)showToast('최대 8장까지만 선택할 수 있습니다.',true);
+  }
+  async function saveImageBulletin(files,date,dayType,title) {
+    if(files.length>8||files.some(f=>f.size>5*1024*1024)){showToast('이미지 최대 8장, 파일당 5MB 이하로 선택하세요.',true);return}
+    const form=new FormData();form.append('pin',ADMIN_PW);form.append('date',date);form.append('dayType',dayType);form.append('title',title);
+    files.forEach(f=>form.append('images',f,f.name));
+    try{
+      const res=await fetch(UPLOAD_API,{method:'POST',body:form});
+      const json=await res.json();
+      if(!res.ok||!json.success)throw Error(json.error||'이미지 저장 오류');
+      showToast(files.length+'장 주보 이미지 저장 완료');
+      clearForm();loadList();
+    }catch(err){showToast('이미지 저장 실패: '+err.message,true)}
+  }
+
   /* ── 저장 ── */
   async function saveBulletin() {
     const cafeUrl = document.getElementById('fUrl').value.trim();
@@ -274,6 +300,8 @@
     const dayType = document.getElementById('fDayType').value;
     const title   = document.getElementById('fTitle').value.trim();
     const articleId = extractArticleId(cafeUrl);
+    const files=[...document.getElementById('fImages').files];
+    if(files.length){if(!date){showToast('날짜를 선택하세요.',true);return}return saveImageBulletin(files,date,dayType,title)}
 
     if (!cafeUrl) { showToast('카페 URL을 입력하세요.', true); return; }
     if (!date)    { showToast('날짜를 선택하세요.', true); return; }
@@ -299,6 +327,7 @@
 
   /* ── 초기화 ── */
   function clearForm() {
+    document.getElementById('fImages').value='';document.getElementById('imageFilePreview').replaceChildren();
     document.getElementById('fUrl').value = '';
     document.getElementById('fTitle').value = '';
     document.getElementById('fDate').value = new Date().toISOString().split('T')[0];
@@ -319,7 +348,14 @@
   async function loadList() {
     document.getElementById('bulletinList').innerHTML = '<div class="loading-msg"><i class="fas fa-circle-notch fa-spin"></i> 불러오는 중...</div>';
     try {
-      const r = await fetch(`${GAS_URL}?action=getBulletins`);
+      const r = await fetch(UPLOAD_API,{cache:'no-store'});
+      const imageJson = await r.json();
+      const uploaded=(imageJson.bulletins||[]).map(b=>({id:b.id,date:b.bulletin_date,dayType:b.day_type,title:b.title,imageUrls:b.image_urls,source:'image'}));
+      _allBulletins=uploaded;
+      renderList();
+      return;
+      // Legacy Google Apps Script feed:
+      const legacy = await fetch(`${GAS_URL}?action=getBulletins`);
       const json = await r.json();
       if (json.result === 'success') {
         _allBulletins = json.bulletins || [];
@@ -352,10 +388,10 @@
           <td><span class="day-badge day-${b.dayType}">${b.dayType}</span></td>
           <td>${escHtml(display)}</td>
           <td>
-            ${id ? `<a href="${cafeLink}" target="_blank" class="btn btn-sm" style="background:rgba(3,199,90,.1);color:#03c75a"><i class="fas fa-eye"></i> 보기</a>` : '—'}
+            ${b.imageUrls?.length ? `<a href="${b.imageUrls[0]}" target="_blank" rel="noopener" class="btn btn-sm" style="background:#e7f2ff;color:#176090">이미지 ${b.imageUrls.length}장 보기</a>` : (id ? `<a href="${cafeLink}" target="_blank" class="btn btn-sm" style="background:rgba(3,199,90,.1);color:#03c75a"><i class="fas fa-eye"></i> 보기</a>` : '—')}
           </td>
           <td>
-            <button class="btn btn-sm btn-danger" onclick="deleteBulletin('${b.id}')">
+            <button class="btn btn-sm btn-danger" ${b.source==='image'?'disabled title="이미지 삭제는 관리 권한을 별도로 확인해야 합니다"':''} onclick="deleteBulletin('${b.id}')">
               <i class="fas fa-trash"></i>
             </button>
           </td>
