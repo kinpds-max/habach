@@ -40,14 +40,14 @@ function display(){
   let actions=headRow.querySelector('#hb-bulletin-actions');
   if(!actions){actions=make('div','');actions.id='hb-bulletin-actions';headRow.append(actions)}
   actions.style.cssText='display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-end!important;gap:5px!important;width:auto!important;min-width:0!important;flex:0 0 auto!important;margin:0!important;padding:0!important';
-  const btns=[['업로드','/admin/bulletin.html'],['주보게시판','#/news-2']];
+  const btns=[['이번주 교회주보 업로드','/admin/bulletin.html'],['주보게시판','#/news-2']];
   for(const old of [...actions.querySelectorAll('a')]){
     if(!btns.some(([,href])=>old.getAttribute('href')===href))old.remove();
   }
   for(const [label,url] of btns){
     let a=actions.querySelector('[data-hb-bulletin-action="'+url+'"]');
     if(!a){a=document.createElement('a');a.dataset.hbBulletinAction=url;a.href=url;a.textContent=label;actions.append(a)}
-    a.style.cssText='display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:0!important;padding:8px 9px!important;margin:0!important;border-radius:8px!important;border:1px solid #cee0ec!important;white-space:nowrap!important;font-size:clamp(10px,1.9vw,13px)!important;text-decoration:none!important;background:#fff!important;color:#215476!important';
+    a.style.cssText='display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:0!important;padding:8px 9px!important;margin:0!important;border-radius:8px!important;border:1px solid #cee0ec!important;white-space:nowrap!important;font-size:clamp(9px,1.6vw,12px)!important;text-decoration:none!important;background:#fff!important;color:#215476!important';
   }
   // Existing buttons are moved out of sight; only this shared action row is visible.
   for(const other of box.querySelectorAll('a,button')){
@@ -64,7 +64,7 @@ function display(){
   actions.style.setProperty('display','flex','important');
   actions.style.setProperty('flex-direction','row','important');
   actions.style.setProperty('flex-wrap','nowrap','important');
-  for(const a of actions.querySelectorAll('a'))if(a.href.includes('bulletin.html'))a.textContent='업로드';
+  for(const a of actions.querySelectorAll('a'))if(a.href.includes('bulletin.html'))a.textContent='이번주 교회주보 업로드';
   // Hide duplicated standalone upload pills, without hiding the two heading actions.
   for(const el of box.querySelectorAll('a,button')){
     if(actions.contains(el)||viewer.contains(el))continue;
