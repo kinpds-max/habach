@@ -5,21 +5,25 @@ function init(){
  const side=document.querySelector('.page-grid aside.side');
  if(!side||!/^#\/?ministry-/.test(location.hash))return;
  const current=side.querySelector('a[href="#/ministry-5"]');
- if(!current)return;
  let menu=side.querySelector('#hb-volunteer-side-accordion');
+ if(!current&&!menu)return;
  if(!menu){
   menu=document.createElement('details');menu.id='hb-volunteer-side-accordion';menu.className='hb-small-group-menu hb-volunteer-native-menu';
   const summary=document.createElement('summary');summary.textContent='봉사와 섬김';
   const arrow=document.createElement('span');arrow.textContent='⌄';summary.append(arrow);
   const links=document.createElement('div');links.className='hb-small-group-links';
   groups.forEach((name,i)=>{const a=document.createElement('a');a.href='#/ministry-5';a.textContent=name;a.dataset.volunteerCategory=String(i);a.addEventListener('click',e=>{e.preventDefault();selected=i;menu.open=true;if(location.hash!=='#/ministry-5')location.hash='#/ministry-5';else show();});links.append(a)});
-  menu.append(summary,links);current.insertAdjacentElement('afterend',menu);
+  menu.append(summary,links);
+  if(current)current.insertAdjacentElement('afterend',menu);
+  else {const group=side.querySelector('.hb-small-group-menu');if(group)group.insertAdjacentElement('beforebegin',menu);else side.append(menu)}
  }
- // Replace the original navigation link rather than leaving two visible parent labels.
- current.remove();
+ // Preserve the original navigation node so the accordion survives repeated renders.
+ if(current)current.style.setProperty('display','none','important');
  if(!menu.dataset.bound){menu.dataset.bound='1';menu.querySelector('summary').addEventListener('click',()=>{if(location.hash!=='#/ministry-5')location.hash='#/ministry-5'})}
  const active=/^#\/?ministry-5$/.test(location.hash);
- menu.open=active;
+ if(menu.open!==active)menu.open=active;
+ menu.style.removeProperty('display');
+ menu.querySelector('.hb-small-group-links')?.style.removeProperty('display');
  menu.querySelectorAll('[data-volunteer-category]').forEach((a,i)=>a.classList.toggle('on',active&&selected===i));
  if(active)show();
 }
