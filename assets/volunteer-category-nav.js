@@ -38,7 +38,7 @@ function polishMinistry(article,group){
  const children=group.querySelector('.hb-ministry-children');
  const parents=group.querySelector('.hb-ministry-parents');
  const original=article.querySelector('#hb-volunteer-original-content');
- const list=[[regional,'1. 지역·문화섬김'],[children,'2. 자녀세대섬김'],[parents,'3. 부모세대섬김']];
+ const list=[[regional,'1. 지역,문화 섬김'],[children,'2. 자녀세대 섬김'],[parents,'3. 부모세대 섬김']];
  for(const [section,label] of list){
   if(!section)continue;
   section.classList.add('hb-readable-ministry-section');
@@ -51,7 +51,7 @@ function polishMinistry(article,group){
   const introPara=[...article.querySelectorAll('p')].find(p=>p.textContent.trim()==='사람을 사랑하며 지역 공동체를 섬깁니다');
   let heading=article.querySelector('#hb-regional-leading-heading');
   if(!heading){heading=document.createElement('div');heading.id='hb-regional-leading-heading'}
-  heading.innerHTML='<h3>1. 지역·문화섬김</h3>';
+  heading.innerHTML='<h3>1. 지역,문화 섬김</h3>';
   if(introPara&&introPara.previousElementSibling!==heading)introPara.insertAdjacentElement('beforebegin',heading);
   const originalDescription=regional.querySelector('p');
   if(originalDescription)originalDescription.remove();
