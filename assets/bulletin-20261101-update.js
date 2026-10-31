@@ -28,6 +28,18 @@ function run(){
    let index=0;const change=n=>{index=(n+images.length)%images.length;img.src=images[index];img.alt='이번 주 교회 주보 '+(index+1)+'쪽';link.href=images[index];count.textContent=(index+1)+' / '+images.length};back.onclick=()=>change(index-1);next.onclick=()=>change(index+1);
    nav.append(back,count,next);gallery.append(viewer,nav);
   }
+  // Remove duplicate explanatory text and any legacy pagination outside our current viewer.
+  for(const el of [...box.querySelectorAll('p,small,span,div')]){
+   if(el.children.length===0&&/주보를 한 페이지씩 넘기고,? 이미지를 누르면 확대해서 볼 수 있습니다/.test(el.textContent||''))el.remove();
+  }
+  for(const el of [...box.querySelectorAll('div,nav')]){
+   if(gallery.contains(el)||el.contains(gallery)||el===box)continue;
+   const str=(el.textContent||'').trim().replace(/\\s+/g,'');
+   if(str.length<38&&/이전/.test(str)&&/다음/.test(str)&&/\\d+\\/3/.test(str)&&el.querySelectorAll('button').length>=2){
+     const childHasSame=[...el.children].some(c=>/이전/.test(c.textContent||'')&&/다음/.test(c.textContent||'')&&c.querySelectorAll('button').length>=2);
+     if(!childHasSame)el.remove();
+   }
+  }
   // Hide legacy thumbnail strips only; preserve the new single-page viewer.
   const legacy=[...box.querySelectorAll('img')].filter(im=>!gallery.contains(im)&&/mallary|주보|bulletin/.test(im.src+' '+im.alt));
   legacy.forEach(im=>{const container=im.closest('a')||im;if(container.parentNode)container.remove()});
