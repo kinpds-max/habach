@@ -1,0 +1,32 @@
+name: Sync member sharing videos
+on:
+  workflow_dispatch:
+  push:
+    branches: [habachnew]
+    paths:
+      - 'scripts/fetch_member_sharing_videos.py'
+      - '.github/workflows/habach-member-sharing.yml'
+  schedule:
+    - cron: '12 0 * * *'
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: habachnew
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --upgrade yt-dlp
+      - run: python scripts/fetch_member_sharing_videos.py
+      - name: Commit if updated
+        run: |
+          if git diff --quiet -- assets/member-sharing-videos.json; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/member-sharing-videos.json
+          git commit -m "Sync member sharing videos [skip ci]"
+          git push origin HEAD:habachnew
