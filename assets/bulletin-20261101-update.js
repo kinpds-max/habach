@@ -39,7 +39,8 @@ function display(){
   let actions=headRow.querySelector('#hb-bulletin-actions');
   if(!actions){actions=make('div','');actions.id='hb-bulletin-actions';headRow.append(actions)}
   actions.style.cssText='display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-end!important;gap:5px!important;width:auto!important;min-width:0!important;flex:0 0 auto!important;margin:0!important;padding:0!important';
-  const btns=[['이번 주 교회주보 업로드','/admin/bulletin.html'],['주보 게시판','#news-2']];
+  const btns=[['이번 주 교회주보 업로드','/admin/bulletin.html']];
+  actions.querySelectorAll('a').forEach(a=>{if(/주보\s*게시판/.test(a.textContent||'')||a.getAttribute('href')==='#news-2')a.remove()});
   for(const [label,url] of btns){
     let a=actions.querySelector('[data-hb-bulletin-action="'+url+'"]');
     if(!a){a=document.createElement('a');a.dataset.hbBulletinAction=url;a.href=url;a.textContent=label==='이번 주 교회주보 업로드'?'업로드':'주보 게시판';actions.append(a)}
@@ -67,6 +68,19 @@ function display(){
     if(/^(이번\\s*주\\s*교회주보\\s*업로드|이번주교회주보업로드|주보\\s*게시판)$/.test((el.textContent||'').trim()))el.style.setProperty('display','none','important');
   }
   if(headRow.nextElementSibling!==viewer)headRow.insertAdjacentElement('afterend',viewer);
+  // The native book reader below the canonical viewer is a duplicate. Keep its code/data intact but remove its visual footprint.
+  for(const legacy of box.querySelectorAll('.hb-book-reader,.hb-book-controls,.hb-book-heading>a[href="#/news-2"]')){
+   if(!viewer.contains(legacy))legacy.style.setProperty('display','none','important');
+  }
+  // Remove secondary bulletin gallery blocks, preserving only the current 3-page canonical viewer.
+  for(const legacy of box.querySelectorAll('#hb-home-latest-bulletin-restored,#hb-home-latest-bulletin,#hb-community-uploaded-bulletin')){
+   if(!viewer.contains(legacy))legacy.style.setProperty('display','none','important');
+  }
+  // Make the canonical bulletin align with the available width of the page.
+  box.style.setProperty('width','100%','important');
+  box.style.setProperty('max-width','none','important');
+  viewer.style.setProperty('width','100%','important');
+  viewer.style.setProperty('max-width','none','important');
   // Hide legacy feed, static November gallery and any old dated gallery, without touching the new viewer.
   for(const selector of ['#hb-shared-bulletin-feed','#hb-november-first-bulletin','#hb-bulletin-20261025','#hb-home-latest-bulletin','#hb-home-latest-bulletin-restored','#hb-bulletin-one-line-actions','#hb-bulletin-inline-actions']){
    for(const el of box.querySelectorAll(selector))if(!viewer.contains(el)&&el!==actions)el.style.setProperty('display','none','important');
