@@ -19,9 +19,6 @@ function run(){
    }
    if(key==='news-6'){
     article.classList.add('hb-requested-businesses');
-    for(const el of article.querySelectorAll('p,strong,b,li,span')){
-     if(el.children.length)return;
-    }
     const bold=article.querySelectorAll('p,li,div');
     for(const el of bold)if(el.children.length===0&&/하스놀|하늘매트|하맘컨텐츠|데오럭스|성규에이전시|론파인드|썬빈로스터리/.test(el.textContent)){el.style.fontWeight='750';el.textContent=el.textContent.replace(/\\(주\\)하스놀|하스놀\\(주\\)|\\(주\\)하스놀/g,'하스놀(주)')}
    }
