@@ -8,7 +8,7 @@ const css=document.createElement('style');css.id='hb-requested-ui-fixes-20261101
 #app .hb-requested-calendar-notice h3{color:#315975;font-size:18px;margin:0 0 9px}
 #app .hb-requested-calendar-notice a{color:#225e88}
 `;document.head.append(css);
-const route=()=>location.hash.replace(/^#\\/?/,'').split(/[?&]/)[0];
+const route=()=>location.hash.slice(1).replace(/^\//,'').split(/[?&]/)[0];
 function run(){
  const key=route(),article=document.querySelector('#app .page-grid article.article');if(!article)return;
  if(['news-1','news-6'].includes(key)){
