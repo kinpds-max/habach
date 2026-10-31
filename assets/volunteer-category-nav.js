@@ -54,8 +54,20 @@ function show(){
  if(area.dataset.choice===String(selected))return;
  area.dataset.choice=String(selected);
  const h=document.createElement('h3');h.textContent=selected===1?'너는 잘될 거야':'덕분에 잘됐습니다';
- const intro=document.createElement('p');intro.textContent=selected===1?'5월 가정의 달 · 너는 잘될 거야':'부모세대 섬김 활동';
+ const intro=document.createElement('p');intro.textContent=selected===1?'5월 가정의 달 · 다음 세대를 위한 응원과 축복':'부모세대를 향한 감사와 응원의 마음을 전합니다.';
  area.replaceChildren(h,intro);
+ // Each generation category has its own video and gallery. Regional cultural material remains exclusively in original content.
+ const id=selected===1?'nweyrCQwGPs':'uUId-pRdB_w';
+ const label=selected===1?'너는 잘될 거야':'덕분에 잘됐습니다';
+ const video=document.createElement('a');video.className='hb-volunteer-generation-video';
+ video.href='https://www.youtube.com/watch?v='+id;video.target='_blank';video.rel='noopener noreferrer';
+ video.style.cssText='display:block;max-width:760px;margin:20px auto 26px;text-decoration:none;color:#244860';
+ const thumbnail=document.createElement('img');thumbnail.src='https://i.ytimg.com/vi/'+id+'/hqdefault.jpg';
+ thumbnail.alt=label+' 영상 썸네일';thumbnail.loading='lazy';
+ thumbnail.style.cssText='width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;display:block';
+ const videoLabel=document.createElement('strong');videoLabel.textContent='▶ '+label+' · 영상 보기';
+ videoLabel.style.cssText='display:block;font-size:17px;padding:12px 0;text-align:center';
+ video.append(thumbnail,videoLabel);area.append(video);
  if(selected===1){
   const images=['https://files.mallary.ai/uploads/900/chatgpt_1793426450783_0c594477ea84204c.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426453670_e345e10bd41d27f7.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426456099_aee978fbeb1f582b.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426459734_ee4e9a5e493d7e4b.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426462359_42e9763907b0fdab.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426465419_3226d05108103e6f.jpg'];
   const gallery=document.createElement('div');gallery.style.cssText='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px';
