@@ -5,6 +5,8 @@ on:
     branches: [habachnew]
     paths:
       - 'scripts/fetch_bt_playlists.py'
+      - 'assets/bt-playlist-gallery.js'
+      - 'assets/bt-playlist-videos.json'
       - '.github/workflows/habach-bt-playlists.yml'
   schedule:
     - cron: '24 2 * * *'
