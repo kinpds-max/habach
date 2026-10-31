@@ -44,7 +44,12 @@ function show(){
   while(area.nextSibling)content.append(area.nextSibling);
   area.insertAdjacentElement('afterend',content);
  }
- content.style.display=selected===0?'':'none';
+ content.style.setProperty('display',selected===0?'block':'none','important');
+ // Keep dynamically injected regional galleries and board inside their own original panel.
+ for(const node of [...article.children]){
+  if(node===title||node===area||node===content||node.matches('.breadcrumbs'))continue;
+  if(node.matches('.hb-service-album,.hb-service-board,.detail-board,.hb-static-board,.hb-card-board,.hb-note-grid,.hb-ministry-service-gallery,.hb-restored-volunteer-description'))content.append(node);
+ }
  // Restore the original regional / cultural ministry explanation if another renderer omitted it.
  if(selected===0 && !content.querySelector('.source-subhead')){
   const original=document.createElement('div');original.className='hb-restored-volunteer-description';
@@ -67,18 +72,18 @@ function show(){
  frame.style.cssText='display:block;width:100%;aspect-ratio:16/9;height:auto;min-height:220px;border:0;border-radius:14px;background:#152837';
  const link=document.createElement('a');link.href='https://www.youtube.com/watch?v='+id;link.target='_blank';link.rel='noopener noreferrer';link.textContent='유튜브 원본 영상 보기 ↗';link.style.cssText='display:inline-block;margin-top:12px;color:#315c78;font-weight:700;text-decoration:underline';
  video.append(frame,link);area.replaceChildren(h,intro,video);
- if(selected===2){
-  // The six individual photographs were previously stored with the former youth gallery.
-  // Display them exclusively for "덕분에 잘되었습니다" and preserve the 16:9 video above.
+ if(selected===1){
+  // The supplied six-photo "덕분에 잘되었습니다" event album belongs only to 자녀세대섬김.
+  // Keep the parent generation tab free of regional/youth photographs.
   const photos=["https://files.mallary.ai/uploads/900/chatgpt_1793426450783_0c594477ea84204c.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426453670_e345e10bd41d27f7.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426456099_aee978fbeb1f582b.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426459734_ee4e9a5e493d7e4b.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426462359_42e9763907b0fdab.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426465419_3226d05108103e6f.jpg"];
-  const title=document.createElement('h3');title.textContent='덕분에 잘되었습니다 · 행사 사진';
+  const title=document.createElement('h3');title.textContent='덕분에 잘되었습니다 · 자녀세대 행사 사진';
   title.style.cssText='margin:20px 0 14px;color:#244860;font-size:clamp(19px,2.5vw,24px)';
-  const gallery=document.createElement('div');gallery.className='hb-parent-gratitude-gallery';
-  gallery.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:100%';
+  const gallery=document.createElement('div');gallery.className='hb-youth-gratitude-gallery';
+  gallery.style.cssText='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%';
   photos.forEach((src,i)=>{
    const anchor=document.createElement('a');anchor.href=src;anchor.target='_blank';anchor.rel='noopener noreferrer';
    const photo=document.createElement('img');photo.src=src;photo.loading='lazy';photo.decoding='async';
-   photo.alt='덕분에 잘되었습니다 행사 사진 '+(i+1);
+   photo.alt='자녀세대섬김 · 덕분에 잘되었습니다 사진 '+(i+1);
    photo.style.cssText='display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px';
    anchor.append(photo);gallery.append(anchor);
   });
