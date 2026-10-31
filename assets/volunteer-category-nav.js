@@ -23,6 +23,7 @@ function render(){
    let sub=side.querySelector('#hb-volunteer-sidebar-subnav');
    if(!sub){sub=document.createElement('div');sub.id='hb-volunteer-sidebar-subnav';sub.style.cssText='display:flex;flex-direction:column;padding:0 0 3px 14px';const holder=parentButton.closest('li')||parentButton;holder.insertAdjacentElement('afterend',sub);}
    [...tabs.children].forEach((b,i)=>{b.style.cssText='display:block;width:100%;min-height:35px;height:auto;text-align:left;padding:9px 12px;border:0;border-bottom:1px solid #e4eaf0;background:transparent;color:#46627d;font-size:13px;cursor:pointer';sub.append(b)});
+   tabs.classList.remove('hb-volunteer-submenu-matches-smallgroups');tabs.classList.add('hb-volunteer-sidebar-tabs');tabs.style.cssText='display:flex!important;flex-direction:column!important;gap:0!important;width:100%!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important';
    sub.style.display='flex';
  }
  root.insertBefore(section,root.firstChild);
