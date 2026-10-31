@@ -796,6 +796,18 @@ jobs:
               assert '</body>' in s
               p.write_text(s.replace('</body>',tag+'\n</body>',1),encoding='utf-8')
           PY
+      - name: Fix volunteer submenu and add bulletin admin buttons
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          for file in ('ministry-volunteer-subnav-fix.js','bulletin-admin-upload-buttons.js'):
+              tag=f'<script defer src="/assets/{file}"></script>'
+              if tag not in s:
+                  assert '</body>' in s
+                  s=s.replace('</body>',tag+'\n</body>',1)
+          p.write_text(s,encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
