@@ -11,7 +11,7 @@ const css=document.createElement('style');css.textContent=`
 .hb-unified-album a>div:first-child,.hb-unified-album .video-thumbnail,.hb-unified-album .video-thumb,.hb-unified-album [class*=thumbnail],.hb-unified-album [class*=thumb]{aspect-ratio:4/3!important;width:100%!important;max-height:none!important}
 .hb-unified-album img{object-fit:contain!important;max-height:100%!important}
 .hb-unified-album .hb-unified-caption{font-size:14px!important;font-weight:700!important;line-height:1.45!important;padding:11px!important;min-height:62px!important;box-sizing:border-box!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
-@media(min-width:860px){.hb-unified-album{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(min-width:860px){.hb-unified-album{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 `;document.head.append(css);
 const getId=url=>{const m=(url||'').match(/(?:shorts\/|youtu\.be\/|watch\?v=|embed\/|vi\/)([\w-]{11})/);return m?.[1]||null};
 function visible(e){return e.getClientRects().length>0}
