@@ -36,7 +36,7 @@ function refresh(){
      const card=a.closest('.sermon-album-card,.video-card,.album-card,[class*="video-item"],[class*="album-item"]')||a;
      card.remove();continue;
    }
-   if(type==='church'&&/^교회영상\s*\d+$/i.test(existingTitle)&&a.dataset.hbTitleFetch!==id){
+   if(type==='church'&&(/^(?:교회영상\s*)?\d+$|^교회영상\s*\d+$/i.test(existingTitle)||!/[가-힣]/.test(existingTitle))&&a.dataset.hbTitleFetch!==id){
     a.dataset.hbTitleFetch=id;
     titleFromYouTube(id).then(title=>{if(title&&a.isConnected){const n=titleNode(a);if(n&&/^교회영상\s*\d+$/i.test(n.textContent.trim()))n.textContent=title}});
    }
