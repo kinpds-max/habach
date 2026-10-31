@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const lists={'sermon-8':'PLmD7ZicLdWIpZeJVlgfXuYYaOSHjwuG6R','sermon-event-1':'PLmD7ZicLdWIr2ZEuTbox3JN1HtmZPL4G-','sermon-event-2':'PLmD7ZicLdWIogu1FRwzVeQEl5u65ergLO','sermon-member-1':'PLmD7ZicLdWIqhiIi5ZfjOzIx1uiJI8f0c','sermon-member-2':'PLmD7ZicLdWIqmp13mlhv_6a_qVi59Fjkm','sermon-member-3':'PLmD7ZicLdWIpFunENSvRQ9OM-LkHr_-07','sermon-member-4':'PLmD7ZicLdWIr3-kWBB-H1-hD9D4NokQyU','sermon-member-5':'PLmD7ZicLdWIqfKtJXSTyp8e1Qb2DIQ5tr'};
+const lists={'sermon-8':'PLmD7ZicLdWIpZeJVlgfXuYYaOSHjwuG6R','sermon-event-1':'PLmD7ZicLdWIr2ZEuTbox3JN1HtmZPL4G-','sermon-event-2':'PLmD7ZicLdWIogu1FRwzVeQEl5u65ergLO','sermon-event-3':'PLmD7ZicLdWIoue08ZGSUEvTCPVRLbGiDH','sermon-member-1':'PLmD7ZicLdWIqhiIi5ZfjOzIx1uiJI8f0c','sermon-member-2':'PLmD7ZicLdWIqmp13mlhv_6a_qVi59Fjkm','sermon-member-3':'PLmD7ZicLdWIpFunENSvRQ9OM-LkHr_-07','sermon-member-4':'PLmD7ZicLdWIr3-kWBB-H1-hD9D4NokQyU','sermon-member-5':'PLmD7ZicLdWIqfKtJXSTyp8e1Qb2DIQ5tr'};
 let fetched={};const shown={};let queued=false;
 fetch('/assets/official-video-albums.json',{cache:'no-store'}).then(r=>r.ok?r.json():{}).then(x=>{fetched=x;requestAnimationFrame(render)}).catch(()=>{});
 function render(){const key=(location.hash.match(/(?:sermon-member-\d+|sermon-event-\d+|sermon-\d+)/)||[])[0];if(!key||key==='sermon-11')return;
