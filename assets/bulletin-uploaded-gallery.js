@@ -7,6 +7,9 @@ function setViewer(viewer,pages,title,id){if(viewer.dataset.uploadedId===id)retu
 function update(){if(!latest)return;const pages=latest.image_urls;const main=document.getElementById('hb-canonical-bulletin-viewer');if(main)setViewer(main,pages,latest.title||'교회 주보',latest.id);
  // Remove the broken duplicate "최신 교회 주보" card and its empty controls.
  document.querySelectorAll('#hb-community-uploaded-bulletin').forEach(el=>el.remove());
+ // Community page retains its native bulletin board; remove the old broken injected viewer.
+ document.querySelectorAll('#hb-community-single-bulletin-viewer,#hb-community-uploaded-bulletin').forEach(e=>e.remove());
+ return;
  // Render one actual picture viewer in the community bulletin page only.
  const isCommunity=/news-|bulletin|주보/.test(location.hash);
  if(!isCommunity)return;
