@@ -39,7 +39,7 @@ function fixWednesday(){
   const id=a.dataset.video||a.href.match(/[?&]v=([a-zA-Z0-9_-]{11})/)?.[1];
   if(!id||!a.closest('.home-six-item,.hb-static-board,.hb-static-sermon-grid'))continue;
   const heading=route()==='sermon-2'||a.closest('.home-six-item')?.querySelector('.home-six-label')?.textContent.includes('수요설교');
-  if(!heading)return;
+  if(!heading)continue;
   const strong=a.querySelector('.sermon-album-copy strong,.video-title,.album-title');
   if(!strong||!/^\[?수요설교\]?\s*영상\s+[a-zA-Z0-9_-]{11}$/.test(strong.textContent.trim())||a.dataset.hbWednesdayTitleFetch===id)continue;
   a.dataset.hbWednesdayTitleFetch=id;
