@@ -15,7 +15,7 @@ function run(){
    const title=article.querySelector('.article-title');
    if(title){
     let n=title.nextElementSibling,removed=0;
-    while(n&&removed<2){const next=n.nextElementSibling;if((n.tagName==='HR'||n.matches('.boardhead'))&&!(n.textContent||'').trim()){n.style.display='none';removed++}n=next}
+    while(n&&removed<2){const next=n.nextElementSibling;if((n.tagName==='HR'||n.matches('.boardhead'))){n.style.display='none';removed++}n=next}
    }
    if(key==='news-6'){
     article.classList.add('hb-requested-businesses');
@@ -30,6 +30,8 @@ function run(){
    if(!action.querySelector('a')){const a=document.createElement('a');a.href='/admin/bulletin.html';a.textContent='교회주보 업로드';action.append(a)}
   }
   article.querySelectorAll('.hb-book-reader,.hb-book-controls').forEach(el=>el.style.display='none');
+  const heading=article.querySelector('.article-title');if(heading)heading.style.setProperty('display','flex','important');
+  if(heading){heading.style.setProperty('align-items','center','important');heading.style.setProperty('justify-content','space-between','important');}
  }
  if(key==='next-1'){
   for(const item of article.querySelectorAll('.hb-education-schedule'))item.innerHTML=item.innerHTML.replace(/<br\\s*\\/?>(?:\\s*<strong>활동<\\/strong>)\\s*주짓수/g,'').replace(/<strong>활동<\\/strong>\\s*주짓수/g,'');
