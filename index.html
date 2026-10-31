@@ -2601,66 +2601,7 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 #app .side .hb-volunteer-accordion .hb-small-group-links{padding:0 0 8px 13px}
 #app .side .hb-volunteer-accordion .hb-small-group-links a{display:block;padding:10px 8px;font-size:12px;border-bottom:1px solid #edf1f5;text-decoration:none}
 </style>
-<script id="hb-volunteer-accordion-fix-script">
-(function(){
- const names=['지역·문화섬김','자녀세대섬김','부모세대섬김'];
- const route='#/ministry-5';
- function mount(){
-  const side=document.querySelector('#app .page-grid .side');
-  if(!side || side.querySelector('.hb-volunteer-mobile-tile,.hb-volunteer-accordion'))return;
-  const link=side.querySelector('a[href="#/ministry-5"]');
-  if(!link)return;
-  const mobile=matchMedia('(max-width:900px)').matches;
-  const parent=document.createElement(mobile?'button':'details');
-  if(mobile){
-   parent.type='button';parent.className='hb-small-group-tile hb-volunteer-mobile-tile';
-   parent.textContent='봉사와 섬김';parent.setAttribute('aria-controls','hb-volunteer-mobile-panel');
-  }else{
-   parent.className='hb-volunteer-accordion';
-   parent.innerHTML='<summary>봉사와 섬김 <span>⌄</span></summary>';
-  }
-  const panel=document.createElement('div');
-  panel.className=mobile?'hb-small-group-mobile-panel hb-volunteer-mobile-panel':'hb-small-group-links';
-  if(mobile)panel.id='hb-volunteer-mobile-panel';
-  const selection=Number(window.__hbVolunteerSelection||0);
-  names.forEach((name,i)=>{
-   const a=document.createElement('a');
-   a.href=route;a.textContent=name;a.dataset.volunteerSub=String(i);
-   a.classList.toggle('on',selection===i);
-   a.addEventListener('click',e=>{
-    // Same-route submenu navigation must not rebuild and lose existing content.
-    if(location.hash===route)e.preventDefault();
-    window.__hbVolunteerSelection=i;
-    panel.querySelectorAll('a').forEach(x=>x.classList.toggle('on',x===a));
-    const article=document.querySelector('#app .page-grid .article');
-    if(article)article.dataset.hbVolunteerCategory=String(i);
-   });
-   panel.append(a);
-  });
-  link.replaceWith(parent);
-  if(mobile){
-   parent.insertAdjacentElement('afterend',panel);
-   const open=location.hash===route;
-   const toggle=value=>{
-    parent.setAttribute('aria-expanded',String(value));
-    parent.classList.toggle('on',value);
-    panel.hidden=!value;
-   };
-   toggle(open);
-   parent.addEventListener('click',()=>toggle(parent.getAttribute('aria-expanded')!=='true'));
-  }else{
-   parent.append(panel);
-   parent.open=location.hash===route;
-  }
-  const article=document.querySelector('#app .page-grid .article');
-  if(article&&location.hash===route)article.dataset.hbVolunteerCategory=String(selection);
- }
- const app=document.getElementById('app');
- if(app)new MutationObserver(mount).observe(app,{childList:true,subtree:false});
- addEventListener('hashchange',()=>requestAnimationFrame(mount));
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
-})();
-</script><style id="hb-mobile-sunday-sermon-stability-20261101">
+<style id="hb-mobile-sunday-sermon-stability-20261101">
 @media(max-width:900px){
  #app .sermon-album-grid,#app .hb-static-sermon-grid,#app .hb-worship-album .hb-static-sermon-grid{
   display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;align-items:start!important;width:100%!important;min-width:0!important;
@@ -2685,34 +2626,6 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
    lastRoute=route;
    // Native router already resets the viewport once; no second scroll adjustment.
  },{passive:true});
-})();
-</script><script id="hb-remove-volunteer-ceremony-photo-20261101">
-(function(){
- const isTarget=()=>/^#\/ministry-5(?:$|[?#])/.test(location.hash)&&[1,2].includes(Number(window.__hbVolunteerSelection));
- function removePhoto(){
-  if(!isTarget())return;
-  const article=document.querySelector('#app .page-grid .article');
-  if(!article)return;
-  // Only remove the lead presentation photo in the children/parents ministries.
-  const imgs=[...article.querySelectorAll('img')].filter(img=>!img.closest('.side,.hero'));
-  if(!imgs.length)return;
-  const image=imgs.find(img=>/후원금|전달식|너는 잘될|sponsor|donation/i.test([img.alt,img.title,img.src,img.parentElement?.textContent].join(' ')))||imgs[0];
-  const wrapper=image.closest('figure,.hb-service-album-card,.hb-volunteer-image,.photo-card,.hb-photo-card');
-  if(wrapper&&wrapper!==article){wrapper.remove();}else image.remove();
- }
- let queued=false;
- function schedule(){
-  if(queued)return;queued=true;
-  requestAnimationFrame(()=>{queued=false;removePhoto()});
- }
- document.addEventListener('click',e=>{
-  if(e.target.closest('[data-volunteer-sub="1"],[data-volunteer-sub="2"]'))setTimeout(schedule,0);
- });
- const app=document.getElementById('app');
- if(app)new MutationObserver(schedule).observe(app,{childList:true,subtree:true});
- addEventListener('hashchange',schedule);
- document.addEventListener('DOMContentLoaded',schedule);
- schedule();
 })();
 </script><style id="hb-sermon-mobile-2col-stable-v3">
 @media(max-width:900px){
@@ -2751,4 +2664,30 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
  body #app .page-grid .article .sermon-album-grid>.sermon-album-detail,
  body #app .page-grid .article .hb-static-sermon-grid>.sermon-album-detail{grid-column:1/-1!important}
 }
-</style></body></html>
+</style><style id="hb-unified-ministry-20261101">
+#app .hb-unified-ministry-group{margin:36px 0 0;padding-top:22px;border-top:1px solid #dae5ed}
+#app .hb-unified-ministry-group h3{font-size:23px;color:#315675;margin:0 0 15px}
+#app .hb-unified-ministry-group p{line-height:1.85;color:#52697d}
+#app .hb-unified-ministry-group .hb-service-album{margin-top:16px}
+@media(max-width:700px){#app .hb-unified-ministry-group h3{font-size:19px}}
+</style><script id="hb-unified-ministry-20261101">
+(function(){
+ function apply(){
+  if(location.hash!=='#/ministry-5')return;
+  const article=document.querySelector('#app .page-grid .article');
+  if(!article||article.querySelector('.hb-unified-ministry-group'))return;
+  const side=document.querySelector('#app .page-grid .side');
+  // Remove only redundant submenu controls, keeping the main 봉사와 섬김 link.
+  side?.querySelectorAll('.hb-volunteer-accordion,.hb-volunteer-mobile-tile,.hb-volunteer-mobile-panel').forEach(el=>el.remove());
+  const existing=article.querySelector('.hb-service-album');
+  const section=document.createElement('div');section.className='hb-unified-ministry-group';
+  section.innerHTML='<h3>자녀세대섬김</h3><p>다음 세대를 사랑으로 돌보고 함께 성장하는 섬김을 이어갑니다.</p><h3 style="margin-top:30px">부모세대섬김</h3><p>부모 세대를 존중하며 서로를 격려하고 돌보는 공동체의 섬김을 이어갑니다.</p>';
+  if(existing)existing.insertAdjacentElement('afterend',section);
+  else article.append(section);
+ }
+ const app=document.getElementById('app');
+ if(app)new MutationObserver(()=>requestAnimationFrame(apply)).observe(app,{childList:true,subtree:false});
+ addEventListener('hashchange',()=>requestAnimationFrame(apply));
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
+})();
+</script></body></html>
