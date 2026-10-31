@@ -1227,20 +1227,17 @@ document.addEventListener('click',function(evt){
  if(!anchor)return;
  const key=anchor.getAttribute('href').slice(2);
  if(!Object.prototype.hasOwnProperty.call(views,key))return;
- // On mobile, allow a single post-render scroll instead of stacking scroll handlers.
- if(anchor.closest('#app .side') && key.startsWith('sermon-')){
-   const isSameRoute=location.hash==='#/'+key;
-   const scrollOnce=()=>{
-     if(location.hash!=='#/'+key)return;
+ // Mobile sermon routing uses the main router's single scroll reset; no second scroll handler.
+ // Desktop sidebar alone receives a one-time positioning adjustment after navigation.
+ if(anchor.closest('#app .side') && key.startsWith('sermon-') && window.matchMedia('(min-width: 901px)').matches){
+   const positionArticle=()=>{
      const article=document.querySelector('#app .page-grid .article');
      if(!article)return;
-     const header=document.querySelector('header');
-     const offset=(header?.getBoundingClientRect().height||80)+12;
-     const top=Math.max(0,window.scrollY+article.getBoundingClientRect().top-offset);
+     const top=Math.max(0,article.getBoundingClientRect().top+window.scrollY-(document.querySelector('header')?.offsetHeight||80)-12);
      window.scrollTo({top,behavior:'instant'});
    };
-   if(isSameRoute){requestAnimationFrame(scrollOnce);}
-   else window.addEventListener('hashchange',()=>requestAnimationFrame(scrollOnce),{once:true});
+   if(location.hash==='#/'+key)requestAnimationFrame(positionArticle);
+   else window.addEventListener('hashchange',()=>requestAnimationFrame(positionArticle),{once:true});
  }
  // Preserve the previous scroll behavior in other sections.
  if(anchor.closest('#app .side') && !key.startsWith('sermon-')){
