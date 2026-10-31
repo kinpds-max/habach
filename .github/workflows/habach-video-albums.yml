@@ -1,8 +1,8 @@
 name: Habach static video albums
 on:
   schedule:
-    # KST 06:50, after the existing Supabase 06:30 import.
-    - cron: '50 21 * * *'
+    # Every day at 09:00 KST (00:00 UTC); includes Thursday's Wednesday service and Saturday's Friday vigil.
+    - cron: '0 0 * * *'
   workflow_dispatch:
   push:
     branches: [habachnew]
