@@ -1,7 +1,8 @@
 (()=>{'use strict';
 const configs=[
  {title:/2\s*[·.ㆍ]?\s*3\s*[·.ㆍ]?\s*4\s*스몰모임/,extra:'#hb-small234-extra-videos'},
- {title:/남자들의\s*모임/,extra:'[data-hb-men-video]'}
+ {title:/남자들의\s*모임/,extra:'[data-hb-men-video]'},
+ {title:/청년들의\s*모임/,extra:'#hb-youth-extra-videos'}
 ];
 const css=document.createElement('style');css.textContent=`
 .hb-unified-album{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important;width:100%!important}
