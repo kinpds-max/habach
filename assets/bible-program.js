@@ -178,6 +178,19 @@ function initBible(){
   css.textContent='.hb-bible-sticky{padding:8px!important}.hb-bible-toolbar{display:grid!important;grid-template-columns:36px minmax(0,1.4fr) minmax(0,1fr) minmax(0,.62fr) 36px!important;gap:5px!important;align-items:end!important}.hb-bible-toolbar>label{min-width:0!important;gap:3px!important}.hb-bible-toolbar>label select{width:100%!important;min-width:0!important;box-sizing:border-box!important}.hb-bible-side-nav{padding:0!important;height:43px!important;min-width:0!important;width:36px!important;white-space:normal!important;font-size:0!important;border-radius:9px!important;align-self:end!important}.hb-bible-side-nav:first-child::after{content:"‹";font-size:25px}.hb-bible-side-nav:last-child::after{content:"›";font-size:25px}.hb-bible-actions{justify-content:center!important;margin:4px 0!important;padding:0!important}.hb-bible-actions strong{font-size:14px!important}@media(max-width:480px){.hb-bible-sticky{padding:5px!important}.hb-bible-toolbar{grid-template-columns:29px minmax(0,1.38fr) minmax(0,1fr) minmax(0,.52fr) 29px!important;gap:3px!important}.hb-bible-toolbar>label{font-size:11px!important}.hb-bible-toolbar>label select{height:38px!important;font-size:12px!important;padding-left:4px!important;padding-right:12px!important}.hb-bible-side-nav{width:29px!important;height:38px!important}}.hb-bible-floating-submit{position:fixed;right:16px;bottom:max(20px,env(safe-area-inset-bottom));z-index:9999;border:0;border-radius:999px;background:#08759d;color:#fff;font-weight:800;font-size:14px;padding:13px 19px;box-shadow:0 5px 18px #06496055;cursor:pointer}.hb-bible-floating-submit[hidden]{display:none!important}';
   document.head.append(css);
  }
+ // Explicit five-column compact row: arrows, translation, book, chapter, arrow.
+ toolbar.style.setProperty('display','grid','important');
+ toolbar.style.setProperty('grid-template-columns','28px minmax(0,1.45fr) minmax(0,1fr) minmax(0,.66fr) 28px','important');
+ toolbar.style.setProperty('gap','4px','important');
+ toolbar.style.setProperty('width','100%','important');
+ toolbar.style.setProperty('align-items','end','important');
+ toolbar.style.setProperty('flex-wrap','nowrap','important');
+ [...toolbar.children].forEach(child=>{child.style.setProperty('min-width','0','important');child.style.setProperty('width','auto','important');child.style.setProperty('grid-column','auto','important');child.style.setProperty('grid-row','1','important')});
+ [vlabel,blabel,clabel].forEach(label=>{label.style.setProperty('display','flex','important');label.style.setProperty('flex-direction','column','important');label.style.setProperty('min-width','0','important');label.style.setProperty('margin','0','important');label.style.setProperty('padding','0','important')});
+ [vsel,bsel,csel].forEach(sel=>{sel.style.setProperty('width','100%','important');sel.style.setProperty('min-width','0','important');sel.style.setProperty('box-sizing','border-box','important');sel.style.setProperty('font-size','12px','important');sel.style.setProperty('padding','5px 13px 5px 4px','important')});
+ // Keep status separate and avoid wrapping an extra row of controls.
+ action.style.setProperty('display','flex','important');
+ action.style.setProperty('margin','3px 0 0','important');
  const progress=attach(sticky,'div',{className:'hb-program-progress'});const progressFill=attach(progress,'span');
  const info=attach(host,'p',{className:'hb-bible-message',role:'status'},'말씀을 불러오는 중입니다.');
  const list=attach(host,'div',{className:'hb-bible-verse-list'});
@@ -198,6 +211,8 @@ function initBible(){
     return;
   }
   shareButton.click();
+  // Show the actual server result next to the floating button, never a premature success.
+  shareMessage.scrollIntoView({behavior:'smooth',block:'center'});
  });
  function refreshFloatingSubmit(){
   const rect=list.getBoundingClientRect();
