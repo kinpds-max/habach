@@ -10,7 +10,7 @@ function addRegionalPreviews(article){
  if(youtubeCard&&!youtubeCard.querySelector('.hb-added-performance-video')){
   const a=document.createElement('a');a.className='hb-added-performance-video hb-large-media-preview';a.href='https://www.youtube.com/watch?v=54RrPB5GKfQ';a.target='_blank';a.rel='noopener noreferrer';
   a.innerHTML='<span class="hb-preview-thumb"><img src="https://i.ytimg.com/vi/54RrPB5GKfQ/hqdefault.jpg" alt="연예인 지역뮤지컬공연 영상 미리보기" loading="lazy"><span class="hb-preview-play" aria-hidden="true">▶</span></span><strong>연예인 지역뮤지컬공연 · 영상 보기</strong>';
-  youtubeCard.append(a);
+  youtubeCard.append(a);a.addEventListener('click',function(e){e.preventDefault();const f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/54RrPB5GKfQ?autoplay=1';f.allow='autoplay;encrypted-media;picture-in-picture';f.allowFullscreen=true;f.title='연예인 지역뮤지컬공연';f.className='hb-inline-video-player';a.replaceWith(f)},{once:true});
  }
  if(cheerCard&&!cheerCard.querySelector('.hb-added-cheer-link')){
   const a=document.createElement('a');a.className='hb-added-cheer-link';a.href='https://cafe.naver.com/f-e/cafes/31371644/articles/239';a.target='_blank';a.rel='noopener noreferrer';
@@ -92,6 +92,7 @@ function apply(){
  if(!location.hash.startsWith('#/ministry-5'))return;
  const article=document.querySelector('#app .page-grid article.article');if(!article)return;
  removeVolunteerBoard(article);
+ article.querySelectorAll('a').forEach(a=>{if(a.textContent.trim()==='연예인 지역뮤지컬공연 · 영상 보기'&&a.classList.contains('hb-added-performance-video'))return;const txt=a.textContent.trim();if(/^연예인 지역뮤지컬공연\s*·?\s*영상 보기$/.test(txt)&&a.classList.contains('hb-added-performance-video'))return;if(/^연예인 지역뮤지컬공연\s*·?\s*영상 보기$/.test(txt))return;if(/^연예인 지역뮤지컬공연\s*·?\s*영상 보기$/.test(txt))return;});
  article.removeAttribute('data-hb-volunteer-category');
  article.querySelectorAll('#hb-volunteer-side-accordion,.hb-volunteer-native-menu').forEach(el=>el.remove());
  const current=document.querySelector('.page-grid aside.side a[href="#/ministry-5"]');if(current)current.style.removeProperty('display');
@@ -107,7 +108,7 @@ function apply(){
   const a=document.createElement('a');a.href='https://www.youtube.com/watch?v='+v.id;a.target='_blank';a.rel='noopener noreferrer';a.className='hb-generation-video-card';
   const img=document.createElement('img');img.src='https://i.ytimg.com/vi/'+v.id+'/hqdefault.jpg';img.alt=v.name+' 유튜브 영상';img.loading='lazy';
   const label=document.createElement('strong');label.textContent=v.name+' · 유튜브 영상 보기';
-  const play=document.createElement('span');play.className='hb-preview-play';play.textContent='▶';a.append(img,play,label);wrap.append(a);
+  const play=document.createElement('span');play.className='hb-preview-play';play.textContent='▶';a.append(img,play,label);wrap.append(a);a.addEventListener('click',function(e){e.preventDefault();const f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+v.id+'?autoplay=1';f.allow='autoplay;encrypted-media;picture-in-picture';f.allowFullscreen=true;f.title=v.name;f.className='hb-inline-video-player';a.replaceWith(f)},{once:true});
   if(i===0){
    const h=document.createElement('h4');h.textContent='덕분에 잘되었습니다 · 자녀세대 행사 사진';wrap.append(h);
    const gallery=document.createElement('div');gallery.className='hb-youth-gratitude-gallery hb-generation-photo-grid';
@@ -147,7 +148,7 @@ const mediaStyle=document.createElement('style');mediaStyle.textContent=`
 #app .hb-cafe-icon{width:43px;height:43px;display:grid;place-items:center;background:#03c75a;color:#fff;font-size:27px;font-weight:800;border-radius:10px}
 #app .hb-cafe-preview strong,#app .hb-cafe-preview small{display:block;line-height:1.6}
 #app .hb-cafe-preview small{color:#667d8e;font-size:13px}
-`;document.head.append(mediaStyle);
+`;document.head.append(mediaStyle);const inlineStyle=document.createElement('style');inlineStyle.textContent='#app .hb-inline-video-player{display:block;width:100%;aspect-ratio:16/9;height:auto;border:0;border-radius:14px;margin:18px 0 25px}#app #hb-regional-leading-heading{margin-top:25px!important;margin-bottom:0!important;padding-bottom:0!important}#app #hb-regional-leading-heading+h3,#app #hb-regional-leading-heading+p{margin-top:4px!important}';document.head.append(inlineStyle);
 const cleanLine=document.createElement('style');cleanLine.textContent='#app .hb-unified-ministry-group{border-top:0!important}#app .hb-unified-ministry-group .hb-ministry-children{border-top:0!important}';document.head.append(cleanLine);
 let queued=false;function tick(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',tick);else tick();
