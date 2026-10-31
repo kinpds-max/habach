@@ -43,7 +43,7 @@ function render(){
  heading.textContent='봉사와 섬김';heading.style.setProperty('text-align','center','important');section.style.setProperty('border','0','important');
  // The three large category buttons belong exclusively to the sidebar.
  for(const stray of document.querySelectorAll('.hb-volunteer-submenu-matches-smallgroups')){if(!stray.closest('#hb-volunteer-sidebar-subnav'))stray.remove();}
- if(parentButton){sub?.querySelector('button')?.click();}
+ if(parentButton){side.querySelector('#hb-volunteer-sidebar-subnav button')?.click();}
  // Keep the actual sidebar submenu; remove only any stray duplicate in the content.
 
 }
