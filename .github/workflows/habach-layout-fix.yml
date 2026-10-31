@@ -776,6 +776,16 @@ jobs:
               assert '</body>' in s
               p.write_text(s.replace('</body>',tag+'\n</body>',1),encoding='utf-8')
           PY
+      - name: Deduplicate and sort dawn sermons
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          tag='<script defer src="/assets/dawn-sermon-dedupe.js"></script>'
+          if tag not in s:
+              assert '</body>' in s
+              p.write_text(s.replace('</body>',tag+'\n</body>',1),encoding='utf-8')
+          PY
       - name: Commit and push production branch
         run: |
           if git diff --quiet -- index.html; then exit 0; fi
