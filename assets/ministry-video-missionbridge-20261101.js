@@ -67,7 +67,8 @@ function moveServiceBoard(){
  const target=original||article;
  for(const el of items){
   if(el.dataset.hbServiceBoardBottom==='1')continue;
-  if(album&&album.parentElement===article)album.insertAdjacentElement('afterend',el);
+  // Keep the service board within the original regional/cultural panel, so it is hidden on youth/parent tabs.
+  if(album&&album.parentElement===target)album.insertAdjacentElement('afterend',el);
   else target.append(el);
   el.dataset.hbServiceBoardBottom='1';
  }
