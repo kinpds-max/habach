@@ -4,6 +4,10 @@ function isHome(){return !location.hash||/^#\/?(?:home)?$/.test(location.hash)}
 function isBulletin(){return /news-|bulletin|주보/.test(location.hash)&&[...document.querySelectorAll('h1,h2,h3,h4')].some(h=>/주보/.test(h.textContent||''))}
 function add(){
  const headings=[...document.querySelectorAll('h1,h2,h3,h4')].filter(h=>h.getClientRects().length&&/주보/.test(h.textContent||'')&&h.textContent.length<70);
+ if(isHome()){
+  document.querySelectorAll('[data-hb-bulletin-upload]').forEach(el=>el.remove());
+  return;
+ }
  if(!headings.length)return;
  if(!isHome()&&!isBulletin())return;
  const h=headings.find(h=>/이번\s*주|교회\s*주보|주보/.test(h.textContent));
