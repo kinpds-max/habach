@@ -168,6 +168,16 @@ function initBible(){
  const prev=attach(action,'button',{type:'button'},'‹ 이전 장');
  const status=attach(action,'strong',{},'');
  const next=attach(action,'button',{type:'button'},'다음 장 ›');
+ // Reuse the original previous/next chapter buttons on either side of the compact selectors.
+ toolbar.insertBefore(prev,toolbar.firstChild);
+ toolbar.append(next);
+ prev.classList.add('hb-bible-side-nav');
+ next.classList.add('hb-bible-side-nav');
+ if(!document.getElementById('hb-bible-compact-nav-style')){
+  const css=document.createElement('style');css.id='hb-bible-compact-nav-style';
+  css.textContent='.hb-bible-sticky{padding:8px!important}.hb-bible-toolbar{display:grid!important;grid-template-columns:36px minmax(0,1.4fr) minmax(0,1fr) minmax(0,.62fr) 36px!important;gap:5px!important;align-items:end!important}.hb-bible-toolbar>label{min-width:0!important;gap:3px!important}.hb-bible-toolbar>label select{width:100%!important;min-width:0!important;box-sizing:border-box!important}.hb-bible-side-nav{padding:0!important;height:43px!important;min-width:0!important;width:36px!important;white-space:normal!important;font-size:0!important;border-radius:9px!important;align-self:end!important}.hb-bible-side-nav:first-child::after{content:"‹";font-size:25px}.hb-bible-side-nav:last-child::after{content:"›";font-size:25px}.hb-bible-actions{justify-content:center!important;margin:4px 0!important;padding:0!important}.hb-bible-actions strong{font-size:14px!important}@media(max-width:480px){.hb-bible-sticky{padding:5px!important}.hb-bible-toolbar{grid-template-columns:29px minmax(0,1.38fr) minmax(0,1fr) minmax(0,.52fr) 29px!important;gap:3px!important}.hb-bible-toolbar>label{font-size:11px!important}.hb-bible-toolbar>label select{height:38px!important;font-size:12px!important;padding-left:4px!important;padding-right:12px!important}.hb-bible-side-nav{width:29px!important;height:38px!important}}.hb-bible-floating-submit{position:fixed;right:16px;bottom:max(20px,env(safe-area-inset-bottom));z-index:9999;border:0;border-radius:999px;background:#08759d;color:#fff;font-weight:800;font-size:14px;padding:13px 19px;box-shadow:0 5px 18px #06496055;cursor:pointer}.hb-bible-floating-submit[hidden]{display:none!important}';
+  document.head.append(css);
+ }
  const progress=attach(sticky,'div',{className:'hb-program-progress'});const progressFill=attach(progress,'span');
  const info=attach(host,'p',{className:'hb-bible-message',role:'status'},'말씀을 불러오는 중입니다.');
  const list=attach(host,'div',{className:'hb-bible-verse-list'});
@@ -179,6 +189,24 @@ function initBible(){
  shareName.addEventListener('change',()=>write('hb-rank-display-name',shareName.value));
  const shareButton=attach(shareSection,'button',{type:'button',class:'hb-rank-submit'},'이 장 필사 완료 공유');
  const shareMessage=attach(shareSection,'p',{role:'status',className:'hb-rank-feedback'},'모든 절을 필사하면 공유할 수 있습니다.');
+ const floatingSubmit=attach(host,'button',{type:'button',className:'hb-bible-floating-submit'},'이대로 제출하기');
+ floatingSubmit.addEventListener('click',()=>{
+  if(!shareName.value.trim()||shareName.value.trim().length<2){
+    shareSection.scrollIntoView({behavior:'smooth',block:'center'});
+    shareName.focus({preventScroll:true});
+    shareMessage.textContent='제출하려면 필사자 이름과 직분을 입력해 주세요.';
+    return;
+  }
+  shareButton.click();
+ });
+ function refreshFloatingSubmit(){
+  const rect=list.getBoundingClientRect();
+  floatingSubmit.hidden=!(rect.bottom>130&&rect.top<window.innerHeight-15);
+ }
+ window.addEventListener('scroll',refreshFloatingSubmit,{passive:true});
+ window.addEventListener('resize',refreshFloatingSubmit);
+ setTimeout(refreshFloatingSubmit,200);
+
  const ranking=attach(host,'section',{className:'hb-bible-rankboard'});
  title(ranking,'성경필사 월간 순위');
  const tabs=attach(ranking,'div',{className:'hb-rank-tabs'});
