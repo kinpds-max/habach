@@ -12,14 +12,14 @@ function init(){
   const summary=document.createElement('summary');summary.textContent='봉사와 섬김';
   const arrow=document.createElement('span');arrow.textContent='⌄';summary.append(arrow);
   const links=document.createElement('div');links.className='hb-small-group-links';
-  groups.forEach((name,i)=>{const a=document.createElement('a');a.href='#/ministry-5';a.textContent=name;a.dataset.volunteerCategory=String(i);a.addEventListener('click',e=>{e.preventDefault();selected=i;menu.open=true;if(location.hash!=='#/ministry-5')location.hash='#/ministry-5';else show();tick();});links.append(a)});
+  groups.forEach((name,i)=>{const a=document.createElement('a');a.href='#/ministry-5';a.textContent=name;a.dataset.volunteerCategory=String(i);a.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();selected=i;menu.open=true;const y=window.scrollY;if(location.hash!=='#/ministry-5'){location.hash='#/ministry-5';requestAnimationFrame(()=>requestAnimationFrame(()=>{window.scrollTo({top:y,behavior:'instant'});tick()}));}else{show();tick()}});links.append(a)});
   menu.append(summary,links);
   if(current)current.insertAdjacentElement('afterend',menu);
   else {const group=side.querySelector('.hb-small-group-menu');if(group)group.insertAdjacentElement('beforebegin',menu);else side.append(menu)}
  }
  // Preserve the original navigation node so the accordion survives repeated renders.
  if(current)current.style.setProperty('display','none','important');
- if(!menu.dataset.bound){menu.dataset.bound='1';menu.querySelector('summary').addEventListener('click',()=>{if(location.hash!=='#/ministry-5')location.hash='#/ministry-5'})}
+ if(!menu.dataset.bound){menu.dataset.bound='1';menu.querySelector('summary').addEventListener('click',()=>{if(location.hash!=='#/ministry-5'){selected=0;const y=window.scrollY;location.hash='#/ministry-5';requestAnimationFrame(()=>requestAnimationFrame(()=>{window.scrollTo({top:y,behavior:'instant'});tick()}));}else{tick()}})}
  const active=/^#\/?ministry-5$/.test(location.hash);
  if(menu.open!==active)menu.open=active;
  menu.style.setProperty('display','block','important');
@@ -54,27 +54,19 @@ function show(){
  if(selected===0){if(area.childNodes.length)area.replaceChildren();delete area.dataset.choice;return}
  if(area.dataset.choice===String(selected)&&area.querySelector('.hb-volunteer-generation-video'))return;
  area.dataset.choice=String(selected);
- const h=document.createElement('h3');h.textContent=selected===1?'너는 잘될 거야':'덕분에 잘됐습니다';
- const intro=document.createElement('p');intro.textContent=selected===1?'5월 가정의 달 · 다음 세대를 위한 응원과 축복':'부모세대를 향한 감사와 응원의 마음을 전합니다.';
- area.replaceChildren(h,intro);
- // Each generation category has its own video and gallery. Regional cultural material remains exclusively in original content.
  const id=selected===1?'nweyrCQwGPs':'uUId-pRdB_w';
- const label=selected===1?'너는 잘될 거야':'덕분에 잘됐습니다';
- const video=document.createElement('a');video.className='hb-volunteer-generation-video';
- video.href='https://www.youtube.com/watch?v='+id;video.target='_blank';video.rel='noopener noreferrer';
- video.style.cssText='display:block;max-width:760px;margin:20px auto 26px;text-decoration:none;color:#244860';
- const thumbnail=document.createElement('img');thumbnail.src='https://i.ytimg.com/vi/'+id+'/hqdefault.jpg';
- thumbnail.alt=label+' 영상 썸네일';thumbnail.loading='lazy';
- thumbnail.style.cssText='width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;display:block';
- const videoLabel=document.createElement('strong');videoLabel.textContent='▶ '+label+' · 영상 보기';
- videoLabel.style.cssText='display:block;font-size:17px;padding:12px 0;text-align:center';
- video.append(thumbnail,videoLabel);area.append(video);
- if(selected===1){
-  const images=['https://files.mallary.ai/uploads/900/chatgpt_1793426450783_0c594477ea84204c.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426453670_e345e10bd41d27f7.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426456099_aee978fbeb1f582b.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426459734_ee4e9a5e493d7e4b.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426462359_42e9763907b0fdab.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426465419_3226d05108103e6f.jpg'];
-  const gallery=document.createElement('div');gallery.style.cssText='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px';
-  images.forEach((src,i)=>{const a=document.createElement('a');a.href=src;a.target='_blank';a.rel='noopener noreferrer';const img=document.createElement('img');img.src=src;img.alt='자녀세대섬김 행사 '+(i+1);img.loading='lazy';img.style.cssText='width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px';a.append(img);gallery.append(a)});
-  area.append(gallery);
- }
+ const label=selected===1?'너는 잘될 거야':'덕분에 잘되었습니다';
+ const h=document.createElement('h3');h.textContent=label;h.style.cssText='margin:0 0 12px;color:#244860;font-size:clamp(21px,3vw,28px)';
+ const intro=document.createElement('p');intro.textContent=selected===1?'자녀세대를 향한 응원과 축복을 함께 나눕니다.':'부모세대를 향한 감사와 사랑을 함께 나눕니다.';
+ intro.style.cssText='margin:0 0 20px;color:#607486;line-height:1.7';
+ const video=document.createElement('div');video.className='hb-volunteer-generation-video';
+ video.style.cssText='width:100%;max-width:900px;margin:18px 0 28px';
+ const frame=document.createElement('iframe');frame.src='https://www.youtube-nocookie.com/embed/'+id;
+ frame.title=label+' · 하늘바람교회';frame.loading='lazy';frame.allow='accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share';frame.allowFullscreen=true;
+ frame.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+ frame.style.cssText='display:block;width:100%;aspect-ratio:16/9;height:auto;min-height:220px;border:0;border-radius:14px;background:#152837';
+ const link=document.createElement('a');link.href='https://www.youtube.com/watch?v='+id;link.target='_blank';link.rel='noopener noreferrer';link.textContent='유튜브 원본 영상 보기 ↗';link.style.cssText='display:inline-block;margin-top:12px;color:#315c78;font-weight:700;text-decoration:underline';
+ video.append(frame,link);area.replaceChildren(h,intro,video);
 }
 let queued=false;
 function tick(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;init()})}
