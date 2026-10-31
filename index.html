@@ -2232,4 +2232,30 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 </script>
 
 <script defer src="/assets/moderated-boards.js"></script>
+
+<script data-habach-sermon-dedupe-v1>
+(() => {
+  const norm=t=>(t||'').replace(/\s+/g,' ').replace(/^\[금요설교\]\s*/,'').trim().toLocaleLowerCase('ko');
+  function dedupe(){
+    for(const h of document.querySelectorAll('h1,h2,h3,h4,h5')){
+      if(!/금요설교\s*영상\s*앨범/.test(h.textContent||''))continue;
+      const root=h.closest('section,article,[class*="section"],[class*="album"]')||h.parentElement?.parentElement;
+      if(!root)continue;
+      const cards=[...root.querySelectorAll('article,[class*="video-card"],[class*="album-card"],[class*="video-item"],[class*="album-item"]')].filter(c=>c.querySelector('img,iframe,video'));
+      const seen=new Set();
+      for(const c of cards){
+        const title=c.querySelector('h3,h4,h5,[class*="title"]')?.textContent;
+        if(!title)continue;
+        const key=norm(title);
+        if(!key)continue;
+        if(seen.has(key))c.remove();else seen.add(key);
+      }
+    }
+  }
+  let queued=false;const schedule=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;dedupe()})};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+  new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
 </body></html>
