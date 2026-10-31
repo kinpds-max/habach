@@ -2292,4 +2292,34 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 })();
 </script>
 
+
+<script data-habach-dawn-video-L27QCTEVw0k>
+(() => {
+  const id='L27QCTEVw0k';
+  const link='https://www.youtube.com/watch?v='+id;
+  const thumb='https://i.ytimg.com/vi/'+id+'/hqdefault.jpg';
+  function apply(){
+    if(location.hash && !/^#\/?(?:index|home)?$/.test(location.hash))return;
+    for(const h of document.querySelectorAll('h2,h3,h4,h5')){
+      if(!/새벽설교|새벽예배/.test((h.textContent||'').trim()))continue;
+      let scope=h.parentElement;
+      for(let i=0;i<3 && scope;i++,scope=scope.parentElement){
+        const cards=[...scope.querySelectorAll('a')].filter(a=>a.querySelector('img') && a!==h.closest('a'));
+        const card=cards.find(a=>a.getBoundingClientRect().top>=h.getBoundingClientRect().bottom-20);
+        if(!card)continue;
+        card.href=link;card.target='_blank';card.rel='noopener noreferrer';
+        const img=card.querySelector('img');if(img){img.src=thumb;img.srcset='';img.alt='새벽예배 영상';}
+        const title=card.querySelector('h3,h4,h5,[class*="title"]');
+        if(title)title.textContent='새벽예배 · 하늘바람교회';
+        card.dataset.dawnVideoId=id;
+        return;
+      }
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
+  window.addEventListener('hashchange',()=>setTimeout(apply,100));
+  let tick=false;new MutationObserver(()=>{if(tick)return;tick=true;requestAnimationFrame(()=>{tick=false;apply()})}).observe(document.body,{childList:true,subtree:true});
+})();
+</script>
+
 </body></html>
