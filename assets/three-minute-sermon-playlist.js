@@ -10,16 +10,21 @@ function render(){if(!/sermon-11/.test(location.hash))return;
  if(!box){box=document.createElement('section');box.id='hb-three-minute-playlist-summary';box.style.cssText='padding:22px;margin:22px 0;background:#eff6fc;border:1px solid #dbe9f3;border-radius:12px';
  const top=document.createElement('div');top.style.cssText='display:flex;gap:16px;align-items:center;justify-content:space-between';
  const text=document.createElement('div'),h=document.createElement('h3');h.textContent='3분설교 전체 재생목록';h.style.cssText='margin:0 0 9px;color:#284d69';
- const note=document.createElement('p');note.textContent='아래 영상 앨범에서 개별 설교를 선택할 수 있습니다. 유튜브 재생목록에서 모든 영상을 이어서 볼 수 있습니다.';note.style.cssText='margin:0;color:#8094a7;font-size:14px';text.append(h,note);
+ const note=document.createElement('p');note.textContent='유튜브 재생목록에서 모든 3분설교 영상을 이어서 볼 수 있습니다.';note.style.cssText='margin:0;color:#8094a7;font-size:14px';text.append(h,note);
  const a=document.createElement('a');a.href=playlistURL;a.target='_blank';a.rel='noopener noreferrer';a.textContent='전체 영상 보기 ↗';a.style.cssText='flex:none;padding:11px 16px;border-radius:7px;background:#436a8e;color:#fff;text-decoration:none;font-weight:700';top.append(text,a);
  const details=document.createElement('details');details.style.cssText='border-top:1px solid #dbe6ee;margin-top:16px;padding-top:13px';const summary=document.createElement('summary');summary.textContent='재생목록 바로 재생하기';summary.style.cssText='cursor:pointer;color:#355f7d;font-weight:700';details.append(summary);details.addEventListener('toggle',()=>{if(details.open&&!details.querySelector('iframe')){const f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/videoseries?list='+playlist;f.title='3분설교 전체 재생목록';f.loading='lazy';f.allowFullscreen=true;f.style.cssText='width:100%;aspect-ratio:16/9;border:0;margin-top:15px;border-radius:8px';details.append(f)}});box.append(top,details);heading.closest('.article-title')?.insertAdjacentElement('afterend',box)||heading.insertAdjacentElement('afterend',box)}
- // Replace the oversized legacy player and only this album's duplicate containers.
- root.querySelectorAll('#hb-three-minute-full-playlist').forEach(e=>e.remove());
- let host=root.querySelector('#hb-three-minute-video-cards');
- if(!host){host=document.createElement('section');host.id='hb-three-minute-video-cards';host.style.margin='22px 0';const h=document.createElement('h3');h.textContent='3분설교 영상 앨범';h.style.cssText='margin:0 0 18px;color:#244e65';const grid=document.createElement('div');grid.className='hb-three-minute-grid';grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:15px';host.append(h,grid);box.insertAdjacentElement('afterend',host)}
- const grid=host.querySelector('.hb-three-minute-grid');const seen=new Set();
- for(const v of entries.slice(0,shown)){if(!/^[\w-]{11}$/.test(v.id)||seen.has(v.id))continue;seen.add(v.id);let a=grid.querySelector('[data-video="'+v.id+'"]');if(!a){a=document.createElement('a');a.dataset.video=v.id;a.className='sermon-album-card static-sermon-card';a.target='_blank';a.rel='noopener noreferrer';const image=document.createElement('img');image.src='https://i.ytimg.com/vi/'+v.id+'/hqdefault.jpg';image.loading='lazy';image.alt=v.title||'3분설교';image.style.cssText='display:block;width:100%;aspect-ratio:16/9;object-fit:cover';const caption=document.createElement('strong');caption.style.cssText='display:block;padding:12px;font-size:14px';a.append(image,caption);grid.append(a)}a.href='https://www.youtube.com/watch?v='+v.id;a.querySelector('strong').textContent=koTitle(v.title)}
- let more=host.querySelector('#hb-three-minute-more');if(!more){more=document.createElement('button');more.id='hb-three-minute-more';more.type='button';more.textContent='더보기 +30';more.style.cssText='display:block;margin:24px auto;padding:12px 36px;border-radius:9px;background:#e6f1fa;border:1px solid #bdd8eb;color:#285879;font-weight:700;cursor:pointer';more.onclick=()=>{shown+=30;render()};host.append(more)}more.style.display=shown>=entries.length?'none':'block';
+ // The requested "3분설교 영상 앨범" panel is removed, while the top playlist remains.
+ for(const id of ['hb-three-minute-video-cards','hb-three-minute-full-playlist']){
+  root.querySelectorAll('#'+id).forEach(el=>el.remove());
+ }
+ for(const box of root.querySelectorAll('.hb-static-board')){
+  const title=box.querySelector('h2,h3,h4');
+  if(title&&/3분설교\s*영상\s*앨범/.test(title.textContent||''))box.remove();
+ }
+ for(const box of root.querySelectorAll('.hb-video-list-bottom')){
+  box.remove();
+ }
+
 }
 let scheduled=false;function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;render()})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();addEventListener('hashchange',schedule);new MutationObserver(schedule).observe(document.documentElement,{subtree:true,childList:true});
 })();
