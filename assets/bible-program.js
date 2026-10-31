@@ -273,6 +273,8 @@ function initBible(){
    if(!r.ok)throw Error(result.error||'등록 오류');
    shareMessage.textContent=BOOKS[book]+' '+chapter+'장 '+writing.filter(x=>x.trim()).length+'절 작성 기록이 저장되었습니다. 순위에 반영됩니다.';
    await fetchRanks();
+   shareMessage.textContent=BOOKS[book]+' '+chapter+'장 · '+writing.filter(x=>x.trim()).length+'절 제출 완료. 순위가 갱신되었습니다.';
+   ranking.scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){shareMessage.textContent='제출 실패: '+e.message;}
   finally{shareButton.disabled=false;}
  });
