@@ -35,7 +35,7 @@ function run(){
  let root=board.querySelector('[data-hb-combined-videos="'+key+'"]');
  if(!root){
   root=document.createElement('div');root.dataset.hbCombinedVideos=key;
-  root.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:16px;margin:18px 0 22px';
+  root.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:18px 0 22px';
   const head=board.querySelector('.hb-static-board-head');
   if(head)head.insertAdjacentElement('afterend',root);else board.prepend(root);
  }
