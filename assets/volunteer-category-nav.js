@@ -2,6 +2,23 @@
 const V=[{id:'nweyrCQwGPs',sel:'.hb-ministry-children',name:'너는 잘될 거야'},{id:'uUId-pRdB_w',sel:'.hb-ministry-parents',name:'덕분에 잘되었습니다'}];
 const photos=['chatgpt_1793426450783_0c594477ea84204c.jpg','chatgpt_1793426453670_e345e10bd41d27f7.jpg','chatgpt_1793426456099_aee978fbeb1f582b.jpg','chatgpt_1793426459734_ee4e9a5e493d7e4b.jpg','chatgpt_1793426462359_42e9763907b0fdab.jpg','chatgpt_1793426465419_3226d05108103e6f.jpg'];
 
+
+function addRegionalPreviews(article){
+ const cards=[...article.querySelectorAll('.hb-service-album-card')];
+ const youtubeCard=cards.find(c=>/연예인 지역뮤지컬공연/.test(c.querySelector('h3,h4,strong')?.textContent||''));
+ const cheerCard=cards.find(c=>/위대한응원/.test(c.querySelector('h3,h4,strong')?.textContent||''));
+ if(youtubeCard&&!youtubeCard.querySelector('.hb-added-performance-video')){
+  const a=document.createElement('a');a.className='hb-added-performance-video hb-large-media-preview';a.href='https://www.youtube.com/watch?v=54RrPB5GKfQ';a.target='_blank';a.rel='noopener noreferrer';
+  a.innerHTML='<span class="hb-preview-thumb"><img src="https://i.ytimg.com/vi/54RrPB5GKfQ/hqdefault.jpg" alt="연예인 지역뮤지컬공연 영상 미리보기" loading="lazy"><span class="hb-preview-play" aria-hidden="true">▶</span></span><strong>연예인 지역뮤지컬공연 · 영상 보기</strong>';
+  youtubeCard.append(a);
+ }
+ if(cheerCard&&!cheerCard.querySelector('.hb-added-cheer-link')){
+  const a=document.createElement('a');a.className='hb-added-cheer-link';a.href='https://cafe.naver.com/f-e/cafes/31371644/articles/239';a.target='_blank';a.rel='noopener noreferrer';
+  a.innerHTML='<span class="hb-cafe-preview"><span class="hb-cafe-icon">N</span><span><strong>위대한응원 현장 보기</strong><small>네이버 카페 사진·게시글 열기 ↗</small></span></span>';
+  cheerCard.append(a);
+ }
+}
+
 function correctVolunteerGallery(article,group){
  const gallery=article.querySelector('.hb-service-album');
  if(gallery){
@@ -72,13 +89,14 @@ function apply(){
  const group=article.querySelector('.hb-unified-ministry-group');if(!group)return;
  polishMinistry(article,group);
  correctVolunteerGallery(article,group);
+ addRegionalPreviews(article);
  V.forEach((v,i)=>{
   const target=group.querySelector(v.sel);if(!target||target.querySelector('.hb-generation-media'))return;
   const wrap=document.createElement('div');wrap.className='hb-generation-media';
   const a=document.createElement('a');a.href='https://www.youtube.com/watch?v='+v.id;a.target='_blank';a.rel='noopener noreferrer';a.className='hb-generation-video-card';
   const img=document.createElement('img');img.src='https://i.ytimg.com/vi/'+v.id+'/hqdefault.jpg';img.alt=v.name+' 유튜브 영상';img.loading='lazy';
   const label=document.createElement('strong');label.textContent=v.name+' · 유튜브 영상 보기';
-  a.append(img,label);wrap.append(a);
+  const play=document.createElement('span');play.className='hb-preview-play';play.textContent='▶';a.insertBefore(play,label);a.append(img,label);wrap.append(a);
   if(i===0){
    const h=document.createElement('h4');h.textContent='덕분에 잘되었습니다 · 자녀세대 행사 사진';wrap.append(h);
    const gallery=document.createElement('div');gallery.className='hb-youth-gratitude-gallery hb-generation-photo-grid';
@@ -105,6 +123,20 @@ polishStyle.textContent=`
 #app .hb-readable-ministry-section p,#app #hb-regional-leading-heading p{line-height:1.85!important}
 }`;
 document.head.append(polishStyle);
+const mediaStyle=document.createElement('style');mediaStyle.textContent=`
+#app .hb-generation-video-card,#app .hb-added-performance-video{display:block!important;width:100%!important;max-width:100%!important;margin:18px 0 26px!important;position:relative;text-decoration:none;color:#315675}
+#app .hb-generation-video-card>img,#app .hb-preview-thumb img{width:100%!important;display:block!important;aspect-ratio:16/9!important;object-fit:cover!important;border-radius:14px!important}
+#app .hb-generation-video-card>.hb-preview-play{position:absolute;top:calc(50% - 16px);left:50%;transform:translate(-50%,-50%);z-index:2}
+#app .hb-preview-thumb{display:block;position:relative;width:100%}
+#app .hb-preview-thumb>.hb-preview-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+#app .hb-preview-play{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.95);color:#2c5d7b;font-size:24px;box-shadow:0 3px 18px #0002;padding-left:3px}
+#app .hb-added-performance-video strong,#app .hb-generation-video-card strong{display:block;padding:10px 3px;font-size:16px}
+#app .hb-added-cheer-link{display:block;margin-top:16px;text-decoration:none;color:#315675}
+#app .hb-cafe-preview{display:flex;align-items:center;gap:13px;padding:18px;border:1px solid #dbe6ed;border-radius:14px;background:#f6fafc}
+#app .hb-cafe-icon{width:43px;height:43px;display:grid;place-items:center;background:#03c75a;color:#fff;font-size:27px;font-weight:800;border-radius:10px}
+#app .hb-cafe-preview strong,#app .hb-cafe-preview small{display:block;line-height:1.6}
+#app .hb-cafe-preview small{color:#667d8e;font-size:13px}
+`;document.head.append(mediaStyle);
 const cleanLine=document.createElement('style');cleanLine.textContent='#app .hb-unified-ministry-group{border-top:0!important}#app .hb-unified-ministry-group .hb-ministry-children{border-top:0!important}';document.head.append(cleanLine);
 let queued=false;function tick(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',tick);else tick();
