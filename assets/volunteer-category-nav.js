@@ -1,111 +1,60 @@
 (()=>{'use strict';
-const names=['지역·문화섬김','자녀세대섬김','부모세대섬김'];
-function render(){
- if(!/ministry-5/.test(location.hash))return;
- const heading=[...document.querySelectorAll('h1,h2,h3,h4')].find(h=>h.getClientRects().length&&!h.closest('#hb-volunteer-categories')&&h.textContent.trim()==='봉사와 섬김');
- if(!heading)return;
- const root=heading.closest('article,.article,.page-content,.content-body,.subpage-content')||heading.parentElement?.parentElement||heading.parentElement;
- if(!root||document.getElementById('hb-volunteer-categories'))return;
- const section=document.createElement('section');section.id='hb-volunteer-categories';section.style.cssText='margin:0 0 22px;padding:0;border:0;background:transparent';
- 
- const tabs=document.createElement('div');tabs.className='hb-volunteer-submenu-matches-smallgroups';tabs.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 20px';
- const existingBoard=[...root.querySelectorAll('section,div')].find(e=>e!==root&&e.querySelector('input[placeholder*="제목 검색"]')&&/봉사와\s*섬김\s*게시판/.test(e.textContent||''));if(existingBoard)existingBoard.style.display='none';const original=[...root.children].filter(e=>e!==section&&e!==existingBoard&&!e.contains(heading)&&!e.matches('script,style')&&e.getBoundingClientRect().top>=heading.getBoundingClientRect().top);
- const panels=names.map((name,i)=>{const panel=document.createElement('div');panel.dataset.category=name;panel.hidden=i!==0;if(i===0){original.forEach(e=>panel.append(e));}else{const title=document.createElement('h3');title.textContent=i===1?'너는 잘될 거야':'덕분에 잘됐습니다';title.style.cssText='margin:18px 0 8px;font-size:clamp(22px,4vw,30px);font-weight:800;color:#205676';const p=document.createElement('p');p.textContent='활동 사진과 영상이 등록될 예정입니다.';p.style.cssText='color:#62778a;margin:14px 0';const album=document.createElement('div');album.className='hb-volunteer-media-album';album.dataset.service=i===1?'children':'parents';if(i===1){p.textContent='5월 가정의 달 · 너는 잘될 거야';album.style.cssText='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0';const images=["https://files.mallary.ai/uploads/900/chatgpt_1793426450783_0c594477ea84204c.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426453670_e345e10bd41d27f7.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426456099_aee978fbeb1f582b.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426459734_ee4e9a5e493d7e4b.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426462359_42e9763907b0fdab.jpg","https://files.mallary.ai/uploads/900/chatgpt_1793426465419_3226d05108103e6f.jpg"];images.forEach((src,j)=>{const a=document.createElement('a');a.href=src;a.target='_blank';a.rel='noopener noreferrer';a.style.cssText='display:block;border-radius:12px;overflow:hidden;border:1px solid #dae6ec';const im=document.createElement('img');im.src=src;im.alt='너는 잘될 거야 가정의 달 행사 사진 '+(j+1);im.loading='lazy';im.style.cssText='display:block;width:100%;aspect-ratio:4/3;object-fit:cover';a.append(im);album.append(a);});}panel.append(title,p,album);}section.append(panel);return panel});
- names.forEach((name,i)=>{const b=document.createElement('button');b.type='button';b.textContent=name;b.style.cssText='min-width:0;min-height:65px;padding:12px 6px;border:1px solid #d5e0e7;border-radius:12px;font-size:clamp(12px,2.9vw,16px);font-weight:700;cursor:pointer';b.onclick=()=>{panels.forEach((p,j)=>p.hidden=i!==j);[...tabs.children].forEach((x,j)=>{x.style.background=i===j?'#dceef8':'white';x.style.color=i===j?'#135679':'#34566d'});isolateVolunteerCategory();};tabs.append(b)});
- const menu=[...document.querySelectorAll('button,a,[role="tab"]')].find(el=>el.getClientRects().length&&el.textContent.replace(/\s+/g,' ').trim()==='봉사와 섬김');
- const row=menu&&[menu.parentElement,menu.parentElement?.parentElement,menu.parentElement?.parentElement?.parentElement].find(el=>el&&[...el.querySelectorAll('button,a,[role="tab"]')].filter(x=>['예배','기도회','새가족 안내','전도·선교','봉사와 섬김','소그룹교제'].includes(x.textContent.trim())).length>=5);
- if(!document.getElementById('hb-volunteer-subnav-layout')){const st=document.createElement('style');st.id='hb-volunteer-subnav-layout';st.textContent='#hb-volunteer-categories .hb-volunteer-submenu-matches-smallgroups,.hb-volunteer-submenu-matches-smallgroups{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:8px 12px!important;margin:8px 0 0!important;border:1px solid #dce7ef!important;border-radius:15px!important;background:#f5f9fc!important;width:100%!important;box-sizing:border-box!important}.hb-volunteer-submenu-matches-smallgroups>button{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-width:0!important;height:43px!important;min-height:43px!important;max-height:43px!important;margin:0!important;padding:7px 5px!important;border:1px solid #d5e0e7!important;border-radius:12px!important;font-size:clamp(12px,2.9vw,16px)!important;line-height:1.35!important;text-align:center!important}.hb-volunteer-submenu-matches-smallgroups>button:last-child:nth-child(odd){grid-column:1!important}';document.head.append(st);}
-
- // Sidebar nested navigation like the existing small-group section.
- // Only the content sidebar, never the global header navigation.
- document.querySelectorAll('header #hb-volunteer-sidebar-subnav,.site-header #hb-volunteer-sidebar-subnav').forEach(e=>e.remove());
- const side=document.querySelector('.page-grid aside.side,.page-grid aside,.page-grid .side');
- const parentButton=side&&[...side.querySelectorAll('a,button')].find(e=>(e.textContent||'').replace(/\s+/g,'').trim()==='봉사와섬김');
- if(parentButton){
-   let sub=side.querySelector('#hb-volunteer-sidebar-subnav');
-   if(!sub){
-     sub=document.createElement('div');sub.id='hb-volunteer-sidebar-subnav';
-     const holder=parentButton.closest('li')||parentButton;
-     holder.insertAdjacentElement('afterend',sub);
-   }
-   sub.style.cssText='display:flex;flex-direction:column;margin:0;padding:0 0 5px 14px;max-width:100%';
-   [...tabs.querySelectorAll('button')].forEach(button=>{
-      button.style.cssText='display:block;width:100%;height:39px;min-height:39px;text-align:left;padding:8px 10px;background:white;border:0;border-bottom:1px solid #e3e9ef;border-radius:0;color:#53728d;font-size:13px';
-      sub.append(button);
-   });
-   parentButton.setAttribute('aria-expanded','true');
-   if(!parentButton.dataset.hbVolunteerToggle){
-      parentButton.dataset.hbVolunteerToggle='1';
-      parentButton.addEventListener('click',()=>{sub.hidden=!sub.hidden;sub.style.display=sub.hidden?'none':'flex';parentButton.setAttribute('aria-expanded',String(!sub.hidden))});
-   }
+const groups=['지역·문화섬김','자녀세대섬김','부모세대섬김'];
+let selected=0;
+function init(){
+ const side=document.querySelector('.page-grid aside.side');
+ if(!side||!/^#\/?ministry-/.test(location.hash))return;
+ const current=side.querySelector('a[href="#/ministry-5"]');
+ if(!current)return;
+ let menu=side.querySelector('#hb-volunteer-side-accordion');
+ if(!menu){
+  menu=document.createElement('details');menu.id='hb-volunteer-side-accordion';menu.className='hb-small-group-menu hb-volunteer-native-menu';
+  const summary=document.createElement('summary');summary.textContent='봉사와 섬김';
+  const arrow=document.createElement('span');arrow.textContent='⌄';summary.append(arrow);
+  const links=document.createElement('div');links.className='hb-small-group-links';
+  groups.forEach((name,i)=>{const a=document.createElement('a');a.href='#/ministry-5';a.textContent=name;a.dataset.volunteerCategory=String(i);a.addEventListener('click',e=>{e.preventDefault();selected=i;menu.open=true;if(location.hash!=='#/ministry-5')location.hash='#/ministry-5';else show();});links.append(a)});
+  menu.append(summary,links);current.insertAdjacentElement('afterend',menu);
  }
- root.insertBefore(section,root.firstChild);
- heading.textContent='봉사와 섬김';heading.style.setProperty('text-align','center','important');section.style.setProperty('border','0','important');
- // The three large category buttons belong exclusively to the sidebar.
- for(const stray of document.querySelectorAll('.hb-volunteer-submenu-matches-smallgroups')){if(!stray.closest('#hb-volunteer-sidebar-subnav'))stray.remove();}
- if(parentButton){side.querySelector('#hb-volunteer-sidebar-subnav button')?.click();}
- // Keep the actual sidebar submenu; remove only any stray duplicate in the content.
-
+ current.style.display='none';
+ if(!menu.dataset.bound){menu.dataset.bound='1';menu.querySelector('summary').addEventListener('click',()=>{if(location.hash!=='#/ministry-5')location.hash='#/ministry-5'})}
+ const active=/^#\/?ministry-5$/.test(location.hash);
+ menu.open=active;
+ menu.querySelectorAll('[data-volunteer-category]').forEach((a,i)=>a.classList.toggle('on',active&&selected===i));
+ if(active)show();
 }
-function labelRegionalPerformances(){
- if(!/ministry-5/.test(location.hash))return;
- const local=[...document.querySelectorAll('h2,h3,h4,h5')].filter(h=>h.getClientRects().length&&/^(지역공연|봉사와 섬김 현장)$/.test(h.textContent.trim()));
- for(const h of local){
-   const title=h.textContent.trim();
-   const card=h.closest('[class*="card"],article,section')||h.parentElement;
-   if(title==='봉사와 섬김 현장'){
-     const img=card?.querySelector('img');
-     if(img){h.textContent='지역 연예인 뮤지컬 공연';h.style.marginBottom='16px';}
-     else h.remove();
-   }else if(title==='지역공연'){
-     h.textContent='지역 모노드라마 공연';
-     h.style.marginBottom='16px';
-   }
+function show(){
+ const article=document.querySelector('.page-grid article.article');
+ if(!article||!/^#\/?ministry-5$/.test(location.hash))return;
+ const title=article.querySelector('.article-title');
+ if(!title)return;
+ title.querySelector('h2')?.replaceChildren(document.createTextNode('봉사와 섬김'));
+ title.style.textAlign='center';
+ // Always keep the native centered title and existing introduction; only add category content where needed.
+ let area=article.querySelector('#hb-volunteer-selected-content');
+ if(!area){area=document.createElement('section');area.id='hb-volunteer-selected-content';title.insertAdjacentElement('afterend',area)}
+ let content=article.querySelector('#hb-volunteer-original-content');
+ if(!content){
+  content=document.createElement('div');content.id='hb-volunteer-original-content';
+  while(area.nextSibling)content.append(area.nextSibling);
+  area.insertAdjacentElement('afterend',content);
  }
- for(const h of document.querySelectorAll('h4')){
-   if(h.textContent.trim()==='지역 연예인 뮤지컬 공연'&&h.previousElementSibling?.textContent?.trim()==='지역 모노드라마 공연')h.remove();
-   if(h.textContent.trim()==='지역 모노로그 공연')h.textContent='지역 모노드라마 공연';
+ content.style.display=selected===0?'':'none';
+ if(selected===0){area.replaceChildren();return}
+ if(area.dataset.choice===String(selected))return;
+ area.dataset.choice=String(selected);
+ const h=document.createElement('h3');h.textContent=selected===1?'너는 잘될 거야':'덕분에 잘됐습니다';
+ const intro=document.createElement('p');intro.textContent=selected===1?'5월 가정의 달 · 너는 잘될 거야':'부모세대 섬김 활동';
+ area.replaceChildren(h,intro);
+ if(selected===1){
+  const images=['https://files.mallary.ai/uploads/900/chatgpt_1793426450783_0c594477ea84204c.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426453670_e345e10bd41d27f7.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426456099_aee978fbeb1f582b.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426459734_ee4e9a5e493d7e4b.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426462359_42e9763907b0fdab.jpg','https://files.mallary.ai/uploads/900/chatgpt_1793426465419_3226d05108103e6f.jpg'];
+  const gallery=document.createElement('div');gallery.style.cssText='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px';
+  images.forEach((src,i)=>{const a=document.createElement('a');a.href=src;a.target='_blank';a.rel='noopener noreferrer';const img=document.createElement('img');img.src=src;img.alt='자녀세대섬김 행사 '+(i+1);img.loading='lazy';img.style.cssText='width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px';a.append(img);gallery.append(a)});
+  area.append(gallery);
  }
 }
-function moveMusicalTitleAbovePhoto(){
- if(!/ministry-5/.test(location.hash))return;
- const heads=[...document.querySelectorAll('h2,h3,h4,h5')].filter(h=>h.getClientRects().length&&h.textContent.trim()==='지역 연예인 뮤지컬 공연');
- for(const h of heads){
-   const card=h.closest('[class*="card"],section,article')||h.parentElement;
-   const image=card?.querySelector('img');
-   if(!image)continue;
-   const figure=image.closest('figure')||image.closest('a')||image;
-   if(figure.contains(h))continue;
-   if(h.compareDocumentPosition(figure)&Node.DOCUMENT_POSITION_PRECEDING){
-      figure.parentElement.insertBefore(h,figure);
-      h.style.margin='0 0 16px';
-   }
- }
-}
-function isolateVolunteerCategory(){
- if(!/ministry-5/.test(location.hash))return;
- const panel=document.querySelector('#hb-volunteer-categories [data-category]:not([hidden])');
- if(!panel)return;
- const local=panel.dataset.category==='지역·문화섬김';
- for(const h of document.querySelectorAll('h2,h3,h4,h5')){
-   if(!/^(지역 모노드라마 공연|지역 연예인 뮤지컬 공연|위대한 응원)$/.test((h.textContent||'').trim()))continue;
-   const card=h.closest('[class*="card"],article,section')||h.parentElement;
-   if(!card||card.id==='hb-volunteer-categories'||card.contains(document.querySelector('#hb-volunteer-categories .hb-volunteer-submenu-matches-smallgroups')))continue;
-   if(card.closest('#hb-volunteer-categories [data-category]'))continue;
-   const desired=local?'':'none';
-   if(card.style.display!==desired)card.style.display=desired;
- }
-}
-function placeCheerButton(){
- if(!/ministry-5/.test(location.hash))return;
- const h=[...document.querySelectorAll('h2,h3,h4,h5')].find(e=>e.getClientRects().length&&e.textContent.trim()==='위대한 응원');
- if(!h)return;
- const card=h.closest('article,section,[class*="card"],[class*="album-item"]')||h.parentElement?.parentElement;
- if(!card||card.querySelector('[data-cheer-action]'))return;
- const img=card.querySelector('img');if(!img)return;
- const a=document.createElement('a');a.dataset.cheerAction='1';a.href='https://naver.me/5SKXOhp0';a.target='_blank';a.rel='noopener noreferrer';a.textContent='응원영상보러가기';a.style.cssText='display:block;width:max-content;max-width:100%;box-sizing:border-box;text-align:center;margin:14px auto 0;padding:12px 23px;border-radius:10px;background:#086b94;color:#fff;text-decoration:none;font-size:16px;font-weight:800';
- (img.closest('a')||img).insertAdjacentElement('afterend',a);
-}
-let queued=false;function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;render();placeCheerButton();labelRegionalPerformances();moveMusicalTitleAbovePhoto();isolateVolunteerCategory()})}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();window.addEventListener('hashchange',schedule);new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+let queued=false;
+function tick(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;init()})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',tick);else tick();
+addEventListener('hashchange',tick);
+new MutationObserver(tick).observe(document.documentElement,{childList:true,subtree:true});
 })();
