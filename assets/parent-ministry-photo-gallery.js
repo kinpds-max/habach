@@ -1,6 +1,21 @@
 (()=>{'use strict';
 const photos=["https://files.mallary.ai/uploads/900/chatgpt_1793538858186_2ca1e22bd96da495.png","https://files.mallary.ai/uploads/900/chatgpt_1793538873619_de64d3e3b6417a9e.png","https://files.mallary.ai/uploads/900/chatgpt_1793538882478_e11927675e81f016.png","https://files.mallary.ai/uploads/900/chatgpt_1793538902472_e80f6579e6e390a8.png","https://files.mallary.ai/uploads/900/chatgpt_1793538923430_81ee0f7c2c18d97f.png","https://files.mallary.ai/uploads/900/chatgpt_1793538941028_c9b84e2769ee7eff.png"];
 const css=document.createElement('style');css.id='hb-parent-ministry-six-photos-style';css.textContent=`
+/* 자녀세대섬김: 갤러리와 영상 카드 1줄 3개 (PC/모바일 공통) */
+#app .hb-ministry-children .album-grid,
+#app .hb-ministry-children .hb-album-grid,
+#app .hb-ministry-children .video-grid,
+#app .hb-ministry-children .hb-video-grid,
+#app .hb-ministry-children .sermon-album-grid,
+#app .hb-ministry-children .hb-static-sermon-grid,
+#app .hb-ministry-children .hb-service-album-grid,
+#app .hb-ministry-children .hb-service-album .grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important;width:100%!important;max-width:100%!important}
+#app .hb-ministry-children .album-grid>*,
+#app .hb-ministry-children .hb-album-grid>*,
+#app .hb-ministry-children .video-grid>*,
+#app .hb-ministry-children .hb-video-grid>*,
+#app .hb-ministry-children .sermon-album-grid>*,
+#app .hb-ministry-children .hb-static-sermon-grid>*{min-width:0!important;max-width:100%!important;grid-column:auto!important;box-sizing:border-box!important}
 #app .hb-parent-six-photos{width:100%;margin:22px 0 34px;clear:both}
 #app .hb-parent-six-photos>h4{font-size:clamp(18px,2.6vw,24px);font-weight:800;color:#315675;margin:0 0 16px}
 #app .hb-parent-six-photos-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;width:100%}
