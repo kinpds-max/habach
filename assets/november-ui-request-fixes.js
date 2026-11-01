@@ -36,6 +36,28 @@ function apply(){
   }
  }
  if(key==='news-2'){
+  // Remove all legacy preview content between page title and real bulletin board.
+  const boardHeading=[...article.querySelectorAll('h1,h2,h3,h4,h5')].find(e=>/주보\s*게시판/.test(e.textContent||''));
+  const pageTitle=article.querySelector('.article-title');
+  if(boardHeading&&pageTitle){
+    let node=pageTitle.nextElementSibling;
+    let limit=0;
+    while(node&&node!==boardHeading&&!node.contains(boardHeading)&&limit++<20){
+      const next=node.nextElementSibling;
+      // Do not erase the actual shared bulletin board or its uploaded images.
+      if(!node.querySelector('.hb-board-title-row,.board-table,.board-results,#hb-community-single-bulletin-viewer')){
+        node.style.setProperty('display','none','important');
+      }
+      node=next;
+    }
+  }
+  // The old slideshow may be injected into a wrapper; identify by its broken image plus caption.
+  for(const label of [...article.querySelectorAll('h2,h3,h4,span,p')]){
+    if(label.children.length||label.textContent.trim()!=='교회 주보')continue;
+    const holder=label.closest('.hb-book-section,.hb-book-gallery,.hb-book-preview,.hb-bulletin-legacy,.hb-book-viewer')||label.parentElement;
+    if(holder&&holder!==article&&!holder.contains(boardHeading))holder.style.setProperty('display','none','important');
+  }
+
   // Remove the legacy standalone bulletin slideshow above the actual bulletin board.
   // Keep the Supabase-backed board and its uploaded images intact.
   const heading=[...article.querySelectorAll('h2,h3,h4')].find(h=>(h.textContent||'').replace(/\s+/g,'').includes('주보게시판'));
