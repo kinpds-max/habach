@@ -36,6 +36,29 @@ function apply(){
   }
  }
  if(key==='news-2'){
+  // Remove the legacy standalone bulletin slideshow above the actual bulletin board.
+  // Keep the Supabase-backed board and its uploaded images intact.
+  const heading=[...article.querySelectorAll('h2,h3,h4')].find(h=>(h.textContent||'').replace(/\s+/g,'').includes('주보게시판'));
+  if(heading){
+    let node=article.querySelector('.article-title')?.nextElementSibling;
+    const boundary=heading.closest('section')||heading.parentElement;
+    while(node&&node!==boundary&&!node.contains(heading)){
+      const next=node.nextElementSibling;
+      if(node.matches('.hb-book-section,.hb-book-gallery,.hb-book-reader,.hb-book-preview,[id*="bulletin-legacy"],[class*="book-section"]') ||
+        (node.querySelector('button')&&/교회\s*주보/.test(node.textContent||'')&&/이전|다음/.test(node.textContent||''))){
+        node.style.setProperty('display','none','important');
+      }
+      node=next;
+    }
+    for(const el of [...article.querySelectorAll('div,section')]){
+      if(el.contains(heading)||el.closest('.hb-board-title-row'))continue;
+      const tx=(el.textContent||'').replace(/\s+/g,'');
+      if(tx.length<100&&tx.includes('교회주보')&&tx.includes('이전')&&tx.includes('다음')&&el.querySelector('button')){
+        el.style.setProperty('display','none','important');
+      }
+    }
+  }
+
   // Native board data stays intact. Remove the broken old book viewer and duplicate upload pills.
   article.querySelectorAll('.hb-book-reader,.hb-book-controls,.hb-book-section,.hb-book-gallery,.hb-book-preview').forEach(el=>{
     el.classList.add('hb-legacy-bulletin-preview');el.style.setProperty('display','none','important');
