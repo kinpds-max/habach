@@ -69,16 +69,20 @@ function update(){
   if(!board)return;
   let viewer=article.querySelector('#hb-community-synced-bulletin');
   if(!viewer){viewer=createViewer('hb-community-synced-bulletin');const row=board.closest('.hb-board-title-row')||board;row.insertAdjacentElement('afterend',viewer)}
-  // Every bulletin uses the same one-page-at-a-time slide viewer with arrows.
+  // One consistent card for all bulletins. Arrows navigate pages and then dates.
   const signature=allBulletins.map(e=>String(e.id||e.bulletin_date)+':'+e.image_urls.join('|')).join('~');
   if(viewer.dataset.collectionKey!==signature){
    viewer.dataset.collectionKey=signature;
    viewer.replaceChildren();
-   for(const entry of allBulletins){
-    const section=createViewer('hb-bulletin-entry-'+String(entry.id||entry.bulletin_date).replace(/[^a-zA-Z0-9-]/g,''));
-    section.removeAttribute('id');section.classList.add('hb-bulletin-archive-slide');
-    bind(section,entry);
-    viewer.append(section);
+   const slides=allBulletins.flatMap(e=>e.image_urls.map((url,i)=>({url,index:i,total:e.image_urls.length,title:e.title||e.bulletin_date+' 교회 주보'})));
+   if(slides.length){
+    const card=createViewer('hb-bulletin-unified-card');card.removeAttribute('id');card.classList.add('hb-bulletin-archive-slide');
+    const img=card.querySelector('img'),link=card.querySelector('a'),label=card.querySelector('.hb-synced-bulletin-title');
+    const buttons=card.querySelectorAll('button'),count=card.querySelector('.hb-synced-bulletin-controls span');
+    let position=0;
+    const show=(n)=>{position=(n+slides.length)%slides.length;const x=slides[position];label.textContent=x.title;img.src=x.url;img.alt=x.title+' '+(x.index+1)+'쪽';link.href=x.url;count.textContent=(x.index+1)+' / '+x.total+'쪽 · 주보 '+(position+1)+' / '+slides.length;};
+    buttons[0].onclick=()=>show(position-1);buttons[1].onclick=()=>show(position+1);show(0);
+    viewer.append(card);
    }
   }
   article.querySelectorAll('#hb-community-single-bulletin-viewer,#hb-community-uploaded-bulletin,#hb-bulletin-20261025').forEach(el=>el.remove());
