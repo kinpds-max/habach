@@ -1457,7 +1457,7 @@ async function showBoard(page=1,search=''){
   const makeArchive=(post,i)=>{
     const pics=pg[i+1]?.data||[];
     const cover=pics.length?picture(post,pics[0]):'<div class="hb-bulletin-placeholder">원본 주보 이미지 준비 중</div>';
-    return '<article class="hb-bulletin-album-card hb-bulletin-archive-card"><button type="button" class="hb-bulletin-cover" aria-expanded="false">'+cover+'<strong>'+clean(post.title)+'</strong><span>주보 보기 ↓</span></button><div class="hb-bulletin-expanded" hidden></div></article>';
+    return '<article class="hb-bulletin-album-card hb-bulletin-archive-card"><button type="button" class="hb-bulletin-cover" aria-expanded="false">'+cover+'<strong>'+clean(post.title)+'</strong></button><div class="hb-bulletin-expanded" hidden></div></article>';
   };
   let latestMarkup='';
   if(latest){
