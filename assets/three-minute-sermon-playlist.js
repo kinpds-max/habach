@@ -2,18 +2,9 @@
 const playlist='PLmD7ZicLdWIqYlRu54fXWc82k0mGBZMnv';
 const playlistURL='https://www.youtube.com/playlist?list='+playlist;
 const datasetURL='/assets/three-minute-sermon-videos.json?v=restore20261101';
-let entries=[],shown=30,loadingTitles=new Set(),queued=false;
-fetch(datasetURL,{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('3분설교 데이터 불러오기 실패');return r.json()}).then(v=>{if(Array.isArray(v))entries=v;queue()}).catch(e=>console.warn(e));
+let entries=[],shown=30,queued=false;
+fetch(datasetURL).then(r=>{if(!r.ok)throw Error('3분설교 데이터 불러오기 실패');return r.json()}).then(v=>{if(Array.isArray(v))entries=v;queue()}).catch(e=>console.warn(e));
 const original=(s)=>String(s||'').trim();
-async function officialKorean(id){
- for(const endpoint of [
-   'https://www.youtube.com/oembed?url='+encodeURIComponent('https://www.youtube.com/watch?v='+id)+'&format=json&hl=ko',
-   'https://noembed.com/embed?url='+encodeURIComponent('https://www.youtube.com/watch?v='+id)
- ]){
-  try{const r=await fetch(endpoint);if(!r.ok)continue;const j=await r.json();if(j.title&&/[가-힣]/.test(j.title))return j.title.trim()}catch(_){}
- }
- return '';
-}
 function render(){
  if(!/^#\/?sermon-11$/.test(location.hash))return;
  const article=document.querySelector('#app article.article');if(!article)return;
@@ -34,12 +25,10 @@ function render(){
   if(grid.querySelector('[data-video="'+v.id+'"]'))continue;
   const a=document.createElement('a');a.className='sermon-album-card static-sermon-card';a.dataset.video=v.id;
   a.href='https://www.youtube.com/watch?v='+v.id;a.target='_blank';a.rel='noopener noreferrer';
-  const image=document.createElement('img');image.loading='lazy';image.alt=/[가-힣]/.test(v.title||'')?original(v.title):'3분설교 유튜브 영상';image.src='https://i.ytimg.com/vi/'+v.id+'/hqdefault.jpg';image.style.cssText='display:block;width:100%;aspect-ratio:16/9;object-fit:cover';
-  const label=document.createElement('strong');label.textContent=/[가-힣]/.test(v.title||'')?original(v.title):'3분설교 · 원본 제목 확인 중';label.style.cssText='display:block;padding:10px;line-height:1.5';
+  const image=document.createElement('img');image.loading='lazy';image.alt=original(v.title)||'3분설교 영상';image.src='https://i.ytimg.com/vi/'+v.id+'/hqdefault.jpg';image.style.cssText='display:block;width:100%;aspect-ratio:16/9;object-fit:cover';
+  const label=document.createElement('strong');label.textContent=original(v.title)||'3분설교 영상';label.style.cssText='display:block;padding:10px;line-height:1.5';
   a.append(image,label);grid.append(a);
-  if(!/[가-힣]/.test(v.title||'')&&!loadingTitles.has(v.id)){
-   loadingTitles.add(v.id);officialKorean(v.id).then(t=>{if(t){label.textContent=t;image.alt=t;v.title=t}});
-  }
+
  }
  let more=board.querySelector('[data-three-minute-more]');
  if(!more){more=document.createElement('button');more.type='button';more.dataset.threeMinuteMore='1';more.style.cssText='display:block;margin:20px auto;padding:11px 22px;border:1px solid #cddfea;border-radius:9px;background:#eaf4fc;color:#315b7d;font-weight:700;cursor:pointer';more.onclick=()=>{shown+=30;queue()};board.append(more)}
