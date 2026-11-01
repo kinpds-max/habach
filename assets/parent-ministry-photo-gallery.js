@@ -9,7 +9,7 @@ const css=document.createElement('style');css.id='hb-parent-ministry-six-photos-
 #app .hb-parent-six-photos-grid a:hover img{transform:scale(1.03)}
 @media(max-width:700px){#app .hb-parent-six-photos-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}}
 `;document.head.append(css);
-function mount(){const article=document.querySelector('#app article.article');if(!article)return;
+function mount(){if(!/^#\/?ministry-5(?:$|[?&])/.test(location.hash))return;const article=document.querySelector('#app article.article');if(!article)return;
 const heading=[...article.querySelectorAll('h2,h3,h4')].find(el=>/^(?:0?3[.\s]*)?부모\s*세대\s*섬김/.test((el.textContent||'').trim()));if(!heading)return;
 let section=heading.closest('.hb-ministry-parents')||heading.closest('section')||heading.parentElement;if(!section||section===article)return;
 let gallery=article.querySelector('#hb-parent-ministry-six-photos');if(!gallery){gallery=document.createElement('section');gallery.id='hb-parent-ministry-six-photos';gallery.className='hb-parent-six-photos';gallery.setAttribute('aria-label','부모세대 섬김 사진앨범');const title=document.createElement('h4');title.textContent='부모세대 섬김 사진앨범';const grid=document.createElement('div');grid.className='hb-parent-six-photos-grid';photos.forEach((src,i)=>{const link=document.createElement('a');link.href=src;link.target='_blank';link.rel='noopener noreferrer';link.title='부모세대 섬김 사진 '+(i+1)+' 크게 보기';const image=document.createElement('img');image.src=src;image.loading='lazy';image.alt='하늘바람교회 부모세대 섬김 기념사진 '+(i+1);link.append(image);grid.append(link)});gallery.append(title,grid)}
@@ -17,5 +17,5 @@ let gallery=article.querySelector('#hb-parent-ministry-six-photos');if(!gallery)
 if(gallery.parentElement!==section||gallery!==section.lastElementChild)section.append(gallery);
 }
 let queued=false;function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;mount()})}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();window.addEventListener('hashchange',schedule);new MutationObserver(schedule).observe(document.getElementById('app')||document.documentElement,{childList:true,subtree:false});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();window.addEventListener('hashchange',schedule);new MutationObserver(schedule).observe(document.getElementById('app')||document.documentElement,{childList:true,subtree:true});
 })();
