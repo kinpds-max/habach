@@ -36,6 +36,9 @@ function apply(){
   }
  }
  if(key==='news-2'){
+  article.querySelectorAll('#hb-community-single-bulletin-viewer').forEach(el=>el.remove());
+  // The uploaded bulletin board below remains untouched.
+
   // Remove all legacy preview content between page title and real bulletin board.
   const boardHeading=[...article.querySelectorAll('h1,h2,h3,h4,h5')].find(e=>/주보\s*게시판/.test(e.textContent||''));
   const pageTitle=article.querySelector('.article-title');
