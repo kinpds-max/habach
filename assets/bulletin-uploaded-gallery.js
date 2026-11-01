@@ -63,11 +63,24 @@ function update(){
   if(!board)return;
   let viewer=article.querySelector('#hb-community-synced-bulletin');
   if(!viewer){viewer=createViewer('hb-community-synced-bulletin');const row=board.closest('.hb-board-title-row')||board;row.insertAdjacentElement('afterend',viewer)}
-  bind(viewer,latest);
+  // Community bulletin displays every uploaded page in a responsive two-column grid.
+  const key=String(latest.id||latest.bulletin_date)+'-'+latest.image_urls.join('|');
+  if(viewer.dataset.gridKey!==key){
+   viewer.dataset.gridKey=key;
+   viewer.replaceChildren();
+   const heading=document.createElement('p');heading.className='hb-synced-bulletin-title';heading.textContent=latest.title||'최신 교회 주보';
+   const grid=document.createElement('div');grid.className='hb-community-bulletin-two-grid';
+   latest.image_urls.forEach((url,i)=>{
+    const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-label','주보 '+(i+1)+'쪽 크게 보기');
+    const img=document.createElement('img');img.src=url;img.loading='lazy';img.alt=(latest.title||'교회 주보')+' '+(i+1)+'쪽';
+    link.append(img);grid.append(link);
+   });
+   viewer.append(heading,grid);
+  }
   article.querySelectorAll('#hb-community-single-bulletin-viewer,#hb-community-uploaded-bulletin').forEach(el=>el.remove());
  }
 }
-const style=document.createElement('style');style.textContent='#app .hb-synced-bulletin-viewer{margin:15px 0 25px;padding:12px;border:1px solid #dce7f0;border-radius:14px;background:#f7fafd}#app .hb-synced-bulletin-title{font-weight:800;color:#2e5570;margin:0 0 12px}#app .hb-synced-bulletin-controls{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:12px}#app .hb-synced-bulletin-controls button{background:white;border:1px solid #cbdce9;border-radius:8px;padding:9px 15px;color:#315779;font-weight:700;cursor:pointer}';document.head.append(style);
+const style=document.createElement('style');style.textContent='#app .hb-synced-bulletin-viewer{margin:15px 0 25px;padding:12px;border:1px solid #dce7f0;border-radius:14px;background:#f7fafd}#app .hb-synced-bulletin-title{font-weight:800;color:#2e5570;margin:0 0 12px}#app .hb-synced-bulletin-controls{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:12px}#app .hb-synced-bulletin-controls button{background:white;border:1px solid #cbdce9;border-radius:8px;padding:9px 15px;color:#315779;font-weight:700;cursor:pointer}';style.textContent+='#app .hb-community-bulletin-two-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;align-items:start}#app .hb-community-bulletin-two-grid a{display:block;width:100%;min-width:0;border:1px solid #d9e4ed;border-radius:10px;overflow:hidden;background:#fff}#app .hb-community-bulletin-two-grid img{display:block;width:100%;height:auto;object-fit:contain} @media(max-width:600px){#app .hb-community-bulletin-two-grid{gap:8px!important}}';document.head.append(style);
 function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;update()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load);else load();
 window.addEventListener('hashchange',()=>{schedule();load()});
