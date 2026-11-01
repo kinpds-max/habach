@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://habach.kr/</loc></url><url><loc>https://habach.kr/pages/missionbridge.html</loc><lastmod>2026-10-28</lastmod></url></urlset>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://habach.kr/</loc></url>
+<url><loc>https://habach.kr/videos/</loc><lastmod>2026-11-01</lastmod><changefreq>daily</changefreq></url>
+<url><loc>https://habach.kr/pages/missionbridge.html</loc></url>
+</urlset>
