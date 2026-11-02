@@ -85,13 +85,13 @@ function ensureMissionBridgeCalendarLabel(){
  if(!['index','home'].includes(route()))return;
  const app=document.querySelector('#app');if(!app||app.querySelector('#hb-missionbridge-calendar-2026'))return;
  const leafs=[...app.querySelectorAll('*')].filter(e=>e.children.length===0);
- const targetText=leafs.find(e=>/월청예배/.test(e.textContent||''));
+ const heading=leafs.find(e=>/^(?:월간\s*교회일정|교회\s*일정|하늘바람\s*일정|11월\s*교회\s*일정)$/.test((e.textContent||'').trim()));
+ const targetText=leafs.find(e=>/월청예배|웰컴예배/.test(e.textContent||''));
  let item=null;
- if(targetText){let x=targetText;for(let i=0;i<6&&x.parentElement;i++){if(/11\\.11|11월\\s*11/.test(x.textContent||'')&&(x.textContent||'').length<500){item=x;break;}x=x.parentElement;}}
- const heading=leafs.find(e=>/^(?:교회\\s*일정|하늘바람\\s*일정|11월\\s*교회\\s*일정)$/.test((e.textContent||'').trim()));
+ if(targetText){let x=targetText;for(let i=0;i<7&&x.parentElement;i++){if(/11\.11|11월\s*11|11\/11/.test(x.textContent||'')&&(x.textContent||'').length<600){item=x;break;}x=x.parentElement;}}
  if(!item&&!heading)return;
  const card=document.createElement('a');card.id='hb-missionbridge-calendar-2026';card.href='#/news-2';
- card.style.cssText='display:flex;gap:18px;align-items:center;padding:16px 14px;margin:8px 0;background:#f7fafc;border:1px solid #e0e9f2;border-radius:10px;color:#2d577b;text-decoration:none;box-sizing:border-box;width:100%';
+ card.style.cssText='display:flex;gap:18px;align-items:center;padding:14px;margin:8px 0;background:#f7fafc;border:1px solid #e0e9f2;border-radius:10px;color:#2d577b;text-decoration:none;box-sizing:border-box;width:100%';
  const date=document.createElement('strong');date.textContent='11.11~11.18';date.style.cssText='min-width:90px;white-space:nowrap;font-weight:800';
  const copy=document.createElement('span');copy.style.cssText='display:flex;flex-direction:column;gap:4px;min-width:0';
  const title=document.createElement('strong');title.textContent='MBMC 미션브릿지 선교대회 기간';title.style.cssText='font-size:16px;font-weight:800';
