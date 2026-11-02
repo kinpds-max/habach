@@ -147,6 +147,34 @@ function apply(){
   }
  }
  if(key==='news-10'){
+  const events=[
+   ['2026-11-01','사역장·순장 전체 모임','오후 2:00 · 오병이어홀'],
+   ['2026-11-05','아동 심리·정서 발달 학부모 세미나','오전 9:30 · 온라인'],
+   ['2026-11-07','MBMC 선교대회 후원 마감','10월 25일~11월 7일'],
+   ['2026-11-11','웰컴예배','오후 7:00 · 시끄러운도서관'],
+   ['2026-11-15','전 세대 통합예배','천국의 환대예배로 드립니다'],
+   ['2026-11-17','브릿징 파송예배','오후 7:30 · 11월 18일 수요예배를 대신합니다']
+  ];
+  let box=article.querySelector('#hb-nov-2026-verified-events');
+  if(!box){
+   box=document.createElement('section');box.id='hb-nov-2026-verified-events';
+   box.style.cssText='padding:20px;margin:18px 0;border:1px solid #d9e6f1;background:#f7fbff;border-radius:14px';
+   const h=document.createElement('h3');h.textContent='2026년 11월 교회 일정';h.style.margin='0 0 12px';
+   box.append(h);
+   const ul=document.createElement('ul');ul.style.cssText='list-style:none;padding:0;margin:0;display:grid;gap:10px';
+   for(const [date,name,detail] of events){
+    const li=document.createElement('li');li.style.cssText='padding:10px 0;border-bottom:1px solid #e4edf4';
+    const strong=document.createElement('strong');strong.textContent=date+' · '+name;
+    const p=document.createElement('div');p.textContent=detail;p.style.cssText='color:#45677a;margin-top:3px;font-size:14px';
+    li.append(strong,p);ul.append(li);
+   }
+   box.append(ul);
+   const pray=document.createElement('p');pray.textContent='함께 기도해 주세요: 2027학년도 수험생을 위한 기도';
+   pray.style.cssText='font-weight:700;margin:15px 0 0';box.append(pray);
+   (article.querySelector('#hbSharedBoardCalendar')||article.querySelector('.article-title')||article).insertAdjacentElement('afterend',box);
+  }
+ }
+ if(key==='news-10'){
   if(!article.querySelector('.hb-verified-schedule-link')){
    const section=document.createElement('div');section.className='hb-verified-schedule-link';
    const a=document.createElement('a');a.href='#/news-2';a.textContent='이번 주 주보에서 교회 일정 확인하기 →';section.append(a);
