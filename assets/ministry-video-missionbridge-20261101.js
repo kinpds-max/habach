@@ -82,26 +82,32 @@ function fixFooterUpdatedAt(){
  }}
 }
 function ensureMissionBridgeCalendarLabel(){
+ if(!['index','home'].includes(route()))return;
  const app=document.querySelector('#app');if(!app)return;
- // Keep existing church events intact. Add one explicit period entry before the Nov 11 event.
- const candidates=[...app.querySelectorAll('article,section,div,li')].filter(el=>el.children.length<12 && /11\.11/.test(el.textContent||'') && /월청예배|시그러운도서관|MBMC/.test(el.textContent||'') && (el.textContent||'').length<300);
- const target=candidates.sort((a,b)=>(a.textContent||'').length-(b.textContent||'').length)[0];
- if(!target||!target.parentElement)return;
- const parent=target.parentElement;
- if(parent.querySelector('[data-hb-missionbridge-range="20261111"]'))return;
- const card=target.cloneNode(true);card.dataset.hbMissionbridgeRange='20261111';
- const date=[...card.querySelectorAll('*')].find(el=>el.children.length===0 && /11\.11/.test(el.textContent||''));
- const title=[...card.querySelectorAll('*')].find(el=>el.children.length===0 && /월청예배|MBMC/.test(el.textContent||''));
- if(!date||!title)return;
- date.textContent='11.11 - 11.17';title.textContent='미션브릿지 선교대회';
- const other=[...card.querySelectorAll('*')].find(el=>el.children.length===0 && /오후|오전|시그러운도서관|MBMC 기간/.test(el.textContent||''));
- if(other)other.textContent='11월 11일~17일 · 선교대회';
- parent.insertBefore(card,target);
+ const leaves=[...app.querySelectorAll('*')].filter(e=>e.children.length===0 && /^11\\.11$/.test((e.textContent||'').trim()));
+ for(const leaf of leaves){
+  let target=leaf;
+  for(let i=0;i<5&&target.parentElement;i++){
+   if(/월청예배/.test(target.textContent||'')&&/11\\.11/.test(target.textContent||''))break;
+   target=target.parentElement;
+  }
+  if(!/월청예배/.test(target.textContent||'')||target.textContent.length>400)continue;
+  const parent=target.parentElement;if(!parent||parent.querySelector('[data-hb-missionbridge-range="20261111"]'))return;
+  const card=target.cloneNode(true);card.dataset.hbMissionbridgeRange='20261111';
+  const date=[...card.querySelectorAll('*')].find(e=>e.children.length===0 && /^11\\.11$/.test((e.textContent||'').trim()));
+  const title=[...card.querySelectorAll('*')].find(e=>e.children.length===0 && /월청예배/.test(e.textContent||''));
+  if(!date||!title)continue;
+  date.textContent='11.11~11.18';title.textContent='MBMC 미션브릿지 선교대회 기간';
+  const detail=[...card.querySelectorAll('*')].find(e=>e.children.length===0 && /오후|시그러운도서관|MBMC 기간/.test(e.textContent||''));
+  if(detail)detail.textContent='11/11 월청예배, 11/15 전 세대 통합예배, 11/17 브릿지 화요예배';
+  const link=card.matches('a')?card:card.querySelector('a');if(link)link.setAttribute('href','#/news-2');
+  parent.insertBefore(card,target);return;
+ }
 }
 
 let waiting=false;function apply(){if(waiting)return;waiting=true;requestAnimationFrame(()=>{waiting=false;addChurchVideo();fixWednesday();missionBridge();moveServiceBoard();ensureMissionBridgeCalendarLabel();fixFooterUpdatedAt()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
 window.addEventListener('hashchange',apply);
-const start=()=>{const root=document.getElementById('app');if(root)new MutationObserver(apply).observe(root,{childList:true,subtree:false})};
+const start=()=>{const root=document.getElementById('app');if(root)new MutationObserver(apply).observe(root,{childList:true,subtree:true})};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
