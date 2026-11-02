@@ -78,7 +78,7 @@ function fixFooterUpdatedAt(){
  const footer=document.querySelector('footer');if(!footer)return;
  const walker=document.createTreeWalker(footer,NodeFilter.SHOW_TEXT);
  while(walker.nextNode()){const n=walker.currentNode; if(/최종\s*업데이트\s*:/.test(n.nodeValue||'')){
-  n.nodeValue=(n.nodeValue||'').replace(/최종\s*업데이트\s*:\s*20\d{2}\.\d{2}\.\d{2}\s+\d{2}:\d{2}\s*\(KST\)/,'최종 업데이트: 2026.11.03 00:21 (KST)');
+  n.nodeValue=(n.nodeValue||'').replace(/최종\s*업데이트\s*:\s*20\d{2}\.\d{2}\.\d{2}\s+\d{2}:\d{2}\s*\(KST\)/,'최종 업데이트: 2026.11.03 01:18 (KST)');
  }}
 }
 function ensureMissionBridgeCalendarLabel(){
