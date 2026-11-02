@@ -83,26 +83,22 @@ function fixFooterUpdatedAt(){
 }
 function ensureMissionBridgeCalendarLabel(){
  if(!['index','home'].includes(route()))return;
- const app=document.querySelector('#app');if(!app)return;
- const leaves=[...app.querySelectorAll('*')].filter(e=>e.children.length===0 && /^11\\.11$/.test((e.textContent||'').trim()));
- for(const leaf of leaves){
-  let target=leaf;
-  for(let i=0;i<5&&target.parentElement;i++){
-   if(/월청예배/.test(target.textContent||'')&&/11\\.11/.test(target.textContent||''))break;
-   target=target.parentElement;
-  }
-  if(!/월청예배/.test(target.textContent||'')||target.textContent.length>400)continue;
-  const parent=target.parentElement;if(!parent||parent.querySelector('[data-hb-missionbridge-range="20261111"]'))return;
-  const card=target.cloneNode(true);card.dataset.hbMissionbridgeRange='20261111';
-  const date=[...card.querySelectorAll('*')].find(e=>e.children.length===0 && /^11\\.11$/.test((e.textContent||'').trim()));
-  const title=[...card.querySelectorAll('*')].find(e=>e.children.length===0 && /월청예배/.test(e.textContent||''));
-  if(!date||!title)continue;
-  date.textContent='11.11~11.18';title.textContent='MBMC 미션브릿지 선교대회 기간';
-  const detail=[...card.querySelectorAll('*')].find(e=>e.children.length===0 && /오후|시그러운도서관|MBMC 기간/.test(e.textContent||''));
-  if(detail)detail.textContent='11/11 월청예배, 11/15 전 세대 통합예배, 11/17 브릿지 화요예배';
-  const link=card.matches('a')?card:card.querySelector('a');if(link)link.setAttribute('href','#/news-2');
-  parent.insertBefore(card,target);return;
- }
+ const app=document.querySelector('#app');if(!app||app.querySelector('#hb-missionbridge-calendar-2026'))return;
+ const leafs=[...app.querySelectorAll('*')].filter(e=>e.children.length===0);
+ const targetText=leafs.find(e=>/월청예배/.test(e.textContent||''));
+ let item=null;
+ if(targetText){let x=targetText;for(let i=0;i<6&&x.parentElement;i++){if(/11\\.11|11월\\s*11/.test(x.textContent||'')&&(x.textContent||'').length<500){item=x;break;}x=x.parentElement;}}
+ const heading=leafs.find(e=>/^(?:교회\\s*일정|하늘바람\\s*일정|11월\\s*교회\\s*일정)$/.test((e.textContent||'').trim()));
+ if(!item&&!heading)return;
+ const card=document.createElement('a');card.id='hb-missionbridge-calendar-2026';card.href='#/news-2';
+ card.style.cssText='display:flex;gap:18px;align-items:center;padding:16px 14px;margin:8px 0;background:#f7fafc;border:1px solid #e0e9f2;border-radius:10px;color:#2d577b;text-decoration:none;box-sizing:border-box;width:100%';
+ const date=document.createElement('strong');date.textContent='11.11~11.18';date.style.cssText='min-width:90px;white-space:nowrap;font-weight:800';
+ const copy=document.createElement('span');copy.style.cssText='display:flex;flex-direction:column;gap:4px;min-width:0';
+ const title=document.createElement('strong');title.textContent='MBMC 미션브릿지 선교대회 기간';title.style.cssText='font-size:16px;font-weight:800';
+ const detail=document.createElement('span');detail.textContent='11/11 월청예배, 11/15 전 세대 통합예배, 11/17 브릿지 화요예배';detail.style.cssText='color:#71899b;font-size:13px;line-height:1.4';
+ copy.append(title,detail);card.append(date,copy);
+ if(item&&item.parentElement){item.parentElement.insertBefore(card,item);return;}
+ if(heading){const section=heading.closest('section')||heading.parentElement;const container=section.querySelector('[class*="list"],[class*="schedule"],[class*="event"]')||section;container.append(card);}
 }
 
 let waiting=false;function apply(){if(waiting)return;waiting=true;requestAnimationFrame(()=>{waiting=false;addChurchVideo();fixWednesday();missionBridge();moveServiceBoard();ensureMissionBridgeCalendarLabel();fixFooterUpdatedAt()})}
