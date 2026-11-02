@@ -73,7 +73,12 @@ function moveServiceBoard(){
   el.dataset.hbServiceBoardBottom='1';
  }
 }
-let waiting=false;function apply(){if(waiting)return;waiting=true;requestAnimationFrame(()=>{waiting=false;addChurchVideo();fixWednesday();missionBridge();moveServiceBoard()})}
+
+function ensureMissionBridgeCalendarLabel(){
+  const nodes=document.querySelectorAll('#app .event-title,#app .calendar-event,#app [class*="calendar"] [class*="event"],#app [class*="schedule"] [class*="title"],#app [class*="event"] [class*="title"]');
+  for(const el of nodes){if(el.children.length || el.dataset.hbMbmcLabel==='1')continue;const t=(el.textContent||'').trim();if(/MBMC\\s*천국의\\s*환대\\s*2026/.test(t)&&!/미션브릿지/.test(t)){el.textContent='미션브릿지 (MBMC 천국의 환대 2026)';el.dataset.hbMbmcLabel='1'}}
+}
+let waiting=false;function apply(){if(waiting)return;waiting=true;requestAnimationFrame(()=>{waiting=false;addChurchVideo();fixWednesday();missionBridge();moveServiceBoard();ensureMissionBridgeCalendarLabel()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
 window.addEventListener('hashchange',apply);
 const start=()=>{const root=document.getElementById('app');if(root)new MutationObserver(apply).observe(root,{childList:true,subtree:false})};
