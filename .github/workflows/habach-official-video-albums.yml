@@ -1,5 +1,7 @@
 name: Sync linked official video albums
 on:
+  schedule:
+    - cron: '0 0 * * *' # 09:00 KST daily
   workflow_dispatch:
   push:
     branches: [habachnew]
