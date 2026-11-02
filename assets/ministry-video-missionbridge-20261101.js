@@ -74,11 +74,18 @@ function moveServiceBoard(){
  }
 }
 
+function fixFooterUpdatedAt(){
+ const footer=document.querySelector('footer');if(!footer)return;
+ const walker=document.createTreeWalker(footer,NodeFilter.SHOW_TEXT);
+ while(walker.nextNode()){const n=walker.currentNode; if(/최종\\s*업데이트\\s*:/.test(n.nodeValue||'')){
+  n.nodeValue=(n.nodeValue||'').replace(/최종\\s*업데이트\\s*:\\s*20\\d{2}\\.\\d{2}\\.\\d{2}\\s+\\d{2}:\\d{2}\\s*\\(KST\\)/,'최종 업데이트: 2026.11.02 23:12 (KST)');
+ }}
+}
 function ensureMissionBridgeCalendarLabel(){
   const nodes=document.querySelectorAll('#app .event-title,#app .calendar-event,#app [class*="calendar"] [class*="event"],#app [class*="schedule"] [class*="title"],#app [class*="event"] [class*="title"]');
   for(const el of nodes){if(el.children.length || el.dataset.hbMbmcLabel==='1')continue;const t=(el.textContent||'').trim();if(/MBMC\\s*천국의\\s*환대\\s*2026/.test(t)&&!/미션브릿지/.test(t)){el.textContent='미션브릿지 (MBMC 천국의 환대 2026)';el.dataset.hbMbmcLabel='1'}}
 }
-let waiting=false;function apply(){if(waiting)return;waiting=true;requestAnimationFrame(()=>{waiting=false;addChurchVideo();fixWednesday();missionBridge();moveServiceBoard();ensureMissionBridgeCalendarLabel()})}
+let waiting=false;function apply(){if(waiting)return;waiting=true;requestAnimationFrame(()=>{waiting=false;addChurchVideo();fixWednesday();missionBridge();moveServiceBoard();ensureMissionBridgeCalendarLabel();fixFooterUpdatedAt()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
 window.addEventListener('hashchange',apply);
 const start=()=>{const root=document.getElementById('app');if(root)new MutationObserver(apply).observe(root,{childList:true,subtree:false})};
