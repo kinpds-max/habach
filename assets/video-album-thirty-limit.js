@@ -1,5 +1,20 @@
 (()=>{'use strict';
 const lists={'sermon-8':'PLmD7ZicLdWIpZeJVlgfXuYYaOSHjwuG6R','sermon-event-1':'PLmD7ZicLdWIr2ZEuTbox3JN1HtmZPL4G-','sermon-event-2':'PLmD7ZicLdWIogu1FRwzVeQEl5u65ergLO','sermon-event-3':'PLmD7ZicLdWIoue08ZGSUEvTCPVRLbGiDH','sermon-member-1':'PLmD7ZicLdWIqhiIi5ZfjOzIx1uiJI8f0c','sermon-member-2':'PLmD7ZicLdWIqmp13mlhv_6a_qVi59Fjkm','sermon-member-3':'PLmD7ZicLdWIpFunENSvRQ9OM-LkHr_-07','sermon-member-4':'PLmD7ZicLdWIr3-kWBB-H1-hD9D4NokQyU','sermon-member-5':'PLmD7ZicLdWIqfKtJXSTyp8e1Qb2DIQ5tr'};
+function koreanDawnTitle(title){
+ const t=String(title||'');
+ if(/[가-힣]/.test(t))return t;
+ const slash=t.match(/(\d{1,2})\s*\/\s*(\d{1,2})\s*\/\s*(20\d{2})/);
+ const dots=t.match(/(\d{1,2})\s*\.\s*(\d{1,2})\s*\.\s*(20\d{2})/);
+ const words=t.match(/\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(\d{1,2}),?\s*(20\d{2})/i);
+ let y,m,d;
+ if(slash||dots){const z=slash||dots;m=Number(z[1]);d=Number(z[2]);y=Number(z[3]);}
+ else if(words){m=({jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12})[words[1].slice(0,3).toLowerCase()];d=Number(words[2]);y=Number(words[3]);}
+ else return t;
+ const dt=new Date(Date.UTC(y,m-1,d));
+ if(dt.getUTCFullYear()!==y||dt.getUTCMonth()!==m-1||dt.getUTCDate()!==d)return t;
+ const day=['일요일','월요일','화요일','수요일','목요일','금요일','토요일'][dt.getUTCDay()];
+ return '[새벽예배] - '+day+' - '+y+'. '+m+'. '+d+'. 하늘바람교회';
+}
 let fetched={};const shown={};let queued=false;
 fetch('/assets/official-video-albums.json',{cache:'no-store'}).then(r=>r.ok?r.json():{}).then(x=>{fetched=x;requestAnimationFrame(render)}).catch(()=>{});
 function render(){const key=(location.hash.match(/(?:sermon-member-\d+|sermon-event-\d+|sermon-\d+)/)||[])[0];if(!key||key==='sermon-11')return;
@@ -9,7 +24,7 @@ const grid=box.querySelector('.hb-static-sermon-grid');if(!grid)return;
 const data=Array.isArray(fetched[key])?fetched[key]:[];
 let official=box.querySelector('[data-hb-official-grid]');
 if(data.length){if(!official){official=document.createElement('div');official.dataset.hbOfficialGrid='1';official.className='hb-static-sermon-grid';grid.insertAdjacentElement('afterend',official)}
-const existed=new Set([...official.querySelectorAll('[data-video]')].map(e=>e.dataset.video));for(const v of data){if(!v.id||!/^[A-Za-z0-9_-]{11}$/.test(v.id)||existed.has(v.id))continue;existed.add(v.id);const a=document.createElement('a');a.dataset.video=v.id;a.className='sermon-album-card static-sermon-card';a.href='https://www.youtube.com/watch?v='+v.id;a.target='_blank';a.rel='noopener noreferrer';const img=document.createElement('img');img.src='https://i.ytimg.com/vi/'+v.id+'/hqdefault.jpg';img.alt=v.title||'교회 영상';img.loading='lazy';img.style.cssText='width:100%;aspect-ratio:16/9;object-fit:cover';const label=document.createElement('strong');label.textContent=v.title||'교회 영상';label.style.cssText='display:block;padding:10px';a.append(img,label);official.append(a)}grid.style.setProperty('display','none','important')}
+const existed=new Set([...official.querySelectorAll('[data-video]')].map(e=>e.dataset.video));for(const v of data){if(!v.id||!/^[A-Za-z0-9_-]{11}$/.test(v.id)||existed.has(v.id))continue;existed.add(v.id);const a=document.createElement('a');a.dataset.video=v.id;a.className='sermon-album-card static-sermon-card';a.href='https://www.youtube.com/watch?v='+v.id;a.target='_blank';a.rel='noopener noreferrer';const img=document.createElement('img');img.src='https://i.ytimg.com/vi/'+v.id+'/hqdefault.jpg';img.alt=key==='sermon-8'?koreanDawnTitle(v.title):v.title||'교회 영상';img.loading='lazy';img.style.cssText='width:100%;aspect-ratio:16/9;object-fit:cover';const label=document.createElement('strong');label.textContent=key==='sermon-8'?koreanDawnTitle(v.title):v.title||'교회 영상';label.style.cssText='display:block;padding:10px';a.append(img,label);official.append(a)}grid.style.setProperty('display','none','important')}
 const target=data.length?official:grid;
 const seen=new Set();const cards=[...target.querySelectorAll('a[data-video]')].filter(a=>{if(seen.has(a.dataset.video)){a.remove();return false}seen.add(a.dataset.video);return true});
 const limit=shown[key]||30;
