@@ -49,7 +49,7 @@ def recent_channel_dawn():
   for video in raw.get('entries') or []:
    vid=video.get('id');title=str(video.get('title') or '')
    if not isinstance(vid,str) or len(vid)!=11:continue
-   if not (re.search(r'새벽(?:예배|기도|설교)',title) or re.search(r'\\b(?:Dawn|Early Morning|Morning (?:Service|Worship))\\b',title,re.I)):continue
+   if not (re.search(r'새벽(?:예배|기도|설교)',title) or re.search(r'\b(?:Dawn|Early Morning|Morning (?:Service|Worship))\b',title,re.I)):continue
    if not dawn_date(title):continue
    out.append({'id':vid,'title':korean_dawn_title(title)})
   return out
