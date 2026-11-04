@@ -47,8 +47,13 @@ function dawn(){
 }
 function press(){
  if(!isHome()||!pressItems.length)return;
- const app=document.querySelector('#app');if(!app||!isHome()||app.querySelector('#hb-press-preview'))return;
+ const app=document.querySelector('#app');if(!app||!isHome())return;
+ const signature=JSON.stringify(pressItems.map(x=>[x.title,x.date,x.image,(x.images||[]).join('|')]));
+ const existing=app.querySelector('#hb-press-preview');
+ if(existing&&existing.dataset.pressSignature===signature)return;
+ if(existing)existing.remove();
  const section=document.createElement('section');section.id='hb-press-preview';section.setAttribute('aria-label','언론 속 하늘바람교회');
+ section.dataset.pressSignature=signature;
  section.style.cssText='background:#fff;border:1px solid #dce6ef;box-shadow:none;max-width:1180px';
  const head=document.createElement('div');head.className='hb-press-head';
  const title=document.createElement('h2');title.textContent='언론 속 하늘바람교회';
