@@ -74,9 +74,10 @@ function hbPressShow(){
   const more=document.createElement('span');more.className='hb-press-more';more.textContent='펼치기 ▾';
   body.append(heading,meta);summary.append(n,body,more);
   const details=document.createElement('div');details.style.cssText='padding:2px 16px 20px 52px;background:#f8fbfe;color:#567188;font-size:14px;line-height:1.75';
-  const excerpt=document.createElement('p');excerpt.textContent=post.summary||'관련 보도자료입니다. 상세 내용은 언론사 원문에서 확인할 수 있습니다.';
-  const source=document.createElement('a');source.href=post.url;source.textContent='기사 원문 확인 →';source.style.cssText='color:#2d76a5;font-weight:750;text-decoration:underline';
-  details.append(excerpt,source);item.append(summary,details);records.append(item);
+  for(const paragraph of String(post.body||post.summary||'기사 본문을 준비 중입니다.').split(/\n\s*\n/)){
+   const p=document.createElement('p');p.textContent=paragraph;p.style.cssText='margin:0 0 12px;white-space:pre-wrap';details.append(p);
+  }
+  item.append(summary,details);records.append(item);
   item.addEventListener('toggle',()=>{more.textContent=item.open?'접기 ▴':'펼치기 ▾'});
  });
 }
