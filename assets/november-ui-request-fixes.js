@@ -145,8 +145,10 @@ function hbPressShow(){
   const heading=document.createElement('div');heading.className='hb-press-name';heading.textContent=post.title||'언론보도';
   const meta=document.createElement('div');meta.className='hb-press-byline';meta.textContent=(post.source||'언론사')+' · '+(post.date?post.date.replaceAll('-','.'):'게시일 확인 중');
   const more=document.createElement('span');more.className='hb-press-more';more.textContent='펼치기 ▾';
-  body.append(heading,meta);summary.append(n,body,more);
+  if(post.image){const thumb=document.createElement('img');thumb.src=post.image;thumb.alt=post.imageAlt||post.title||'보도자료 사진';thumb.loading='lazy';thumb.style.cssText='width:92px;height:66px;object-fit:cover;border-radius:8px;flex:0 0 auto';summary.append(n,thumb,body,more)}else{summary.append(n,body,more)}
+  body.append(heading,meta);
   const details=document.createElement('div');details.style.cssText='padding:2px 16px 20px 52px;background:#f8fbfe;color:#567188;font-size:14px;line-height:1.75';
+  if(post.image){const photo=document.createElement('img');photo.src=post.image;photo.alt=post.imageAlt||post.title||'보도자료 사진';photo.loading='lazy';photo.style.cssText='display:block;width:100%;max-width:640px;height:auto;border-radius:12px;margin:12px auto 20px;object-fit:contain';details.append(photo)}
   for(const paragraph of String(post.body||post.summary||'기사 본문을 준비 중입니다.').split(/\n\s*\n/)){
    const p=document.createElement('p');p.textContent=paragraph;p.style.cssText='margin:0 0 12px;white-space:pre-wrap';details.append(p);
   }
