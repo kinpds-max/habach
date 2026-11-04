@@ -63,9 +63,10 @@ function press(){
   const meta=document.createElement('small');meta.textContent=item.source+' · '+(item.date?item.date.replaceAll('-','.'):'게시일 확인 중');meta.style.cssText='color:#7890a3;font-size:12px';
   copy.append(strong,meta);header.append(number,copy);
   const body=document.createElement('div');body.style.cssText='padding:3px 16px 18px 36px;font-size:13px;line-height:1.7;color:#5a7488;background:#f8fbfe';
-  const desc=document.createElement('p');desc.textContent=item.summary||'언론보도 자료입니다.';
-  const original=document.createElement('a');original.href=item.url;original.textContent='기사 원문 확인 →';original.style.cssText='color:#2b74a5;font-weight:750;text-decoration:underline';
-  body.append(desc,original);details.append(header,body);list.append(details);
+  for(const paragraph of String(item.body||item.summary||'기사 내용을 준비 중입니다.').split(/\n\s*\n/)){
+   const p=document.createElement('p');p.textContent=paragraph;p.style.cssText='margin:0 0 12px;white-space:pre-wrap';body.append(p);
+  }
+  details.append(header,body);list.append(details);
  });
  section.append(list);
  const headings=[...app.querySelectorAll('h2,h3,h4')];
