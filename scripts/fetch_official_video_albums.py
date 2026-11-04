@@ -7,13 +7,13 @@ WEEKDAYS=['월요일','화요일','수요일','목요일','금요일','토요일
 
 def dawn_date(title):
  title=str(title or '')
- m=re.search(r'(20\\d{2})\\s*[.\\-/년]\\s*(\\d{1,2})\\s*[.\\-/월]\\s*(\\d{1,2})',title)
+ m=re.search(r'(20\d{2})\s*[.\-/년]\s*(\d{1,2})\s*[.\-/월]\s*(\d{1,2})',title)
  if m: year,month,day=map(int,m.groups())
  else:
-  m=re.search(r'(\\d{1,2})\\s*[/\\.]\\s*(\\d{1,2})\\s*[/\\.]\\s*(20\\d{2})',title)
+  m=re.search(r'(\d{1,2})\s*[/\.]\s*(\d{1,2})\s*[/\.]\s*(20\d{2})',title)
   if m: month,day,year=map(int,m.groups())
   else:
-   m=re.search(r'(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\\.?\\s+(\\d{1,2}),?\\s*(20\\d{2})',title,re.I)
+   m=re.search(r'(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(\d{1,2}),?\s*(20\d{2})',title,re.I)
    if not m:return None
    month=MONTHS[m.group(1)[:3].lower()];day=int(m.group(2));year=int(m.group(3))
  try:return datetime.date(year,month,day)
