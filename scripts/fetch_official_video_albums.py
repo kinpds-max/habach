@@ -36,6 +36,27 @@ lists={
 'sermon-member-5':'PLmD7ZicLdWIqfKtJXSTyp8e1Qb2DIQ5tr'}
 out=Path('assets/official-video-albums.json')
 previous=json.loads(out.read_text()) if out.exists() else {}
+# Include recent public uploads from the official channel, not only playlist additions.
+def recent_channel_dawn():
+ try:
+  cmd=['yt-dlp','--flat-playlist','--skip-download','--playlist-end','35',
+       '--dump-single-json','--no-warnings',
+       'https://www.youtube.com/@Gimpo_HBC/videos']
+  result=subprocess.run(cmd,capture_output=True,text=True,timeout=110)
+  if result.returncode:return []
+  raw=json.loads(result.stdout)
+  out=[]
+  for video in raw.get('entries') or []:
+   vid=video.get('id');title=str(video.get('title') or '')
+   if not isinstance(vid,str) or len(vid)!=11:continue
+   if not (re.search(r'새벽(?:예배|기도|설교)',title) or re.search(r'\\b(?:Dawn|Early Morning|Morning (?:Service|Worship))\\b',title,re.I)):continue
+   if not dawn_date(title):continue
+   out.append({'id':vid,'title':korean_dawn_title(title)})
+  return out
+ except Exception as e:
+  print('channel dawn lookup failed:',str(e)[:160]);return []
+
+channel_dawn=recent_channel_dawn()
 for key,playlist in lists.items():
  try:
   p=subprocess.run(['yt-dlp','--flat-playlist','--skip-download','--dump-single-json','--no-warnings','https://www.youtube.com/playlist?list='+playlist],capture_output=True,text=True,timeout=100)
@@ -56,6 +77,9 @@ for key,playlist in lists.items():
      if '[Deleted video]' in title or re.search(r'3-Minute Sermon',title,re.I):continue
      refreshed.append({'id':v['id'],'title':korean_dawn_title(title)})
     seen={v['id'] for v in refreshed}
+    for v in channel_dawn:
+     if v['id'] not in seen:
+      refreshed.append(v);seen.add(v['id'])
     newest=max((dawn_date(v['title']) for v in refreshed if dawn_date(v['title'])),default=None)
     # Keep a manually verified latest video until it appears in YouTube's playlist.
     for v in old.values():
