@@ -48,25 +48,26 @@ function press(){
  if(!isHome()||!pressItems.length)return;
  const app=document.querySelector('#app');if(!app||app.querySelector('#hb-press-preview'))return;
  const section=document.createElement('section');section.id='hb-press-preview';section.setAttribute('aria-label','언론 속 하늘바람교회');
+ section.style.cssText='background:#fff;border:1px solid #dce6ef;box-shadow:none;max-width:1180px';
  const head=document.createElement('div');head.className='hb-press-head';
- const heading=document.createElement('h2');heading.textContent='언론 속 하늘바람교회';
- const all=document.createElement('a');all.className='hb-press-all';all.href='/press.html';all.textContent='보도자료 전체보기 →';head.append(heading,all);section.append(head);
- const grid=document.createElement('div');grid.className='hb-press-list';
- for(const item of pressItems.slice(0,3)){
-  const a=document.createElement('a');a.className='hb-press-item';a.href=item.url;a.target='_blank';a.rel='noopener noreferrer';
-  const meta=document.createElement('span');meta.className='hb-press-meta';meta.textContent=item.source+' · '+(item.date?item.date.replaceAll('-','.'):'게시일 확인 중');
-  const title=document.createElement('strong');title.className='hb-press-title';title.textContent=item.title;
-  const desc=document.createElement('span');desc.className='hb-press-desc';desc.textContent=item.summary||'';
-  const open=document.createElement('span');open.className='hb-press-open';open.textContent='기사 원문 보기 ↗';
-  a.append(meta,title,desc,open);grid.append(a);
- }
- section.append(grid);
+ const title=document.createElement('h2');title.textContent='언론 속 하늘바람교회';
+ const all=document.createElement('a');all.className='hb-press-all';all.href='#/news-press';all.textContent='전체보기 →';
+ head.append(title,all);section.append(head);
+ const list=document.createElement('div');list.style.cssText='border-top:2px solid #315a79';
+ pressItems.slice(0,4).forEach((item,i)=>{
+  const link=document.createElement('a');link.href='#/news-press';link.style.cssText='display:flex;align-items:center;gap:10px;padding:13px 4px;border-bottom:1px solid #e0e9f1;text-decoration:none;color:#284f6d';
+  const number=document.createElement('span');number.textContent=String(i+1).padStart(2,'0');number.style.cssText='color:#8094a5;font-size:12px;flex:0 0 24px';
+  const copy=document.createElement('span');copy.style.cssText='display:flex;flex-direction:column;gap:4px;min-width:0;flex:1';
+  const strong=document.createElement('strong');strong.textContent=item.title;strong.style.cssText='font-size:14px;line-height:1.5;word-break:keep-all';
+  const meta=document.createElement('small');meta.textContent=item.source+' · '+(item.date?item.date.replaceAll('-','.'):'게시일 확인 중');meta.style.cssText='color:#7890a3;font-size:12px';
+  copy.append(strong,meta);link.append(number,copy);list.append(link);
+ });
+ section.append(list);
  const headings=[...app.querySelectorAll('h2,h3,h4')];
  const schedule=headings.find(h=>/월간\s*교회일정|교회일정/.test(h.textContent||''));
  const bulletin=headings.find(h=>/이번\s*주\s*교회\s*주보/.test(h.textContent||''));
- const anchor=schedule||bulletin;
- const holder=anchor&&(anchor.closest('section')||anchor.parentElement);
- if(holder&&holder.parentNode){holder.insertAdjacentElement(schedule?'afterend':'beforebegin',section)}
+ const anchor=schedule||bulletin,holder=anchor&&(anchor.closest('section')||anchor.parentElement);
+ if(holder&&holder.parentNode)holder.insertAdjacentElement(schedule?'afterend':'beforebegin',section);
  else app.append(section);
 }
 function apply(){dawn();press()}
