@@ -64,13 +64,20 @@ function hbPressShow(){
  const note=document.createElement('p');note.className='hb-press-note';note.textContent='하늘바람교회의 지역사회 섬김과 활동을 다룬 언론보도입니다.';
  const records=document.createElement('div');records.className='hb-press-records';box.append(note,records);article.append(title,box);
  hbPressRows.forEach((post,i)=>{
-  const a=document.createElement('a');a.className='hb-press-record';a.href=post.url;a.target='_blank';a.rel='noopener noreferrer';
+  const item=document.createElement('details');item.className='hb-press-expand';item.style.cssText='border-bottom:1px solid #dbe6ef;background:#fff';
+  const summary=document.createElement('summary');summary.className='hb-press-record';
+  summary.style.cssText='cursor:pointer;list-style:none';
   const n=document.createElement('span');n.className='hb-press-no';n.textContent=String(hbPressRows.length-i);
   const body=document.createElement('div');body.className='hb-press-content';
   const heading=document.createElement('div');heading.className='hb-press-name';heading.textContent=post.title||'언론보도';
   const meta=document.createElement('div');meta.className='hb-press-byline';meta.textContent=(post.source||'언론사')+' · '+(post.date?post.date.replaceAll('-','.'):'게시일 확인 중');
-  const open=document.createElement('span');open.className='hb-press-more';open.textContent='기사 보기 ↗';
-  body.append(heading,meta);a.append(n,body,open);records.append(a);
+  const more=document.createElement('span');more.className='hb-press-more';more.textContent='펼치기 ▾';
+  body.append(heading,meta);summary.append(n,body,more);
+  const details=document.createElement('div');details.style.cssText='padding:2px 16px 20px 52px;background:#f8fbfe;color:#567188;font-size:14px;line-height:1.75';
+  const excerpt=document.createElement('p');excerpt.textContent=post.summary||'관련 보도자료입니다. 상세 내용은 언론사 원문에서 확인할 수 있습니다.';
+  const source=document.createElement('a');source.href=post.url;source.textContent='기사 원문 확인 →';source.style.cssText='color:#2d76a5;font-weight:750;text-decoration:underline';
+  details.append(excerpt,source);item.append(summary,details);records.append(item);
+  item.addEventListener('toggle',()=>{more.textContent=item.open?'접기 ▴':'펼치기 ▾'});
  });
 }
 let hbPressPending=false;function hbPressSchedule(){if(hbPressPending)return;hbPressPending=true;requestAnimationFrame(()=>{hbPressPending=false;hbPressShow()})}
