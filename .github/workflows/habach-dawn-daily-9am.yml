@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install YouTube metadata reader
-        run: python -m pip install 'yt-dlp>=2026.10.1'
+        run: python -m pip install --upgrade yt-dlp
       - name: Fetch official videos and update Korean dawn titles
         run: python scripts/fetch_official_video_albums.py
       - name: Commit and push only when videos change
