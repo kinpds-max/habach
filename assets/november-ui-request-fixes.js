@@ -77,6 +77,7 @@ function hbPressShow(){
   for(const paragraph of String(post.body||post.summary||'기사 본문을 준비 중입니다.').split(/\n\s*\n/)){
    const p=document.createElement('p');p.textContent=paragraph;p.style.cssText='margin:0 0 12px;white-space:pre-wrap';details.append(p);
   }
+  if(/^https?:\/\//.test(post.url||'')){const original=document.createElement('a');original.href=post.url;original.target='_blank';original.rel='noopener noreferrer';original.textContent='기사 원문 보기 ↗';original.style.cssText='display:inline-block;margin-top:8px;padding:7px 0;color:#286e9e;font-weight:800;text-decoration:underline;text-underline-offset:3px';details.append(original);}
   item.append(summary,details);records.append(item);
   item.addEventListener('toggle',()=>{more.textContent=item.open?'접기 ▴':'펼치기 ▾'});
  });
