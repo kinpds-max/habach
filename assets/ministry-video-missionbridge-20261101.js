@@ -74,12 +74,25 @@ function moveServiceBoard(){
  }
 }
 
+let hbReleaseStamp='2026.11.04 16:30';
+function hbFormatReleaseTime(value){
+ const d=new Date(value);if(!Number.isFinite(d.getTime()))return null;
+ const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(d);
+ const m=Object.fromEntries(parts.filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));
+ return m.year+'.'+m.month+'.'+m.day+' '+m.hour+':'+m.minute;
+}
+fetch('/assets/video-album-thirty-limit.js',{method:'HEAD',cache:'no-store'}).then(r=>r.headers.get('last-modified')).then(t=>{
+ if(t){const v=hbFormatReleaseTime(t);if(v){hbReleaseStamp=v;fixFooterUpdatedAt();}}
+}).catch(()=>{});
 function fixFooterUpdatedAt(){
  const footer=document.querySelector('footer');if(!footer)return;
  const walker=document.createTreeWalker(footer,NodeFilter.SHOW_TEXT);
- while(walker.nextNode()){const n=walker.currentNode; if(/최종\s*업데이트\s*:/.test(n.nodeValue||'')){
-  n.nodeValue=(n.nodeValue||'').replace(/최종\s*업데이트\s*:\s*20\d{2}\.\d{2}\.\d{2}\s+\d{2}:\d{2}\s*\(KST\)/,'최종 업데이트: 2026.11.03 01:18 (KST)');
- }}
+ while(walker.nextNode()){
+  const n=walker.currentNode;
+  if(/최종\s*업데이트\s*:/.test(n.nodeValue||'')){
+   n.nodeValue=(n.nodeValue||'').replace(/최종\s*업데이트\s*:\s*20\d{2}\.\d{2}\.\d{2}\s+\d{2}:\d{2}\s*\(KST\)/,'최종 업데이트: '+hbReleaseStamp+' (KST)');
+  }
+ }
 }
 function ensureMissionBridgeCalendarLabel(){
  if(!['index','home'].includes(route()))return;
