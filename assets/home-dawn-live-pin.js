@@ -55,12 +55,17 @@ function press(){
  head.append(title,all);section.append(head);
  const list=document.createElement('div');list.style.cssText='border-top:2px solid #315a79';
  pressItems.slice(0,4).forEach((item,i)=>{
-  const link=document.createElement('a');link.href='#/news-press';link.style.cssText='display:flex;align-items:center;gap:10px;padding:13px 4px;border-bottom:1px solid #e0e9f1;text-decoration:none;color:#284f6d';
+  const details=document.createElement('details');details.style.cssText='border-bottom:1px solid #e0e9f1;background:#fff';
+  const header=document.createElement('summary');header.style.cssText='display:flex;align-items:center;gap:10px;padding:13px 4px;cursor:pointer;color:#284f6d';
   const number=document.createElement('span');number.textContent=String(i+1).padStart(2,'0');number.style.cssText='color:#8094a5;font-size:12px;flex:0 0 24px';
   const copy=document.createElement('span');copy.style.cssText='display:flex;flex-direction:column;gap:4px;min-width:0;flex:1';
   const strong=document.createElement('strong');strong.textContent=item.title;strong.style.cssText='font-size:14px;line-height:1.5;word-break:keep-all';
   const meta=document.createElement('small');meta.textContent=item.source+' · '+(item.date?item.date.replaceAll('-','.'):'게시일 확인 중');meta.style.cssText='color:#7890a3;font-size:12px';
-  copy.append(strong,meta);link.append(number,copy);list.append(link);
+  copy.append(strong,meta);header.append(number,copy);
+  const body=document.createElement('div');body.style.cssText='padding:3px 16px 18px 36px;font-size:13px;line-height:1.7;color:#5a7488;background:#f8fbfe';
+  const desc=document.createElement('p');desc.textContent=item.summary||'언론보도 자료입니다.';
+  const original=document.createElement('a');original.href=item.url;original.textContent='기사 원문 확인 →';original.style.cssText='color:#2b74a5;font-weight:750;text-decoration:underline';
+  body.append(desc,original);details.append(header,body);list.append(details);
  });
  section.append(list);
  const headings=[...app.querySelectorAll('h2,h3,h4')];
