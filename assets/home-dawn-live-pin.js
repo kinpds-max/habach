@@ -54,8 +54,8 @@ function press(){
  const all=document.createElement('a');all.className='hb-press-all';all.href='#/news-press';all.textContent='전체보기 →';
  head.append(title,all);section.append(head);
  const list=document.createElement('div');list.style.cssText='border-top:2px solid #315a79';
- pressItems.slice(0,4).forEach((item,i)=>{
-  const details=document.createElement('details');details.style.cssText='border-bottom:1px solid #e0e9f1;background:#fff';
+ pressItems.forEach((item,i)=>{
+  const details=document.createElement('details');details.style.cssText='border-bottom:1px solid #e0e9f1;background:#fff';details.dataset.pressIndex=String(i);details.hidden=i>=4;
   const header=document.createElement('summary');header.style.cssText='display:flex;align-items:center;gap:10px;padding:13px 4px;cursor:pointer;color:#284f6d';
   const number=document.createElement('span');number.textContent=String(i+1).padStart(2,'0');number.style.cssText='color:#8094a5;font-size:12px;flex:0 0 24px';
   const copy=document.createElement('span');copy.style.cssText='display:flex;flex-direction:column;gap:4px;min-width:0;flex:1';
@@ -73,6 +73,18 @@ function press(){
   details.append(header,body);list.append(details);
  });
  section.append(list);
+ if(pressItems.length>4){
+  const btn=document.createElement('button');
+  btn.type='button';btn.className='hb-home-press-more';
+  btn.style.cssText='display:block;margin:18px auto 0;padding:12px 24px;border:1px solid #b5ccdd;border-radius:10px;background:white;color:#275574;font-weight:800;cursor:pointer;min-height:44px';
+  let visible=4;
+  const render=()=>{
+   list.querySelectorAll('details[data-press-index]').forEach(row=>{row.hidden=Number(row.dataset.pressIndex)>=visible});
+   btn.textContent=visible>=pressItems.length?'접기 ▴':'보도자료 더보기 ('+(pressItems.length-visible)+'건) ▾';
+  };
+  btn.addEventListener('click',()=>{visible=visible>=pressItems.length?4:Math.min(pressItems.length,visible+4);render()});
+  render();section.append(btn);
+ }
  const headings=[...app.querySelectorAll('h2,h3,h4')];
  const schedule=headings.find(h=>/월간\s*교회일정|교회일정/.test(h.textContent||''));
  const bulletin=headings.find(h=>/이번\s*주\s*교회\s*주보/.test(h.textContent||''));
