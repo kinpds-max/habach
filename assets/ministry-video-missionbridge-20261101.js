@@ -95,22 +95,9 @@ function fixFooterUpdatedAt(){
  }
 }
 function ensureMissionBridgeCalendarLabel(){
- if(!['index','home'].includes(route()))return;
- const app=document.querySelector('#app');if(!app||app.querySelector('#hb-missionbridge-calendar-2026'))return;
- const leafs=[...app.querySelectorAll('*')].filter(e=>e.children.length===0);
- const heading=leafs.find(e=>/^(?:월간\s*교회일정|교회\s*일정|하늘바람\s*일정|11월\s*교회\s*일정)$/.test((e.textContent||'').trim()));
- const targetText=leafs.find(e=>/월청예배|웰컴예배/.test(e.textContent||''));
- let item=null;
- if(targetText){let x=targetText;for(let i=0;i<7&&x.parentElement;i++){if(/11\.11|11월\s*11|11\/11/.test(x.textContent||'')&&(x.textContent||'').length<600){item=x;break;}x=x.parentElement;}}
- if(!item&&!heading)return;
- const card=document.createElement('a');card.id='hb-missionbridge-calendar-2026';card.href='#/news-2';
- card.style.cssText='display:flex;gap:0;align-items:center;padding:14px;margin:8px 0;background:#f7fafc;border:1px solid #e0e9f2;border-radius:10px;color:#2d577b;text-decoration:none;box-sizing:border-box;width:100%';
- const copy=document.createElement('span');copy.style.cssText='display:flex;flex-direction:column;gap:4px;min-width:0';
- const title=document.createElement('strong');title.textContent='MBMC 미션브릿지 선교대회 기간';title.style.cssText='font-size:16px;font-weight:800';
- const detail=document.createElement('span');detail.textContent='11/11 월청예배, 11/15 전 세대 통합예배, 11/17 브릿지 화요예배';detail.style.cssText='color:#71899b;font-size:13px;line-height:1.4';
- copy.append(title,detail);card.append(copy);
- if(item&&item.parentElement){item.parentElement.insertBefore(card,item);return;}
- if(heading){const section=heading.closest('section')||heading.parentElement;const container=section.querySelector('[class*="list"],[class*="schedule"],[class*="event"]')||section;container.append(card);}
+ // The native homepage schedule already contains the MBMC event, its date,
+ // title and description. Remove the legacy extra inner card only.
+ document.querySelectorAll('#hb-missionbridge-calendar-2026').forEach(card=>card.remove());
 }
 
 let waiting=false;function apply(){if(waiting)return;waiting=true;requestAnimationFrame(()=>{waiting=false;addChurchVideo();fixWednesday();missionBridge();moveServiceBoard();ensureMissionBridgeCalendarLabel();fixFooterUpdatedAt()})}
