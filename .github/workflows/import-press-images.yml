@@ -1,0 +1,33 @@
+name: Import church press images into static assets
+on:
+  push:
+    branches: [habachnew]
+    paths:
+      - 'assets/church-press.json'
+      - 'scripts/import_press_images.py'
+      - '.github/workflows/import-press-images.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: habachnew
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download and validate article images
+        run: python scripts/import_press_images.py
+      - name: Save images and references in GitHub
+        run: |
+          if test -z "$(git status --porcelain -- assets/church-press.json assets/press/)"; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/church-press.json assets/press/
+          git commit -m "Store church press article images in GitHub assets"
+          git pull --rebase origin habachnew
+          git push origin HEAD:habachnew
