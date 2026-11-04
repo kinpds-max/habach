@@ -22,7 +22,7 @@ function addChurchPressMenu(){
  // The mobile drawer is a nested accordion, not necessarily a <nav>.
  // Locate its real community links, rather than guessing wrapper class names.
  const anchors=[...document.querySelectorAll('a[href]')].filter(a=>
-  /^#\\/?news-\\d+$/.test(a.getAttribute('href')||'')||
+  /^#\/?news-\d+$/.test(a.getAttribute('href')||'')||
   ['자주묻는질문','교인사업정보','기도제목나눔','새가족앨범','교회주보'].includes(norm(a.textContent))
  );
  const panels=new Set();
@@ -30,7 +30,7 @@ function addChurchPressMenu(){
   let parent=anchor.parentElement,found=null;
   for(let depth=0;parent&&depth<7;depth++,parent=parent.parentElement){
    const links=[...parent.querySelectorAll('a[href]')];
-   const community=links.filter(a=>/^#\\/?news-\\d+$/.test(a.getAttribute('href')||'')||
+   const community=links.filter(a=>/^#\/?news-\d+$/.test(a.getAttribute('href')||'')||
     ['자주묻는질문','교인사업정보','기도제목나눔','새가족앨범','교회주보'].includes(norm(a.textContent)));
    if(community.length>=3&&links.length<=32){found=parent;break}
   }
@@ -38,7 +38,7 @@ function addChurchPressMenu(){
  }
  for(const panel of panels){
   const community=[...panel.querySelectorAll('a[href]')].filter(a=>
-   /^#\\/?news-\\d+$/.test(a.getAttribute('href')||'')||
+   /^#\/?news-\d+$/.test(a.getAttribute('href')||'')||
    ['자주묻는질문','교인사업정보','기도제목나눔','새가족앨범','교회주보'].includes(norm(a.textContent)));
   if(community.length<3)continue;
   const existing=[...panel.querySelectorAll('a[href]')].filter(a=>a.getAttribute('href')===pressHref||
