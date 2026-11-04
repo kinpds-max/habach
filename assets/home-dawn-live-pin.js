@@ -46,7 +46,7 @@ function dawn(){
 }
 function press(){
  if(!isHome()||!pressItems.length)return;
- const app=document.querySelector('#app');if(!app||app.querySelector('#hb-press-preview'))return;
+ const app=document.querySelector('#app');if(!app||!isHome()||app.querySelector('#hb-press-preview'))return;
  const section=document.createElement('section');section.id='hb-press-preview';section.setAttribute('aria-label','언론 속 하늘바람교회');
  section.style.cssText='background:#fff;border:1px solid #dce6ef;box-shadow:none;max-width:1180px';
  const head=document.createElement('div');head.className='hb-press-head';
@@ -77,7 +77,15 @@ function press(){
  if(holder&&holder.parentNode)holder.insertAdjacentElement(schedule?'afterend':'beforebegin',section);
  else app.append(section);
 }
-function apply(){dawn();press()}
+function apply(){
+ const oldPreview=document.getElementById('hb-press-preview');
+ if(!isHome()){
+  if(oldPreview)oldPreview.remove();
+  return;
+ }
+ dawn();
+ press();
+}
 function queue(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{queue();refreshData()});else{queue();refreshData()}
 window.addEventListener('hashchange',queue);
