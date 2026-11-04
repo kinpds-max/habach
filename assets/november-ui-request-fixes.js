@@ -19,7 +19,7 @@ function addChurchPressMenu(){
   }
  }
  for(const group of groups){
-  if(group.querySelector('a[data-hb-church-press-menu],a[href="/press.html"]'))continue;
+  if(group.querySelector('a[data-hb-church-press-menu],a[data-hb-church-press-menu]'))continue;
   const items=[...group.querySelectorAll('a[href]')].filter(a=>/^#\/?news-[1-9]\d*$/.test(a.getAttribute('href')||''));
   if(!items.length)continue;
   const last=items[items.length-1];
@@ -29,7 +29,7 @@ function addChurchPressMenu(){
   const a=clone.matches('a')?clone:clone.querySelector('a[href]');
   if(!a)continue;
   for(const el of [clone,...clone.querySelectorAll('[id]')])el.removeAttribute('id');
-  a.href='/press.html';
+  a.href='#/news-press';
   a.textContent='언론 속 하늘바람교회';
   a.dataset.hbChurchPressMenu='1';
   if(node.parentElement)node.insertAdjacentElement('afterend',clone);
@@ -44,6 +44,40 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 else queueChurchPressMenu();
 window.addEventListener('hashchange',queueChurchPressMenu);
 new MutationObserver(queueChurchPressMenu).observe(document.documentElement,{childList:true,subtree:true});
+
+
+/* 언론 속 하늘바람교회: 원래 홈페이지 안의 커뮤니티 게시판 */
+const hbPressRoute=()=>/^#\/?news-press(?:[?&]|$)/.test(location.hash);
+let hbPressRows=[];
+const hbPressCSS=document.createElement('style');
+hbPressCSS.textContent='#hb-press-board{padding:5px 0 30px}#hb-press-board .hb-press-note{color:#71899e;font-size:13px;margin:0 0 18px}#hb-press-board .hb-press-records{border-top:2px solid #3b647f}#hb-press-board .hb-press-record{display:flex;gap:14px;align-items:center;padding:17px 8px;border-bottom:1px solid #dbe6ef;text-decoration:none;color:#2d526e;background:#fff}#hb-press-board .hb-press-record:hover{background:#f5f9fc}#hb-press-board .hb-press-no{font-size:12px;color:#8599a8;width:30px;text-align:center;flex-shrink:0}#hb-press-board .hb-press-content{flex:1;min-width:0}#hb-press-board .hb-press-name{font-weight:800;font-size:15px;line-height:1.55;word-break:keep-all}#hb-press-board .hb-press-byline{font-size:12px;color:#8194a3;margin-top:5px}#hb-press-board .hb-press-more{font-size:12px;color:#4380ac;white-space:nowrap}@media(max-width:520px){#hb-press-board .hb-press-more{display:none}#hb-press-board .hb-press-record{gap:7px;padding:14px 3px}}';
+document.head.append(hbPressCSS);
+function hbPressShow(){
+ if(!hbPressRoute())return;
+ const app=document.getElementById('app');if(!app||app.querySelector('#hb-press-board'))return;
+ let layout=app.querySelector('.page-grid');
+ if(!layout){layout=document.createElement('div');layout.className='page-grid';layout.style.cssText='max-width:1200px;padding:20px 16px;margin:0 auto';app.replaceChildren(layout)}
+ let article=layout.querySelector('article.article');
+ if(!article){article=document.createElement('article');article.className='article';layout.append(article)}else article.replaceChildren();
+ const title=document.createElement('h1');title.className='article-title';title.textContent='언론 속 하늘바람교회';
+ const box=document.createElement('section');box.id='hb-press-board';
+ const note=document.createElement('p');note.className='hb-press-note';note.textContent='하늘바람교회의 지역사회 섬김과 활동을 다룬 언론보도입니다.';
+ const records=document.createElement('div');records.className='hb-press-records';box.append(note,records);article.append(title,box);
+ hbPressRows.forEach((post,i)=>{
+  const a=document.createElement('a');a.className='hb-press-record';a.href=post.url;a.target='_blank';a.rel='noopener noreferrer';
+  const n=document.createElement('span');n.className='hb-press-no';n.textContent=String(hbPressRows.length-i);
+  const body=document.createElement('div');body.className='hb-press-content';
+  const heading=document.createElement('div');heading.className='hb-press-name';heading.textContent=post.title||'언론보도';
+  const meta=document.createElement('div');meta.className='hb-press-byline';meta.textContent=(post.source||'언론사')+' · '+(post.date?post.date.replaceAll('-','.'):'게시일 확인 중');
+  const open=document.createElement('span');open.className='hb-press-more';open.textContent='기사 보기 ↗';
+  body.append(heading,meta);a.append(n,body,open);records.append(a);
+ });
+}
+let hbPressPending=false;function hbPressSchedule(){if(hbPressPending)return;hbPressPending=true;requestAnimationFrame(()=>{hbPressPending=false;hbPressShow()})}
+fetch('/assets/church-press.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(data=>{hbPressRows=(Array.isArray(data)?data:[]).sort((a,b)=>(b.date||'').localeCompare(a.date||''));if(hbPressRoute()){document.querySelector('#hb-press-board')?.remove();hbPressSchedule()}}).catch(()=>{});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',hbPressSchedule);else hbPressSchedule();
+window.addEventListener('hashchange',hbPressSchedule);
+new MutationObserver(hbPressSchedule).observe(document.getElementById('app')||document.documentElement,{childList:true,subtree:true});
 
 const style=document.createElement('style');style.id='hb-community-fixes-v3';style.textContent=`
 #app .hb-business-card h4,#app .hb-business-line{font-weight:750!important}
