@@ -1,6 +1,30 @@
 #!/usr/bin/env python3
-import json,subprocess
+import json,subprocess,re,datetime
 from pathlib import Path
+
+MONTHS={'jan':1,'feb':2,'mar':3,'apr':4,'may':5,'jun':6,'jul':7,'aug':8,'sep':9,'oct':10,'nov':11,'dec':12}
+WEEKDAYS=['월요일','화요일','수요일','목요일','금요일','토요일','일요일']
+
+def dawn_date(title):
+ title=str(title or '')
+ m=re.search(r'(20\\d{2})\\s*[.\\-/년]\\s*(\\d{1,2})\\s*[.\\-/월]\\s*(\\d{1,2})',title)
+ if m: year,month,day=map(int,m.groups())
+ else:
+  m=re.search(r'(\\d{1,2})\\s*[/\\.]\\s*(\\d{1,2})\\s*[/\\.]\\s*(20\\d{2})',title)
+  if m: month,day,year=map(int,m.groups())
+  else:
+   m=re.search(r'(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\\.?\\s+(\\d{1,2}),?\\s*(20\\d{2})',title,re.I)
+   if not m:return None
+   month=MONTHS[m.group(1)[:3].lower()];day=int(m.group(2));year=int(m.group(3))
+ try:return datetime.date(year,month,day)
+ except ValueError:return None
+
+def korean_dawn_title(title):
+ if re.search(r'[가-힣]',title):return title
+ d=dawn_date(title)
+ if not d:return title
+ return f'[새벽예배] - {WEEKDAYS[d.weekday()]} - {d.year}. {d.month}. {d.day}. 하늘바람교회'
+
 lists={
 'sermon-8':'PLmD7ZicLdWIpZeJVlgfXuYYaOSHjwuG6R',
 'sermon-event-1':'PLmD7ZicLdWIr2ZEuTbox3JN1HtmZPL4G-',
@@ -21,7 +45,26 @@ for key,playlist in lists.items():
    vid=item.get('id');title=item.get('title') or ''
    if isinstance(vid,str) and len(vid)==11 and vid not in seen:
     seen.add(vid);videos.append({'id':vid,'title':title})
-  if videos:previous[key]=videos
+  if videos:
+   if key=='sermon-8':
+    old={x.get('id'):x for x in previous.get(key,[]) if isinstance(x,dict)}
+    refreshed=[]
+    for v in videos:
+     original=old.get(v['id'],{}).get('title','')
+     # Prefer already-known Korean title to a machine-translated YouTube title.
+     title=original if re.search(r'[가-힣]',original) else v['title']
+     if '[Deleted video]' in title or re.search(r'3-Minute Sermon',title,re.I):continue
+     refreshed.append({'id':v['id'],'title':korean_dawn_title(title)})
+    seen={v['id'] for v in refreshed}
+    newest=max((dawn_date(v['title']) for v in refreshed if dawn_date(v['title'])),default=None)
+    # Keep a manually verified latest video until it appears in YouTube's playlist.
+    for v in old.values():
+     date=dawn_date(v.get('title',''))
+     if v.get('id') not in seen and date and (not newest or date>newest):
+      refreshed.append({'id':v['id'],'title':korean_dawn_title(v['title'])})
+    refreshed.sort(key=lambda v:dawn_date(v['title']) or datetime.date.min,reverse=True)
+    videos=refreshed
+   previous[key]=videos
  except Exception as e:print(key,str(e)[:160])
 out.write_text(json.dumps(previous,ensure_ascii=False,indent=2)+'\n')
 print({k:len(v) for k,v in previous.items()})
