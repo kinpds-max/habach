@@ -1244,7 +1244,11 @@ function render(){const k=(location.hash||"#/index").slice(2);document.getElemen
    program.insertAdjacentElement('afterend',children);
   }
  }
-}initMobileSidebar();hbInitBible();if(k==='resources-6'||k==='resources-7')hbMountInlineProgram(k);}addEventListener("hashchange",render);render();setupLanguage();addEventListener("hashchange",()=>applyTranslation());
+}initMobileSidebar();hbInitBible();if(k==='resources-6'||k==='resources-7')hbMountInlineProgram(k);}/* Press news is a native community route: retain hero, breadcrumbs, and 3-column mobile section navigation. */
+views["news-press"]=views["news-1"]
+ .replace('</aside><article','<a class="on" href="#/news-press">언론 속 하늘바람교회 <span>›</span></a></aside><article')
+ .replace('class="on" href="#/news-1"','href="#/news-1"');
+addEventListener("hashchange",render);render();setupLanguage();addEventListener("hashchange",()=>applyTranslation());
 // Use one routing mechanism for all navigation. Native hashchange triggers render().
 // The former sidebar pushState handler prevented hashchange and broke board initialization.
 document.addEventListener('click',function(evt){
@@ -2527,7 +2531,7 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 })();
 </script>
 
-<script defer src="/assets/home-dawn-live-pin.js?v=20261105-content-status"></script>
+<script defer src="/assets/home-dawn-live-pin.js?v=20261105-native-press-1"></script>
 <script defer src="/assets/small234-extra-videos.js"></script>
 <script defer src="/assets/men-gathering-extra-video.js"></script>
 <script defer src="/assets/volunteer-category-nav.js?v=20261101-split-gallery-3cols-v9"></script>
@@ -2801,4 +2805,4 @@ if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);els
 #app .hb-ministry-regional .hb-service-album .album-grid>*,
 #app .hb-ministry-regional .hb-service-album .hb-album-grid>*{min-width:0;max-width:100%}
 }
-</style><script src="/assets/bt-playlist-gallery.js" defer></script><script src="/assets/google-english-translation.js" defer></script><script src="/assets/november-ui-request-fixes.js?v=20261104-2345" defer></script><script src="/assets/parent-ministry-photo-gallery.js" defer></script></body></html>
+</style><script src="/assets/bt-playlist-gallery.js" defer></script><script src="/assets/google-english-translation.js" defer></script><script src="/assets/november-ui-request-fixes.js?v=20261105-native-press-1" defer></script><script src="/assets/parent-ministry-photo-gallery.js" defer></script></body></html>
