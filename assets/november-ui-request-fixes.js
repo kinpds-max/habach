@@ -81,14 +81,21 @@ function hbPressMakeSidebar(){
  return side;
 }
 function hbPressShow(){
- if(!hbPressRoute())return;
  const app=document.getElementById('app');if(!app)return;
+ if(!hbPressRoute()){
+  // The full two-column press view belongs exclusively to the community route.
+  const owned=app.querySelector('[data-hb-press-page="1"]');
+  if(owned)owned.remove();
+  return;
+ }
+ // Never show the homepage preview inside the full community press page.
+ app.querySelector('#hb-press-preview')?.remove();
  let layout=app.querySelector('.page-grid');
- if(!layout){
+ if(!layout||!layout.querySelector('.side')){
   layout=document.createElement('div');layout.className='page-grid container';
-  const oldPage=app.querySelector('main,article,.page-content');
-  if(oldPage&&oldPage.parentElement===app)oldPage.replaceWith(layout);
-  else app.append(layout);
+  layout.dataset.hbPressPage='1';
+  // The app's native route handler will render other pages again when navigated.
+  app.replaceChildren(layout);
  }
  layout.classList.add('container');
  layout.style.maxWidth='1110px';
@@ -103,6 +110,7 @@ function hbPressShow(){
  }else if(!side.querySelector('a[href="#/news-press"]')){
   side.append(hbPressMakeSidebar().querySelector('a[href="#/news-press"]'));
  }
+ // Only this route marks the press menu as active; other pages keep their own sidebar.
  const active=side.querySelector('a[href="#/news-press"]');
  if(active){side.querySelectorAll('a').forEach(a=>{a.classList.toggle('on',a===active);if(a===active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')})}
  let article=layout.querySelector('article.article');
