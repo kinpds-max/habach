@@ -6,64 +6,45 @@ function hbDeduplicatePressLinks(root){
  const links=[...root.querySelectorAll('a[href]')].filter(a=>
   a.getAttribute('href')==='#/news-press'||a.dataset.hbChurchPressMenu==='1'||(a.textContent||'').trim()==='언론 속 하늘바람교회'
  );
- if(links.length<2)return;
- // Deduplicate within each individual menu panel. Do not combine desktop,
- // mobile and the inner left sidebar, which each need their own single link.
- const first=links[0];first.href='#/news-press';first.dataset.hbChurchPressMenu='1';
- for(const duplicate of links.slice(1)){
-  const holder=duplicate.parentElement;
-  if(holder&&holder!==root&&holder.parentElement===root&&holder.querySelectorAll('a').length===1)holder.remove();
-  else duplicate.remove();
- }
+ if(!links.length)return;
+ const keep=links[0];keep.href='#/news-press';keep.dataset.hbChurchPressMenu='1';
+ for(const duplicate of links.slice(1))duplicate.remove();
 }
 function addChurchPressMenu(){
  const pressHref='#/news-press';
- const norm=t=>String(t||'').replace(/\s+/g,'').trim();
- // The mobile drawer is a nested accordion, not necessarily a <nav>.
- // Locate its real community links, rather than guessing wrapper class names.
- const anchors=[...document.querySelectorAll('a[href]')].filter(a=>
-  /^#\/?news-\d+$/.test(a.getAttribute('href')||'')||
-  ['자주묻는질문','교인사업정보','기도제목나눔','새가족앨범','교회주보'].includes(norm(a.textContent))
- );
- const panels=new Set();
- for(const anchor of anchors){
-  let parent=anchor.parentElement,found=null;
-  for(let depth=0;parent&&depth<7;depth++,parent=parent.parentElement){
-   const links=[...parent.querySelectorAll('a[href]')];
-   const community=links.filter(a=>/^#\/?news-\d+$/.test(a.getAttribute('href')||'')||
-    ['자주묻는질문','교인사업정보','기도제목나눔','새가족앨범','교회주보'].includes(norm(a.textContent)));
-   if(community.length>=3&&links.length<=32){found=parent;break}
+ // Remove unintended copies inserted into home schedule cards by the
+ // old whole-document ancestor search. Keep the actual press preview.
+ for(const link of document.querySelectorAll('#app a[href="#/news-press"],#app a[data-hb-church-press-menu]')){
+  if(link.closest('#app .side,#hb-press-preview'))continue;
+  if((link.textContent||'').trim()==='언론 속 하늘바람교회'||link.dataset.hbChurchPressMenu==='1'){
+   const wrapper=link.closest('#hb-missionbridge-calendar-2026');
+   if(wrapper)wrapper.remove();else link.remove();
   }
-  if(found)panels.add(found);
  }
- for(const panel of panels){
-  const community=[...panel.querySelectorAll('a[href]')].filter(a=>
-   /^#\/?news-\d+$/.test(a.getAttribute('href')||'')||
-   ['자주묻는질문','교인사업정보','기도제목나눔','새가족앨범','교회주보'].includes(norm(a.textContent)));
-  if(community.length<3)continue;
-  const existing=[...panel.querySelectorAll('a[href]')].filter(a=>a.getAttribute('href')===pressHref||
-   a.dataset.hbChurchPressMenu==='1'||norm(a.textContent)==='언론속하늘바람교회');
-  if(existing.length){
-   const first=existing[0];first.href=pressHref;first.dataset.hbChurchPressMenu='1';
-   for(const duplicate of existing.slice(1)){
-    const holder=duplicate.parentElement;
-    if(holder&&holder!==panel&&holder.querySelectorAll('a[href]').length===1&&
-       holder.parentElement===panel)holder.remove();else duplicate.remove();
-   }
-   continue;
+ const menus=[];
+ for(const group of document.querySelectorAll('.desktopnav .nav-group,.nav-group')){
+  const parent=[...group.children].find(el=>el.tagName==='A');
+  if(parent?.textContent.trim()==='커뮤니티'){
+   const menu=group.querySelector('.drop');if(menu)menus.push(menu);
   }
-  const last=community[community.length-1];
-  let holder=last;
-  while(holder.parentElement&&holder.parentElement!==panel&&
-        holder.parentElement.querySelectorAll('a[href]').length===1)
-   holder=holder.parentElement;
-  const clone=holder.cloneNode(true);
-  const link=clone.matches('a')?clone:clone.querySelector('a[href]');
-  if(!link)continue;
-  for(const n of [clone,...clone.querySelectorAll('[id]')])n.removeAttribute('id');
-  link.href=pressHref;link.textContent='언론 속 하늘바람교회';
-  link.dataset.hbChurchPressMenu='1';link.classList.remove('on','active');
-  holder.insertAdjacentElement('afterend',clone);
+ }
+ for(const group of document.querySelectorAll('#siteMobileNav > details')){
+  if(group.querySelector(':scope > summary')?.textContent.trim()==='커뮤니티')menus.push(group);
+ }
+ for(const side of document.querySelectorAll('#app .side')){
+  const parent=side.querySelector('.hb-mobile-section-grid')||side;
+  if(parent.querySelectorAll('a[href^="#/news-"]').length>=5)menus.push(parent);
+ }
+ for(const menu of new Set(menus)){
+  hbDeduplicatePressLinks(menu);
+  const existing=[...menu.querySelectorAll('a[href]')].find(a=>a.getAttribute('href')===pressHref);
+  if(existing)continue;
+  const links=[...menu.querySelectorAll('a[href]')].filter(a=>/^#\/news-\d+$/.test(a.getAttribute('href')||''));
+  const last=links[links.length-1];if(!last)continue;
+  const clone=last.cloneNode(true);clone.href=pressHref;clone.dataset.hbChurchPressMenu='1';
+  clone.textContent='언론 속 하늘바람교회';clone.classList.remove('on','active');
+  clone.removeAttribute('aria-current');clone.removeAttribute('id');
+  last.insertAdjacentElement('afterend',clone);
  }
 }
 let hbPressMenuQueued=false;
