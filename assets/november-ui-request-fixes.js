@@ -1,5 +1,50 @@
 (()=>{'use strict';
 const path=()=>location.hash.replace(/^#\/?/,'').split(/[?&]/)[0];
+
+/* 커뮤니티 메뉴 마지막: 언론 속 하늘바람교회 (PC/모바일 공통) */
+function addChurchPressMenu(){
+ const links=[...document.querySelectorAll('a[href]')].filter(a=>
+  /^#\/?news-[1-9]\d*$/.test(a.getAttribute('href')||'') &&
+  a.closest('nav,header,aside,[class*="nav"],[class*="menu"],[class*="sidebar"],[class*="dropdown"]') &&
+  !a.closest('#app article.article')
+ );
+ const groups=new Set();
+ for(const link of links){
+  let parent=link.parentElement;
+  for(let depth=0;parent&&depth<5;depth++,parent=parent.parentElement){
+   const articleLinks=[...parent.querySelectorAll('a[href]')].filter(a=>/^#\/?news-[1-9]\d*$/.test(a.getAttribute('href')||''));
+   if(articleLinks.length<2)continue;
+   if(parent.querySelectorAll('a[href]').length>20)break;
+   groups.add(parent);break;
+  }
+ }
+ for(const group of groups){
+  if(group.querySelector('a[data-hb-church-press-menu],a[href="/press.html"]'))continue;
+  const items=[...group.querySelectorAll('a[href]')].filter(a=>/^#\/?news-[1-9]\d*$/.test(a.getAttribute('href')||''));
+  if(!items.length)continue;
+  const last=items[items.length-1];
+  let node=last;
+  if(last.parentElement && last.parentElement!==group && last.parentElement.parentElement===group)node=last.parentElement;
+  const clone=node.cloneNode(true);
+  const a=clone.matches('a')?clone:clone.querySelector('a[href]');
+  if(!a)continue;
+  for(const el of [clone,...clone.querySelectorAll('[id]')])el.removeAttribute('id');
+  a.href='/press.html';
+  a.textContent='언론 속 하늘바람교회';
+  a.dataset.hbChurchPressMenu='1';
+  if(node.parentElement)node.insertAdjacentElement('afterend',clone);
+ }
+}
+let hbPressMenuQueued=false;
+function queueChurchPressMenu(){
+ if(hbPressMenuQueued)return;hbPressMenuQueued=true;
+ requestAnimationFrame(()=>{hbPressMenuQueued=false;addChurchPressMenu()});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',queueChurchPressMenu);
+else queueChurchPressMenu();
+window.addEventListener('hashchange',queueChurchPressMenu);
+new MutationObserver(queueChurchPressMenu).observe(document.documentElement,{childList:true,subtree:true});
+
 const style=document.createElement('style');style.id='hb-community-fixes-v3';style.textContent=`
 #app .hb-business-card h4,#app .hb-business-line{font-weight:750!important}
 #app .hb-business-line{font-size:15px!important;line-height:1.85!important}
