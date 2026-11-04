@@ -2,38 +2,51 @@
 const path=()=>location.hash.replace(/^#\/?/,'').split(/[?&]/)[0];
 
 /* 커뮤니티 메뉴 마지막: 언론 속 하늘바람교회 (PC/모바일 공통) */
-function addChurchPressMenu(){
- const links=[...document.querySelectorAll('a[href]')].filter(a=>
-  /^#\/?news-[1-9]\d*$/.test(a.getAttribute('href')||'') &&
-  a.closest('nav,header,aside,[class*="nav"],[class*="menu"],[class*="sidebar"],[class*="dropdown"]') &&
-  !a.closest('#app article.article')
+function hbDeduplicatePressLinks(root){
+ const links=[...root.querySelectorAll('a[href]')].filter(a=>
+  a.getAttribute('href')==='#/news-press'||a.dataset.hbChurchPressMenu==='1'||(a.textContent||'').trim()==='언론 속 하늘바람교회'
  );
- const groups=new Set();
- for(const link of links){
-  let parent=link.parentElement;
-  for(let depth=0;parent&&depth<5;depth++,parent=parent.parentElement){
-   const articleLinks=[...parent.querySelectorAll('a[href]')].filter(a=>/^#\/?news-[1-9]\d*$/.test(a.getAttribute('href')||''));
-   if(articleLinks.length<2)continue;
-   if(parent.querySelectorAll('a[href]').length>20)break;
-   groups.add(parent);break;
-  }
+ if(links.length<2)return;
+ // Deduplicate within each individual menu panel. Do not combine desktop,
+ // mobile and the inner left sidebar, which each need their own single link.
+ const first=links[0];first.href='#/news-press';first.dataset.hbChurchPressMenu='1';
+ for(const duplicate of links.slice(1)){
+  const holder=duplicate.parentElement;
+  if(holder&&holder!==root&&holder.parentElement===root&&holder.querySelectorAll('a').length===1)holder.remove();
+  else duplicate.remove();
  }
- for(const group of groups){
-  if(group.querySelector('a[data-hb-church-press-menu],a[data-hb-church-press-menu]'))continue;
-  const items=[...group.querySelectorAll('a[href]')].filter(a=>/^#\/?news-[1-9]\d*$/.test(a.getAttribute('href')||''));
-  if(!items.length)continue;
-  const last=items[items.length-1];
-  let node=last;
-  if(last.parentElement && last.parentElement!==group && last.parentElement.parentElement===group)node=last.parentElement;
-  const clone=node.cloneNode(true);
-  const a=clone.matches('a')?clone:clone.querySelector('a[href]');
-  if(!a)continue;
-  for(const el of [clone,...clone.querySelectorAll('[id]')])el.removeAttribute('id');
-  a.href='#/news-press';
-  a.textContent='언론 속 하늘바람교회';
-  a.dataset.hbChurchPressMenu='1';
-  if(node.parentElement)node.insertAdjacentElement('afterend',clone);
+}
+function addChurchPressMenu(){
+ const roots=[...document.querySelectorAll('nav,header,aside,.side,[class*="dropdown"],[class*="mobile-menu"],[class*="subnav"]')]
+  .filter(root=>root.querySelectorAll('a[href^="#/news-"]').length>=2);
+ const panels=new Set();
+ for(const root of roots){
+  // Only the smallest relevant menu panel gets a link. Ancestor wrappers
+  // containing several panels must not create duplicate entries.
+  if([...root.children].some(c=>c.querySelectorAll?.('a[href^="#/news-"]').length>=2))continue;
+  panels.add(root);
  }
+ for(const panel of panels){
+  const links=[...panel.querySelectorAll('a[href]')].filter(a=>/^#\/?news-\d+$/.test(a.getAttribute('href')||''));
+  if(!links.length)continue;
+  const existing=[...panel.querySelectorAll('a[href]')].filter(a=>
+   a.getAttribute('href')==='#/news-press'||a.dataset.hbChurchPressMenu==='1'||(a.textContent||'').trim()==='언론 속 하늘바람교회'
+  );
+  if(existing.length){hbDeduplicatePressLinks(panel);continue}
+  const last=links[links.length-1];
+  let holder=last;
+  if(last.parentElement&&last.parentElement!==panel&&last.parentElement.parentElement===panel)holder=last.parentElement;
+  const clone=holder.cloneNode(true);
+  const anchor=clone.matches('a')?clone:clone.querySelector('a[href]');
+  if(!anchor)continue;
+  for(const node of [clone,...clone.querySelectorAll('[id]')])node.removeAttribute('id');
+  anchor.href='#/news-press';anchor.textContent='언론 속 하늘바람교회';
+  anchor.dataset.hbChurchPressMenu='1';
+  holder.insertAdjacentElement('afterend',clone);
+ }
+ // Sidebar is its own panel; remove duplicated entries without affecting
+ // the single top-nav or mobile-nav entry.
+ for(const side of document.querySelectorAll('.side'))hbDeduplicatePressLinks(side);
 }
 let hbPressMenuQueued=false;
 function queueChurchPressMenu(){
@@ -111,6 +124,7 @@ function hbPressShow(){
   side.append(hbPressMakeSidebar().querySelector('a[href="#/news-press"]'));
  }
  // Only this route marks the press menu as active; other pages keep their own sidebar.
+ hbDeduplicatePressLinks(side);
  const active=side.querySelector('a[href="#/news-press"]');
  if(active){side.querySelectorAll('a').forEach(a=>{a.classList.toggle('on',a===active);if(a===active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')})}
  let article=layout.querySelector('article.article');
