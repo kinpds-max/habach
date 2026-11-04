@@ -17,36 +17,54 @@ function hbDeduplicatePressLinks(root){
  }
 }
 function addChurchPressMenu(){
- const roots=[...document.querySelectorAll('nav,header,aside,.side,[class*="dropdown"],[class*="mobile-menu"],[class*="subnav"]')]
-  .filter(root=>root.querySelectorAll('a[href^="#/news-"]').length>=2);
+ const pressHref='#/news-press';
+ const norm=t=>String(t||'').replace(/\s+/g,'').trim();
+ // The mobile drawer is a nested accordion, not necessarily a <nav>.
+ // Locate its real community links, rather than guessing wrapper class names.
+ const anchors=[...document.querySelectorAll('a[href]')].filter(a=>
+  /^#\\/?news-\\d+$/.test(a.getAttribute('href')||'')||
+  ['자주묻는질문','교인사업정보','기도제목나눔','새가족앨범','교회주보'].includes(norm(a.textContent))
+ );
  const panels=new Set();
- for(const root of roots){
-  // Only the smallest relevant menu panel gets a link. Ancestor wrappers
-  // containing several panels must not create duplicate entries.
-  if([...root.children].some(c=>c.querySelectorAll?.('a[href^="#/news-"]').length>=2))continue;
-  panels.add(root);
+ for(const anchor of anchors){
+  let parent=anchor.parentElement,found=null;
+  for(let depth=0;parent&&depth<7;depth++,parent=parent.parentElement){
+   const links=[...parent.querySelectorAll('a[href]')];
+   const community=links.filter(a=>/^#\\/?news-\\d+$/.test(a.getAttribute('href')||'')||
+    ['자주묻는질문','교인사업정보','기도제목나눔','새가족앨범','교회주보'].includes(norm(a.textContent)));
+   if(community.length>=3&&links.length<=32){found=parent;break}
+  }
+  if(found)panels.add(found);
  }
  for(const panel of panels){
-  const links=[...panel.querySelectorAll('a[href]')].filter(a=>/^#\/?news-\d+$/.test(a.getAttribute('href')||''));
-  if(!links.length)continue;
-  const existing=[...panel.querySelectorAll('a[href]')].filter(a=>
-   a.getAttribute('href')==='#/news-press'||a.dataset.hbChurchPressMenu==='1'||(a.textContent||'').trim()==='언론 속 하늘바람교회'
-  );
-  if(existing.length){hbDeduplicatePressLinks(panel);continue}
-  const last=links[links.length-1];
+  const community=[...panel.querySelectorAll('a[href]')].filter(a=>
+   /^#\\/?news-\\d+$/.test(a.getAttribute('href')||'')||
+   ['자주묻는질문','교인사업정보','기도제목나눔','새가족앨범','교회주보'].includes(norm(a.textContent)));
+  if(community.length<3)continue;
+  const existing=[...panel.querySelectorAll('a[href]')].filter(a=>a.getAttribute('href')===pressHref||
+   a.dataset.hbChurchPressMenu==='1'||norm(a.textContent)==='언론속하늘바람교회');
+  if(existing.length){
+   const first=existing[0];first.href=pressHref;first.dataset.hbChurchPressMenu='1';
+   for(const duplicate of existing.slice(1)){
+    const holder=duplicate.parentElement;
+    if(holder&&holder!==panel&&holder.querySelectorAll('a[href]').length===1&&
+       holder.parentElement===panel)holder.remove();else duplicate.remove();
+   }
+   continue;
+  }
+  const last=community[community.length-1];
   let holder=last;
-  if(last.parentElement&&last.parentElement!==panel&&last.parentElement.parentElement===panel)holder=last.parentElement;
+  while(holder.parentElement&&holder.parentElement!==panel&&
+        holder.parentElement.querySelectorAll('a[href]').length===1)
+   holder=holder.parentElement;
   const clone=holder.cloneNode(true);
-  const anchor=clone.matches('a')?clone:clone.querySelector('a[href]');
-  if(!anchor)continue;
-  for(const node of [clone,...clone.querySelectorAll('[id]')])node.removeAttribute('id');
-  anchor.href='#/news-press';anchor.textContent='언론 속 하늘바람교회';
-  anchor.dataset.hbChurchPressMenu='1';
+  const link=clone.matches('a')?clone:clone.querySelector('a[href]');
+  if(!link)continue;
+  for(const n of [clone,...clone.querySelectorAll('[id]')])n.removeAttribute('id');
+  link.href=pressHref;link.textContent='언론 속 하늘바람교회';
+  link.dataset.hbChurchPressMenu='1';link.classList.remove('on','active');
   holder.insertAdjacentElement('afterend',clone);
  }
- // Sidebar is its own panel; remove duplicated entries without affecting
- // the single top-nav or mobile-nav entry.
- for(const side of document.querySelectorAll('.side'))hbDeduplicatePressLinks(side);
 }
 let hbPressMenuQueued=false;
 function queueChurchPressMenu(){
