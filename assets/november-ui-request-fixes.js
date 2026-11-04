@@ -82,7 +82,7 @@ const hbPressRoute=()=>/^#\/?news-press(?:[?&]|$)/.test(location.hash);
 let hbPressRows=[];
 const hbPressCSS=document.createElement('style');
 hbPressCSS.textContent='#hb-press-board{padding:5px 0 30px}#hb-press-board .hb-press-note{color:#71899e;font-size:13px;margin:0 0 18px}#hb-press-board .hb-press-records{border-top:2px solid #3b647f}#hb-press-board .hb-press-record{display:flex;gap:14px;align-items:center;padding:17px 8px;border-bottom:1px solid #dbe6ef;text-decoration:none;color:#2d526e;background:#fff}#hb-press-board .hb-press-record:hover{background:#f5f9fc}#hb-press-board .hb-press-no{font-size:12px;color:#8599a8;width:30px;text-align:center;flex-shrink:0}#hb-press-board .hb-press-content{flex:1;min-width:0}#hb-press-board .hb-press-name{font-weight:800;font-size:15px;line-height:1.55;word-break:keep-all}#hb-press-board .hb-press-byline{font-size:12px;color:#8194a3;margin-top:5px}#hb-press-board .hb-press-more{font-size:12px;color:#4380ac;white-space:nowrap}@media(max-width:520px){#hb-press-board .hb-press-more{display:none}#hb-press-board .hb-press-record{gap:7px;padding:14px 3px}}';
-hbPressCSS.textContent+='#app .page-grid:has(#hb-press-board){display:grid;grid-template-columns:225px minmax(0,1fr);gap:45px;align-items:start;overflow:visible}#app .page-grid:has(#hb-press-board) .side{min-width:0;max-width:100%}#app .page-grid:has(#hb-press-board) .article{width:100%;min-width:0;max-width:100%;overflow:visible}#hb-press-board,#hb-press-board .hb-press-records,#hb-press-board .hb-press-expand{max-width:100%;min-width:0;box-sizing:border-box}#hb-press-board .hb-press-name{overflow-wrap:anywhere}#hb-press-board .hb-press-expand>div{padding-left:15px!important;padding-right:15px!important;overflow-wrap:anywhere}@media(max-width:900px){#app .page-grid:has(#hb-press-board){grid-template-columns:minmax(0,1fr);gap:22px}#app .page-grid:has(#hb-press-board) .side{width:100%;height:auto;min-height:48px;max-height:66px;overflow-x:auto;overflow-y:hidden;display:flex;flex-flow:row nowrap}#app .page-grid:has(#hb-press-board) .side>a{flex:0 0 auto}}';
+hbPressCSS.textContent+='#app .page-grid:has(#hb-press-board) .article{min-width:0;max-width:100%;overflow-wrap:anywhere}#hb-press-board,#hb-press-board .hb-press-records,#hb-press-board .hb-press-expand{max-width:100%;min-width:0;box-sizing:border-box}#hb-press-board .hb-press-name{overflow-wrap:anywhere}#hb-press-board .hb-press-expand>div{padding-left:clamp(12px,2.5vw,24px)!important;padding-right:clamp(12px,2.5vw,24px)!important;overflow-wrap:anywhere}#hb-press-board .hb-press-no{display:none}@media(max-width:900px){#app .page-grid:has(#hb-press-board){display:flex!important;flex-direction:column!important;gap:20px!important}#app .page-grid:has(#hb-press-board) .side.hb-mobile-grid-ready{display:block!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important}#app .page-grid:has(#hb-press-board) .hb-mobile-section-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}#hb-press-board .hb-press-record{gap:10px!important;padding:14px 2px!important}#hb-press-board .hb-press-record>img{width:95px!important;height:76px!important}#hb-press-board .article-title{margin-top:8px}}';
 document.head.append(hbPressCSS);
 let hbPressSavedSide=null;
 function hbPressRememberSidebar(){
@@ -123,10 +123,13 @@ function hbPressShow(){
  app.querySelector('#hb-press-preview')?.remove();
  let layout=app.querySelector('.page-grid');
  if(!layout||!layout.querySelector('.side')){
-  layout=document.createElement('div');layout.className='page-grid container';
-  layout.dataset.hbPressPage='1';
-  // The app's native route handler will render other pages again when navigated.
-  app.replaceChildren(layout);
+  // Reuse the site's native community view instead of replacing the entire app.
+  // The native view includes the hero, breadcrumb and mobile three-column tabs.
+  if(typeof render==='function' && typeof views!=='undefined' && views['news-press']){
+   render();
+   layout=app.querySelector('.page-grid');
+  }
+  if(!layout||!layout.querySelector('.side'))return;
  }
  layout.classList.add('container');
  layout.style.maxWidth='1110px';
@@ -150,7 +153,13 @@ function hbPressShow(){
  article.style.minWidth='0';article.style.maxWidth='100%';article.style.overflowWrap='anywhere';
  if(article.querySelector('#hb-press-board'))return;
  article.replaceChildren();
- const title=document.createElement('h1');title.className='article-title';title.textContent='언론 속 하늘바람교회';
+ const crumbs=document.createElement('div');crumbs.className='breadcrumbs';
+ crumbs.textContent='HOME / 커뮤니티 / 언론 속 하늘바람교회';
+ const title=document.createElement('div');title.className='article-title';
+ const small=document.createElement('small');small.textContent='HANEUL BARAM CHURCH';
+ const h2=document.createElement('h2');h2.textContent='언론 속 하늘바람교회';
+ title.append(small,h2);
+ article.append(crumbs);
  const box=document.createElement('section');box.id='hb-press-board';
  const note=document.createElement('p');note.className='hb-press-note';note.textContent='하늘바람교회의 지역사회 섬김과 활동을 다룬 언론보도입니다.';
  const records=document.createElement('div');records.className='hb-press-records';box.append(note,records);article.append(title,box);
