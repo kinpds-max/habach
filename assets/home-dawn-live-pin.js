@@ -65,7 +65,7 @@ function press(){
   if(item.image){const thumb=document.createElement('img');thumb.src=item.image;thumb.alt=item.imageAlt||item.title||'보도자료 사진';thumb.loading='lazy';thumb.style.cssText='width:78px;height:58px;border-radius:8px;object-fit:cover;flex:0 0 auto';header.append(thumb)}
   header.append(copy);
   const body=document.createElement('div');body.style.cssText='padding:3px 16px 18px 36px;font-size:13px;line-height:1.7;color:#5a7488;background:#f8fbfe';
-  if(item.image){const photo=document.createElement('img');photo.src=item.image;photo.alt=item.imageAlt||item.title||'보도자료 사진';photo.loading='lazy';photo.style.cssText='display:block;width:100%;max-width:640px;height:auto;object-fit:contain;border-radius:12px;margin:12px auto 18px';body.append(photo)}
+  {const gallery=Array.isArray(item.images)&&item.images.length?item.images:(item.image?[item.image]:[]);gallery.forEach((src,i)=>{const fig=document.createElement('figure');fig.style.cssText='margin:12px auto 20px;max-width:680px';const img=document.createElement('img');img.src=src;img.alt=i===0?(item.imageAlt||item.title||'보도자료 사진'):(item.title||'보도자료 사진')+' 사진 '+(i+1);img.loading='lazy';img.style.cssText='display:block;width:100%;height:auto;object-fit:contain;border-radius:12px';fig.append(img);const text=Array.isArray(item.imageCaptions)?item.imageCaptions[i]:'';if(text){const cap=document.createElement('figcaption');cap.textContent=text;cap.style.cssText='margin:6px 0 0;text-align:center;color:#7890a3;font-size:12px';fig.append(cap)}body.append(fig)})}
   for(const paragraph of String(item.body||item.summary||'기사 내용을 준비 중입니다.').split(/\n\s*\n/)){
    const p=document.createElement('p');p.textContent=paragraph;p.style.cssText='margin:0 0 12px;white-space:pre-wrap';body.append(p);
   }
