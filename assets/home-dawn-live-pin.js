@@ -15,6 +15,7 @@ const css=document.createElement('style');css.textContent=
 '#hb-press-preview .hb-press-open{font-size:12px;color:#2d77a7;font-weight:750;margin-top:auto}'+
 '@media(max-width:720px){#hb-press-preview .hb-press-list{grid-template-columns:repeat(2,minmax(0,1fr))}}'+
 '@media(max-width:490px){#hb-press-preview .hb-press-list{grid-template-columns:1fr}#hb-press-preview{margin:24px auto;padding:22px 14px}}';
+css.textContent+='#hb-press-preview summary::-webkit-details-marker{display:none}#hb-press-preview summary{list-style:none}#hb-press-preview summary>img{min-width:0}@media(max-width:490px){#hb-press-preview summary{gap:12px!important;padding:15px 2px!important}#hb-press-preview summary>img{width:112px!important;min-width:112px!important;aspect-ratio:4/3}#hb-press-preview .hb-press-head h2{font-size:clamp(21px,5vw,26px)}}';
 document.head.append(css);
 async function refreshData(){
  try{
@@ -56,15 +57,15 @@ function press(){
  const list=document.createElement('div');list.style.cssText='border-top:2px solid #315a79';
  pressItems.forEach((item,i)=>{
   const details=document.createElement('details');details.style.cssText='border-bottom:1px solid #e0e9f1;background:#fff';details.dataset.pressIndex=String(i);details.hidden=i>=4;
-  const header=document.createElement('summary');header.style.cssText='display:flex;align-items:center;gap:10px;padding:13px 4px;cursor:pointer;color:#284f6d';
-  const number=document.createElement('span');number.textContent=String(i+1).padStart(2,'0');number.style.cssText='color:#8094a5;font-size:12px;flex:0 0 24px';
+  const header=document.createElement('summary');header.style.cssText='display:flex;align-items:center;gap:16px;padding:16px 4px;cursor:pointer;color:#284f6d;min-width:0';
+
   const copy=document.createElement('span');copy.style.cssText='display:flex;flex-direction:column;gap:4px;min-width:0;flex:1';
-  const strong=document.createElement('strong');strong.textContent=item.title;strong.style.cssText='font-size:14px;line-height:1.5;word-break:keep-all';
-  const meta=document.createElement('small');meta.textContent=item.source+' · '+(item.date?item.date.replaceAll('-','.'):'게시일 확인 중');meta.style.cssText='color:#7890a3;font-size:12px';
-  copy.append(strong,meta);header.append(number);
-  if(item.image){const thumb=document.createElement('img');thumb.src=item.image;thumb.alt=item.imageAlt||item.title||'보도자료 사진';thumb.loading='lazy';thumb.style.cssText='width:78px;height:58px;border-radius:8px;object-fit:cover;flex:0 0 auto';header.append(thumb)}
+  const strong=document.createElement('strong');strong.textContent=item.title;strong.style.cssText='font-size:clamp(15px,2.6vw,18px);line-height:1.5;word-break:keep-all;overflow-wrap:anywhere';
+  const meta=document.createElement('small');meta.textContent=item.source+' · '+(item.date?item.date.replaceAll('-','.'):'게시일 확인 중');meta.style.cssText='color:#7890a3;font-size:clamp(12px,1.8vw,14px)';
+  copy.append(strong,meta);
+  if(item.image){const thumb=document.createElement('img');thumb.src=item.image;thumb.alt=item.imageAlt||item.title||'보도자료 사진';thumb.loading='lazy';thumb.style.cssText='width:clamp(112px,22vw,174px);aspect-ratio:4/3;height:auto;border-radius:10px;object-fit:cover;flex:0 0 auto';header.append(thumb)}
   header.append(copy);
-  const body=document.createElement('div');body.style.cssText='padding:3px 16px 18px 36px;font-size:13px;line-height:1.7;color:#5a7488;background:#f8fbfe';
+  const body=document.createElement('div');body.style.cssText='padding:14px 14px 22px;font-size:clamp(14px,2.1vw,16px);line-height:1.85;color:#435f72;background:#f8fbfe;min-width:0;overflow-wrap:anywhere';
   {const gallery=Array.isArray(item.images)&&item.images.length?item.images:(item.image?[item.image]:[]);gallery.forEach((src,i)=>{const fig=document.createElement('figure');fig.style.cssText='margin:12px auto 20px;max-width:680px';const img=document.createElement('img');img.src=src;img.alt=i===0?(item.imageAlt||item.title||'보도자료 사진'):(item.title||'보도자료 사진')+' 사진 '+(i+1);img.loading='lazy';img.style.cssText='display:block;width:100%;height:auto;object-fit:contain;border-radius:12px';fig.append(img);const text=Array.isArray(item.imageCaptions)?item.imageCaptions[i]:'';if(text){const cap=document.createElement('figcaption');cap.textContent=text;cap.style.cssText='margin:6px 0 0;text-align:center;color:#7890a3;font-size:12px';fig.append(cap)}body.append(fig)})}
   for(const paragraph of String(item.body||item.summary||'기사 내용을 준비 중입니다.').split(/\n\s*\n/)){
    const p=document.createElement('p');p.textContent=paragraph;p.style.cssText='margin:0 0 12px;white-space:pre-wrap';body.append(p);
