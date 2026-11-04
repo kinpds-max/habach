@@ -61,8 +61,11 @@ function press(){
   const copy=document.createElement('span');copy.style.cssText='display:flex;flex-direction:column;gap:4px;min-width:0;flex:1';
   const strong=document.createElement('strong');strong.textContent=item.title;strong.style.cssText='font-size:14px;line-height:1.5;word-break:keep-all';
   const meta=document.createElement('small');meta.textContent=item.source+' · '+(item.date?item.date.replaceAll('-','.'):'게시일 확인 중');meta.style.cssText='color:#7890a3;font-size:12px';
-  copy.append(strong,meta);header.append(number,copy);
+  copy.append(strong,meta);header.append(number);
+  if(item.image){const thumb=document.createElement('img');thumb.src=item.image;thumb.alt=item.imageAlt||item.title||'보도자료 사진';thumb.loading='lazy';thumb.style.cssText='width:78px;height:58px;border-radius:8px;object-fit:cover;flex:0 0 auto';header.append(thumb)}
+  header.append(copy);
   const body=document.createElement('div');body.style.cssText='padding:3px 16px 18px 36px;font-size:13px;line-height:1.7;color:#5a7488;background:#f8fbfe';
+  if(item.image){const photo=document.createElement('img');photo.src=item.image;photo.alt=item.imageAlt||item.title||'보도자료 사진';photo.loading='lazy';photo.style.cssText='display:block;width:100%;max-width:640px;height:auto;object-fit:contain;border-radius:12px;margin:12px auto 18px';body.append(photo)}
   for(const paragraph of String(item.body||item.summary||'기사 내용을 준비 중입니다.').split(/\n\s*\n/)){
    const p=document.createElement('p');p.textContent=paragraph;p.style.cssText='margin:0 0 12px;white-space:pre-wrap';body.append(p);
   }
