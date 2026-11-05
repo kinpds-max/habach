@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Copy approved press images from an external media CDN into this website's static assets."""
 import json
+import hashlib
 import pathlib
 import urllib.parse
 import urllib.request
@@ -30,42 +31,45 @@ def download(url, filename):
 
 def main():
     records = json.loads(DATA.read_text(encoding="utf-8"))
-    post = next((p for p in records if ARTICLE_MATCH in p.get("url", "")), None)
-    if post is None:
-        raise RuntimeError("MOU press article was not found")
     OUT.mkdir(parents=True, exist_ok=True)
-    urls = list(post.get("images") or [])
-    new_urls = []
     success = 0
-    for i, url in enumerate(urls, 1):
-        ext = pathlib.Path(urllib.parse.urlsplit(url).path).suffix.lower()
-        if ext not in (".png", ".jpg", ".jpeg", ".webp"):
-            print("Unsupported file extension for image", i)
-            new_urls.append(url)
-            continue
-        filename = OUT / ("mou-2025-" + str(i).zfill(2) + ext)
-        local_url = "/assets/press/" + filename.name
-        if url.startswith("/assets/press/") or filename.exists():
-            if filename.exists():
-                new_urls.append(local_url)
+    local_count = 0
+    for post in records:
+        images = list(post.get("images") or ([post["image"]] if post.get("image") else []))
+        results = []
+        for url in images:
+            if url.startswith("/assets/press/"):
+                results.append(url)
+                local_count += 1
                 continue
-            new_urls.append(url)
-            continue
-        try:
-            size = download(url, filename)
-            print(f"Imported image {i}: {size} bytes to {local_url}")
-            success += 1
-            new_urls.append(local_url)
-        except Exception as error:
-            print(f"Could not import image {i}: {type(error).__name__}: {error}")
-            new_urls.append(url)
-    post["images"] = new_urls
-    if new_urls and new_urls[0].startswith("/assets/press/"):
-        post["image"] = new_urls[0]
-    DATA.write_text(json.dumps(records, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Imported {success} images, {len(new_urls)} total")
-    if not any(u.startswith("/assets/press/") for u in new_urls):
-        raise RuntimeError("No images were imported to static assets")
+            parts = urllib.parse.urlsplit(url)
+            if parts.hostname != ALLOWED_HOST or parts.scheme != "https":
+                results.append(url)
+                continue
+            ext = pathlib.Path(parts.path).suffix.lower()
+            if ext not in (".jpg", ".jpeg", ".png", ".webp"):
+                results.append(url)
+                continue
+            name = "press-" + hashlib.sha256(url.encode("utf-8")).hexdigest()[:16] + ext
+            filename = OUT / name
+            local_url = "/assets/press/" + name
+            try:
+                if not filename.exists():
+                    size = download(url, filename)
+                    print(f"Imported {size} bytes: {local_url}")
+                    success += 1
+                results.append(local_url)
+                local_count += 1
+            except Exception as exc:
+                print(f"Could not import {url}: {type(exc).__name__}: {exc}")
+                results.append(url)
+        if results:
+            post["images"] = results
+            post["image"] = results[0]
+    DATA.write_text(json.dumps(records, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    print(f"Newly imported {success}; local article images referenced: {local_count}")
+    if local_count == 0:
+        raise RuntimeError("No local press images available")
 
 
 if __name__ == "__main__":
