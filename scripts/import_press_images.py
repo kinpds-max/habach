@@ -66,7 +66,7 @@ def main():
         if results:
             post["images"] = results
             post["image"] = results[0]
-    DATA.write_text(json.dumps(records, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    DATA.write_text(json.dumps(records, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Newly imported {success}; local article images referenced: {local_count}")
     if local_count == 0:
         raise RuntimeError("No local press images available")
