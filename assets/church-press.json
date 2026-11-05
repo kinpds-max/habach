@@ -52,10 +52,10 @@
       "/assets/press/mou-2025-06.jpg"
     ],
     "imageCaptions": [
-      "김포시종합사회복지관과 하늘바람교회 업무협약 체결",
-      "뮤지컬 ‘컨츄리 씨스터즈’ 공연 안내"
+      "김포TV 기사: 하늘바람교회와 김포시종합사회복지관 업무협약 사진",
+      "김포TV 기사: 뮤지컬 ‘컨츄리 씨스터즈’ 공연 포스터"
     ],
-    "galleryTitle": "김포TV 업무협약 체결 기사 사진",
+    "galleryTitle": "김포TV 보도자료 · 사진 2장",
     "displayOrder": 5,
     "classification": "업무협약 보도 · 김포TV · 2025-10-02"
   },
@@ -92,7 +92,7 @@
     "url": "http://www.kiyln.kr/bbs/board.php?bo_table=admini&wr_id=22695",
     "body": "이 보도자료의 언론사 원문 주소는 등록되어 있지만, 기사 사진과 본문은 아직 확보하지 못했습니다.\n\n아래 ‘기사 원문 보기’에서 해당 언론사 페이지를 열 수 있습니다. 실제 기사 화면이나 사진을 제공해 주시면 이 게시판에 내용을 추가하겠습니다.",
     "contentStatus": "pending-source",
-    "displayOrder": 6
+    "displayOrder": 7
   },
   {
     "source": "김포TV",
@@ -102,17 +102,34 @@
     "url": "http://tvgbs.com/detail.php?number=24770",
     "body": "이 보도자료의 언론사 원문 주소는 등록되어 있지만, 기사 사진과 본문은 아직 확보하지 못했습니다.\n\n아래 ‘기사 원문 보기’에서 해당 언론사 페이지를 열 수 있습니다. 실제 기사 화면이나 사진을 제공해 주시면 이 게시판에 내용을 추가하겠습니다.",
     "contentStatus": "pending-source",
-    "displayOrder": 7
+    "displayOrder": 8
   },
   {
     "source": "김포시종합사회복지관",
-    "date": null,
-    "title": "하늘바람교회 관련 소식",
-    "summary": "기사의 원문 링크가 등록되어 있습니다. 사진·본문은 아직 확인되지 않았습니다.",
+    "date": "2025-10-02",
+    "title": "하늘바람교회 업무협약식",
+    "summary": "9월 30일 김포시종합사회복지관과 운양동 하늘바람교회가 지역 주민의 삶의 질 향상과 공동체 활성화를 위한 업무협약을 체결했습니다.",
     "url": "https://www.gpwc.or.kr/bbs/board.php?bo_table=story&wr_id=9424",
-    "body": "이 보도자료의 언론사 원문 주소는 등록되어 있지만, 기사 사진과 본문은 아직 확보하지 못했습니다.\n\n아래 ‘기사 원문 보기’에서 해당 언론사 페이지를 열 수 있습니다. 실제 기사 화면이나 사진을 제공해 주시면 이 게시판에 내용을 추가하겠습니다.",
-    "contentStatus": "pending-source",
-    "displayOrder": 8
+    "body": "9월 30일 김포시종합사회복지관은 운양동 하늘바람교회와 지역 주민의 삶의 질 향상과 공동체 활성화를 위한 업무협약을 체결했습니다.\n\n하늘바람교회는 주민들이 가까운 곳에서 상담, 교육, 문화 등 복지 프로그램을 누릴 수 있도록 공간 개방과 취약계층 지원을 약속했습니다.\n\n두 기관의 첫 번째 연합사업으로 10월 19일 하늘바람교회 아트센터에서 뮤지컬 ‘컨츄리 씨스터즈’ 공연이 예정됐다는 내용이 카드뉴스에 안내되어 있습니다.",
+    "displayOrder": 6,
+    "dateStatus": "user-provided source screenshot",
+    "images": [
+      "/assets/press/mou-2025-01.png",
+      "/assets/press/mou-2025-02.png",
+      "/assets/press/mou-2025-03.png",
+      "/assets/press/mou-2025-04.png",
+      "/assets/press/mou-2025-07-summary.svg"
+    ],
+    "image": "/assets/press/mou-2025-01.png",
+    "imageAlt": "김포시종합사회복지관 업무협약식 카드뉴스",
+    "imageCaptions": [
+      "업무협약식 현장 스케치",
+      "9월 30일 업무협약 체결",
+      "복지 공간 개방과 주민 지원 약속",
+      "연합사업 뮤지컬 공연 안내",
+      "업무협약 주요 내용 요약"
+    ],
+    "galleryTitle": "업무협약식 카드뉴스 · 5장"
   },
   {
     "source": "김포시민신문",
