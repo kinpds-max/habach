@@ -1,11 +1,5 @@
 name: Import church press images into static assets
 on:
-  push:
-    branches: [habachnew]
-    paths:
-      - 'assets/church-press.json'
-      - 'scripts/import_press_images.py'
-      - '.github/workflows/import-press-images.yml'
   workflow_dispatch:
 permissions:
   contents: write
