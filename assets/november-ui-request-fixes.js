@@ -188,8 +188,30 @@ const style=document.createElement('style');style.id='hb-community-fixes-v3';sty
 #app .hb-community-clean .hb-board-title-row{display:flex!important;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 #app .hb-community-clean .hb-board-title-row>a{font-size:13px;font-weight:750;padding:9px 12px;border-radius:9px;background:#e9f3fb;color:#245477;text-decoration:none;white-space:nowrap}
 `;document.head.append(style);
+
+/* Home: latest official Naver blog posts, synced by GitHub Actions. */
+function hbHomeBlogPreview(){
+ const root=document.getElementById('app');if(!root||document.getElementById('hb-home-naver-blog'))return;
+ const section=document.createElement('section');section.id='hb-home-naver-blog';
+ section.style.cssText='max-width:1160px;margin:32px auto;padding:24px 18px;background:#f6f9fb;border-radius:18px';
+ section.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px"><h2 style="margin:0;font-size:clamp(22px,3vw,30px);color:#214e65">하늘바람교회 블로그 최신글</h2><a href="https://blog.naver.com/habachurch" target="_blank" rel="noopener noreferrer" style="color:#176b62;font-weight:700">네이버 블로그 전체보기 →</a></div><div class="hb-blog-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px"><p>최신 블로그 글을 불러오는 중입니다.</p></div>';
+ const target=root.querySelector('footer,.footer,#footer');if(target)target.parentNode.insertBefore(section,target);else root.append(section);
+ fetch('/assets/habach-naver-blog.json',{cache:'no-store'}).then(res=>{if(!res.ok)throw Error('blog feed unavailable');return res.json()}).then(data=>{
+  if(!section.isConnected)return;
+  const cards=section.querySelector('.hb-blog-cards');cards.replaceChildren();
+  for(const post of (data.posts||[]).slice(0,4)){
+   if(!/^https:\/\/blog\.naver\.com\//.test(post.url||''))continue;
+   const a=document.createElement('a');a.href=post.url;a.target='_blank';a.rel='noopener noreferrer';a.style.cssText='display:block;text-decoration:none;color:#203e4d;background:white;border:1px solid #e0e9ee;border-radius:14px;padding:18px;min-height:150px';
+   const h=document.createElement('h3');h.textContent=post.title||'교회 블로그 글';h.style.cssText='font-size:17px;line-height:1.5;margin:0 0 10px';
+   const p=document.createElement('p');p.textContent=post.excerpt||'네이버 블로그에서 글 읽기';p.style.cssText='font-size:14px;line-height:1.65;color:#667983;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden';
+   a.append(h,p);cards.append(a);
+  }
+  if(!cards.children.length)throw Error('no posts');
+ }).catch(()=>{const cards=section.querySelector('.hb-blog-cards');if(cards)cards.innerHTML='<p>최신 글 목록을 준비 중입니다. <a href="https://blog.naver.com/habachurch" target="_blank" rel="noopener noreferrer">네이버 블로그에서 보기 →</a></p>'});
+}
 function apply(){
- const key=path(),article=document.querySelector('#app .page-grid article.article');
+ const key=path();if(!key||key==='home')hbHomeBlogPreview();
+ const article=document.querySelector('#app .page-grid article.article');
  if(!article)return;
  if(['news-1','news-2','news-6'].includes(key))article.classList.add('hb-community-clean');
  if(key==='news-1'||key==='news-6'){
