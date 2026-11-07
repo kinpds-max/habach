@@ -56,6 +56,32 @@ def recent_channel_dawn():
  except Exception as e:
   print('channel dawn lookup failed:',str(e)[:160]);return []
 
+# Fetch recent official uploads for independent Friday evening and Sunday services.
+def recent_special_services():
+ try:
+  p=subprocess.run(['yt-dlp','--flat-playlist','--skip-download','--playlist-end','65',
+   '--dump-single-json','--no-warnings','https://www.youtube.com/@Gimpo_HBC/videos'],
+   capture_output=True,text=True,timeout=110)
+  if p.returncode:return {}
+  found={'friday-evening':[],'david-worship':[]}
+  for item in (json.loads(p.stdout).get('entries') or []):
+   vid=item.get('id');title=str(item.get('title') or '')
+   if not isinstance(vid,str) or len(vid)!=11:continue
+   if re.search(r'금요(?:예배|설교|철야|기도)|금요일\\s*(?:저녁|예배)|Friday (?:Service|Worship)',title,re.I):key='friday-evening'
+   elif re.search(r'다윗의\\s*예배',title):key='david-worship'
+   else:continue
+   found[key].append({'id':vid,'title':title,'url':'https://www.youtube.com/watch?v='+vid})
+  return found
+ except Exception as e:
+  print('special service lookup failed:',str(e)[:160]);return {}
+
+special_services=recent_special_services()
+for category,items in special_services.items():
+ if items:
+  old=previous.get(category,[])
+  seen={x['id'] for x in items}
+  previous[category]=items+[x for x in old if isinstance(x,dict) and x.get('id') not in seen][:30]
+
 channel_dawn=recent_channel_dawn()
 for key,playlist in lists.items():
  try:
