@@ -209,8 +209,29 @@ function hbHomeBlogPreview(){
   if(!cards.children.length)throw Error('no posts');
  }).catch(()=>{const cards=section.querySelector('.hb-blog-cards');if(cards)cards.innerHTML='<p>최신 글 목록을 준비 중입니다. <a href="https://blog.naver.com/habachurch" target="_blank" rel="noopener noreferrer">네이버 블로그에서 보기 →</a></p>'});
 }
+/* Home video cards: update each service independently from verified official uploads. */
+let hbVideoRefreshAt=0;
+function hbRefreshHomeVideos(){
+ if(Date.now()-hbVideoRefreshAt<60000)return;hbVideoRefreshAt=Date.now();
+ fetch('/assets/official-video-albums.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('feed');return r.json()}).then(data=>{
+  const dawn=(data['sermon-8']||[])[0],friday=(data['friday-evening']||[])[0],david=(data['david-worship']||[])[0];
+  for(const [label,video] of [['새벽설교',dawn],['금요설교',friday],['주일설교',david]]){
+   if(!video||!/^[-_a-zA-Z0-9]{11}$/.test(video.id||''))continue;
+   const headers=[...document.querySelectorAll('#app h2,#app h3,#app h4')];
+   const heading=headers.find(h=>(h.textContent||'').trim()===label);if(!heading)continue;
+   const section=heading.closest('section')||heading.parentElement?.parentElement;if(!section)return;
+   const card=[...section.querySelectorAll('a[href]')].find(a=>a.querySelector('img')&&a.textContent.trim().length>4);
+   if(!card)continue;
+   const link='https://www.youtube.com/watch?v='+video.id;
+   card.href=link;card.target='_blank';card.rel='noopener noreferrer';
+   const img=card.querySelector('img');if(img){img.src='https://i.ytimg.com/vi/'+video.id+'/hqdefault.jpg';img.alt=video.title||label;}
+   const title=[...card.querySelectorAll('h3,h4,h5,p')].find(e=>(e.textContent||'').trim().length>4);
+   if(title)title.textContent=video.title||label;
+  }
+ }).catch(()=>{});
+}
 function apply(){
- const key=path();if(!key||key==='home')hbHomeBlogPreview();
+ const key=path();if(!key||key==='home'){hbHomeBlogPreview();hbRefreshHomeVideos();}
  const article=document.querySelector('#app .page-grid article.article');
  if(!article)return;
  if(['news-1','news-2','news-6'].includes(key))article.classList.add('hb-community-clean');
