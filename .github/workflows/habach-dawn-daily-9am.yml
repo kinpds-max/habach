@@ -27,13 +27,13 @@ jobs:
         run: python scripts/fetch_official_video_albums.py
       - name: Commit and push only when videos change
         run: |
-          if git diff --quiet -- assets/official-video-albums.json; then
+          if git diff --quiet -- assets/official-video-albums.json index.html; then
             echo 'No new videos; keeping previous verified album.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/official-video-albums.json
+          git add assets/official-video-albums.json index.html
           git commit -m 'Sync latest official dawn worship videos (09:00 KST)'
           git pull --rebase origin habachnew
           git push origin HEAD:habachnew
