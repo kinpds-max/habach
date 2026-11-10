@@ -219,7 +219,7 @@ function hbRefreshHomeVideos(){
    if(!video||!/^[-_a-zA-Z0-9]{11}$/.test(video.id||''))continue;
    const headers=[...document.querySelectorAll('#app h2,#app h3,#app h4')];
    const heading=headers.find(h=>(h.textContent||'').trim()===label);if(!heading)continue;
-   const section=heading.closest('section')||heading.parentElement?.parentElement;if(!section)return;
+   const section=heading.closest('.home-six-item')||heading.closest('section')||heading.parentElement?.parentElement;if(!section)return;
    const card=[...section.querySelectorAll('a[href]')].find(a=>a.querySelector('img')&&a.textContent.trim().length>4);
    if(!card)continue;
    const link='https://www.youtube.com/watch?v='+video.id;
@@ -231,7 +231,7 @@ function hbRefreshHomeVideos(){
  }).catch(()=>{});
 }
 function apply(){
- const key=path();if(!key||key==='home'){hbHomeBlogPreview();hbRefreshHomeVideos();}
+ const key=path();if(!key||key==='home'){hbHomeBlogPreview();}
  const article=document.querySelector('#app .page-grid article.article');
  if(!article)return;
  if(['news-1','news-2','news-6'].includes(key))article.classList.add('hb-community-clean');

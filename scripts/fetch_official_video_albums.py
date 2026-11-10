@@ -36,44 +36,58 @@ lists={
 'sermon-member-5':'PLmD7ZicLdWIqfKtJXSTyp8e1Qb2DIQ5tr'}
 out=Path('assets/official-video-albums.json')
 previous=json.loads(out.read_text()) if out.exists() else {}
-# Include recent public uploads from the official channel, not only playlist additions.
-def recent_channel_dawn():
- try:
-  cmd=['yt-dlp','--flat-playlist','--skip-download','--playlist-end','35',
-       '--dump-single-json','--no-warnings',
-       'https://www.youtube.com/@Gimpo_HBC/videos']
-  result=subprocess.run(cmd,capture_output=True,text=True,timeout=110)
-  if result.returncode:return []
-  raw=json.loads(result.stdout)
-  out=[]
-  for video in raw.get('entries') or []:
-   vid=video.get('id');title=str(video.get('title') or '')
-   if not isinstance(vid,str) or len(vid)!=11:continue
-   if not (re.search(r'새벽(?:예배|기도|설교)',title) or re.search(r'\b(?:Dawn|Early Morning|Morning (?:Service|Worship))\b',title,re.I)):continue
-   if not dawn_date(title):continue
-   out.append({'id':vid,'title':korean_dawn_title(title)})
-  return out
- except Exception as e:
-  print('channel dawn lookup failed:',str(e)[:160]);return []
+# Worship broadcasts live under /streams, independently of ordinary /videos.
+def parse_channel_page(html):
+ match=re.search(r'var ytInitialData\s*=\s*(\{.*?\});',html,re.S)
+ if not match:raise ValueError('YouTube channel data missing')
+ data=json.loads(match.group(1));items=[];seen=set()
+ def walk(node):
+  if isinstance(node,dict):
+   video=node.get('videoRenderer')
+   modern=node.get('lockupViewModel')
+   if video:
+    vid=video.get('videoId');title=''.join(x.get('text','') for x in video.get('title',{}).get('runs',[]))
+   elif modern:
+    vid=modern.get('contentId');title=modern.get('metadata',{}).get('lockupMetadataViewModel',{}).get('title',{}).get('content','')
+   else:vid=None;title=''
+   if vid and re.fullmatch(r'[A-Za-z0-9_-]{11}',vid) and title and vid not in seen:
+    # Scheduled or currently live entries must not displace completed recordings.
+    info=json.dumps(video or modern,ensure_ascii=False)
+    if not re.search(r'"(?:isLiveNow|isUpcoming)": true|BADGE_STYLE_TYPE_LIVE_NOW|UPCOMING|BADGE_STYLE_LIVE_NOW',info):
+     seen.add(vid);items.append({'id':vid,'title':title})
+   for child in node.values():walk(child)
+  elif isinstance(node,list):
+   for child in node:walk(child)
+ walk(data);return items
 
-# Fetch recent official uploads for independent Friday evening and Sunday services.
+def recent_channel_services():
+ from urllib.request import Request,urlopen
+ items=[];seen=set()
+ for tab in ['streams','videos']:
+  try:
+   req=Request('https://www.youtube.com/@Gimpo_HBC/'+tab+'?hl=ko',headers={'Accept-Language':'ko-KR,ko;q=0.9'})
+   with urlopen(req,timeout=45) as response:html=response.read().decode('utf-8')
+   for item in parse_channel_page(html):
+    if item['id'] not in seen:seen.add(item['id']);items.append(item)
+  except Exception as e:print('channel lookup failed:',tab,str(e)[:160])
+ if not items:raise RuntimeError('Official channel lookup failed; keeping saved albums')
+ return items
+
+channel_items=recent_channel_services()
+def recent_channel_dawn():
+ return [{'id':v['id'],'title':korean_dawn_title(v['title'])} for v in channel_items
+  if re.search(r'새벽|Dawn|Early Morning',v['title'],re.I) and dawn_date(v['title'])]
+
 def recent_special_services():
- try:
-  p=subprocess.run(['yt-dlp','--flat-playlist','--skip-download','--playlist-end','65',
-   '--dump-single-json','--no-warnings','https://www.youtube.com/@Gimpo_HBC/videos'],
-   capture_output=True,text=True,timeout=110)
-  if p.returncode:return {}
-  found={'friday-evening':[],'david-worship':[]}
-  for item in (json.loads(p.stdout).get('entries') or []):
-   vid=item.get('id');title=str(item.get('title') or '')
-   if not isinstance(vid,str) or len(vid)!=11:continue
-   if re.search(r'금요(?:예배|설교|철야|기도)|금요일\\s*(?:저녁|예배)|Friday (?:Service|Worship)',title,re.I):key='friday-evening'
-   elif re.search(r'다윗의\\s*예배',title):key='david-worship'
-   else:continue
-   found[key].append({'id':vid,'title':title,'url':'https://www.youtube.com/watch?v='+vid})
-  return found
- except Exception as e:
-  print('special service lookup failed:',str(e)[:160]);return {}
+ found={'friday-evening':[],'david-worship':[],'sermon-1':[]}
+ for item in channel_items:
+  title=item['title']
+  if re.search(r'금요|Friday (?:Service|Worship)',title,re.I) and not re.search(r'새벽|Dawn',title,re.I):key='friday-evening'
+  elif re.search(r'다윗의\s*예배|주일(?:예배|설교)',title):key='sermon-1'
+  else:continue
+  found[key].append(item)
+ found['david-worship']=list(found['sermon-1'])
+ return found
 
 special_services=recent_special_services()
 for category,items in special_services.items():
@@ -116,5 +130,24 @@ for key,playlist in lists.items():
     videos=refreshed
    previous[key]=videos
  except Exception as e:print(key,str(e)[:160])
+old=previous.get('sermon-8',[])
+merged={v['id']:v for v in old if isinstance(v,dict) and v.get('id')}
+for video in channel_dawn:merged[video['id']]=video
+previous['sermon-8']=sorted(merged.values(),key=lambda v:dawn_date(v.get('title','')) or datetime.date.min,reverse=True)
+for key in ['sermon-1','david-worship','friday-evening']:
+ previous[key]=sorted(previous.get(key,[]),key=lambda v:dawn_date(v.get('title','')) or datetime.date.min,reverse=True)
 out.write_text(json.dumps(previous,ensure_ascii=False,indent=2)+'\n')
 print({k:len(v) for k,v in previous.items()})
+
+# Publish the same verified worship entries to static home and album HTML.
+from sync_video_albums import synchronize
+posts=[]
+for category in ['sermon-1','sermon-8','friday-evening']:
+ for video in previous.get(category,[]):
+  date=dawn_date(video.get('title',''))
+  if not date:continue
+  posts.append({'section_key':'sermon-7' if category=='friday-evening' else category,
+   'youtube_id':video['id'],'title':video['title'],'published_at':date.isoformat()+'T00:00:00Z'})
+source=Path('index.html')
+updated,_=synchronize(source.read_text(),posts)
+source.write_text(updated)

@@ -1,1 +1,13 @@
-(()=>{'use strict';const id='_K-LxMD9AN0';const url='https://www.youtube.com/live/'+id;const sermonTitle='[주일설교] 2026년 11월 1일 하늘바람교회';function apply(){const labels=[...document.querySelectorAll('h2,h3,h4,strong')].filter(e=>e.getClientRects().length&&e.textContent.trim()==='주일설교'&&!e.closest('.home-six-card'));for(const label of labels){const box=label.closest('.home-six-item')||label.parentElement?.parentElement;if(!box)continue;const cards=[...box.querySelectorAll('a.home-six-card,a.sermon-album-card')];let card=cards[0];cards.slice(1).forEach(e=>e.remove());if(!card){card=document.createElement('a');card.className='sermon-album-card home-six-card';card.target='_blank';card.rel='noopener noreferrer';card.innerHTML='<span class="sermon-album-thumb"><img loading="lazy"><i aria-hidden="true">▶</i></span><span class="sermon-album-copy"><strong>최신 주일설교</strong></span>';box.append(card)}card.href=url;card.dataset.video=id;card.dataset.title=sermonTitle;const title=card.querySelector('.sermon-album-copy strong');if(title)title.textContent=sermonTitle;const img=card.querySelector('img');if(img&&img.getAttribute('src')!=='https://i.ytimg.com/vi/'+id+'/hqdefault.jpg')img.src='https://i.ytimg.com/vi/'+id+'/hqdefault.jpg';}}let queued=false;function update(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',update);else update();addEventListener('hashchange',update);new MutationObserver(update).observe(document.documentElement,{childList:true,subtree:true})})();
+(()=>{'use strict';let feed={},queued=false;
+function apply(){if(!/^#\/?(?:home|index)?$/.test(location.hash||'#'))return;
+for(const heading of document.querySelectorAll('#app h2,#app h3,#app h4')){
+const key=({'주일설교':'sermon-1','새벽설교':'sermon-8','금요설교':'friday-evening'})[heading.textContent.trim()];const latest=(feed[key]||[])[0];if(!latest)continue;
+const box=heading.closest('.home-six-item')||heading.parentElement;
+const card=box?.querySelector('a.home-six-card,a.sermon-album-card');if(!card||card.dataset.video===latest.id)continue;
+card.href='https://www.youtube.com/watch?v='+latest.id;card.dataset.video=latest.id;card.dataset.title=latest.title;
+const img=card.querySelector('img');if(img){img.src='https://i.ytimg.com/vi/'+latest.id+'/hqdefault.jpg';img.alt=latest.title;}
+const title=card.querySelector('.sermon-album-copy strong');if(title)title.textContent=latest.title;
+}}
+function queue(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}
+fetch('/assets/official-video-albums.json',{cache:'no-store'}).then(r=>r.json()).then(data=>{feed=data;queue()}).catch(()=>{});
+addEventListener('hashchange',queue);new MutationObserver(queue).observe(document.getElementById('app')||document.documentElement,{childList:true,subtree:true});})();
