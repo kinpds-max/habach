@@ -191,23 +191,62 @@ const style=document.createElement('style');style.id='hb-community-fixes-v3';sty
 
 /* Home: latest official Naver blog posts, synced by GitHub Actions. */
 function hbHomeBlogPreview(){
- const root=document.getElementById('app');if(!root||document.getElementById('hb-home-naver-blog'))return;
- const section=document.createElement('section');section.id='hb-home-naver-blog';
- section.style.cssText='max-width:1160px;margin:32px auto;padding:24px 18px;background:#f6f9fb;border-radius:18px';
- section.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px"><h2 style="margin:0;font-size:clamp(22px,3vw,30px);color:#214e65">하늘바람교회 블로그 최신글</h2><a href="https://blog.naver.com/habachurch" target="_blank" rel="noopener noreferrer" style="color:#176b62;font-weight:700">네이버 블로그 전체보기 →</a></div><div class="hb-blog-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px"><p>최신 블로그 글을 불러오는 중입니다.</p></div>';
- const target=root.querySelector('footer,.footer,#footer');if(target)target.parentNode.insertBefore(section,target);else root.append(section);
- fetch('/assets/habach-naver-blog.json',{cache:'no-store'}).then(res=>{if(!res.ok)throw Error('blog feed unavailable');return res.json()}).then(data=>{
-  if(!section.isConnected)return;
-  const cards=section.querySelector('.hb-blog-cards');cards.replaceChildren();
-  for(const post of (data.posts||[]).slice(0,4)){
-   if(!/^https:\/\/blog\.naver\.com\//.test(post.url||''))continue;
-   const a=document.createElement('a');a.href=post.url;a.target='_blank';a.rel='noopener noreferrer';a.style.cssText='display:block;text-decoration:none;color:#203e4d;background:white;border:1px solid #e0e9ee;border-radius:14px;padding:18px;min-height:150px';
-   const h=document.createElement('h3');h.textContent=post.title||'교회 블로그 글';h.style.cssText='font-size:17px;line-height:1.5;margin:0 0 10px';
-   const p=document.createElement('p');p.textContent=post.excerpt||'네이버 블로그에서 글 읽기';p.style.cssText='font-size:14px;line-height:1.65;color:#667983;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden';
-   a.append(h,p);cards.append(a);
+ const root=document.getElementById('app');
+ const video=root?.querySelector('.home-video-six');
+ if(!video)return;
+ let section=root.querySelector('#hb-home-naver-blog');
+ if(!section){
+  section=document.createElement('section');section.id='hb-home-naver-blog';
+  section.setAttribute('aria-label','하늘바람교회 네이버 블로그 최신글');
+  section.style.cssText='width:100%;box-sizing:border-box;margin:0 0 26px;padding:22px 18px;background:#f5f9fb;border:1px solid #e0ebf0;border-radius:18px';
+  section.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px"><h2 style="font-size:clamp(20px,3vw,27px);font-weight:800;color:#214e65;margin:0">하늘바람교회 블로그 최신글</h2><a href="https://blog.naver.com/habachurch" target="_blank" rel="noopener noreferrer" style="font-size:14px;color:#176b62;font-weight:700">네이버 블로그 바로가기 ↗</a></div><div class="hb-blog-cards" aria-live="polite">블로그 최신글을 확인하고 있습니다.</div>';
+ }
+ if(section.nextElementSibling!==video)video.insertAdjacentElement('beforebegin',section);
+ if(section.dataset.loading==='1'||section.dataset.loaded==='1')return;
+ section.dataset.loading='1';
+ const cards=section.querySelector('.hb-blog-cards');
+ const link='https://blog.naver.com/habachurch';
+ function buildCard(post){
+  const a=document.createElement('a');a.href=post.url;a.target='_blank';a.rel='noopener noreferrer';
+  a.style.cssText='display:flex;gap:16px;align-items:center;color:#203e4d;text-decoration:none;background:#fff;border:1px solid #e0e9ee;border-radius:12px;padding:16px;margin-bottom:9px;min-width:0';
+  if(post.image&&/^https:\/\//.test(post.image)){
+   const img=document.createElement('img');img.loading='lazy';img.src=post.image;img.alt='';img.style.cssText='width:96px;height:78px;object-fit:cover;border-radius:8px;flex:none';
+   img.onerror=()=>img.remove();a.append(img);
   }
-  if(!cards.children.length)throw Error('no posts');
- }).catch(()=>{const cards=section.querySelector('.hb-blog-cards');if(cards)cards.innerHTML='<p>최신 글 목록을 준비 중입니다. <a href="https://blog.naver.com/habachurch" target="_blank" rel="noopener noreferrer">네이버 블로그에서 보기 →</a></p>'});
+  const copy=document.createElement('div');copy.style.cssText='flex:1;min-width:0';
+  const h=document.createElement('h3');h.textContent=post.title||'하늘바람교회 소식';h.style.cssText='font-size:clamp(15px,2vw,18px);font-weight:800;line-height:1.45;margin:0 0 7px';
+  const p=document.createElement('p');p.textContent=post.excerpt||'블로그에서 자세히 읽어보세요.';p.style.cssText='font-size:13px;color:#647d8b;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0';
+  const date=document.createElement('small');date.textContent=post.date||'';date.style.cssText='display:block;margin-top:7px;color:#8798a3;font-size:11px';
+  copy.append(h,p,date);a.append(copy);return a;
+ }
+ (async()=>{
+  let posts=[];
+  for(const source of ['/api/naver-blog','/assets/habach-naver-blog.json']){
+   try{
+    const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),7000);
+    let result;try{result=await fetch(source,{cache:'no-store',signal:controller.signal})}finally{clearTimeout(timeout)}
+    if(!result.ok)continue;
+    const data=await result.json();
+    posts=(data.posts||[]).filter(p=>{try{const u=new URL(p.url);return u.hostname==='blog.naver.com'&&u.pathname.startsWith('/habachurch')}catch{return false}}).slice(0,8);
+    if(posts.length)break;
+   }catch(e){console.warn('Church blog preview source:',source,e)}
+  }
+  if(!section.isConnected)return;
+  cards.replaceChildren();
+  if(!posts.length){
+   const fallback=document.createElement('a');fallback.href=link;fallback.target='_blank';fallback.rel='noopener noreferrer';fallback.textContent='최신 글은 하늘바람교회 네이버 블로그에서 확인해 주세요 ↗';fallback.style.cssText='display:block;padding:18px;background:#fff;border-radius:12px;color:#176b62;font-weight:700';cards.append(fallback);
+  }else{
+   cards.append(buildCard(posts[0]));
+   if(posts.length>1){
+    const rest=document.createElement('div');rest.hidden=true;rest.id='hb-blog-more-posts';
+    for(const post of posts.slice(1))rest.append(buildCard(post));
+    const btn=document.createElement('button');btn.type='button';btn.textContent='더보기 ('+(posts.length-1)+'건) ▾';btn.setAttribute('aria-expanded','false');btn.style.cssText='display:block;margin:10px auto 0;padding:10px 24px;background:#fff;color:#245a75;border:1px solid #bdcfda;border-radius:999px;font-size:14px;font-weight:800;cursor:pointer';
+    btn.onclick=()=>{rest.hidden=!rest.hidden;btn.setAttribute('aria-expanded',String(!rest.hidden));btn.textContent=rest.hidden?'더보기 ('+(posts.length-1)+'건) ▾':'접기 ▴'};
+    cards.append(rest,btn);
+   }
+  }
+  section.dataset.loaded='1';section.dataset.loading='0';
+ })().catch(()=>{section.dataset.loading='0'});
 }
 /* Home video cards: update each service independently from verified official uploads. */
 let hbVideoRefreshAt=0;
