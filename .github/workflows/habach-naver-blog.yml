@@ -1,5 +1,9 @@
 name: Sync church Naver blog preview
 on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/habach-naver-blog.yml
   schedule:
     - cron: '15 0,6,12 * * *'
   workflow_dispatch:
