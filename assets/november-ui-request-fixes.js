@@ -412,3 +412,73 @@ let q=false;function run(){if(q)return;q=true;requestAnimationFrame(()=>{q=false
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);else run();window.addEventListener('hashchange',run);
 new MutationObserver(run).observe(document.getElementById('app')||document.documentElement,{childList:true,subtree:false});
 })();
+
+/* Always show the same latest church bulletin on Home and Community > Bulletin.
+   The 2026-11-08 original upload is the safe fallback if the live upload API is unavailable. */
+(()=>{'use strict';
+const fallback={bulletin_date:'2026-11-08',title:'2026년 11월 8일 교회 주보',image_urls:[
+ 'https://d2ol7oe51mr4n9.cloudfront.net/user_38vbAv9qgw2UH7cP3nl562ZKIOp/3267c0bf-e635-47f0-a8b7-4fbdbdd05cdc.jpg',
+ 'https://d2ol7oe51mr4n9.cloudfront.net/user_38vbAv9qgw2UH7cP3nl562ZKIOp/2bcd9392-c4b0-40f1-bee2-d3a98fb691c3.jpg',
+ 'https://d2ol7oe51mr4n9.cloudfront.net/user_38vbAv9qgw2UH7cP3nl562ZKIOp/65bbf844-ba2d-49bb-88ed-b737de9bd7e3.jpg'
+]};
+const API='https://veghdecosrimscedkrdo.supabase.co/functions/v1/habach-bulletin-upload';
+let current=fallback,requested=false,pending=false;
+const route=()=>location.hash.replace(/^#\/?/,'').split(/[?&]/)[0];
+const isHome=()=>!route()||route()==='index'||route()==='home';
+function render(host,entry){
+ if(!host)return;
+ const key=entry.bulletin_date+'|'+entry.image_urls.join('|');
+ if(host.dataset.hbBulletinVersion===key)return;
+ host.dataset.hbBulletinVersion=key;host.classList.add('hb-bulletin-latest-20261108');
+ host.style.cssText='display:block!important;width:100%;max-width:100%;box-sizing:border-box;margin:16px 0 24px;padding:14px;border:1px solid #dce6ed;border-radius:14px;background:#f8fbfd';
+ host.replaceChildren();
+ const heading=document.createElement('h3');heading.textContent=entry.title||entry.bulletin_date+' 교회 주보';heading.style.cssText='font-size:17px;color:#244d66;font-weight:800;margin:0 0 14px';
+ const anchor=document.createElement('a');anchor.target='_blank';anchor.rel='noopener noreferrer';anchor.style.cssText='display:block;width:100%;text-align:center';
+ const img=document.createElement('img');img.style.cssText='display:block;width:100%;height:auto;max-height:none;object-fit:contain;border:1px solid #dce6ed;border-radius:8px';img.loading='lazy';anchor.append(img);
+ const controls=document.createElement('div');controls.style.cssText='display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px';
+ const prev=document.createElement('button');prev.type='button';prev.textContent='‹ 이전';
+ const status=document.createElement('span');status.style.cssText='font-size:13px;font-weight:800;color:#355c73';
+ const next=document.createElement('button');next.type='button';next.textContent='다음 ›';
+ for(const btn of [prev,next])btn.style.cssText='border:1px solid #cbdde8;background:white;border-radius:8px;padding:9px 16px;font-weight:700;color:#285673;cursor:pointer';
+ let pos=0;
+ function show(n){const pages=entry.image_urls;pos=(n+pages.length)%pages.length;img.src=pages[pos];img.alt=entry.title+' '+(pos+1)+'쪽';anchor.href=pages[pos];status.textContent=(pos+1)+' / '+pages.length+'쪽'}
+ prev.onclick=()=>show(pos-1);next.onclick=()=>show(pos+1);controls.append(prev,status,next);
+ host.append(heading,anchor,controls);show(0);
+}
+function mount(){
+ const app=document.getElementById('app');if(!app)return;
+ if(isHome()){
+  let home=app.querySelector('#hb-canonical-bulletin-viewer');
+  if(!home){
+   const section=app.querySelector('.hb-book-section');
+   if(section){home=document.createElement('section');home.id='hb-canonical-bulletin-viewer';section.querySelector('.hb-book-heading')?.insertAdjacentElement('afterend',home)}
+  }
+  if(home)render(home,current);
+ }
+ if(route()==='news-2'){
+  const article=app.querySelector('article.article');if(!article)return;
+  const title=article.querySelector('.article-title');
+  if(!title)return;
+  let host=article.querySelector('#hb-latest-community-bulletin');
+  if(!host){host=document.createElement('section');host.id='hb-latest-community-bulletin';title.insertAdjacentElement('afterend',host)}
+  render(host,current);
+ }
+}
+function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;mount()})}
+async function refresh(){
+ if(requested)return;requested=true;
+ try{
+  const response=await fetch(API,{cache:'no-store'});
+  if(!response.ok)throw new Error('bulletin feed');
+  const data=await response.json();
+  const latest=(data.bulletins||[]).filter(b=>Array.isArray(b.image_urls)&&b.image_urls.length>=1&&/^\d{4}-\d{2}-\d{2}$/.test(b.bulletin_date||''))
+    .sort((a,b)=>b.bulletin_date.localeCompare(a.bulletin_date))[0];
+  if(latest&&latest.bulletin_date>fallback.bulletin_date){current=latest;schedule()}
+ }catch(e){console.warn('Using saved November 8 church bulletin:',e)}
+ finally{requested=false}
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{schedule();refresh()});else{schedule();refresh()}
+window.addEventListener('hashchange',()=>{setTimeout(schedule,100);setTimeout(schedule,500)});
+new MutationObserver(schedule).observe(document.getElementById('app')||document.documentElement,{childList:true,subtree:false});
+setInterval(()=>{if(!document.hidden)refresh()},900000);
+})();
