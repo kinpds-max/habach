@@ -11,7 +11,7 @@ for item in root.findall(".//channel/item")[:8]:
  link=field("link")
  desc=html.unescape(field("description"))
  desc=re.sub("<[^>]*>"," ",desc)
- desc=re.sub(r"\\s+"," ",desc).strip()[:180]
+ desc=re.sub(r"\s+"," ",desc).strip()[:180]
  if not link.startswith("https://blog.naver.com/"): continue
  posts.append({"title":title,"url":link,"date":field("pubDate"),"excerpt":desc})
 if not posts: raise RuntimeError("RSS returned no posts; preserving existing preview")
