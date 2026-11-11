@@ -1,8 +1,8 @@
 (()=>{'use strict';
 const PAGES=[
-'https://files.mallary.ai/uploads/900/chatgpt_1793444947230_bf066151de14f8d1.png',
-'https://files.mallary.ai/uploads/900/chatgpt_1793444952790_16e3c7d345f4ffde.png',
-'https://files.mallary.ai/uploads/900/chatgpt_1793444957877_10bec27b7e245292.png'];
+'https://d2ol7oe51mr4n9.cloudfront.net/user_38vbAv9qgw2UH7cP3nl562ZKIOp/3267c0bf-e635-47f0-a8b7-4fbdbdd05cdc.jpg',
+'https://d2ol7oe51mr4n9.cloudfront.net/user_38vbAv9qgw2UH7cP3nl562ZKIOp/2bcd9392-c4b0-40f1-bee2-d3a98fb691c3.jpg',
+'https://d2ol7oe51mr4n9.cloudfront.net/user_38vbAv9qgw2UH7cP3nl562ZKIOp/65bbf844-ba2d-49bb-88ed-b737de9bd7e3.jpg'];
 const LABEL='이번주 교회주보';
 function findHeads(){return [...document.querySelectorAll('h1,h2,h3,h4,h5')].filter(e=>/이번\s*주\s*교회\s*주보|교회\s*주보\s*미리보기/.test(e.textContent.trim())&&e.textContent.length<80)}
 function make(tag,css,text){const e=document.createElement(tag);if(css)e.style.cssText=css;if(text)e.textContent=text;return e}
@@ -19,12 +19,12 @@ function display(){
    viewer.id='hb-canonical-bulletin-viewer';box.style.setProperty('max-width','none','important');
    const link=make('a','display:block;width:100%');link.target='_blank';link.rel='noopener noreferrer';
    const image=make('img','display:block;width:100%;height:auto;max-height:1100px;object-fit:contain;border-radius:9px;border:1px solid #d9e5ed');
-   image.alt='2026년 11월 1일 교회 주보 1쪽';link.append(image);viewer.append(link);
+   image.alt='2026년 11월 8일 교회 주보 1쪽';link.append(image);viewer.append(link);
    const controls=make('div','display:flex;justify-content:center;align-items:center;gap:14px;margin:14px 0');
    const prev=make('button','padding:9px 17px;border:1px solid #cadce8;border-radius:8px;background:white;color:#244b61;font-weight:700;cursor:pointer','‹ 이전');
    const count=make('span','font-weight:700;color:#35586f','1 / 3쪽');
    const next=make('button','padding:9px 17px;border:1px solid #cadce8;border-radius:8px;background:white;color:#244b61;font-weight:700;cursor:pointer','다음 ›');
-   let index=0;function show(n){index=(n+PAGES.length)%PAGES.length;link.href=PAGES[index];image.src=PAGES[index];image.alt='2026년 11월 1일 교회 주보 '+(index+1)+'쪽';count.textContent=(index+1)+' / '+PAGES.length+'쪽'}
+   let index=0;function show(n){index=(n+PAGES.length)%PAGES.length;link.href=PAGES[index];image.src=PAGES[index];image.alt='2026년 11월 8일 교회 주보 '+(index+1)+'쪽';count.textContent=(index+1)+' / '+PAGES.length+'쪽'}
    prev.onclick=()=>show(index-1);next.onclick=()=>show(index+1);
    controls.append(prev,count,next);viewer.append(controls);
    const note=make('p','text-align:center;font-size:12px;color:#839ab0;margin:7px 0 0','주보를 한 페이지씩 넘기고, 이미지를 누르면 확대해서 볼 수 있습니다.');
