@@ -1,0 +1,38 @@
+name: Sync linked official video albums
+on:
+  schedule:
+    - cron: '0 0 * * *' # 09:00 KST daily
+    - cron: '0 13 * * 5' # Friday 22:00 KST
+    - cron: '0 12 * * 0' # Sunday 21:00 KST
+  workflow_dispatch:
+  push:
+    branches: [habachnew]
+    paths:
+      - 'scripts/fetch_official_video_albums.py'
+      - '.github/workflows/habach-official-video-albums.yml'
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: habachnew
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --upgrade yt-dlp
+      - run: python scripts/fetch_official_video_albums.py
+      - name: Publish fetched video links
+        run: |
+          if test -z "$(git status --porcelain -- assets/official-video-albums.json index.html)"; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/official-video-albums.json index.html
+          git commit -m "Sync official video links to GitHub"
+          git pull --rebase origin habachnew
+          git push origin HEAD:habachnew
+
+# Refresh original playlist entries including event albums
