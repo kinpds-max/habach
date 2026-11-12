@@ -24,7 +24,7 @@ async function refreshData(){
  }catch(e){console.warn('최신 새벽예배 링크 조회 실패',e)}
  try{
   const r=await fetch('/assets/church-press.json',{cache:'no-store'});
-  if(r.ok){pressItems=(await r.json()).sort((a,b)=>(b.date||'').localeCompare(a.date||''));queue();}
+  if(r.ok){pressItems=(await r.json()).sort((a,b)=>(a.displayOrder??999)-(b.displayOrder??999)||(b.date||'').localeCompare(a.date||''));queue();}
  }catch(e){console.warn('언론보도 조회 실패',e)}
 }
 function dawn(){
