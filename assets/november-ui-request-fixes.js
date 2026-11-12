@@ -199,9 +199,19 @@ function hbHomeBlogPreview(){
   section=document.createElement('section');section.id='hb-home-naver-blog';
   section.setAttribute('aria-label','하늘바람교회 네이버 블로그 최신글');
   section.style.cssText='width:100%;box-sizing:border-box;margin:0 0 26px;padding:22px 18px;background:#f5f9fb;border:1px solid #e0ebf0;border-radius:18px';
-  section.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px"><h2 style="font-size:clamp(20px,3vw,27px);font-weight:800;color:#214e65;margin:0">하늘바람교회 블로그 최신글</h2><a href="https://blog.naver.com/habachurch" target="_blank" rel="noopener noreferrer" style="font-size:14px;color:#176b62;font-weight:700">네이버 블로그 바로가기 ↗</a></div><div class="hb-blog-cards" aria-live="polite">블로그 최신글을 확인하고 있습니다.</div>';
+  section.innerHTML='<div style="display:flex;justify-content:flex-end;align-items:center;margin-bottom:12px"><a href="https://blog.naver.com/habachurch" target="_blank" rel="noopener noreferrer" style="font-size:14px;color:#176b62;font-weight:700">네이버 블로그 전체보기 ↗</a></div><div class="hb-blog-cards" aria-live="polite">블로그 최신글을 확인하고 있습니다.</div>';
+ }
+ // Use the exact heading class/typography of '하늘바람교회 영상' outside the preview card.
+ let heading=root.querySelector('#hb-home-blog-title');
+ if(!heading){
+  heading=document.createElement('div');heading.id='hb-home-blog-title';heading.className='home-video-six-header';
+  heading.style.cssText='text-align:center;margin:0 0 18px';
+  const title=document.createElement('h2');title.textContent='하늘바람교회 블로그';
+  const subtitle=document.createElement('p');subtitle.textContent='교회 소식과 말씀을 블로그에서 만나보세요.';
+  heading.append(title,subtitle);
  }
  if(section.nextElementSibling!==video)video.insertAdjacentElement('beforebegin',section);
+ if(heading.nextElementSibling!==section)section.insertAdjacentElement('beforebegin',heading);
  if(section.dataset.loading==='1'||section.dataset.loaded==='1')return;
  section.dataset.loading='1';
  const cards=section.querySelector('.hb-blog-cards');
