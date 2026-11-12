@@ -219,16 +219,18 @@ function hbHomeBlogPreview(){
  function buildCard(post){
   const a=document.createElement('a');a.href=post.url;a.target='_blank';a.rel='noopener noreferrer';
   a.style.cssText='display:flex;gap:clamp(10px,2vw,18px);align-items:center;color:#203e4d;text-decoration:none;background:#fff;border:1px solid #e0e9ee;border-radius:12px;padding:16px;margin-bottom:9px;min-width:0';
-  // Keep a dedicated left thumbnail slot for every blog post on desktop and mobile.
-  // Prefer the blog post's own representative photo, then use church branding only if unavailable.
+  // Display the official NAVER Blog favicon instead of the church fallback/thumbnail.
+  const brandTile=document.createElement('span');
+  brandTile.className='hb-naver-blog-icon-tile';
+  brandTile.style.cssText='display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;width:clamp(112px,30vw,205px);aspect-ratio:16/9;border-radius:9px;flex:0 0 auto;background:#eaf9f0;border:1px solid #cfebdc;box-sizing:border-box;overflow:hidden';
   const img=document.createElement('img');img.loading='lazy';
-  img.src=post.image&&/^https:\/\//i.test(post.image)?post.image:'/og-cover.svg';
-  img.alt=post.image?'해당 블로그 글의 설교 장면과 말씀 주제':'하늘바람교회';
-  // The original church sermon screenshots are 16:9 with a sermon-title lower third.
-  // Keep the ENTIRE frame visible so the theme and lower caption are not cropped.
-  img.style.cssText='display:block;width:clamp(136px,36vw,252px);height:auto;aspect-ratio:16/9;object-fit:contain;object-position:center;border-radius:9px;flex:0 0 auto;background:#eaf0f4;border:1px solid #e0e8ef;box-sizing:border-box';
-  img.onerror=()=>{if(!img.dataset.fallback){img.dataset.fallback='1';img.src='/og-cover.svg';img.alt='하늘바람교회'}};
-  a.append(img);
+  img.src='https://ssl.pstatic.net/static/blog/icon/favicon.ico';
+  img.alt='네이버 블로그 아이콘';
+  img.style.cssText='display:block;width:clamp(34px,7vw,54px);height:clamp(34px,7vw,54px);object-fit:contain';
+  img.onerror=()=>{img.style.display='none';brandTile.style.background='#03c75a';brandName.style.color='#fff';brandName.textContent='NAVER BLOG'};
+  const brandName=document.createElement('span');brandName.textContent='네이버 블로그';
+  brandName.style.cssText='font-size:clamp(10px,1.4vw,13px);font-weight:800;color:#098f48;line-height:1.1;text-align:center';
+  brandTile.append(img,brandName);a.append(brandTile);
   const copy=document.createElement('div');copy.style.cssText='flex:1;min-width:0';
   const h=document.createElement('h3');h.textContent=post.title||'하늘바람교회 소식';h.style.cssText='font-size:clamp(15px,2vw,18px);font-weight:800;line-height:1.45;margin:0 0 7px';
   const p=document.createElement('p');p.textContent=post.excerpt||'블로그에서 자세히 읽어보세요.';p.style.cssText='font-size:13px;color:#647d8b;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0';
