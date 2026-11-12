@@ -223,8 +223,10 @@ function hbHomeBlogPreview(){
   // Prefer the blog post's own representative photo, then use church branding only if unavailable.
   const img=document.createElement('img');img.loading='lazy';
   img.src=post.image&&/^https:\/\//i.test(post.image)?post.image:'/og-cover.svg';
-  img.alt=post.image?'블로그 글 대표이미지':'하늘바람교회';
-  img.style.cssText='display:block;width:clamp(104px,23vw,164px);height:auto;aspect-ratio:4/3;object-fit:cover;object-position:center;border-radius:9px;flex:0 0 auto;background:#eaf0f4;border:1px solid #e0e8ef;box-sizing:border-box';
+  img.alt=post.image?'해당 블로그 글의 설교 장면과 말씀 주제':'하늘바람교회';
+  // The original church sermon screenshots are 16:9 with a sermon-title lower third.
+  // Keep the ENTIRE frame visible so the theme and lower caption are not cropped.
+  img.style.cssText='display:block;width:clamp(136px,36vw,252px);height:auto;aspect-ratio:16/9;object-fit:contain;object-position:center;border-radius:9px;flex:0 0 auto;background:#eaf0f4;border:1px solid #e0e8ef;box-sizing:border-box';
   img.onerror=()=>{if(!img.dataset.fallback){img.dataset.fallback='1';img.src='/og-cover.svg';img.alt='하늘바람교회'}};
   a.append(img);
   const copy=document.createElement('div');copy.style.cssText='flex:1;min-width:0';
