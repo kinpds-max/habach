@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - .github/workflows/habach-naver-blog.yml
+      - scripts/sync_habach_blog.py
   schedule:
     - cron: '15 0,6,12 * * *'
   workflow_dispatch:
