@@ -33,8 +33,8 @@ function display(){
   let headRow=box.querySelector('#hb-bulletin-heading-row');
   if(!headRow){headRow=make('div','');headRow.id='hb-bulletin-heading-row';h.parentNode.insertBefore(headRow,h);headRow.append(h)}
   headRow.style.cssText='display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;gap:6px!important;width:100%!important;max-width:100%!important;margin:0 0 12px!important';
-  h.textContent=LABEL;
-  h.setAttribute('aria-label',LABEL);
+  if(h.textContent!==LABEL)h.textContent=LABEL;
+  if(h.getAttribute('aria-label')!==LABEL)h.setAttribute('aria-label',LABEL);
 
   h.style.cssText='margin:0!important;padding:0!important;flex:1 1 auto!important;min-width:0!important;font-size:clamp(15px,2.6vw,25px)!important;white-space:nowrap!important';
   let actions=headRow.querySelector('#hb-bulletin-actions');
@@ -64,7 +64,7 @@ function display(){
   actions.style.setProperty('display','flex','important');
   actions.style.setProperty('flex-direction','row','important');
   actions.style.setProperty('flex-wrap','nowrap','important');
-  for(const a of actions.querySelectorAll('a'))if(a.href.includes('bulletin.html'))a.textContent='이번주 교회주보 업로드';
+  for(const a of actions.querySelectorAll('a'))if(a.href.includes('bulletin.html')&&a.textContent!=='이번주 교회주보 업로드')a.textContent='이번주 교회주보 업로드';
   // Hide duplicated standalone upload pills, without hiding the two heading actions.
   for(const el of box.querySelectorAll('a,button')){
     if(actions.contains(el)||viewer.contains(el))continue;
@@ -105,7 +105,16 @@ function display(){
   for(const el of box.querySelectorAll('p,small,span'))if(!viewer.contains(el)&&el.children.length===0&&/주보를 한 페이지씩 넘기고/.test(el.textContent||''))el.style.setProperty('display','none','important');
  }
 }
+
+const headingStability=document.createElement('style');
+headingStability.id='hb-bulletin-heading-stability';
+headingStability.textContent='#hb-bulletin-heading-row,#hb-bulletin-heading-row #hb-bulletin-actions,#hb-bulletin-heading-row #hb-bulletin-actions a{animation:none!important;transition:none!important;transform:none!important;}#hb-bulletin-heading-row{min-height:42px!important;}#hb-bulletin-actions{align-self:center!important;}#hb-bulletin-actions a{height:38px!important;box-sizing:border-box!important;line-height:1.2!important;}';
+if(!document.getElementById('hb-bulletin-heading-stability'))document.head.append(headingStability);
 let pending=false;function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;display()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
-addEventListener('hashchange',schedule);new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+addEventListener('hashchange',schedule);
+// Only watch app-level replacements: edits to label text must not retrigger endless redraws.
+const appRoot=document.getElementById('app');
+if(appRoot)new MutationObserver(schedule).observe(appRoot,{childList:true,subtree:false});
+else new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:false});
 })();
