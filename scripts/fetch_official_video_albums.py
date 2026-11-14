@@ -70,6 +70,20 @@ def recent_channel_services():
    for item in parse_channel_page(html):
     if item['id'] not in seen:seen.add(item['id']);items.append(item)
   except Exception as e:print('channel lookup failed:',tab,str(e)[:160])
+ # YouTube frequently blocks direct HTML reads from GitHub runners.
+ # Fall back to yt-dlp on BOTH official tabs before declaring failure.
+ for tab in ['streams','videos']:
+  if any(items):break
+  try:
+   proc=subprocess.run(['yt-dlp','--flat-playlist','--playlist-end','80','--dump-single-json','--no-warnings',
+     'https://www.youtube.com/@Gimpo_HBC/'+tab],capture_output=True,text=True,timeout=100)
+   if proc.returncode:raise RuntimeError(proc.stderr[-250:])
+   for entry in json.loads(proc.stdout).get('entries') or []:
+    vid=entry.get('id');title=entry.get('title') or ''
+    if (isinstance(vid,str) and re.fullmatch(r'[A-Za-z0-9_-]{11}',vid)
+        and title and vid not in seen and entry.get('live_status') not in ('is_live','is_upcoming')):
+     seen.add(vid);items.append({'id':vid,'title':title})
+  except Exception as e:print('yt-dlp channel fallback failed:',tab,str(e)[:160])
  if not items:raise RuntimeError('Official channel lookup failed; keeping saved albums')
  return items
 
