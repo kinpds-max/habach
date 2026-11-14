@@ -82,7 +82,7 @@ def recent_special_services():
  found={'friday-evening':[],'david-worship':[],'sermon-1':[]}
  for item in channel_items:
   title=item['title']
-  if re.search(r'금요|Friday (?:Service|Worship)',title,re.I) and not re.search(r'새벽|Dawn',title,re.I):key='friday-evening'
+  if re.search(r'금요|금요일.{0,12}(?:철야|기도회|예배)|철야(?:기도회|예배)|치유기도회|Friday (?:Service|Worship|Prayer)',title,re.I) and not re.search(r'새벽|Dawn|Early Morning',title,re.I):key='friday-evening'
   elif re.search(r'다윗의\s*예배|주일(?:예배|설교)',title):key='sermon-1'
   else:continue
   found[key].append(item)
@@ -94,7 +94,7 @@ for category,items in special_services.items():
  if items:
   old=previous.get(category,[])
   seen={x['id'] for x in items}
-  previous[category]=items+[x for x in old if isinstance(x,dict) and x.get('id') not in seen][:30]
+  previous[category]=items+[x for x in old if isinstance(x,dict) and x.get('id') not in seen]
 
 channel_dawn=recent_channel_dawn()
 for key,playlist in lists.items():
