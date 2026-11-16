@@ -103,6 +103,26 @@ def recent_channel_services():
  return items
 
 channel_items=recent_channel_services()
+# Check supplied official video IDs and retain only verified public recordings.
+requested_ids=['QZdovHKGBJg','t05giZZ771Y','0x7q_DNe9kc','6b51hMNNaxU']
+known_ids={v['id'] for v in channel_items}
+for vid in requested_ids:
+ if vid in known_ids:continue
+ try:
+  p=subprocess.run(['yt-dlp','--skip-download','--dump-single-json','--no-warnings',
+    'https://www.youtube.com/watch?v='+vid],capture_output=True,text=True,timeout=65)
+  if p.returncode:raise RuntimeError(p.stderr[-250:])
+  info=json.loads(p.stdout)
+  if info.get('live_status') in ('is_live','is_upcoming') or info.get('availability') not in (None,'public'):
+   raise RuntimeError('Not a completed public recording')
+  if info.get('channel_id')!='UCzQ6kPUzNNbU3EtJI5X1mhQ':
+   raise RuntimeError('Not the official channel')
+  title=info.get('title') or ''
+  if not title or not re.search(r'[가-힣]',title):raise RuntimeError('Original Korean title unavailable')
+  channel_items.insert(0,{'id':vid,'title':title})
+  known_ids.add(vid)
+ except Exception as e:print('Supplied recording not verified:',vid,str(e)[:160])
+
 def recent_channel_dawn():
  return [{'id':v['id'],'title':korean_dawn_title(v['title'])} for v in channel_items
   if re.search(r'새벽|Dawn|Early Morning',v['title'],re.I) and dawn_date(v['title'])]
