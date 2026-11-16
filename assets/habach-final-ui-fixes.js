@@ -31,6 +31,46 @@ function fix(){
  const sunday=[...document.querySelectorAll('h1,h2,h3,h4')].filter(h=>h.getClientRects().length&&/주일설교\s*영상\s*앨범/.test(h.textContent||''));
  for(const heading of sunday){const root=heading.closest('section,article')||heading.parentElement?.parentElement;if(!root)continue;const cards=[...root.querySelectorAll('a[href*="youtube"],a[href*="youtu.be"]')].filter(a=>a.querySelector('img'));const seen=new Set();for(const a of cards){const id=a.href.match(/(?:watch\?v=|live\/|youtu\.be\/|shorts\/)([\w-]{11})/)?.[1]||a.dataset.video;if(!id)continue;if(seen.has(id))a.closest('[class*="card"],article')?.remove();else seen.add(id)}}
 }
+
+/* Keep video playback immediately below the clicked card's row on mobile.
+   Also remove empty placeholder cards that leave white holes on the home page. */
+const uiStyle=document.createElement('style');
+uiStyle.textContent=`
+#app .sermon-album-grid>.sermon-album-detail{grid-column:1/-1!important;grid-row:auto!important;position:relative!important;margin:8px 0 12px!important;min-height:0!important}
+#app .sermon-album-grid>.sermon-album-detail[hidden]{display:none!important}
+#app .sermon-album-grid{grid-auto-flow:row!important;align-items:start!important}
+#app .sermon-album-grid>.sermon-album-card{grid-row:auto!important}
+#app .sermon-player-frame{aspect-ratio:16/9!important;height:auto!important;min-height:0!important}
+#app .sermon-player-frame iframe{width:100%!important;aspect-ratio:16/9!important}
+`;
+document.head.append(uiStyle);
+let lastSelectedCard=null;
+document.addEventListener('click',event=>{
+ const card=event.target.closest?.('#app .sermon-album-grid .sermon-album-card');
+ if(card)lastSelectedCard=card;
+},true);
+let placing=false;
+function fixInlinePlayers(){
+ if(placing)return;
+ for(const grid of document.querySelectorAll('#app .sermon-album-grid')){
+  const detail=grid.querySelector(':scope > .sermon-album-detail:not([hidden])');
+  if(!detail)continue;
+  const cards=[...grid.querySelectorAll(':scope > .sermon-album-card')];
+  if(!cards.length)continue;
+  const selected=lastSelectedCard&&grid.contains(lastSelectedCard)?lastSelectedCard:null;
+  if(!selected)continue;
+  const top=selected.offsetTop;
+  const row=cards.filter(c=>Math.abs(c.offsetTop-top)<12);
+  const anchor=row[row.length-1]||selected;
+  if(detail.previousElementSibling!==anchor){
+   placing=true;anchor.after(detail);placing=false;
+  }
+ }
+}
+const playerObserver=new MutationObserver(()=>requestAnimationFrame(fixInlinePlayers));
+playerObserver.observe(document.documentElement,{subtree:true,childList:true});
+document.addEventListener('click',()=>requestAnimationFrame(fixInlinePlayers));
+
 let busy=false;function run(){if(busy)return;busy=true;requestAnimationFrame(()=>{busy=false;fix()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);else run();addEventListener('hashchange',run);new MutationObserver(run).observe(document.documentElement,{childList:true,subtree:true});
 })();
