@@ -62,14 +62,43 @@ def parse_channel_page(html):
 
 def recent_channel_services():
  from urllib.request import Request,urlopen
- items=[];seen=set()
+ import xml.etree.ElementTree as ET
+ items=[];seen=set();html_ok_tabs=set()
+ # Official channel RSS is a lightweight source for uploads, even when
+ # YouTube channel HTML blocks GitHub Actions IPs.
+ try:
+  req=Request('https://www.youtube.com/feeds/videos.xml?channel_id=UCzQ6kPUzNNbU3EtJI5X1mhQ',
+   headers={'User-Agent':'Mozilla/5.0','Accept-Language':'ko-KR,ko;q=0.9'})
+  with urlopen(req,timeout=20) as response:root=ET.fromstring(response.read())
+  for entry in root.findall('{http://www.w3.org/2005/Atom}entry'):
+   vid=entry.findtext('{http://www.youtube.com/xml/schemas/2015}videoId')
+   title=entry.findtext('{http://www.w3.org/2005/Atom}title') or ''
+   if vid and re.fullmatch(r'[A-Za-z0-9_-]{11}',vid) and title and vid not in seen:
+    seen.add(vid);items.append({'id':vid,'title':title})
+ except Exception as e:print('channel RSS lookup failed:',str(e)[:160])
  for tab in ['streams','videos']:
   try:
    req=Request('https://www.youtube.com/@Gimpo_HBC/'+tab+'?hl=ko',headers={'Accept-Language':'ko-KR,ko;q=0.9'})
    with urlopen(req,timeout=45) as response:html=response.read().decode('utf-8')
-   for item in parse_channel_page(html):
+   tab_items=parse_channel_page(html)
+   if tab_items:html_ok_tabs.add(tab)
+   for item in tab_items:
     if item['id'] not in seen:seen.add(item['id']);items.append(item)
   except Exception as e:print('channel lookup failed:',tab,str(e)[:160])
+ # YouTube frequently blocks direct HTML reads from GitHub runners.
+ # Fall back to yt-dlp on BOTH official tabs before declaring failure.
+ for tab in ['streams','videos']:
+  if tab in html_ok_tabs:continue
+  try:
+   proc=subprocess.run(['yt-dlp','--flat-playlist','--playlist-end','80','--dump-single-json','--no-warnings',
+     'https://www.youtube.com/@Gimpo_HBC/'+tab],capture_output=True,text=True,timeout=100)
+   if proc.returncode:raise RuntimeError(proc.stderr[-250:])
+   for entry in json.loads(proc.stdout).get('entries') or []:
+    vid=entry.get('id');title=entry.get('title') or ''
+    if (isinstance(vid,str) and re.fullmatch(r'[A-Za-z0-9_-]{11}',vid)
+        and title and vid not in seen and entry.get('live_status') not in ('is_live','is_upcoming')):
+     seen.add(vid);items.append({'id':vid,'title':title})
+  except Exception as e:print('yt-dlp channel fallback failed:',tab,str(e)[:160])
  if not items:raise RuntimeError('Official channel lookup failed; keeping saved albums')
  return items
 
@@ -82,8 +111,8 @@ def recent_special_services():
  found={'friday-evening':[],'david-worship':[],'sermon-1':[]}
  for item in channel_items:
   title=item['title']
-  if re.search(r'금요|Friday (?:Service|Worship)',title,re.I) and not re.search(r'새벽|Dawn',title,re.I):key='friday-evening'
-  elif re.search(r'다윗의\s*예배|주일(?:예배|설교)',title):key='sermon-1'
+  if re.search(r'금요|금요일.{0,12}(?:철야|기도회|예배)|철야(?:기도회|예배)|치유기도회|Friday (?:Service|Worship|Prayer)',title,re.I) and not re.search(r'새벽|Dawn|Early Morning',title,re.I):key='friday-evening'
+  elif re.search(r'다윗의\s*예배|시편의\s*예배|주일\s*(?:예배|설교)',title):key='sermon-1'
   else:continue
   found[key].append(item)
  found['david-worship']=list(found['sermon-1'])
@@ -94,7 +123,7 @@ for category,items in special_services.items():
  if items:
   old=previous.get(category,[])
   seen={x['id'] for x in items}
-  previous[category]=items+[x for x in old if isinstance(x,dict) and x.get('id') not in seen][:30]
+  previous[category]=items+[x for x in old if isinstance(x,dict) and x.get('id') not in seen]
 
 channel_dawn=recent_channel_dawn()
 for key,playlist in lists.items():
@@ -134,8 +163,13 @@ old=previous.get('sermon-8',[])
 merged={v['id']:v for v in old if isinstance(v,dict) and v.get('id')}
 for video in channel_dawn:merged[video['id']]=video
 previous['sermon-8']=sorted(merged.values(),key=lambda v:dawn_date(v.get('title','')) or datetime.date.min,reverse=True)
+# Preserve YouTube's newest-first channel order for videos with no date in
+# their titles; date-only sorting incorrectly buries recently uploaded services.
+recent_rank={v['id']:i for i,v in enumerate(channel_items)}
 for key in ['sermon-1','david-worship','friday-evening']:
- previous[key]=sorted(previous.get(key,[]),key=lambda v:dawn_date(v.get('title','')) or datetime.date.min,reverse=True)
+ previous[key]=sorted(previous.get(key,[]),
+  key=lambda v:(v.get('id') in recent_rank,-recent_rank.get(v.get('id'),10**6),dawn_date(v.get('title','')) or datetime.date.min),
+  reverse=True)
 out.write_text(json.dumps(previous,ensure_ascii=False,indent=2)+'\n')
 print({k:len(v) for k,v in previous.items()})
 
