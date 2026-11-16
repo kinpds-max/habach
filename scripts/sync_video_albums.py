@@ -148,7 +148,7 @@ def main():
                     day = date(*map(int, match.groups())).isoformat()
                 except ValueError:
                     pass
-            posts.append({'section_key': section, 'youtube_id': vid, 'title': title,
+            if vid == 'QZdovHKGBJg' and not day:\n                day = '2026-11-15'  # confirmed service date; preserve source title unchanged\n            posts.append({'section_key': section, 'youtube_id': vid, 'title': title,
                           'published_at': day, 'created_at': day})
             present.add(vid)
     target = ROOT / 'index.html'
