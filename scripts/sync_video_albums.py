@@ -127,6 +127,30 @@ def main():
     parser.add_argument('--check', action='store_true', help='Fail if the album needs updating')
     args = parser.parse_args()
     posts = json.loads(args.posts.read_text()) if args.posts else read_posts()
+    # Official channel archives must also appear in the home cards even when
+    # Supabase has not imported them. Preserve original Korean titles.
+    archive = json.loads((ROOT / 'assets/official-video-albums.json').read_text())
+    archive_sections = {'sermon-1': 'sermon-1', 'sermon-8': 'sermon-8',
+                        'sermon-7': 'friday-evening'}
+    for section, archive_key in archive_sections.items():
+        present = {p.get('youtube_id') for p in posts if p.get('section_key') == section}
+        for video in archive.get(archive_key, []):
+            vid, title = video.get('id'), video.get('title')
+            if not isinstance(vid, str) or not VIDEO_ID.fullmatch(vid):
+                continue
+            if not isinstance(title, str) or not title.strip() or vid in present:
+                continue
+            match = re.search(r'(20\\d{2})\\s*[.년/-]\\s*(\\d{1,2})\\s*[.월/-]\\s*(\\d{1,2})', title)
+            day = ''
+            if match:
+                from datetime import date
+                try:
+                    day = date(*map(int, match.groups())).isoformat()
+                except ValueError:
+                    pass
+            posts.append({'section_key': section, 'youtube_id': vid, 'title': title,
+                          'published_at': day, 'created_at': day})
+            present.add(vid)
     target = ROOT / 'index.html'
     source = target.read_text()
     updated, summary = synchronize(source, posts)
