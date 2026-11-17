@@ -195,7 +195,7 @@ function hbHomeBlogPreview(){
  const section=document.createElement('section');section.id='hb-home-naver-blog';
  section.style.cssText='max-width:1160px;margin:32px auto;padding:24px 18px;background:#f6f9fb;border-radius:18px';
  section.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px"><h2 style="margin:0;font-size:clamp(22px,3vw,30px);color:#214e65">하늘바람교회 블로그 최신글</h2><a href="https://blog.naver.com/habachurch" target="_blank" rel="noopener noreferrer" style="color:#176b62;font-weight:700">네이버 블로그 전체보기 →</a></div><div class="hb-blog-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px"><p>최신 블로그 글을 불러오는 중입니다.</p></div>';
- const target=root.querySelector('footer,.footer,#footer');if(target)target.parentNode.insertBefore(section,target);else root.append(section);
+ const target=root.querySelector('.home-video-six-grid')?.closest('section')||root.querySelector('footer,.footer,#footer');if(target)target.parentNode.insertBefore(section,target);else root.prepend(section);
  fetch('/assets/habach-naver-blog.json',{cache:'no-store'}).then(res=>{if(!res.ok)throw Error('blog feed unavailable');return res.json()}).then(data=>{
   if(!section.isConnected)return;
   const cards=section.querySelector('.hb-blog-cards');cards.replaceChildren();
