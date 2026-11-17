@@ -204,6 +204,14 @@ function hbHomeBlogPreview(){
    const a=document.createElement('a');a.href=post.url;a.target='_blank';a.rel='noopener noreferrer';a.style.cssText='display:block;text-decoration:none;color:#203e4d;background:white;border:1px solid #e0e9ee;border-radius:14px;padding:18px;min-height:150px';
    const h=document.createElement('h3');h.textContent=post.title||'교회 블로그 글';h.style.cssText='font-size:17px;line-height:1.5;margin:0 0 10px';
    const p=document.createElement('p');p.textContent=post.excerpt||'네이버 블로그에서 글 읽기';p.style.cssText='font-size:14px;line-height:1.65;color:#667983;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden';
+   if(typeof post.image==='string'&&/^https:\/\//.test(post.image)){
+    const image=document.createElement('img');
+    image.src=post.image;image.loading='lazy';image.referrerPolicy='no-referrer';
+    image.alt=post.title||'블로그 대표 이미지';
+    image.style.cssText='display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;margin-bottom:12px';
+    image.onerror=()=>image.remove();
+    a.append(image);
+   }
    a.append(h,p);cards.append(a);
   }
   if(!cards.children.length)throw Error('no posts');
