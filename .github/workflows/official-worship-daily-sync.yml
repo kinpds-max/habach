@@ -4,6 +4,13 @@ on:
   schedule:
     - cron: '0 0 * * *' # 09:00 Asia/Seoul
   workflow_dispatch:
+  push:
+    branches: [habachnew]
+    paths:
+      - 'scripts/fetch_official_video_albums.py'
+      - 'scripts/sync_video_albums.py'
+      - 'assets/official-video-albums.json'
+      - '.github/workflows/official-worship-daily-sync.yml'
 
 permissions:
   contents: write
@@ -29,6 +36,8 @@ jobs:
           python-version: '3.12'
       - name: Install YouTube playlist reader
         run: python -m pip install --disable-pip-version-check yt-dlp
+      - name: Validate Python scripts
+        run: python -m py_compile scripts/fetch_official_video_albums.py scripts/sync_video_albums.py
       - name: Fetch public official recordings and update homepage
         run: python scripts/fetch_official_video_albums.py
       - name: Check generated files
@@ -37,16 +46,22 @@ jobs:
           test -s index.html
           git diff --check
           python - <<'PY'
-          import json
+          import json,re
           from pathlib import Path
           data=json.loads(Path('assets/official-video-albums.json').read_text())
           html=Path('index.html').read_text()
+          match=re.search(r'const views\s*=\s*(\{[\s\S]*?\})(;)',html)
+          if not match: raise SystemExit('Home views JSON missing')
+          home=json.loads(match.group(1)).get('index','')
           for key in ('sermon-1','sermon-8','friday-evening'):
               videos=data.get(key) or []
               if not videos: raise SystemExit(f'Missing {key} video data')
               latest=videos[0]['id']
-              if f'data-video=\\"{latest}\\"' not in html and f'data-video="{latest}"' not in html:
-                  raise SystemExit(f'{key} latest video {latest} missing from homepage HTML')
+              section = 'sermon-7' if key == 'friday-evening' else key
+              label=f'href="#/{section}"'
+              i=home.find(label)
+              if i < 0 or f'data-video="{latest}"' not in home[i:i+1100]:
+                  raise SystemExit(f'{key} latest video {latest} missing from home card')
           print('Sunday, dawn and Friday videos present in generated homepage')
           PY
       - name: Commit and push only updated website files
