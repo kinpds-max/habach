@@ -73,7 +73,10 @@
     .ftab.active,.ftab:hover{background:var(--navy);color:var(--white);border-color:var(--navy)}
 
     /* ===== BULLETIN LIST ===== */
-    .bulletin-table{width:100%;border-collapse:collapse}
+    .bulletin-table{width:100%;min-width:630px;border-collapse:collapse}
+    #bulletinList{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .bulletin-table .btn{white-space:nowrap}
+    .bulletin-table td,.bulletin-table th{word-break:keep-all}
     .bulletin-table th{text-align:left;padding:10px 12px;font-size:.78rem;color:var(--gray);border-bottom:2px solid var(--gray-light);font-weight:700}
     .bulletin-table td{padding:11px 12px;font-size:.88rem;border-bottom:1px solid var(--gray-light);vertical-align:middle}
     .bulletin-table tr:hover td{background:var(--off)}
@@ -155,7 +158,7 @@
     </div>
 
     <div class="form-actions">
-      <button class="btn btn-primary" onclick="saveBulletin()"><i class="fas fa-save"></i> 저장</button>
+      <button class="btn btn-primary" onclick="saveBulletin()"><i class="fas fa-check-circle"></i> 반영하기</button>
       <button class="btn btn-gold" onclick="togglePreview()"><i class="fas fa-eye"></i> 미리보기</button>
       <button class="btn" style="background:var(--gray-light);color:var(--navy)" onclick="clearForm()"><i class="fas fa-times"></i> 초기화</button>
     </div>
@@ -288,7 +291,7 @@
       const res=await fetch(UPLOAD_API,{method:'POST',body:form});
       const json=await res.json();
       if(!res.ok||!json.success)throw Error(json.error||'이미지 저장 오류');
-      showToast(files.length+'장 주보 이미지 저장 완료');
+      showToast(files.length+'장 주보 게시 완료 · 홈페이지 자동 갱신');
       clearForm();loadList();
     }catch(err){showToast('이미지 저장 실패: '+err.message,true)}
   }
@@ -314,7 +317,7 @@
       });
       const json = await r.json();
       if (json.result === 'success') {
-        showToast('저장되었습니다!');
+        showToast('주보 게시 완료 · 홈페이지 자동 갱신');
         clearForm();
         loadList();
       } else {
