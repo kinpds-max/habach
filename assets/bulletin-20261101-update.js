@@ -116,11 +116,11 @@ async function refreshPublishedBulletin(){
   if(!r.ok)throw Error('bulletin API '+r.status);
   const data=await r.json();
   const posts=(Array.isArray(data.bulletins)?data.bulletins:[])
-   .filter(p=>/^20\\d{2}-\\d{2}-\\d{2}$/.test(p?.bulletin_date||'')&&Array.isArray(p.image_urls)&&p.image_urls.length)
+   .filter(p=>/^20\d{2}-\d{2}-\d{2}$/.test(p?.bulletin_date||'')&&Array.isArray(p.image_urls)&&p.image_urls.length)
    .sort((a,b)=>String(b.bulletin_date).localeCompare(String(a.bulletin_date)));
   if(!posts.length)return;
   const latest=posts[0];
-  const urls=latest.image_urls.filter(u=>typeof u==='string'&&/^https:\\/\\//.test(u)).slice(0,8);
+  const urls=latest.image_urls.filter(u=>typeof u==='string'&&/^https:\/\//.test(u)).slice(0,8);
   if(!urls.length)return;
   const signature=latest.bulletin_date+'|'+urls.join('|');
   if(signature===publishedSignature)return;
