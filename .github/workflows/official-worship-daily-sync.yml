@@ -3,6 +3,7 @@ name: Daily official worship sync to live website
 on:
   schedule:
     - cron: '0 0 * * *' # 09:00 KST daily
+    - cron: '0 3 * * *' # 12:00 KST recovery pass
     - cron: '0 13 * * 5' # Friday 22:00 KST
     - cron: '0 12 * * 0' # Sunday 21:00 KST
   workflow_dispatch:
@@ -16,7 +17,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: official-worship-sync-main
+  group: official-worship-sync-production
   cancel-in-progress: false
 
 jobs:
@@ -27,7 +28,7 @@ jobs:
       - name: Checkout website production source
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: habachnew
           persist-credentials: true
       - uses: actions/setup-python@v5
         with:
@@ -41,12 +42,12 @@ jobs:
           python -m json.tool assets/official-video-albums.json >/dev/null
           test -s index.html
           git diff --check
-      - name: Commit verified changes to main
+      - name: Commit verified changes to habachnew Production
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/official-video-albums.json index.html
           if ! git diff --cached --quiet; then
             git commit -m "Sync completed official worship videos"
-            git push origin HEAD:main
+            git push origin HEAD:habachnew
           fi
