@@ -140,7 +140,7 @@ def main():
                 continue
             if not isinstance(title, str) or not title.strip() or vid in present:
                 continue
-            match = re.search(r'(20\\d{2})\\s*[.년/-]\\s*(\\d{1,2})\\s*[.월/-]\\s*(\\d{1,2})', title)
+            match = re.search(r'(20\d{2})\s*[.년/-]\s*(\d{1,2})\s*[.월/-]\s*(\d{1,2})', title)
             day = ''
             if match:
                 from datetime import date
@@ -148,7 +148,9 @@ def main():
                     day = date(*map(int, match.groups())).isoformat()
                 except ValueError:
                     pass
-            if vid == 'QZdovHKGBJg' and not day:\n                day = '2026-11-15'  # confirmed service date; preserve source title unchanged\n            posts.append({'section_key': section, 'youtube_id': vid, 'title': title,
+            if vid == 'QZdovHKGBJg' and not day:
+                day = '2026-11-15'  # service date from the provided bulletin
+            posts.append({'section_key': section, 'youtube_id': vid, 'title': title,
                           'published_at': day, 'created_at': day})
             present.add(vid)
     target = ROOT / 'index.html'
