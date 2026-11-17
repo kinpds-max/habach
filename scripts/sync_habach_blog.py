@@ -1,20 +1,45 @@
-import json, re, urllib.request, xml.etree.ElementTree as ET, html
+#!/usr/bin/env python3
+"""Refresh official Naver blog previews while preserving known thumbnails on feed failures."""
+import html
+import json
+import re
+import urllib.request
+import xml.etree.ElementTree as ET
 from pathlib import Path
-url="https://rss.blog.naver.com/habachurch.xml"
-req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 (compatible; HabachChurchPreview/1.0)"})
-with urllib.request.urlopen(req,timeout=25) as res: data=res.read()
-root=ET.fromstring(data)
-posts=[]
-for item in root.findall(".//channel/item")[:8]:
- def field(k): return (item.findtext(k) or "").strip()
- title=html.unescape(re.sub("<[^>]*>","",field("title")))
- link=field("link")
- desc=html.unescape(field("description"))
- desc=re.sub("<[^>]*>"," ",desc)
- desc=re.sub(r"\\s+"," ",desc).strip()[:180]
- if not link.startswith("https://blog.naver.com/"): continue
- posts.append({"title":title,"url":link,"date":field("pubDate"),"excerpt":desc})
-if not posts: raise RuntimeError("RSS returned no posts; preserving existing preview")
-p=Path("assets/habach-naver-blog.json")
-p.parent.mkdir(parents=True,exist_ok=True)
-p.write_text(json.dumps({"source":url,"posts":posts},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+
+DEST = Path("assets/habach-naver-blog.json")
+FEED = "https://rss.blog.naver.com/habachurch.xml"
+existing = {}
+if DEST.exists():
+    try:
+        existing = {p["url"].split("?")[0]: p for p in json.loads(DEST.read_text(encoding="utf-8")).get("posts", [])}
+    except (ValueError, KeyError, TypeError):
+        pass
+req = urllib.request.Request(FEED, headers={"User-Agent": "Mozilla/5.0 (compatible; HabachChurchPreview/1.0)"})
+with urllib.request.urlopen(req, timeout=25) as response:
+    root = ET.fromstring(response.read())
+posts = []
+for item in root.findall(".//channel/item")[:12]:
+    def field(key):
+        return (item.findtext(key) or "").strip()
+    title = html.unescape(re.sub(r"<[^>]*>", "", field("title")))
+    url = html.unescape(field("link"))
+    if not url.startswith("https://blog.naver.com/habachurch/"):
+        continue
+    description = html.unescape(field("description"))
+    excerpt = re.sub(r"\s+", " ", re.sub(r"<[^>]*>", " ", description)).strip()[:180]
+    previous = existing.get(url.split("?")[0], {})
+    image = previous.get("image", "")
+    if not image:
+        match = re.search(r'<img[^>]+src=["\']([^"\']+)', description, re.I)
+        if match:
+            image = html.unescape(match.group(1))
+    post = {"title": title, "url": url, "date": field("pubDate"), "excerpt": excerpt}
+    if image.startswith("https://"):
+        post["image"] = image
+    posts.append(post)
+if not posts:
+    raise RuntimeError("No public RSS posts; existing data left unchanged")
+DEST.parent.mkdir(parents=True, exist_ok=True)
+DEST.write_text(json.dumps({"source": FEED, "posts": posts}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+print(f"Synced {len(posts)} official blog posts")
