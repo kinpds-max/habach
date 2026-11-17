@@ -36,8 +36,8 @@ function fix(){
    Also remove empty placeholder cards that leave white holes on the home page. */
 const uiStyle=document.createElement('style');
 uiStyle.textContent=`
-#app .sermon-album-grid>.sermon-album-detail{grid-column:1/-1!important;grid-row:auto!important;position:relative!important;margin:8px 0 12px!important;min-height:0!important}
-#app .sermon-album-grid>.sermon-album-detail[hidden]{display:none!important}
+#app .sermon-album-grid>.sermon-album-detail,#app .hb-static-sermon-grid>.sermon-album-detail,#app .home-video-six-grid>.sermon-album-detail{grid-column:1/-1!important;grid-row:auto!important;position:relative!important;margin:8px 0 12px!important;min-height:0!important}
+#app .sermon-album-grid>.sermon-album-detail[hidden],#app .hb-static-sermon-grid>.sermon-album-detail[hidden]{display:none!important}
 #app .sermon-album-grid{grid-auto-flow:row!important;align-items:start!important}
 #app .sermon-album-grid>.sermon-album-card{grid-row:auto!important}
 #app .sermon-player-frame{aspect-ratio:16/9!important;height:auto!important;min-height:0!important}
@@ -46,22 +46,24 @@ uiStyle.textContent=`
 document.head.append(uiStyle);
 let lastSelectedCard=null;
 document.addEventListener('click',event=>{
- const card=event.target.closest?.('#app .sermon-album-grid .sermon-album-card');
+ const card=event.target.closest?.('#app .sermon-album-grid .sermon-album-card,#app .hb-static-sermon-grid .sermon-album-card,#app .home-video-six-grid .sermon-album-card');
  if(card)lastSelectedCard=card;
 },true);
 let placing=false;
 function fixInlinePlayers(){
  if(placing)return;
- for(const grid of document.querySelectorAll('#app .sermon-album-grid')){
+ for(const grid of document.querySelectorAll('#app .sermon-album-grid,#app .hb-static-sermon-grid,#app .home-video-six-grid')){
   const detail=grid.querySelector(':scope > .sermon-album-detail:not([hidden])');
   if(!detail)continue;
-  const cards=[...grid.querySelectorAll(':scope > .sermon-album-card')];
-  if(!cards.length)continue;
   const selected=lastSelectedCard&&grid.contains(lastSelectedCard)?lastSelectedCard:null;
   if(!selected)continue;
-  const top=selected.offsetTop;
-  const row=cards.filter(c=>Math.abs(c.offsetTop-top)<12);
-  const anchor=row[row.length-1]||selected;
+  const isHome=selected.closest('.home-six-item');
+  const cards=[...grid.children].filter(el=>isHome?el.classList.contains('home-six-item'):el.classList.contains('sermon-album-card'));
+  if(!cards.length)continue;
+  const target=isHome||selected;
+  const top=target.getBoundingClientRect().top;
+  const row=cards.filter(c=>Math.abs(c.getBoundingClientRect().top-top)<14);
+  const anchor=row[row.length-1]||target;
   if(detail.previousElementSibling!==anchor){
    placing=true;anchor.after(detail);placing=false;
   }
