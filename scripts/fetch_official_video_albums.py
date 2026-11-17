@@ -102,7 +102,11 @@ def recent_channel_services():
  if not items:raise RuntimeError('Official channel lookup failed; keeping saved albums')
  return items
 
-channel_items=recent_channel_services()
+try:
+ channel_items=recent_channel_services()
+except Exception as e:
+ print('Official YouTube listings unavailable; preserving previously verified videos:',str(e)[:160])
+ channel_items=[]
 # Check supplied official video IDs and retain only verified public recordings.
 requested_ids=['QZdovHKGBJg','t05giZZ771Y','0x7q_DNe9kc','6b51hMNNaxU']
 known_ids={v['id'] for v in channel_items}
@@ -186,9 +190,13 @@ previous['sermon-8']=sorted(merged.values(),key=lambda v:dawn_date(v.get('title'
 # Preserve YouTube's newest-first channel order for videos with no date in
 # their titles; date-only sorting incorrectly buries recently uploaded services.
 recent_rank={v['id']:i for i,v in enumerate(channel_items)}
+def service_date(v):
+ if v.get('id')=='QZdovHKGBJg':
+  return datetime.date(2026,11,15) # known service date; source title is malformed
+ return dawn_date(v.get('title','')) or datetime.date.min
 for key in ['sermon-1','david-worship','friday-evening']:
  previous[key]=sorted(previous.get(key,[]),
-  key=lambda v:(v.get('id') in recent_rank,-recent_rank.get(v.get('id'),10**6),dawn_date(v.get('title','')) or datetime.date.min),
+  key=lambda v:(v.get('id') in recent_rank,-recent_rank.get(v.get('id'),10**6),service_date(v)),
   reverse=True)
 out.write_text(json.dumps(previous,ensure_ascii=False,indent=2)+'\n')
 print({k:len(v) for k,v in previous.items()})
@@ -198,8 +206,8 @@ from sync_video_albums import synchronize
 posts=[]
 for category in ['sermon-1','sermon-8','friday-evening']:
  for video in previous.get(category,[]):
-  date=dawn_date(video.get('title',''))
-  if not date:continue
+  date=service_date(video)
+  if date==datetime.date.min:continue
   posts.append({'section_key':'sermon-7' if category=='friday-evening' else category,
    'youtube_id':video['id'],'title':video['title'],'published_at':date.isoformat()+'T00:00:00Z'})
 source=Path('index.html')
