@@ -3,6 +3,7 @@ const PAGES=[
 'https://files.mallary.ai/uploads/900/chatgpt_1793444947230_bf066151de14f8d1.png',
 'https://files.mallary.ai/uploads/900/chatgpt_1793444952790_16e3c7d345f4ffde.png',
 'https://files.mallary.ai/uploads/900/chatgpt_1793444957877_10bec27b7e245292.png'];
+let bulletinDate='2026-11-01';
 const LABEL='이번주 교회주보';
 function findHeads(){return [...document.querySelectorAll('h1,h2,h3,h4,h5')].filter(e=>/이번\s*주\s*교회\s*주보|교회\s*주보\s*미리보기/.test(e.textContent.trim())&&e.textContent.length<80)}
 function make(tag,css,text){const e=document.createElement(tag);if(css)e.style.cssText=css;if(text)e.textContent=text;return e}
@@ -19,12 +20,12 @@ function display(){
    viewer.id='hb-canonical-bulletin-viewer';box.style.setProperty('max-width','none','important');
    const link=make('a','display:block;width:100%');link.target='_blank';link.rel='noopener noreferrer';
    const image=make('img','display:block;width:100%;height:auto;max-height:1100px;object-fit:contain;border-radius:9px;border:1px solid #d9e5ed');
-   image.alt='2026년 11월 1일 교회 주보 1쪽';link.append(image);viewer.append(link);
+   image.alt=bulletinDate+' 교회주보 1쪽';link.append(image);viewer.append(link);
    const controls=make('div','display:flex;justify-content:center;align-items:center;gap:14px;margin:14px 0');
    const prev=make('button','padding:9px 17px;border:1px solid #cadce8;border-radius:8px;background:white;color:#244b61;font-weight:700;cursor:pointer','‹ 이전');
    const count=make('span','font-weight:700;color:#35586f','1 / 3쪽');
    const next=make('button','padding:9px 17px;border:1px solid #cadce8;border-radius:8px;background:white;color:#244b61;font-weight:700;cursor:pointer','다음 ›');
-   let index=0;function show(n){index=(n+PAGES.length)%PAGES.length;link.href=PAGES[index];image.src=PAGES[index];image.alt='2026년 11월 1일 교회 주보 '+(index+1)+'쪽';count.textContent=(index+1)+' / '+PAGES.length+'쪽'}
+   let index=0;function show(n){index=(n+PAGES.length)%PAGES.length;link.href=PAGES[index];image.src=PAGES[index];image.alt=bulletinDate+' 교회주보 '+(index+1)+'쪽';count.textContent=(index+1)+' / '+PAGES.length+'쪽'}viewer.hbShow=show;
    prev.onclick=()=>show(index-1);next.onclick=()=>show(index+1);
    controls.append(prev,count,next);viewer.append(controls);
    const note=make('p','text-align:center;font-size:12px;color:#839ab0;margin:7px 0 0','주보를 한 페이지씩 넘기고, 이미지를 누르면 확대해서 볼 수 있습니다.');
@@ -105,7 +106,37 @@ function display(){
   for(const el of box.querySelectorAll('p,small,span'))if(!viewer.contains(el)&&el.children.length===0&&/주보를 한 페이지씩 넘기고/.test(el.textContent||''))el.style.setProperty('display','none','important');
  }
 }
+/* Uploaded images are published in Supabase, not in the dated fallback below.
+   Read the same public source as the administrator list and refresh the home viewer. */
+const UPLOADED_BULLETINS='https://veghdecosrimscedkrdo.supabase.co/functions/v1/habach-bulletin-upload';
+let publishedSignature='';
+async function refreshPublishedBulletin(){
+ try{
+  const r=await fetch(UPLOADED_BULLETINS,{cache:'no-store'});
+  if(!r.ok)throw Error('bulletin API '+r.status);
+  const data=await r.json();
+  const posts=(Array.isArray(data.bulletins)?data.bulletins:[])
+   .filter(p=>/^20\\d{2}-\\d{2}-\\d{2}$/.test(p?.bulletin_date||'')&&Array.isArray(p.image_urls)&&p.image_urls.length)
+   .sort((a,b)=>String(b.bulletin_date).localeCompare(String(a.bulletin_date)));
+  if(!posts.length)return;
+  const latest=posts[0];
+  const urls=latest.image_urls.filter(u=>typeof u==='string'&&/^https:\\/\\//.test(u)).slice(0,8);
+  if(!urls.length)return;
+  const signature=latest.bulletin_date+'|'+urls.join('|');
+  if(signature===publishedSignature)return;
+  publishedSignature=signature;
+  bulletinDate=latest.bulletin_date;
+  PAGES.splice(0,PAGES.length,...urls);
+  for(const viewer of document.querySelectorAll('#hb-canonical-bulletin-viewer')){
+   if(typeof viewer.hbShow==='function')viewer.hbShow(0);
+  }
+  schedule();
+ }catch(e){console.warn('최신 주보 조회 실패:',e.message||e)}
+}
 let pending=false;function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;display()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
 addEventListener('hashchange',schedule);new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+refreshPublishedBulletin();
+addEventListener('visibilitychange',()=>{if(!document.hidden)refreshPublishedBulletin()});
+setInterval(refreshPublishedBulletin,60000);
 })();
