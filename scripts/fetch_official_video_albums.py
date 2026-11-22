@@ -142,12 +142,22 @@ def recent_special_services():
  found['david-worship']=list(found['sermon-1'])
  return found
 
+# Never let the same video ID represent both Sunday worship and Friday vigil.
+# A channel listing can occasionally reuse an ID with inconsistent metadata;
+# preserve the video in its independently identified service category only.
+def category_matches(category, title):
+ if category == 'friday-evening':
+  return bool(re.search(r'금요|철야|치유기도회|Friday (?:Service|Worship|Prayer)', title, re.I)) and not bool(re.search(r'새벽|다윗의\\s*예배|주일\\s*(?:예배|설교)', title, re.I))
+ if category in ('sermon-1', 'david-worship'):
+  return bool(re.search(r'다윗의\\s*예배|시편의\\s*예배|주일\\s*(?:예배|설교)', title)) and not bool(re.search(r'금요|철야|새벽', title))
+ return True
+
 special_services=recent_special_services()
 for category,items in special_services.items():
  if items:
   old=previous.get(category,[])
   seen={x['id'] for x in items}
-  previous[category]=items+[x for x in old if isinstance(x,dict) and x.get('id') not in seen]
+  previous[category]=items+[x for x in old if isinstance(x,dict) and x.get('id') not in seen and category_matches(category,x.get('title',''))]
 
 channel_dawn=recent_channel_dawn()
 for key,playlist in lists.items():
@@ -195,7 +205,7 @@ def service_date(v):
   return datetime.date(2026,11,15) # known service date; source title is malformed
  return dawn_date(v.get('title','')) or datetime.date.min
 for key in ['sermon-1','david-worship','friday-evening']:
- previous[key]=sorted(previous.get(key,[]),
+ previous[key]=sorted([v for v in previous.get(key,[]) if category_matches(key,v.get('title',''))],
   key=lambda v:(v.get('id') in recent_rank,-recent_rank.get(v.get('id'),10**6),service_date(v)),
   reverse=True)
 out.write_text(json.dumps(previous,ensure_ascii=False,indent=2)+'\n')
