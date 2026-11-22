@@ -208,6 +208,11 @@ for key in ['sermon-1','david-worship','friday-evening']:
  previous[key]=sorted([v for v in previous.get(key,[]) if category_matches(key,v.get('title',''))],
   key=lambda v:(v.get('id') in recent_rank,-recent_rank.get(v.get('id'),10**6),service_date(v)),
   reverse=True)
+# Do not cross-list a single recording as both Sunday worship and Friday vigil.
+# Retain the Sunday listing when the same ID has conflicting saved titles;
+# the Friday archive still retains its other distinct recordings.
+sunday_ids={v['id'] for v in previous.get('sermon-1',[]) if v.get('id')}
+previous['friday-evening']=[v for v in previous.get('friday-evening',[]) if v.get('id') not in sunday_ids]
 out.write_text(json.dumps(previous,ensure_ascii=False,indent=2)+'\n')
 print({k:len(v) for k,v in previous.items()})
 
