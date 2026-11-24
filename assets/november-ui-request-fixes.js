@@ -193,7 +193,7 @@ const style=document.createElement('style');style.id='hb-community-fixes-v3';sty
 function hbHomeBlogPreview(){
  const root=document.getElementById('app');if(!root||document.getElementById('hb-home-naver-blog'))return;
  const section=document.createElement('section');section.id='hb-home-naver-blog';
- section.style.cssText='max-width:1160px;margin:32px auto;padding:24px 18px;background:#f6f9fb;border-radius:18px';
+ section.style.cssText='max-width:1160px;margin:32px auto;padding:24px 18px;background:transparent;border-radius:0';
  section.innerHTML='<div class="hb-blog-heading" style="text-align:center;margin-bottom:22px"><h2 style="margin:0;color:#314e66;font-size:24px;font-weight:800;line-height:1.3">하늘바람교회 블로그 최신글</h2><p style="margin:12px 0 0;color:#8295a4;font-size:15px;line-height:1.6">하늘바람교회의 새로운 소식을 만나보세요.</p><a class="hb-blog-more" href="https://blog.naver.com/habachurch" target="_blank" rel="noopener noreferrer" style="display:block;width:max-content;margin:12px 0 0 auto;color:#8ba0ae;font-size:13px;font-weight:500;text-decoration:none;text-align:right">더보기 ↗</a></div><div class="hb-blog-cards" style="display:grid;grid-template-columns:minmax(0,1fr);gap:14px;max-width:600px;margin:0 auto"><p style="text-align:center">최신 블로그 글을 불러오는 중입니다.</p></div>';
  const videoHeading=[...root.querySelectorAll('h1,h2,h3')].find(el=>(el.textContent||'').trim()==='하늘바람교회 영상');
  if(videoHeading){const videoSection=videoHeading.closest('.home-video-six');if(videoSection)videoSection.classList.add('hb-home-video-aligned');}
