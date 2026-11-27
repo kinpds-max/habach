@@ -19,15 +19,15 @@ function display(){
   let viewer=box.querySelector('#hb-canonical-bulletin-viewer');
   if(!viewer){
    viewer=make('section','display:block!important;width:100%;max-width:none;margin:18px auto 8px');
-   viewer.id='hb-canonical-bulletin-viewer';box.style.setProperty('max-width','none','important');
-   const link=make('a','display:block;width:100%');link.target='_blank';link.rel='noopener noreferrer';
-   const image=make('img','display:block;width:100%;aspect-ratio:1448/1024;height:auto;max-height:1100px;object-fit:contain;border-radius:9px;border:1px solid #d9e5ed');
+   viewer.id='hb-canonical-bulletin-viewer';viewer.style.setProperty('overflow-anchor','none');box.style.setProperty('max-width','none','important');
+   const link=make('a','display:block;width:100%;aspect-ratio:1448/1024;overflow:hidden');link.target='_blank';link.rel='noopener noreferrer';
+   const image=make('img','display:block;width:100%;aspect-ratio:1448/1024;height:100%;max-height:none;object-fit:contain;border-radius:9px;border:1px solid #d9e5ed');
    image.alt=bulletinDate+' 교회주보 1쪽';link.append(image);viewer.append(link);
    const controls=make('div','display:flex;justify-content:center;align-items:center;gap:14px;margin:14px 0');
    const prev=make('button','padding:9px 17px;border:1px solid #cadce8;border-radius:8px;background:white;color:#244b61;font-weight:700;cursor:pointer','‹ 이전');
    const count=make('span','font-weight:700;color:#35586f','1 / 3쪽');
    const next=make('button','padding:9px 17px;border:1px solid #cadce8;border-radius:8px;background:white;color:#244b61;font-weight:700;cursor:pointer','다음 ›');
-   let index=0;function show(n){index=(n+PAGES.length)%PAGES.length;link.href=PAGES[index];image.src=PAGES[index];image.alt=bulletinDate+' 교회주보 '+(index+1)+'쪽';count.textContent=(index+1)+' / '+PAGES.length+'쪽'}viewer.hbShow=show;
+   let index=0;viewer.hbCurrent=()=>index;function show(n){index=(n+PAGES.length)%PAGES.length;link.href=PAGES[index];image.src=PAGES[index];image.alt=bulletinDate+' 교회주보 '+(index+1)+'쪽';count.textContent=(index+1)+' / '+PAGES.length+'쪽'}viewer.hbShow=show;
    prev.onclick=()=>show(index-1);next.onclick=()=>show(index+1);
    controls.append(prev,count,next);viewer.append(controls);
    const note=make('p','text-align:center;font-size:12px;color:#839ab0;margin:7px 0 0','주보를 한 페이지씩 넘기고, 이미지를 누르면 확대해서 볼 수 있습니다.');
@@ -131,7 +131,7 @@ async function refreshPublishedBulletin(){
   bulletinDate=latest.bulletin_date;
   PAGES.splice(0,PAGES.length,...urls);
   for(const viewer of document.querySelectorAll('#hb-canonical-bulletin-viewer')){
-   if(typeof viewer.hbShow==='function')viewer.hbShow(0);
+   if(typeof viewer.hbShow==='function')viewer.hbShow(viewer.hbCurrent?viewer.hbCurrent():0);
   }
   schedule();
  }catch(e){console.warn('최신 주보 조회 실패:',e.message||e)}
