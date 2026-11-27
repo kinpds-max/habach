@@ -7,19 +7,21 @@ let bulletinDate='2026-11-01';
 const LABEL='이번주 교회주보';
 function findHeads(){return [...document.querySelectorAll('h1,h2,h3,h4,h5')].filter(e=>/이번\s*주\s*교회\s*주보|교회\s*주보\s*미리보기/.test(e.textContent.trim())&&e.textContent.length<80)}
 function make(tag,css,text){const e=document.createElement(tag);if(css)e.style.cssText=css;if(text)e.textContent=text;return e}
+const initializedHeads=new WeakSet();
 function display(){
  if(location.hash && !/^#\/?(?:index|home)?$/.test(location.hash))return;
  const heads=findHeads();if(!heads.length)return;
  for(const h of heads){
   const box=h.closest('section,article,[class*="bulletin"]')||h.parentElement?.parentElement;
   if(!box||box===document.body)continue;
+  if(initializedHeads.has(h)&&box.querySelector('#hb-canonical-bulletin-viewer')&&box.querySelector('#hb-bulletin-actions'))continue;
   // Build one reliable image viewer, rather than mutate several independently rendered galleries.
   let viewer=box.querySelector('#hb-canonical-bulletin-viewer');
   if(!viewer){
    viewer=make('section','display:block!important;width:100%;max-width:none;margin:18px auto 8px');
    viewer.id='hb-canonical-bulletin-viewer';box.style.setProperty('max-width','none','important');
    const link=make('a','display:block;width:100%');link.target='_blank';link.rel='noopener noreferrer';
-   const image=make('img','display:block;width:100%;height:auto;max-height:1100px;object-fit:contain;border-radius:9px;border:1px solid #d9e5ed');
+   const image=make('img','display:block;width:100%;aspect-ratio:1448/1024;height:auto;max-height:1100px;object-fit:contain;border-radius:9px;border:1px solid #d9e5ed');
    image.alt=bulletinDate+' 교회주보 1쪽';link.append(image);viewer.append(link);
    const controls=make('div','display:flex;justify-content:center;align-items:center;gap:14px;margin:14px 0');
    const prev=make('button','padding:9px 17px;border:1px solid #cadce8;border-radius:8px;background:white;color:#244b61;font-weight:700;cursor:pointer','‹ 이전');
@@ -34,7 +36,7 @@ function display(){
   let headRow=box.querySelector('#hb-bulletin-heading-row');
   if(!headRow){headRow=make('div','');headRow.id='hb-bulletin-heading-row';h.parentNode.insertBefore(headRow,h);headRow.append(h)}
   headRow.style.cssText='display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;gap:6px!important;width:100%!important;max-width:100%!important;margin:0 0 12px!important';
-  h.textContent=LABEL;
+  if(h.textContent!==LABEL)h.textContent=LABEL;
   h.setAttribute('aria-label',LABEL);
 
   h.style.cssText='margin:0!important;padding:0!important;flex:1 1 auto!important;min-width:0!important;font-size:clamp(15px,2.6vw,25px)!important;white-space:nowrap!important';
@@ -65,7 +67,7 @@ function display(){
   actions.style.setProperty('display','flex','important');
   actions.style.setProperty('flex-direction','row','important');
   actions.style.setProperty('flex-wrap','nowrap','important');
-  for(const a of actions.querySelectorAll('a'))if(a.href.includes('bulletin.html'))a.textContent='이번주 교회주보 업로드';
+  for(const a of actions.querySelectorAll('a'))if(a.href.includes('bulletin.html')&&a.textContent!=='이번주 교회주보 업로드')a.textContent='이번주 교회주보 업로드';
   // Hide duplicated standalone upload pills, without hiding the two heading actions.
   for(const el of box.querySelectorAll('a,button')){
     if(actions.contains(el)||viewer.contains(el))continue;
@@ -104,6 +106,7 @@ function display(){
     }
   }
   for(const el of box.querySelectorAll('p,small,span'))if(!viewer.contains(el)&&el.children.length===0&&/주보를 한 페이지씩 넘기고/.test(el.textContent||''))el.style.setProperty('display','none','important');
+  initializedHeads.add(h);
  }
 }
 /* Uploaded images are published in Supabase, not in the dated fallback below.
