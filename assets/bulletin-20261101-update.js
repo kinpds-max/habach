@@ -67,7 +67,7 @@ function display(){
   actions.style.setProperty('display','flex','important');
   actions.style.setProperty('flex-direction','row','important');
   actions.style.setProperty('flex-wrap','nowrap','important');
-  for(const a of actions.querySelectorAll('a'))if(a.href.includes('bulletin.html')&&a.textContent!=='이번주 교회주보 업로드')a.textContent='이번주 교회주보 업로드';
+  for(const a of actions.querySelectorAll('a'))if(a.href.includes('bulletin.html')){a.setAttribute('aria-label','이번주 교회주보 업로드');a.title='이번주 교회주보 업로드';if(!a.querySelector('svg'))a.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/></svg>';a.style.setProperty('width','40px','important');a.style.setProperty('height','40px','important');}
   // Hide duplicated standalone upload pills, without hiding the two heading actions.
   for(const el of box.querySelectorAll('a,button')){
     if(actions.contains(el)||viewer.contains(el))continue;
