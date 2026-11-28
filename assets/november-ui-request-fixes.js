@@ -296,14 +296,27 @@ function hbTopVisionBanner(){
  if(!blog||document.getElementById('hb-vision-top-banner'))return;
  const section=document.createElement('section');
  section.id='hb-vision-top-banner';
- section.style.cssText='box-sizing:border-box;width:100%;max-width:1180px;padding:0 16px;margin:26px auto 0';
+ section.style.cssText='display:none;box-sizing:border-box;width:100%;max-width:1180px;padding:0 16px;margin:22px auto 6px';
  const img=document.createElement('img');
- img.src='/assets/vision-2027-faith-life.webp';img.alt='2027 VISION 다시, 신앙생활!';
- img.loading='lazy';
+ img.src='https://veghdecosrimscedkrdo.supabase.co/storage/v1/object/public/habach-bulletins/admin/site-home-video-banner';
+ img.alt='하늘바람교회 메인 영상 아래 비전 배너';img.loading='lazy';
  img.style.cssText='display:block;width:100%;height:auto;object-fit:contain;border-radius:6px';
- img.onerror=()=>section.remove();
+ img.onload=()=>{section.style.display='block'};
+ img.onerror=()=>{section.remove()};
  section.append(img);blog.before(section);
 }
+function hbHeroBannerUploadButton(){
+ const hero=document.getElementById('hero')||document.querySelector('.mainhero')||document.querySelector('section.hero');
+ if(!hero||document.getElementById('hb-hero-banner-upload'))return;
+ hero.style.position='relative';
+ const a=document.createElement('a');a.id='hb-hero-banner-upload';
+ a.href='/admin/vision-banner.html?position=home';
+ a.title='메인 영상 아래 배너 업로드';a.setAttribute('aria-label','메인 영상 아래 배너 업로드');
+ a.style.cssText='position:absolute;bottom:20px;right:20px;z-index:50;display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border:1px solid #cee0ec;border-radius:12px;background:rgba(255,255,255,.94);color:#215476;box-shadow:0 3px 13px rgba(0,0,0,.12);text-decoration:none;pointer-events:auto';
+ a.innerHTML='<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/></svg>';
+ hero.append(a);
+}
+
 function hbVideoBoardButton(){
  const h=[...document.querySelectorAll('#app h1,#app h2,#app h3')].find(e=>e.textContent.trim()==='하늘바람교회 영상');
  if(!h||document.getElementById('hb-video-board-actions'))return;
@@ -328,7 +341,7 @@ function hbVideoBoardButton(){
 }
 
 function apply(){
- const key=path();if(!key||key==='home'){hbHomeBlogPreview();hbHomeCafePreview();hbRefreshHomeVideos();hbVideoBoardButton();hbVisionBanner();hbTopVisionBanner();}
+ const key=path();if(!key||key==='home'){hbHomeBlogPreview();hbHomeCafePreview();hbRefreshHomeVideos();hbVideoBoardButton();hbVisionBanner();hbTopVisionBanner();hbHeroBannerUploadButton();}
  const article=document.querySelector('#app .page-grid article.article');
  if(!article)return;
  if(['news-1','news-2','news-6'].includes(key))article.classList.add('hb-community-clean');
