@@ -132,7 +132,11 @@
     background:var(--cream);
     color:var(--text);
   }
-  .field textarea{resize:vertical;min-height:60px;}
+  .field textarea{resize:none;min-height:60px;overflow-y:hidden;display:block;box-sizing:border-box;}
+  /* Keep the report table and column borders fixed; only text areas grow downward. */
+  table{table-layout:fixed;}
+  th,td{box-sizing:border-box;overflow-wrap:anywhere;}
+  textarea{resize:none!important;overflow-y:hidden;max-width:100%;}
   table{
     width:100%;
     border-collapse:collapse;
@@ -1152,5 +1156,17 @@ function focusCell(cell, e){
 }
 </script>
 
+<script>
+/* Grow text fields only downward, without draggable borders or horizontal resizing. */
+(function(){
+  function fit(el){if(!el||el.tagName!=='TEXTAREA')return;el.style.height='auto';el.style.height=Math.max(el.scrollHeight,60)+'px';}
+  function fitAll(){document.querySelectorAll('textarea').forEach(fit)}
+  document.addEventListener('input',e=>{if(e.target?.matches('textarea'))fit(e.target)});
+  document.addEventListener('change',e=>{if(e.target?.matches('textarea'))fit(e.target)});
+  document.addEventListener('DOMContentLoaded',fitAll);
+  window.addEventListener('load',fitAll);
+  new MutationObserver(()=>{document.querySelectorAll('textarea').forEach(el=>{if(el.scrollHeight>el.clientHeight+2)fit(el)})}).observe(document.documentElement,{subtree:true,childList:true});
+})();
+</script>
 </body>
 </html>
