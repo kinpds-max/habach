@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://habach.kr/</loc></url>
-<url><loc>https://habach.kr/videos/</loc><lastmod>2026-11-01</lastmod><changefreq>daily</changefreq></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url><loc>https://habach.kr/</loc><image:image><image:loc>https://habach.kr/images/bulletin-20261025-preview.webp</image:loc><image:title>하늘바람교회 교회주보</image:title></image:image></url>
+<url><loc>https://habach.kr/videos/</loc><changefreq>daily</changefreq><video:video><video:thumbnail_loc>https://i.ytimg.com/vi/9PezEcQ8lqE/hqdefault.jpg</video:thumbnail_loc><video:title>하늘바람교회 새벽예배 2026년 11월 25일</video:title><video:description>김포 하늘바람교회 공식 새벽예배 영상</video:description><video:player_loc>https://www.youtube.com/embed/9PezEcQ8lqE</video:player_loc></video:video></url>
 <url><loc>https://habach.kr/pages/missionbridge.html</loc></url>
 <url><loc>https://habach.kr/pages/about.html</loc></url>
 <url><loc>https://habach.kr/pages/worship.html</loc></url>
