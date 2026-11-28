@@ -2,7 +2,19 @@
 const admin='/admin/bulletin.html';
 function isHome(){return !location.hash||/^#\/?(?:home)?$/.test(location.hash)}
 function isBulletin(){return /news-|bulletin|주보/.test(location.hash)&&[...document.querySelectorAll('h1,h2,h3,h4')].some(h=>/주보/.test(h.textContent||''))}
+function hideHomeBulletinBoardButton(){
+ // Only hide the redundant navigation CTA beside the home bulletin preview.
+ const headings=[...document.querySelectorAll('h1,h2,h3,h4,h5')].filter(h=>/이번\\s*주\\s*교회\\s*주보/.test((h.textContent||'').replace(/\\s+/g,'')));
+ for(const heading of headings){
+  const card=heading.closest('section,.card,.panel,.hb-home-bulletin,.hb-bulletin-card')||heading.parentElement?.parentElement;
+  if(!card)continue;
+  for(const el of card.querySelectorAll('a,button,[role="button"]')){
+   if((el.textContent||'').replace(/\\s+/g,'').trim()==='주보게시판')el.style.setProperty('display','none','important');
+  }
+ }
+}
 function add(){
+ hideHomeBulletinBoardButton();
  // Upload control is owned by the bulletin board heading, not the old preview.
  document.querySelectorAll('[data-hb-bulletin-upload]').forEach(el=>el.remove());
  if(!/^#\/?news-2(?:$|[?&])/.test(location.hash))return;
