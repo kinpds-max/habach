@@ -147,9 +147,9 @@ def recent_special_services():
 # preserve the video in its independently identified service category only.
 def category_matches(category, title):
  if category == 'friday-evening':
-  return bool(re.search(r'금요|철야|치유기도회|Friday (?:Service|Worship|Prayer)', title, re.I)) and not bool(re.search(r'새벽|다윗의\\s*예배|주일\\s*(?:예배|설교)', title, re.I))
+  return bool(re.search(r'금요|철야|치유기도회|Friday (?:Service|Worship|Prayer)', title, re.I)) and not bool(re.search(r'새벽|다윗의\s*예배|주일\s*(?:예배|설교)', title, re.I))
  if category in ('sermon-1', 'david-worship'):
-  return bool(re.search(r'다윗의\\s*예배|시편의\\s*예배|주일\\s*(?:예배|설교)', title)) and not bool(re.search(r'금요|철야|새벽', title))
+  return bool(re.search(r'다윗의\s*예배|시편의\s*예배|주일\s*(?:예배|설교)', title)) and not bool(re.search(r'금요|철야|새벽', title))
  return True
 
 special_services=recent_special_services()
