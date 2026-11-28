@@ -232,7 +232,7 @@ function hbHomeCafePreview(){
  const section=document.createElement('section');section.id='hb-home-cafe-preview';
  section.style.cssText='box-sizing:border-box;width:100%;max-width:1160px;margin:0 auto 36px;padding:16px 18px 24px;text-align:center';
  const h=document.createElement('h2');h.textContent='하늘바람교회 카페 포토갤러리';h.style.cssText='margin:0 0 10px;color:#314e66;font-size:24px;font-weight:800;line-height:1.3;letter-spacing:-.025em';
- const p=document.createElement('p');p.textContent='교회 사진과 현장 소식을 네이버 카페에서 만나보세요.';p.style.cssText='margin:0 0 20px;color:#8295a4;font-size:15px';
+ const p=document.createElement('p');p.textContent='교회 사진과 현장 소식을 네이버 카페에서 만나보세요.';p.style.cssText='margin:12px 0 0;color:#8295a4;font-size:15px;line-height:1.6;text-align:center';
  const preview=document.createElement('a');preview.href=url;preview.target='_blank';preview.rel='noopener noreferrer';preview.setAttribute('aria-label','하늘바람교회 카페 포토갤러리 열기');
  preview.style.cssText='box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;max-width:600px;margin:0 auto;padding:30px 24px;min-height:180px;background:#f7fbfd;border:1px solid #dce7ee;border-radius:14px;text-decoration:none;color:#245477';
  // A responsive preview matching the supplied cafe join screen, without blocked iframe content.
@@ -242,7 +242,7 @@ function hbHomeCafePreview(){
  const mission=document.createElement('span');mission.textContent='12 교회를 세우고, 300명의 선교사를 파송하고, 5000명을 먹이는 하나님이 일하시는 교회, 하늘바람 교회';mission.style.cssText='font-size:14px;color:#989898;line-height:1.7;max-width:430px;margin:8px auto 14px';
  const cta=document.createElement('span');cta.textContent='10초 만에 가입하기';cta.style.cssText='box-sizing:border-box;display:block;width:100%;padding:15px 12px;border-radius:12px;background:#00b35a;color:#fff;font-weight:800;font-size:19px';
  preview.append(hint,count,mission,cta);
- if(!document.getElementById('hb-cafe-heading-size-match')){const css=document.createElement('style');css.id='hb-cafe-heading-size-match';css.textContent='#app #hb-home-cafe-preview h2{font-size:24px!important;font-weight:800!important;line-height:1.3!important;letter-spacing:-.025em!important;color:#314e66!important;margin:0!important}';document.head.append(css)}
+ if(!document.getElementById('hb-cafe-heading-size-match')){const css=document.createElement('style');css.id='hb-cafe-heading-size-match';css.textContent='#app #hb-home-cafe-preview h2,#app #hb-home-naver-blog .hb-blog-heading h2,#app .hb-home-video-aligned .home-video-six-header h2{font-size:24px!important;font-weight:800!important;line-height:1.3!important;letter-spacing:-.025em!important;color:#314e66!important;margin:0!important;text-align:center!important}#app #hb-home-cafe-preview>p,#app #hb-home-naver-blog .hb-blog-heading p,#app .hb-home-video-aligned .home-video-six-header p{font-size:15px!important;font-weight:400!important;line-height:1.6!important;color:#8295a4!important;margin:12px 0 0!important;text-align:center!important}#app #hb-home-cafe-preview{padding-top:24px!important}#app #hb-home-cafe-preview>a{margin-top:22px!important}#app #hb-home-naver-blog .hb-blog-heading{margin-bottom:22px!important}';document.head.append(css)}
  section.append(h,p,preview);blog.insertAdjacentElement('afterend',section);
 }
 
