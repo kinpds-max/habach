@@ -298,7 +298,7 @@ function hbTopVisionBanner(){
  section.id='hb-vision-top-banner';
  section.style.cssText='display:none;box-sizing:border-box;width:100%;max-width:1180px;padding:0 16px;margin:22px auto 6px';
  const img=document.createElement('img');
- img.src='https://veghdecosrimscedkrdo.supabase.co/storage/v1/object/public/habach-bulletins/admin/site-home-video-banner';
+ img.src='https://veghdecosrimscedkrdo.supabase.co/storage/v1/object/public/habach-bulletins/admin/site-home-video-banner?v='+Date.now();
  img.alt='하늘바람교회 메인 영상 아래 비전 배너';img.loading='lazy';
  img.style.cssText='display:block;width:100%;height:auto;object-fit:contain;border-radius:6px';
  img.onload=()=>{section.style.display='block'};
