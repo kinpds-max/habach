@@ -334,6 +334,10 @@ function apply(){
     let upload=row.querySelector('a[href="/admin/bulletin.html"]');
     if(!upload){upload=document.createElement('a');upload.href='/admin/bulletin.html';upload.textContent='업로드';row.append(upload)}
   }
+  // Remove navigation buttons labeled bulletin board, not the actual board heading.
+  article.querySelectorAll('a,button,[role="button"]').forEach(el=>{
+    if((el.textContent||'').replace(/\\s+/g,'').trim()==='주보게시판')el.style.setProperty('display','none','important');
+  });
   // Replace redundant bulletin-board navigation buttons with an inline expandable list.
   for(const el of article.querySelectorAll('a,button')){
     if((el.textContent||'').replace(/\\s+/g,'').trim()==='주보게시판'){
