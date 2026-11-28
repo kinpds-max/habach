@@ -429,7 +429,26 @@ function apply(){
   }
  }
 }
-let q=false;function run(){if(q)return;q=true;requestAnimationFrame(()=>{q=false;apply()})}
+/* Add Naver BAND immediately below Naver Blog in the SNS dropdown. */
+function hbAddBandToSNS(){
+ const url='https://www.band.us/n/afa8b7sf94f3c';
+ const nodes=[...document.querySelectorAll('a,button,[role="menuitem"]')];
+ for(const el of nodes){
+  const label=(el.textContent||'').replace(/\\s+/g,'').trim();
+  const href=el.getAttribute('href')||'';
+  if(!(label==='네이버블로그'||label==='NaverBlog'||label==='NAVER블로그'||(href.includes('blog.naver.com')&&!el.closest('#hb-home-naver-blog'))))continue;
+  if(el.closest('#hb-home-naver-blog'))continue;
+  const row=el.closest('li')||el;
+  const parent=row.parentElement;if(!parent||parent.querySelector('[data-hb-sns-band="1"]'))continue;
+  const copy=row.cloneNode(true);
+  copy.dataset.hbSnsBand='1';
+  const link=copy.matches('a')?copy:copy.querySelector('a');
+  if(link){link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='네이버 밴드';link.setAttribute('aria-label','하늘바람교회 네이버 밴드 열기')}
+  else {copy.textContent='네이버 밴드';copy.setAttribute('role','link');copy.tabIndex=0;copy.addEventListener('click',()=>window.open(url,'_blank','noopener'));copy.addEventListener('keydown',e=>{if(e.key==='Enter')window.open(url,'_blank','noopener')})}
+  row.insertAdjacentElement('afterend',copy);
+ }
+}
+let q=false;function run(){if(q)return;q=true;requestAnimationFrame(()=>{q=false;apply();hbAddBandToSNS()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);else run();window.addEventListener('hashchange',run);
 new MutationObserver(run).observe(document.getElementById('app')||document.documentElement,{childList:true,subtree:false});
 })();
