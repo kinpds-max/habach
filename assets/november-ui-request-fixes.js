@@ -245,8 +245,9 @@ function hbRefreshHomeVideos(){
   }
  }).catch(()=>{});
 }
+function hbVideoBoardButton(){const h=[...document.querySelectorAll('#app h1,#app h2,#app h3')].find(e=>e.textContent.trim()==='하늘바람교회 영상');if(!h||document.getElementById('hb-video-board-actions'))return;const row=document.createElement('div');row.id='hb-video-board-actions';row.style.cssText='display:flex;justify-content:flex-end;margin:8px 0 12px;gap:8px';const a=document.createElement('a');a.href='/videos/';a.textContent='영상게시판';a.style.cssText='display:inline-flex;align-items:center;border:1px solid #cee0ec;border-radius:8px;padding:8px 12px;color:#215476;background:white;font-size:12px;text-decoration:none';row.append(a);const next=h.nextElementSibling; (next&&next.tagName==='P'?next:h).insertAdjacentElement('afterend',row);}
 function apply(){
- const key=path();if(!key||key==='home'){hbHomeBlogPreview();hbRefreshHomeVideos();}
+ const key=path();if(!key||key==='home'){hbHomeBlogPreview();hbRefreshHomeVideos();hbVideoBoardButton();}
  const article=document.querySelector('#app .page-grid article.article');
  if(!article)return;
  if(['news-1','news-2','news-6'].includes(key))article.classList.add('hb-community-clean');
