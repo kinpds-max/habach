@@ -280,7 +280,7 @@ function hbVisionBanner(){
  const el=document.createElement('section');el.id='hb-vision-2027';el.className='container';
  el.style.cssText='max-width:1180px;margin:24px auto 0;padding:0 16px;box-sizing:border-box';
  const action=document.createElement('div');action.style.cssText='display:flex;justify-content:flex-end;margin-bottom:10px';
- const upload=document.createElement('a');upload.href='/admin.html#bannerManage';upload.title='비전 현수막 이미지 업로드';upload.setAttribute('aria-label','비전 현수막 업로드');
+ const upload=document.createElement('a');upload.href='/admin/vision-banner.html';upload.title='비전 현수막 이미지 업로드';upload.setAttribute('aria-label','비전 현수막 업로드');
  upload.style.cssText='display:inline-flex;align-items:center;gap:6px;padding:9px;border:1px solid #d4e1e9;border-radius:9px;background:#fff;color:#265477;font-size:13px;font-weight:700;text-decoration:none';
  upload.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/></svg>';
  action.append(upload);
