@@ -227,7 +227,7 @@ function hbHomeBlogPreview(){
     image.style.cssText='display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;margin-bottom:12px;background:#e9f1f6';
     image.onerror=()=>{
      if(!image.dataset.originalTried){image.dataset.originalTried='1';image.referrerPolicy='no-referrer';image.src=imageUrl;return;}
-     image.style.objectFit='contain';image.style.padding='24px';image.style.background='#eaf2f7';image.src='/assets/logo.png';
+     image.style.objectFit='contain';image.style.padding='24px';image.style.background='#eaf2f7';image.src='/images/logo.png';
      image.onerror=()=>{image.style.display='none'};
     };
     a.append(image);
