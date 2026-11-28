@@ -235,10 +235,13 @@ function hbHomeCafePreview(){
  const p=document.createElement('p');p.textContent='교회 사진과 현장 소식을 네이버 카페에서 만나보세요.';p.style.cssText='margin:0 0 20px;color:#8295a4;font-size:15px';
  const preview=document.createElement('a');preview.href=url;preview.target='_blank';preview.rel='noopener noreferrer';preview.setAttribute('aria-label','하늘바람교회 카페 포토갤러리 열기');
  preview.style.cssText='box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;max-width:600px;margin:0 auto;padding:30px 24px;min-height:180px;background:#f7fbfd;border:1px solid #dce7ee;border-radius:14px;text-decoration:none;color:#245477';
- const icon=document.createElement('span');icon.textContent='☕';icon.style.cssText='font-size:36px;line-height:1';
- const title=document.createElement('strong');title.textContent='하늘바람교회 포토갤러리';title.style.cssText='font-size:19px;line-height:1.5';
- const sub=document.createElement('span');sub.textContent='카페 사진 보러 가기 →';sub.style.cssText='font-size:14px;color:#66869b';
- preview.append(icon,title,sub);
+ // A responsive preview matching the supplied cafe join screen, without blocked iframe content.
+ preview.style.cssText='box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;max-width:600px;margin:0 auto;padding:34px 22px 24px;min-height:370px;background:#fff;border:1px solid #e8ecef;border-radius:14px;text-decoration:none;color:#171717';
+ const hint=document.createElement('span');hint.textContent='카페에 가입하면 바로 글을 볼 수 있어요!';hint.style.cssText='font-size:15px;color:#989898;margin:0 0 20px';
+ const count=document.createElement('strong');count.style.cssText='font-size:clamp(22px,5vw,30px);line-height:1.5;letter-spacing:-.04em';count.innerHTML='75명의 멤버와 함께하는<br><span style="color:#009ee7">김포하늘바람교회</span>에<br>가입해 보세요.';
+ const mission=document.createElement('span');mission.textContent='12 교회를 세우고, 300명의 선교사를 파송하고, 5000명을 먹이는 하나님이 일하시는 교회, 하늘바람 교회';mission.style.cssText='font-size:14px;color:#989898;line-height:1.7;max-width:430px;margin:8px auto 14px';
+ const cta=document.createElement('span');cta.textContent='10초 만에 가입하기';cta.style.cssText='box-sizing:border-box;display:block;width:100%;padding:15px 12px;border-radius:12px;background:#00b35a;color:#fff;font-weight:800;font-size:19px';
+ preview.append(hint,count,mission,cta);
  if(!document.getElementById('hb-cafe-heading-size-match')){const css=document.createElement('style');css.id='hb-cafe-heading-size-match';css.textContent='#app #hb-home-cafe-preview h2{font-size:24px!important;font-weight:800!important;line-height:1.3!important;letter-spacing:-.025em!important;color:#314e66!important}@media(max-width:700px){#app #hb-home-cafe-preview h2{font-size:21px!important}}';document.head.append(css)}
  section.append(h,p,preview);blog.insertAdjacentElement('afterend',section);
 }
