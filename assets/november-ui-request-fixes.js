@@ -455,7 +455,57 @@ function hbAddBandToSNS(){
   row.insertAdjacentElement('afterend',copy);
  }
 }
-let q=false;function run(){if(q)return;q=true;requestAnimationFrame(()=>{q=false;apply();hbAddBandToSNS()})}
+/* Unified section headers for blog, cafe gallery and church video. */
+function hbUnifyHomeSectionHeaders(){
+ if(!document.getElementById('hb-unified-section-headings')){
+  const style=document.createElement('style');style.id='hb-unified-section-headings';
+  style.textContent=`
+  #app #hb-home-naver-blog .hb-blog-heading,
+  #app #hb-home-cafe-preview .hb-cafe-heading,
+  #app .hb-home-video-aligned .home-video-six-header{
+    box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+    display:flex!important;flex-direction:column!important;align-items:center!important;
+    justify-content:center!important;gap:8px!important;text-align:center!important;
+    margin:0 auto 22px!important;padding:16px 12px 18px!important;
+    border-bottom:1px solid #dce7ee!important;
+  }
+  #app #hb-home-naver-blog .hb-blog-heading::before,
+  #app #hb-home-cafe-preview .hb-cafe-heading::before,
+  #app .hb-home-video-aligned .home-video-six-header::before{
+    content:'✦';display:grid;place-items:center;width:36px;height:36px;
+    border-radius:10px;background:#eaf2f7;color:#315a77;font-size:22px;line-height:1;
+    margin-bottom:2px;
+  }
+  #app #hb-home-naver-blog .hb-blog-heading h2,
+  #app #hb-home-cafe-preview .hb-cafe-heading h2,
+  #app .hb-home-video-aligned .home-video-six-header h2{
+    margin:0!important;font-size:24px!important;font-weight:800!important;
+    color:#314e66!important;line-height:1.3!important;letter-spacing:-.025em!important;
+  }
+  #app #hb-home-naver-blog .hb-blog-heading p,
+  #app #hb-home-cafe-preview .hb-cafe-heading p,
+  #app .hb-home-video-aligned .home-video-six-header p{
+    margin:0!important;color:#8295a4!important;font-size:15px!important;
+    line-height:1.6!important;font-weight:400!important;
+  }
+  @media(max-width:700px){
+   #app #hb-home-naver-blog .hb-blog-heading,
+   #app #hb-home-cafe-preview .hb-cafe-heading,
+   #app .hb-home-video-aligned .home-video-six-header{padding:12px 8px 16px!important}
+  }`;
+  document.head.append(style);
+ }
+ const cafe=document.getElementById('hb-home-cafe-preview');
+ if(cafe&&!cafe.querySelector('.hb-cafe-heading')){
+  const h=[...cafe.children].find(x=>x.tagName==='H2');
+  const p=h?.nextElementSibling;
+  if(h&&p?.tagName==='P'){
+   const wrapper=document.createElement('div');wrapper.className='hb-cafe-heading';
+   h.before(wrapper);wrapper.append(h,p);
+  }
+ }
+}
+let q=false;function run(){if(q)return;q=true;requestAnimationFrame(()=>{q=false;apply();hbAddBandToSNS();hbUnifyHomeSectionHeaders()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);else run();window.addEventListener('hashchange',run);
 new MutationObserver(run).observe(document.documentElement,{childList:true,subtree:true});
 })();
