@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>하늘바람교회 | 비전 배너 업로드</title>
+<style>
+:root{font-family:"Pretendard","Malgun Gothic",system-ui,sans-serif;color:#29465b}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#f3f7fa;padding:36px 16px}
+main{width:min(100%,620px);margin:0 auto;background:#fff;border:1px solid #dce6ed;border-radius:16px;padding:clamp(22px,5vw,38px);box-shadow:0 12px 34px #264e6410}
+h1{margin:0 0 12px;font-size:25px;line-height:1.3}
+p{color:#6e8596;font-size:14px;line-height:1.6}
+label{display:block;margin:18px 0 8px;font-weight:700}
+input{width:100%;border:1px solid #cad9e2;border-radius:9px;padding:13px 12px;font:inherit}
+button{display:block;width:100%;border:0;border-radius:9px;margin-top:18px;background:#245d7d;color:#fff;padding:14px 16px;font:inherit;font-weight:800;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+a{color:#245d7d;text-decoration:none}
+#editor{display:none}
+#preview{display:none;width:100%;height:auto;max-height:320px;object-fit:contain;margin:18px 0;border-radius:8px}
+#status{min-height:24px;white-space:pre-wrap;font-weight:600}
+nav{margin-top:22px;text-align:center;font-size:14px}
+</style>
+</head>
+<body>
+<main>
+<h1>하늘바람교회 비전 배너 업로드</h1>
+<p>홈페이지 하단의 2027 VISION 현수막을 교체합니다. 기존 주보 관리자와 같은 비밀번호를 사용합니다.</p>
+<div id="login">
+<label for="password">관리자 비밀번호</label>
+<input id="password" type="password" inputmode="numeric" autocomplete="off" placeholder="비밀번호 입력" maxlength="12">
+<button type="button" id="unlock">확인</button>
+<p id="loginError" role="alert"></p>
+</div>
+<div id="editor">
+<label for="file">현수막 이미지 선택</label>
+<input id="file" type="file" accept="image/jpeg,image/png,image/webp">
+<p>JPG · PNG · WEBP, 5MB 이하. 이미지의 원본 비율을 유지해 표시합니다.</p>
+<img id="preview" alt="선택한 배너 이미지 미리보기">
+<button type="button" id="upload">배너 업로드 및 적용</button>
+<p id="status" role="status"></p>
+</div>
+<nav><a href="/">← 홈페이지로 돌아가기</a></nav>
+</main>
+<script>
+(()=>{
+ const $=id=>document.getElementById(id);
+ const endpoint='https://veghdecosrimscedkrdo.supabase.co/functions/v1/habach-bulletin-upload';
+ let pin='';
+ $('unlock').onclick=()=>{
+  const candidate=$('password').value.trim();
+  if(candidate!=='1004'){$('loginError').textContent='비밀번호가 올바르지 않습니다.';return}
+  pin=candidate;$('login').style.display='none';$('editor').style.display='block';
+ };
+ $('password').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlock').click()});
+ $('file').addEventListener('change',()=>{
+  const file=$('file').files?.[0],img=$('preview');
+  if(!file){img.style.display='none';return}
+  img.src=URL.createObjectURL(file);img.style.display='block';
+ });
+ $('upload').onclick=async()=>{
+  const file=$('file').files?.[0],msg=$('status'),button=$('upload');
+  if(!file){msg.textContent='이미지 파일을 선택해 주세요.';return}
+  if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){msg.textContent='5MB 이하 JPG, PNG 또는 WEBP 이미지를 선택해 주세요.';return}
+  const form=new FormData();
+  form.append('pin',pin);form.append('action','visionBanner');form.append('image',file);
+  button.disabled=true;msg.textContent='업로드 중입니다...';
+  try{
+   const response=await fetch(endpoint,{method:'POST',body:form});
+   const body=await response.json();
+   if(!response.ok||!body.success)throw Error(body.error||'저장에 실패했습니다.');
+   msg.textContent='배너 업로드가 완료되었습니다. 홈페이지에서 새로고침하면 표시됩니다.';
+   $('preview').src=body.url;
+  }catch(error){msg.textContent='오류: '+error.message}finally{button.disabled=false}
+ };
+})();
+</script>
+</body>
+</html>
