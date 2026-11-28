@@ -193,10 +193,15 @@ const style=document.createElement('style');style.id='hb-community-fixes-v3';sty
 function hbHomeBlogPreview(){
  const root=document.getElementById('app');if(!root||document.getElementById('hb-home-naver-blog'))return;
  const section=document.createElement('section');section.id='hb-home-naver-blog';
- section.style.cssText='max-width:1160px;margin:32px auto;padding:24px 18px;background:transparent;border-radius:0';
+ section.style.cssText='max-width:1160px;margin:0 auto 12px;padding:8px 18px 12px;background:transparent;border-radius:0';
  section.innerHTML='<div class="hb-blog-heading" style="text-align:center;margin-bottom:22px"><h2 style="margin:0;color:#314e66;font-size:24px;font-weight:800;line-height:1.3">하늘바람교회 블로그 최신글</h2><p style="margin:12px 0 0;color:#8295a4;font-size:15px;line-height:1.6">하늘바람교회의 새로운 소식을 만나보세요.</p></div><div class="hb-blog-cards" style="display:grid;grid-template-columns:minmax(0,1fr);gap:14px;max-width:600px;margin:0 auto"><p style="text-align:center">최신 블로그 글을 불러오는 중입니다.</p></div>';
  const videoHeading=[...root.querySelectorAll('h1,h2,h3')].find(el=>(el.textContent||'').trim()==='하늘바람교회 영상');
  if(videoHeading){const videoSection=videoHeading.closest('.home-video-six');if(videoSection)videoSection.classList.add('hb-home-video-aligned');}
+ if(!document.getElementById('hb-blog-gap-fix-20261128')){
+  const style=document.createElement('style');style.id='hb-blog-gap-fix-20261128';
+  style.textContent='#app #hb-home-naver-blog{margin-top:0!important;margin-bottom:12px!important;padding-top:8px!important;padding-bottom:12px!important}#app #hb-home-naver-blog .hb-blog-heading{margin-bottom:14px!important;padding-top:4px!important;padding-bottom:12px!important}@media(min-width:701px){#app #hb-home-naver-blog .hb-blog-cards>a>img{min-height:210px!important}}';
+  document.head.append(style);
+ }
  if(!document.getElementById('hb-home-blog-layout-20261124')){const css=document.createElement('style');css.id='hb-home-blog-layout-20261124';css.textContent=`
  #app #hb-home-naver-blog,#app .hb-home-video-aligned{width:100%!important;max-width:1160px!important;box-sizing:border-box!important;margin-left:auto!important;margin-right:auto!important}
  #app #hb-home-naver-blog .hb-blog-heading h2,#app .hb-home-video-aligned .home-video-six-header h2{font-size:24px!important;font-weight:800!important;line-height:1.3!important;color:#314e66!important;letter-spacing:-.025em!important;margin:0!important}
@@ -214,8 +219,18 @@ function hbHomeBlogPreview(){
   for(const post of posts.slice(0,1)){
    const a=document.createElement('a');a.href=post.url;a.target='_blank';a.rel='noopener noreferrer';a.style.cssText='display:block;text-decoration:none;color:#203e4d;background:white;border:1px solid #e0e9ee;border-radius:14px;padding:16px';
    if(typeof post.image==='string'&&/^https:\/\//.test(post.image)){
-    const image=document.createElement('img');image.src=post.image;image.loading='lazy';image.referrerPolicy='no-referrer';image.alt=post.title||'블로그 대표 이미지';
-    image.style.cssText='display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;margin-bottom:12px';image.onerror=()=>image.remove();a.append(image);
+    const image=document.createElement('img');
+    const imageUrl=post.image;
+    const proxied='/api/blog-thumbnail?url='+encodeURIComponent(imageUrl);
+    image.src=proxied;image.loading='eager';image.fetchPriority='high';image.decoding='async';
+    image.alt=post.title||'블로그 대표 이미지';
+    image.style.cssText='display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;margin-bottom:12px;background:#e9f1f6';
+    image.onerror=()=>{
+     if(!image.dataset.originalTried){image.dataset.originalTried='1';image.referrerPolicy='no-referrer';image.src=imageUrl;return;}
+     image.style.objectFit='contain';image.style.padding='24px';image.style.background='#eaf2f7';image.src='/assets/logo.png';
+     image.onerror=()=>{image.style.display='none'};
+    };
+    a.append(image);
    }
    const h=document.createElement('h3');const title=post.title||'교회 블로그 글';const parts=title.split(/(전승학\s*목사)/g);for(let i=0;i<parts.length;i++){if(i%2){const name=document.createElement('span');name.style.whiteSpace='nowrap';name.textContent=parts[i];h.append(name)}else h.append(document.createTextNode(parts[i]));}h.style.cssText='font-size:17px;line-height:1.5;margin:0 0 10px;text-align:center';
    const p=document.createElement('p');p.textContent=post.excerpt||'네이버 블로그에서 글 읽기';p.style.cssText='font-size:14px;line-height:1.65;color:#667983;margin:0;text-align:center;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden';
