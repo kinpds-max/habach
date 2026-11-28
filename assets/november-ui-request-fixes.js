@@ -224,6 +224,20 @@ function hbHomeBlogPreview(){
   if(!cards.children.length)throw Error('no posts');
  }).catch(()=>{const cards=section.querySelector('.hb-blog-cards');if(cards)cards.innerHTML='<p style="text-align:center">최신 글을 불러오지 못했습니다. <a href="https://blog.naver.com/habachurch" target="_blank" rel="noopener noreferrer">블로그 더보기 →</a></p>'});
 }
+/* Naver cafe menu 2 preview directly below the home blog card. */
+function hbHomeCafePreview(){
+ const blog=document.getElementById('hb-home-naver-blog');
+ if(!blog||document.getElementById('hb-home-cafe-preview'))return;
+ const url='https://m.cafe.naver.com/ca-fe/web/cafes/31371644/menus/2';
+ const section=document.createElement('section');section.id='hb-home-cafe-preview';
+ section.style.cssText='box-sizing:border-box;width:100%;max-width:1160px;margin:0 auto 36px;padding:16px 18px 24px;text-align:center';
+ const h=document.createElement('h2');h.textContent='하늘바람교회 카페 소식';h.style.cssText='margin:0 0 10px;color:#314e66;font-size:24px;font-weight:800';
+ const p=document.createElement('p');p.textContent='네이버 카페 게시판을 미리 확인해 보세요.';p.style.cssText='margin:0 0 20px;color:#8295a4;font-size:15px';
+ const frame=document.createElement('iframe');frame.src=url;frame.title='하늘바람교회 네이버 카페 게시판 미리보기';frame.loading='lazy';frame.referrerPolicy='no-referrer';frame.style.cssText='display:block;width:100%;height:480px;border:1px solid #dce7ee;border-radius:14px;background:#fff';
+ const note=document.createElement('p');note.textContent='네이버 카페 보안 정책에 따라 미리보기가 표시되지 않을 수 있습니다.';note.style.cssText='margin:12px 0;color:#788b9c;font-size:12px';
+ const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='네이버 카페 게시판 전체 보기';a.style.cssText='display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin-top:6px;padding:0 22px;border:1px solid #b9d0de;border-radius:9px;background:#fff;color:#245477;text-decoration:none;font-weight:700';
+ section.append(h,p,frame,note,a);blog.insertAdjacentElement('afterend',section);
+}
 /* Home video cards: update each service independently from verified official uploads. */
 let hbVideoRefreshAt=0;
 function hbRefreshHomeVideos(){
@@ -248,7 +262,7 @@ function hbRefreshHomeVideos(){
 function hbVisionBanner(){const old=document.querySelector('.hb-mbmc-footer-banner');if(!old||document.getElementById('hb-vision-2027'))return;const el=document.createElement('section');el.id='hb-vision-2027';el.className='container';el.style.cssText='max-width:1180px;margin:24px auto 0;padding:0 16px';const img=document.createElement('img');img.src='/assets/vision-fund-2027.jpg';img.alt='2027 비전펀드 — 주일의 신앙을 넘어, 삶의 모든 순간 하나님과 함께';img.style.cssText='display:block;width:100%;height:auto;object-fit:contain';el.append(img);old.before(el);}
 function hbVideoBoardButton(){const h=[...document.querySelectorAll('#app h1,#app h2,#app h3')].find(e=>e.textContent.trim()==='하늘바람교회 영상');if(!h||document.getElementById('hb-video-board-actions'))return;const row=document.createElement('div');row.id='hb-video-board-actions';row.style.cssText='display:flex;justify-content:flex-end;margin:8px 0 12px;gap:8px';const a=document.createElement('a');a.href='/videos/';a.textContent='영상게시판';a.style.cssText='display:inline-flex;align-items:center;border:1px solid #cee0ec;border-radius:8px;padding:8px 12px;color:#215476;background:white;font-size:12px;text-decoration:none';const upload=document.createElement('a');upload.href='/admin.html#bulkVideo';upload.title='영상 등록';upload.setAttribute('aria-label','영상 등록');upload.style.cssText=a.style.cssText;upload.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/></svg>';row.append(upload);const next=h.nextElementSibling; h.parentElement.style.position='relative';row.style.cssText='position:absolute;right:0;top:0;margin:0';h.style.paddingInline='48px';h.parentElement.append(row);}
 function apply(){
- const key=path();if(!key||key==='home'){hbHomeBlogPreview();hbRefreshHomeVideos();hbVideoBoardButton();hbVisionBanner();}
+ const key=path();if(!key||key==='home'){hbHomeBlogPreview();hbHomeCafePreview();hbRefreshHomeVideos();hbVideoBoardButton();hbVisionBanner();}
  const article=document.querySelector('#app .page-grid article.article');
  if(!article)return;
  if(['news-1','news-2','news-6'].includes(key))article.classList.add('hb-community-clean');
