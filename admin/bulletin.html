@@ -234,7 +234,7 @@
   document.getElementById('saveSixVideos').addEventListener('click',async()=>{
     const button=document.getElementById('saveSixVideos'),status=document.getElementById('sixVideosStatus');
     const entries=[["sermon-6","교회영상"],["sermon-1","주일설교"],["sermon-8","새벽설교"],["sermon-2","수요설교"],["sermon-7","금요설교"],["sermon-4","찬양영상"]];const videos=[];
-    const parseId=(url)=>{try{const u=new URL(url);if(['youtu.be','www.youtu.be'].includes(u.hostname))return u.pathname.split('/')[1];if(['youtube.com','www.youtube.com','m.youtube.com'].includes(u.hostname))return u.searchParams.get('v')||u.pathname.match(/^\\/(?:shorts|live|embed)\\/([^/]+)/)?.[1];}catch{}return null};
+    const parseId=(url)=>{try{const u=new URL(url);const host=u.hostname.toLowerCase();if(host==='youtu.be'||host==='www.youtu.be')return u.pathname.split('/')[1];if(['youtube.com','www.youtube.com','m.youtube.com'].includes(host)){const segments=u.pathname.split('/').filter(Boolean);return u.searchParams.get('v')||(['shorts','live','embed'].includes(segments[0])?segments[1]:null)}}catch{}return null};
     for(const [section_key,label] of entries){const input=document.getElementById('video-'+section_key),url=input.value.trim();if(!url)continue;const youtube_id=parseId(url);if(!youtube_id||!/^[-_a-zA-Z0-9]{11}$/.test(youtube_id)){status.textContent=label+' 주소를 확인하세요.';return}videos.push({section_key,youtube_id,title:label})}
     if(!videos.length){status.textContent='영상 링크를 하나 이상 입력해 주세요.';return}
     button.disabled=true;status.textContent='저장 중...';
