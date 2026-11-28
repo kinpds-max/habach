@@ -121,8 +121,15 @@
 
   <div class="card" style="border:1px solid #d9e4f0">
     <div class="card-title"><i class="fas fa-video"></i> 교회 영상 6개 링크 관리</div>
-    <p style="font-size:13px;line-height:1.7;color:#54657b;margin-bottom:12px">교회영상·주일설교·새벽설교·수요설교·금요설교·찬양영상 링크를 한 번에 등록합니다. 주보 관리자 비밀번호 확인 후 영상 등록 화면으로 이동하며, 영상 저장에는 별도 Supabase 관리자 로그인이 필요합니다.</p>
-    <a class="btn btn-primary" href="../admin.html#bulkVideo"><i class="fas fa-upload"></i> 영상 링크 6개 등록하기</a>
+    <p style="font-size:13px;line-height:1.7;color:#54657b;margin-bottom:12px">주보 관리자 비밀번호 1004로 로그인하면 영상 링크도 바로 저장할 수 있습니다. 변경할 링크만 입력하세요.</p>
+    <div class="form-grid"><div class="form-group full"><label for="video-sermon-6">교회영상</label><input id="video-sermon-6" class="form-control" type="url" placeholder="https://youtube.com/watch?v=..." /></div>
+<div class="form-group full"><label for="video-sermon-1">주일설교</label><input id="video-sermon-1" class="form-control" type="url" placeholder="https://youtube.com/watch?v=..." /></div>
+<div class="form-group full"><label for="video-sermon-8">새벽설교</label><input id="video-sermon-8" class="form-control" type="url" placeholder="https://youtube.com/watch?v=..." /></div>
+<div class="form-group full"><label for="video-sermon-2">수요설교</label><input id="video-sermon-2" class="form-control" type="url" placeholder="https://youtube.com/watch?v=..." /></div>
+<div class="form-group full"><label for="video-sermon-7">금요설교</label><input id="video-sermon-7" class="form-control" type="url" placeholder="https://youtube.com/watch?v=..." /></div>
+<div class="form-group full"><label for="video-sermon-4">찬양영상</label><input id="video-sermon-4" class="form-control" type="url" placeholder="https://youtube.com/watch?v=..." /></div></div>
+    <div class="form-actions"><button type="button" class="btn btn-primary" id="saveSixVideos">6개 영상 반영하기</button></div>
+    <p id="sixVideosStatus" role="status" style="margin-top:12px;font-size:13px"></p>
   </div>
 
   <!-- ===== ADD FORM ===== -->
@@ -222,6 +229,18 @@
       document.getElementById('loginErr').style.display = 'block';
     }
   }
+
+  // PIN-protected six-video updates use the same sign-in as bulletin uploads.
+  document.getElementById('saveSixVideos').addEventListener('click',async()=>{
+    const button=document.getElementById('saveSixVideos'),status=document.getElementById('sixVideosStatus');
+    const entries=[["sermon-6","교회영상"],["sermon-1","주일설교"],["sermon-8","새벽설교"],["sermon-2","수요설교"],["sermon-7","금요설교"],["sermon-4","찬양영상"]];const videos=[];
+    const parseId=(url)=>{try{const u=new URL(url);if(['youtu.be','www.youtu.be'].includes(u.hostname))return u.pathname.split('/')[1];if(['youtube.com','www.youtube.com','m.youtube.com'].includes(u.hostname))return u.searchParams.get('v')||u.pathname.match(/^\\/(?:shorts|live|embed)\\/([^/]+)/)?.[1];}catch{}return null};
+    for(const [section_key,label] of entries){const input=document.getElementById('video-'+section_key),url=input.value.trim();if(!url)continue;const youtube_id=parseId(url);if(!youtube_id||!/^[-_a-zA-Z0-9]{11}$/.test(youtube_id)){status.textContent=label+' 주소를 확인하세요.';return}videos.push({section_key,youtube_id,title:label})}
+    if(!videos.length){status.textContent='영상 링크를 하나 이상 입력해 주세요.';return}
+    button.disabled=true;status.textContent='저장 중...';
+    try{const res=await fetch('https://veghdecosrimscedkrdo.supabase.co/functions/v1/habach-video-pin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin:ADMIN_PW,videos})});const data=await res.json();if(!res.ok||!data.success)throw Error(data.error||'저장 실패');status.textContent=data.saved.length+'개 영상 저장 완료. 홈페이지에서 새로고침해 주세요.';for(const [key] of entries)document.getElementById('video-'+key).value='';}
+    catch(e){status.textContent='저장 실패: '+e.message}finally{button.disabled=false}
+  });
 
   /* ── URL 파싱: 카페 게시글 ID 추출 ── */
   function extractArticleId(url) {
