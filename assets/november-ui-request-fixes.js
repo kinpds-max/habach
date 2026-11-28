@@ -334,6 +334,23 @@ function apply(){
     let upload=row.querySelector('a[href="/admin/bulletin.html"]');
     if(!upload){upload=document.createElement('a');upload.href='/admin/bulletin.html';upload.textContent='업로드';row.append(upload)}
   }
+  // Replace redundant bulletin-board navigation buttons with an inline expandable list.
+  for(const el of article.querySelectorAll('a,button')){
+    if((el.textContent||'').replace(/\\s+/g,'').trim()==='주보게시판'){
+      el.style.setProperty('display','none','important');
+    }
+  }
+  const bulletinRows=[...article.querySelectorAll('.board-table tbody tr,.board-results > li,.board-list > li,.hb-bulletin-list > li')];
+  if(bulletinRows.length>5){
+    let more=article.querySelector('#hb-bulletin-more');
+    if(!more){
+      more=document.createElement('button');more.id='hb-bulletin-more';more.type='button';more.textContent='더보기';
+      more.style.cssText='display:block;margin:16px auto;padding:10px 26px;border:1px solid #d4dce4;background:#fff;border-radius:8px;color:#23527a;cursor:pointer';
+      bulletinRows[bulletinRows.length-1].closest('table,ul,ol')?.after(more);
+      more.addEventListener('click',()=>{const expanded=more.getAttribute('aria-expanded')==='true';more.setAttribute('aria-expanded',String(!expanded));more.textContent=expanded?'더보기':'접기';bulletinRows.forEach((row,i)=>{row.style.display=expanded&&i>=5?'none':''});});
+    }
+    if(more.getAttribute('aria-expanded')!=='true')bulletinRows.forEach((row,i)=>{if(i>=5)row.style.display='none'});
+  }
   // Hide other upload controls, keeping exactly the one beside the board heading.
   for(const el of article.querySelectorAll('a,button')){
     const label=(el.textContent||'').replace(/\\s+/g,'');
