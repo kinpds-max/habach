@@ -292,18 +292,26 @@ function hbVisionBanner(){
  el.append(action,img);old.before(el);
 }
 function hbTopVisionBanner(){
+ const hero=document.getElementById('hero')||document.querySelector('.mainhero')||document.querySelector('section.hero');
  const blog=document.getElementById('hb-home-naver-blog');
- if(!blog||document.getElementById('hb-vision-top-banner'))return;
+ if(!hero&&!blog)return;
+ const existing=document.getElementById('hb-vision-top-banner');
+ if(existing){
+  if(hero&&existing.previousElementSibling!==hero)hero.insertAdjacentElement('afterend',existing);
+  return;
+ }
  const section=document.createElement('section');
  section.id='hb-vision-top-banner';
- section.style.cssText='display:none;box-sizing:border-box;width:100%;max-width:1180px;padding:0 16px;margin:22px auto 6px';
+ section.style.cssText='display:none;box-sizing:border-box;width:100%;max-width:1180px;padding:0 16px;margin:18px auto 12px';
  const img=document.createElement('img');
- img.src='https://veghdecosrimscedkrdo.supabase.co/storage/v1/object/public/habach-bulletins/admin/site-home-video-banner?v='+Date.now();
- img.alt='하늘바람교회 메인 영상 아래 비전 배너';img.loading='lazy';
+ img.alt='하늘바람교회 메인 영상 아래 비전 배너';img.loading='eager';img.decoding='async';
  img.style.cssText='display:block;width:100%;height:auto;object-fit:contain;border-radius:6px';
  img.onload=()=>{section.style.display='block'};
  img.onerror=()=>{section.remove()};
- section.append(img);blog.before(section);
+ section.append(img);
+ if(hero)hero.insertAdjacentElement('afterend',section);
+ else blog.insertAdjacentElement('beforebegin',section);
+ img.src='https://veghdecosrimscedkrdo.supabase.co/storage/v1/object/public/habach-bulletins/admin/site-home-video-banner?v='+Date.now();
 }
 function hbHeroBannerUploadButton(){
  const hero=document.getElementById('hero')||document.querySelector('.mainhero')||document.querySelector('section.hero');
