@@ -242,7 +242,7 @@ function hbHomeCafePreview(){
  const mission=document.createElement('span');mission.textContent='12 교회를 세우고, 300명의 선교사를 파송하고, 5000명을 먹이는 하나님이 일하시는 교회, 하늘바람 교회';mission.style.cssText='font-size:14px;color:#989898;line-height:1.7;max-width:430px;margin:8px auto 14px';
  const cta=document.createElement('span');cta.textContent='10초 만에 가입하기';cta.style.cssText='box-sizing:border-box;display:block;width:100%;padding:15px 12px;border-radius:12px;background:#00b35a;color:#fff;font-weight:800;font-size:19px';
  preview.append(hint,count,mission,cta);
- if(!document.getElementById('hb-cafe-heading-size-match')){const css=document.createElement('style');css.id='hb-cafe-heading-size-match';css.textContent='#app #hb-home-cafe-preview h2{font-size:22px!important;font-weight:800!important;line-height:1.35!important;letter-spacing:-.025em!important;color:#314e66!important}@media(max-width:700px){#app #hb-home-cafe-preview h2{font-size:18px!important}}';document.head.append(css)}
+ if(!document.getElementById('hb-cafe-heading-size-match')){const css=document.createElement('style');css.id='hb-cafe-heading-size-match';css.textContent='#app #hb-home-cafe-preview h2{font-size:24px!important;font-weight:800!important;line-height:1.3!important;letter-spacing:-.025em!important;color:#314e66!important;margin:0!important}';document.head.append(css)}
  section.append(h,p,preview);blog.insertAdjacentElement('afterend',section);
 }
 
