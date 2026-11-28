@@ -291,9 +291,22 @@ function hbVisionBanner(){
  img.onerror=()=>{img.remove()};
  el.append(action,img);old.before(el);
 }
+function hbTopVisionBanner(){
+ const blog=document.getElementById('hb-home-naver-blog');
+ if(!blog||document.getElementById('hb-vision-top-banner'))return;
+ const section=document.createElement('section');
+ section.id='hb-vision-top-banner';
+ section.style.cssText='box-sizing:border-box;width:100%;max-width:1180px;padding:0 16px;margin:26px auto 0';
+ const img=document.createElement('img');
+ img.src='/assets/vision-2027-faith-life.webp';img.alt='2027 VISION 다시, 신앙생활!';
+ img.loading='lazy';
+ img.style.cssText='display:block;width:100%;height:auto;object-fit:contain;border-radius:6px';
+ img.onerror=()=>section.remove();
+ section.append(img);blog.before(section);
+}
 function hbVideoBoardButton(){const h=[...document.querySelectorAll('#app h1,#app h2,#app h3')].find(e=>e.textContent.trim()==='하늘바람교회 영상');if(!h||document.getElementById('hb-video-board-actions'))return;const row=document.createElement('div');row.id='hb-video-board-actions';row.style.cssText='display:flex;justify-content:flex-end;margin:8px 0 12px;gap:8px';const a=document.createElement('a');a.href='/videos/';a.textContent='영상게시판';a.style.cssText='display:inline-flex;align-items:center;border:1px solid #cee0ec;border-radius:8px;padding:8px 12px;color:#215476;background:white;font-size:12px;text-decoration:none';const upload=document.createElement('a');upload.href='/admin.html#bulkVideo';upload.title='영상 등록';upload.setAttribute('aria-label','영상 등록');upload.style.cssText=a.style.cssText;upload.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/></svg>';row.append(upload);const next=h.nextElementSibling; h.parentElement.style.position='relative';row.style.cssText='position:absolute;right:0;top:0;margin:0';h.style.paddingInline='48px';h.parentElement.append(row);}
 function apply(){
- const key=path();if(!key||key==='home'){hbHomeBlogPreview();hbHomeCafePreview();hbRefreshHomeVideos();hbVideoBoardButton();hbVisionBanner();}
+ const key=path();if(!key||key==='home'){hbHomeBlogPreview();hbHomeCafePreview();hbRefreshHomeVideos();hbVideoBoardButton();hbVisionBanner();hbTopVisionBanner();}
  const article=document.querySelector('#app .page-grid article.article');
  if(!article)return;
  if(['news-1','news-2','news-6'].includes(key))article.classList.add('hb-community-clean');
@@ -456,18 +469,32 @@ function apply(){
 function hbAddBandToSNS(){
  const url='https://www.band.us/n/afa8b7sf94f3c';
  const nodes=[...document.querySelectorAll('a,button,[role="menuitem"]')];
+ const clean=str=>(str||'').replace(/\\s+/g,'').trim();
  for(const el of nodes){
-  const label=(el.textContent||'').replace(/\\s+/g,'').trim();
   const href=el.getAttribute('href')||'';
-  if(!(label==='네이버블로그'||label==='NaverBlog'||label==='NAVER블로그'||(href.includes('blog.naver.com')&&!el.closest('#hb-home-naver-blog'))))continue;
+  if(!(clean(el.textContent)==='네이버블로그'||clean(el.textContent)==='NaverBlog'||(href.includes('blog.naver.com')&&!el.closest('#hb-home-naver-blog'))))continue;
   if(el.closest('#hb-home-naver-blog'))continue;
   const row=el.closest('li')||el;
-  const parent=row.parentElement;if(!parent||parent.querySelector('[data-hb-sns-band="1"]'))continue;
+  const parent=row.parentElement;
+  if(!parent||parent.querySelector('[data-hb-sns-band="1"]'))continue;
   const copy=row.cloneNode(true);
   copy.dataset.hbSnsBand='1';
-  const link=copy.matches('a')?copy:copy.querySelector('a');
-  if(link){link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='네이버 밴드';link.setAttribute('aria-label','하늘바람교회 네이버 밴드 열기')}
-  else {copy.textContent='네이버 밴드';copy.setAttribute('role','link');copy.tabIndex=0;copy.addEventListener('click',()=>window.open(url,'_blank','noopener'));copy.addEventListener('keydown',e=>{if(e.key==='Enter')window.open(url,'_blank','noopener')})}
+  let link=copy.matches('a')?copy:copy.querySelector('a');
+  if(!link){
+    link=document.createElement('a');
+    copy.replaceChildren(link);
+  }
+  link.href=url;link.target='_blank';link.rel='noopener noreferrer';
+  link.setAttribute('aria-label','하늘바람교회 네이버 밴드 열기');
+  link.style.cssText+=';display:flex!important;align-items:center!important;gap:14px!important;width:100%;box-sizing:border-box;text-decoration:none';
+  const icon=document.createElement('span');
+  icon.textContent='B';icon.setAttribute('aria-hidden','true');
+  icon.style.cssText='display:grid;flex:none;place-items:center;width:50px;height:50px;border-radius:12px;background:#03c75a;color:#fff;font-size:26px;font-weight:900;line-height:1';
+  const name=document.createElement('span');
+  name.textContent='네이버 밴드';name.style.cssText='flex:1;font-size:inherit;font-weight:700;color:inherit';
+  const arrow=document.createElement('span');arrow.textContent='↗';arrow.setAttribute('aria-hidden','true');
+  arrow.style.cssText='font-size:26px;color:#9aafc0;font-weight:700;line-height:1';
+  link.replaceChildren(icon,name,arrow);
   row.insertAdjacentElement('afterend',copy);
  }
 }
