@@ -242,6 +242,13 @@ function hbHomeCafePreview(){
  const mission=document.createElement('span');mission.textContent='12 교회를 세우고, 300명의 선교사를 파송하고, 5000명을 먹이는 하나님이 일하시는 교회';mission.style.cssText='font-size:14px;color:#989898;line-height:1.7;max-width:430px;margin:8px auto 14px';
  const cta=document.createElement('span');cta.textContent='10초 만에 가입하기';cta.style.cssText='box-sizing:border-box;display:block;width:100%;padding:15px 12px;border-radius:12px;background:#00b35a;color:#fff;font-weight:800;font-size:19px';
  preview.append(hint,count,mission,cta);
+ // Expand the cafe join preview on desktop, retaining the compact mobile layout.
+ if(!document.getElementById('hb-cafe-desktop-wide')){
+  const wide=document.createElement('style');wide.id='hb-cafe-desktop-wide';
+  wide.textContent='@media(min-width:900px){#app #hb-home-cafe-preview{max-width:1160px!important;width:100%!important}#app #hb-home-cafe-preview>a{max-width:1000px!important;width:100%!important;min-height:430px!important;padding:44px 56px!important;gap:22px!important}#app #hb-home-cafe-preview>a strong{font-size:36px!important;line-height:1.4!important}#app #hb-home-cafe-preview>a span:last-child{font-size:22px!important;padding:20px 16px!important}#app #hb-home-cafe-preview>a span:nth-last-child(2){max-width:800px!important;font-size:18px!important}}@media(min-width:701px) and (max-width:899px){#app #hb-home-cafe-preview>a{max-width:100%!important;width:100%!important}}';
+  document.head.append(wide);
+ }
+
  if(!document.getElementById('hb-cafe-heading-size-match')){const css=document.createElement('style');css.id='hb-cafe-heading-size-match';css.textContent='#app #hb-home-cafe-preview h2,#app #hb-home-naver-blog .hb-blog-heading h2,#app .hb-home-video-aligned .home-video-six-header h2{font-size:24px!important;font-weight:800!important;line-height:1.3!important;letter-spacing:-.025em!important;color:#314e66!important;margin:0!important;text-align:center!important}#app #hb-home-cafe-preview>p,#app #hb-home-naver-blog .hb-blog-heading p,#app .hb-home-video-aligned .home-video-six-header p{font-size:15px!important;font-weight:400!important;line-height:1.6!important;color:#8295a4!important;margin:12px 0 0!important;text-align:center!important}#app #hb-home-cafe-preview{padding-top:24px!important}#app #hb-home-cafe-preview>a{margin-top:22px!important}#app #hb-home-naver-blog .hb-blog-heading{margin-bottom:22px!important}';document.head.append(css)}
  section.append(h,p,preview);blog.insertAdjacentElement('afterend',section);
 }
