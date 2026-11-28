@@ -304,7 +304,29 @@ function hbTopVisionBanner(){
  img.onerror=()=>section.remove();
  section.append(img);blog.before(section);
 }
-function hbVideoBoardButton(){const h=[...document.querySelectorAll('#app h1,#app h2,#app h3')].find(e=>e.textContent.trim()==='하늘바람교회 영상');if(!h||document.getElementById('hb-video-board-actions'))return;const row=document.createElement('div');row.id='hb-video-board-actions';row.style.cssText='display:flex;justify-content:flex-end;margin:8px 0 12px;gap:8px';const a=document.createElement('a');a.href='/videos/';a.textContent='영상게시판';a.style.cssText='display:inline-flex;align-items:center;border:1px solid #cee0ec;border-radius:8px;padding:8px 12px;color:#215476;background:white;font-size:12px;text-decoration:none';const upload=document.createElement('a');upload.href='/admin.html#bulkVideo';upload.title='영상 등록';upload.setAttribute('aria-label','영상 등록');upload.style.cssText=a.style.cssText;upload.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/></svg>';row.append(upload);const next=h.nextElementSibling; h.parentElement.style.position='relative';row.style.cssText='position:absolute;right:0;top:0;margin:0';h.style.paddingInline='48px';h.parentElement.append(row);}
+function hbVideoBoardButton(){
+ const h=[...document.querySelectorAll('#app h1,#app h2,#app h3')].find(e=>e.textContent.trim()==='하늘바람교회 영상');
+ if(!h||document.getElementById('hb-video-board-actions'))return;
+ const header=h.parentElement;
+ if(!header)return;
+ const row=document.createElement('div');row.id='hb-video-board-actions';
+ row.style.cssText='position:absolute;right:0;margin:0;display:flex;align-items:center;justify-content:flex-end;z-index:1';
+ const upload=document.createElement('a');upload.href='/admin.html#bulkVideo';upload.title='영상 등록';upload.setAttribute('aria-label','영상 등록');
+ upload.style.cssText='display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;border:1px solid #cee0ec;border-radius:8px;padding:9px;color:#215476;background:white;text-decoration:none';
+ upload.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/></svg>';
+ row.append(upload);
+ header.style.position='relative';header.append(row);
+ const alignToSubtitle=()=>{
+  if(!row.isConnected)return;
+  const subtitle=[...header.querySelectorAll('p')].find(x=>(x.textContent||'').includes('예배와 설교'));
+  if(!subtitle)return;
+  const parentRect=header.getBoundingClientRect(),rect=subtitle.getBoundingClientRect();
+  row.style.top=Math.max(0,Math.round(rect.top-parentRect.top+(rect.height-row.offsetHeight)/2))+'px';
+ };
+ requestAnimationFrame(alignToSubtitle);
+ window.addEventListener('resize',alignToSubtitle,{passive:true});
+}
+
 function apply(){
  const key=path();if(!key||key==='home'){hbHomeBlogPreview();hbHomeCafePreview();hbRefreshHomeVideos();hbVideoBoardButton();hbVisionBanner();hbTopVisionBanner();}
  const article=document.querySelector('#app .page-grid article.article');
