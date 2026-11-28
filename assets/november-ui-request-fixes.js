@@ -231,13 +231,13 @@ function hbHomeCafePreview(){
  const url='https://m.cafe.naver.com/ca-fe/web/cafes/31371644/menus/2';
  const section=document.createElement('section');section.id='hb-home-cafe-preview';
  section.style.cssText='box-sizing:border-box;width:100%;max-width:1160px;margin:0 auto 36px;padding:16px 18px 24px;text-align:center';
- const h=document.createElement('h2');h.textContent='하늘바람교회 카페 소식';h.style.cssText='margin:0 0 10px;color:#314e66;font-size:24px;font-weight:800';
- const p=document.createElement('p');p.textContent='하늘바람교회 네이버 카페의 소식을 확인해 보세요.';p.style.cssText='margin:0 0 20px;color:#8295a4;font-size:15px';
- const preview=document.createElement('a');preview.href=url;preview.target='_blank';preview.rel='noopener noreferrer';preview.setAttribute('aria-label','하늘바람교회 네이버 카페 게시판 열기');
+ const h=document.createElement('h2');h.textContent='하늘바람교회 카페 포토갤러리';h.style.cssText='margin:0 0 10px;color:#314e66;font-size:24px;font-weight:800';
+ const p=document.createElement('p');p.textContent='교회 사진과 현장 소식을 네이버 카페에서 만나보세요.';p.style.cssText='margin:0 0 20px;color:#8295a4;font-size:15px';
+ const preview=document.createElement('a');preview.href=url;preview.target='_blank';preview.rel='noopener noreferrer';preview.setAttribute('aria-label','하늘바람교회 카페 포토갤러리 열기');
  preview.style.cssText='box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;max-width:600px;margin:0 auto;padding:30px 24px;min-height:180px;background:#f7fbfd;border:1px solid #dce7ee;border-radius:14px;text-decoration:none;color:#245477';
  const icon=document.createElement('span');icon.textContent='☕';icon.style.cssText='font-size:36px;line-height:1';
- const title=document.createElement('strong');title.textContent='네이버 카페 게시판';title.style.cssText='font-size:19px;line-height:1.5';
- const sub=document.createElement('span');sub.textContent='게시글 확인하기 →';sub.style.cssText='font-size:14px;color:#66869b';
+ const title=document.createElement('strong');title.textContent='하늘바람교회 포토갤러리';title.style.cssText='font-size:19px;line-height:1.5';
+ const sub=document.createElement('span');sub.textContent='카페 사진 보러 가기 →';sub.style.cssText='font-size:14px;color:#66869b';
  preview.append(icon,title,sub);
  section.append(h,p,preview);blog.insertAdjacentElement('afterend',section);
 }
