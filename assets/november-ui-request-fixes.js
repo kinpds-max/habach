@@ -281,14 +281,14 @@ function hbVisionBanner(){
  el.style.cssText='max-width:1180px;margin:24px auto 0;padding:0 16px;box-sizing:border-box';
  const action=document.createElement('div');action.style.cssText='display:flex;justify-content:flex-end;margin-bottom:10px';
  const upload=document.createElement('a');upload.href='/admin.html#bannerManage';upload.title='비전 현수막 이미지 업로드';upload.setAttribute('aria-label','비전 현수막 업로드');
- upload.style.cssText='display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid #d4e1e9;border-radius:9px;background:#fff;color:#265477;font-size:13px;font-weight:700;text-decoration:none';
- upload.innerHTML='<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/></svg><span>배너 업로드</span>';
+ upload.style.cssText='display:inline-flex;align-items:center;gap:6px;padding:9px;border:1px solid #d4e1e9;border-radius:9px;background:#fff;color:#265477;font-size:13px;font-weight:700;text-decoration:none';
+ upload.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/></svg>';
  action.append(upload);
  const img=document.createElement('img');
  img.src='https://veghdecosrimscedkrdo.supabase.co/storage/v1/object/public/habach-bulletins/admin/site-vision-banner?v='+Date.now();
  img.alt='2027 VISION 다시, 신앙생활!';img.loading='lazy';
  img.style.cssText='display:block;width:100%;height:auto;object-fit:contain;border-radius:6px';
- img.onerror=()=>{img.remove();const note=document.createElement('p');note.textContent='비전 현수막 이미지를 관리자에서 업로드해 주세요.';note.style.cssText='margin:8px 0 16px;padding:20px;text-align:center;color:#789;background:#f4f8fb;border-radius:8px';el.append(note)};
+ img.onerror=()=>{img.remove()};
  el.append(action,img);old.before(el);
 }
 function hbVideoBoardButton(){const h=[...document.querySelectorAll('#app h1,#app h2,#app h3')].find(e=>e.textContent.trim()==='하늘바람교회 영상');if(!h||document.getElementById('hb-video-board-actions'))return;const row=document.createElement('div');row.id='hb-video-board-actions';row.style.cssText='display:flex;justify-content:flex-end;margin:8px 0 12px;gap:8px';const a=document.createElement('a');a.href='/videos/';a.textContent='영상게시판';a.style.cssText='display:inline-flex;align-items:center;border:1px solid #cee0ec;border-radius:8px;padding:8px 12px;color:#215476;background:white;font-size:12px;text-decoration:none';const upload=document.createElement('a');upload.href='/admin.html#bulkVideo';upload.title='영상 등록';upload.setAttribute('aria-label','영상 등록');upload.style.cssText=a.style.cssText;upload.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/></svg>';row.append(upload);const next=h.nextElementSibling; h.parentElement.style.position='relative';row.style.cssText='position:absolute;right:0;top:0;margin:0';h.style.paddingInline='48px';h.parentElement.append(row);}
