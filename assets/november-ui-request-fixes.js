@@ -467,14 +467,7 @@ function hbUnifyHomeSectionHeaders(){
     display:flex!important;flex-direction:column!important;align-items:center!important;
     justify-content:center!important;gap:8px!important;text-align:center!important;
     margin:0 auto 22px!important;padding:16px 12px 18px!important;
-    border-bottom:1px solid #dce7ee!important;
-  }
-  #app #hb-home-naver-blog .hb-blog-heading::before,
-  #app #hb-home-cafe-preview .hb-cafe-heading::before,
-  #app .hb-home-video-aligned .home-video-six-header::before{
-    content:'✦';display:grid;place-items:center;width:36px;height:36px;
-    border-radius:10px;background:#eaf2f7;color:#315a77;font-size:22px;line-height:1;
-    margin-bottom:2px;
+    border-bottom:0!important;
   }
   #app #hb-home-naver-blog .hb-blog-heading h2,
   #app #hb-home-cafe-preview .hb-cafe-heading h2,
